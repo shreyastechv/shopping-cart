@@ -8,7 +8,7 @@ function processCategoryForm() {
 		$("#categoryNameError").text("Category name should not be empty");
 		return false;
 	}
-	else if (!/^[A-Za-z]+$/.test(categoryName)) {
+	else if (!/^[A-Za-z ]+$/.test(categoryName)) {
 		$("#categoryName").addClass("border-danger bg-danger-subtle");
 		$("#categoryNameError").text("Category name should only contain letters!");
 		return false;
