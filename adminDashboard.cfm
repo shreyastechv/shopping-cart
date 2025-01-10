@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Log In - Shopping Cart</title>
+        <title>Admin Dashboard - Shopping Cart</title>
 		<link rel="icon" href="favicon.ico">
 		<link href="assets/css/bootstrap.min.css" rel="stylesheet">
 		<script src="assets/js/fontawesome.js"></script>
