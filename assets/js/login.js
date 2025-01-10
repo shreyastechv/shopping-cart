@@ -1,17 +1,32 @@
 function validateForm() {
-	const username = $("#username").val();
-	const password = $("#password").val();
+	const userInput = $("#userInput").val().trim();
+	const password = $("#password").val().trim();
 
 	$(".error").text("");
-	$("#username").removeClass("border-danger bg-danger-subtle");
+	$("#userInput").removeClass("border-danger bg-danger-subtle");
 	$("#password").removeClass("border-danger bg-danger-subtle");
 
-	if (username.trim().length === 0) {
-		$("#usernameError").text("Field is required");
-		$("#username").addClass("border-danger bg-danger-subtle");
+	if (userInput.length === 0) {
+		$("#userInputError").text("Field is required");
+		$("#userInput").addClass("border-danger bg-danger-subtle");
 		valid = false;
 	}
-	if (password.trim().length === 0) {
+	else if (isNaN(userInput)) {
+		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userInput)) {
+			$("#userInputError").text("Invalid email");
+			$("#userInput").addClass("border-danger bg-danger-subtle");
+			valid = false;
+		}
+	}
+	else {
+		if (userInput.length != 10) {
+			$("#userInputError").text("Phone number length should be 10");
+			$("#userInput").addClass("border-danger bg-danger-subtle");
+			valid = false;
+		}
+	}
+
+	if (password.length === 0) {
 		$("#passwordError").text("Field is required");
 		$("#password").addClass("border-danger bg-danger-subtle");
 		valid = false;

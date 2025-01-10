@@ -10,6 +10,16 @@
     </head>
 
     <body>
+		<!--- Login Logic --->
+		<cfif structKeyExists(form, "loginBtn")>
+			<cfinvoke
+				component = "components.shoppingCart"
+				method = "login"
+				returnVariable = "loginResult"
+				argumentCollection = "#form#"
+			/>
+		</cfif>
+
 		<!--- Navbar --->
         <header class="header d-flex align-items-center justify-content-between fixed-top bg-success px-2">
             <a class="d-flex align-items-center text-decoration-none" href="/">
@@ -26,7 +36,11 @@
 
 		<!--- Main Content --->
         <div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
-            <div id="submitMsgSection" class="text-danger p-2"></div>
+            <div id="submitMsgSection" class="text-danger p-2">
+				<cfif isDefined("loginResult.message")>
+					<cfoutput>#loginResult.message#</cfoutput>
+				</cfif>
+			</div>
             <div class="row shadow-lg border-0 rounded-4 w-50 text-center">
 				<div class="form-control flex-nowrap bg-white col-md-8 p-4 rounded-end-4">
 					<div class="text-center mb-4">
@@ -34,8 +48,8 @@
 					</div>
 					<form id="loginForm" name="loginForm" method="post" onsubmit="return validateForm()">
 						<div class="mb-3">
-							<input type="text" class="form-control" id="username" name="username" placeholder="Email or Phone Number" autocomplete="username">
-							<div id="usernameError" class="error text-danger"></div>
+							<input type="text" class="form-control" id="userInput" name="userInput" placeholder="Email or Phone Number" autocomplete="username">
+							<div id="userInputError" class="error text-danger"></div>
 						</div>
 						<div class="mb-3">
 							<input type="password" class="form-control" id="password" name="password" placeholder="Password">
@@ -52,13 +66,5 @@
 		<script src="assets/js/bootstrap.bundle.min.js"></script>
 		<script src="assets/js/jquery-3.7.1.min.js"></script>
 		<script src="assets/js/login.js"></script>
-		<cfif structKeyExists(form, "loginBtn")>
-			<cfinvoke
-				component = "component name or reference"
-				method = ""
-				returnVariable = "loginResult"
-				argumentCollection = "form"
-			/>
-		</cfif>
     </body>
 </html>
