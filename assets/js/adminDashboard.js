@@ -27,7 +27,7 @@ function processCategoryForm() {
 			$("#categoryNameError").removeClass("text-danger");
 			$("#categoryNameError").text(responseJSON.message);
 			if (responseJSON.message == "Category Added") {
-				// location.reload();
+				location.reload();
 			}
 			else if (responseJSON.message == "Category Updated") {
 				$("#categoryName-" + categoryId).text(categoryName);

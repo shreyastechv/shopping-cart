@@ -32,29 +32,29 @@
 			<!--- Main Content --->
 			<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
 				<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
-					<div class="bg-white col-md-8 p-4 rounded-end-4 w-100">
+					<div id="categoryMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
 						<div class="d-flex justify-content-center align-items-center mb-4">
 							<h3 class="fw-semibold text-center mb-0 me-3">CATEGORIES</h3>
 							<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showAddCategoryModal()">
 								Add+
 							</button>
 						</div>
-							<cfloop query="qryCategories">
-								<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-									<div id="categoryName-#qryCategories.fldCategory_Id#" class="fs-5">#qryCategories.fldCategoryName#</div>
-									<div>
-										<button class="btn btn-lg" value="#qryCategories.fldCategory_Id#" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal()">
-											<i class="fa-solid fa-pen-to-square pe-none"></i>
-										</button>
-										<button class="btn btn-lg" value="#qryCategories.fldCategory_Id#" onclick="deleteCategory()">
-											<i class="fa-solid fa-trash pe-none"></i>
-										</button>
-										<button class="btn btn-lg">
-											<i class="fa-solid fa-chevron-right"></i>
-										</button>
-									</div>
+						<cfloop query="qryCategories">
+							<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
+								<div id="categoryName-#qryCategories.fldCategory_Id#" class="fs-5">#qryCategories.fldCategoryName#</div>
+								<div>
+									<button class="btn btn-lg" value="#qryCategories.fldCategory_Id#" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal()">
+										<i class="fa-solid fa-pen-to-square pe-none"></i>
+									</button>
+									<button class="btn btn-lg" value="#qryCategories.fldCategory_Id#" onclick="deleteCategory()">
+										<i class="fa-solid fa-trash pe-none"></i>
+									</button>
+									<button class="btn btn-lg">
+										<i class="fa-solid fa-chevron-right"></i>
+									</button>
 								</div>
-							</cfloop>
+							</div>
+						</cfloop>
 					</div>
 				</div>
 			</div>
