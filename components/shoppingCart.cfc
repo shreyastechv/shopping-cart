@@ -51,8 +51,9 @@
 	<cfreturn local.qryGetCategories>
 </cffunction>
 
-<cffunction name="addCategory" access="remote" returnType="struct" returnFormat="json">
-	<cfargument name="categoryName" type="string">
+<cffunction name="modifyCategory" access="remote" returnType="struct" returnFormat="json">
+	<cfargument name="categoryId">
+	<cfargument name="categoryName">
 
 	<cfset local.response = {}>
 
@@ -69,19 +70,46 @@
 	<cfif local.qryCheckCategory.recordCount>
 		<cfset local.response["message"] = "Category already exists!">
 	<cfelse>
-		<cfquery name="qryAddCategory">
-			INSERT INTO
-				tblCategory (
-					fldCategoryName,
-					fldCreatedBy
+		<cfif len(trim(arguments.categoryId))>
+			<cfquery name="qryEditCategory">
+				UPDATE
+					tblCategory
+				SET
+					fldCategoryName = <cfqueryparam value = "#trim(arguments.categoryName)#" cfsqltype = "cf_sql_varchar">,
+					fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
+				WHERE
+					fldCategory_Id = <cfqueryparam value = "#trim(arguments.categoryId)#" cfsqltype = "cf_sql_integer">
+			</cfquery>
+			<cfset local.response["message"] = "Category Updated">
+		<cfelse>
+			<cfquery name="qryAddCategory">
+				INSERT INTO
+					tblCategory (
+						fldCategoryName,
+						fldCreatedBy
+					)
+				VALUES (
+					<cfqueryparam value = "#trim(arguments.categoryName)#" cfsqltype = "cf_sql_varchar">,
+					<cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
 				)
-			VALUES (
-				<cfqueryparam value = "#trim(arguments.categoryName)#" cfsqltype = "cf_sql_varchar">,
-				<cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_varchar">
-			)
-		</cfquery>
-		<cfset local.response["message"] = "Category Added">
+			</cfquery>
+			<cfset local.response["message"] = "Category Added">
+		</cfif>
 	</cfif>
 
 	<cfreturn local.response>
+</cffunction>
+
+<cffunction name="deleteCategory" access="remote">
+	<cfargument name="categoryId">
+
+	<cfquery name="qryDeleteCategory">
+		UPDATE
+			tblCategory
+		SET
+			fldActive = 0,
+			fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
+		WHERE
+			fldCategory_Id = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "cf_sql_integer">
+	</cfquery>
 </cffunction>

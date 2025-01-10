@@ -41,13 +41,13 @@
 						</div>
 							<cfloop query="qryCategories">
 								<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-									<div class="fs-5">#qryCategories.fldCategoryName#</div>
+									<div id="categoryName-#qryCategories.fldCategory_Id#" class="fs-5">#qryCategories.fldCategoryName#</div>
 									<div>
-										<button class="btn btn-lg">
-											<i class="fa-solid fa-pen-to-square"></i>
+										<button class="btn btn-lg" value="#qryCategories.fldCategory_Id#" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal()">
+											<i class="fa-solid fa-pen-to-square pe-none"></i>
 										</button>
-										<button class="btn btn-lg">
-											<i class="fa-solid fa-trash"></i>
+										<button class="btn btn-lg" value="#qryCategories.fldCategory_Id#" onclick="deleteCategory()">
+											<i class="fa-solid fa-trash pe-none"></i>
 										</button>
 										<button class="btn btn-lg">
 											<i class="fa-solid fa-chevron-right"></i>
@@ -75,7 +75,7 @@
 					  </div>
 					  <div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Add Category</button>
+						<button type="submit" id="categoryModalBtn" class="btn btn-primary">Add Category</button>
 					  </div>
 				  </form>
 				</div>
