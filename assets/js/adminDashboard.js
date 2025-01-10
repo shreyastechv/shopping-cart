@@ -54,7 +54,7 @@ function showEditCategoryModal() {
 	$("#categoryModalLabel").text("EDIT CATEGORY");
 	$("#categoryModalBtn").text("Edit Category");
 	$("#categoryId").val(event.target.value);
-	$("#categoryName").val(event.target.parentNode.parentNode.childNodes[1].textContent);
+	$("#categoryName").val(event.target.parentNode.parentNode.getElementsByTagName("div")[0].textContent);
 }
 
 function deleteCategory() {
