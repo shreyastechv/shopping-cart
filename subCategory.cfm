@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sub Category Edit - Shopping Cart</title>
+        <title>Sub Category - Shopping Cart</title>
 		<link rel="icon" href="favicon.ico">
 		<link href="assets/css/bootstrap.min.css" rel="stylesheet">
     </head>
@@ -29,11 +29,17 @@
 			<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
 				<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
 					<div id="subCategoryMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
-						<div class="d-flex justify-content-center align-items-center mb-4">
-							<h3 class="fw-semibold text-center mb-0 me-3">#url.categoryName#</h3>
-							<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showAddSubCategoryModal()">
-								Add+
-							</button>
+						<div class="d-flex justify-content-between align-items-center mb-4">
+							<a href="adminDashboard.cfm" class="btn">
+								<i class="fa-solid fa-chevron-left"></i>
+							</a>
+							<div class="d-flex">
+								<h3 class="fw-semibold text-center mb-0 me-3">#url.categoryName#</h3>
+								<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showAddSubCategoryModal()">
+									Add+
+								</button>
+							</div>
+							<div></div>
 						</div>
 						<cfloop query="qrySubCategories">
 							<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
