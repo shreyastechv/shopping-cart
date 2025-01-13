@@ -114,8 +114,8 @@
 						<div id="productNameError" class="text-danger"></div>
 
 						<!--- Product Brand --->
-						<label for="productBrandSelect" class="fw-semibold">Product Brand</label>
-						<select id="productBrandSelect" class="form-select" aria-label="SubCategory Select">
+						<label for="brandSelect" class="fw-semibold">Product Brand</label>
+						<select id="brandSelect" class="form-select" aria-label="SubCategory Select">
 							<option value="0">Brand Name</option>
 							<cfloop query="qryBrands">
 								<option value="#qryBrands.fldBrand_Id#">#qryBrands.fldBrandName# </option>
