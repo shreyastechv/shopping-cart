@@ -356,23 +356,31 @@
 				</cfquery>
 				<cfset local.response["productId"] = local.resultAddProduct.GENERATED_KEY>
 
-				<cfquery name="qryAddImages">
-					INSERT INTO
-						tblProductImages (
-							fldProductId,
-							fldImageFileName,
-							fldCreatedBy
-						)
-					VALUES
-						<cfloop array="#local.imageUploaded#" item="local.image" index="local.i">
-							(
-								<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "cf_sql_integer">,
-								<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "cf_sql_varchar">,
-								<cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
+				<cfif arrayLen(local.imageUploaded)>
+					<cfquery name="qryAddImages">
+						INSERT INTO
+							tblProductImages (
+								fldProductId,
+								fldImageFileName,
+								fldDefaultImage,
+								fldCreatedBy
 							)
-							<cfif local.i LT arrayLen(local.imageUploaded)>,</cfif>
-						</cfloop>
-				</cfquery>
+						VALUES
+							<cfloop array="#local.imageUploaded#" item="local.image" index="local.i">
+								(
+									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "cf_sql_integer">,
+									<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "cf_sql_varchar">,
+									<cfif local.i EQ 1>
+										1,
+									<cfelse>
+										0,
+									</cfif>
+									<cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
+								)
+								<cfif local.i LT arrayLen(local.imageUploaded)>,</cfif>
+							</cfloop>
+					</cfquery>
+				</cfif>
 				<cfset local.response["message"] = "Product Added">
 			</cfif>
 		</cfif>
