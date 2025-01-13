@@ -177,6 +177,7 @@
 			WHERE
 				fldSubCategoryName = <cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "cf_sql_varchar">
 				AND fldCategoryId = <cfqueryparam value = "#trim(arguments.categoryId)#" cfsqltype = "cf_sql_integer">
+				AND fldSubCategory_Id != <cfqueryparam value = "#val(trim(arguments.subCategoryId))#" cfsqltype = "cf_sql_integer">
 				AND fldActive = 1
 		</cfquery>
 
@@ -308,6 +309,7 @@
 			WHERE
 				fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "cf_sql_varchar">
 				AND fldSubCategoryId = <cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "cf_sql_integer">
+				AND fldProduct_Id != <cfqueryparam value = "#val(trim(arguments.productId))#" cfsqltype = "cf_sql_integer">
 				AND fldActive = 1
 		</cfquery>
 
