@@ -321,7 +321,10 @@
 					SET
 						fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "cf_sql_varchar">,
 						fldSubCategoryId = <cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "cf_sql_integer">,
-						fldCategoryId = <cfqueryparam value = "#trim(arguments.categorySelect)#" cfsqltype = "cf_sql_integer">,
+						fldBrandId = <cfqueryparam value = "#trim(arguments.brandSelect)#" cfsqltype = "cf_sql_integer">,
+						fldDescription = <cfqueryparam value = "#trim(arguments.productDesc)#" cfsqltype = "cf_sql_varchar">,
+						fldPrice = <cfqueryparam value = "#trim(arguments.productPrice)#" cfsqltype = "cf_sql_decimal">,
+						fldTax = <cfqueryparam value = "#trim(arguments.productTax)#" cfsqltype = "cf_sql_decimal">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
 					WHERE
 						fldProduct_Id = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "cf_sql_integer">
