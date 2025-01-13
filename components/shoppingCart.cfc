@@ -284,6 +284,22 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
+		<!--- Create images dir if not exists --->
+		<cfif NOT directoryExists(expandPath("../assets/images/productImages"))>
+			<cfdirectory action="create" directory="#expandPath("../assets/images/productImages")#">
+		</cfif>
+
+		<!--- Upload images --->
+		<cffile
+			action="uploadall"
+			destination="#expandpath("../assets/images/productImages")#"
+			nameconflict="MakeUnique"
+			accept="image/png,image/jpeg,.png,.jpg,.jpeg"
+			strict="true"
+			result="local.imageUploaded"
+			allowedextensions=".png,.jpg,.jpeg"
+		>
+
 		<cfquery name="local.qryCheckProduct">
 			SELECT
 				fldProduct_Id
@@ -334,6 +350,24 @@
 					)
 				</cfquery>
 				<cfset local.response["productId"] = local.resultAddProduct.GENERATED_KEY>
+
+				<cfquery name="qryAddImages">
+					INSERT INTO
+						tblProductImages (
+							fldProductId,
+							fldImageFileName,
+							fldCreatedBy
+						)
+					VALUES
+						<cfloop array="#local.imageUploaded#" item="local.image" index="local.i">
+							(
+								<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "cf_sql_integer">,
+								<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "cf_sql_varchar">,
+								<cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
+							)
+							<cfif local.i LT arrayLen(local.imageUploaded)>,</cfif>
+						</cfloop>
+				</cfquery>
 				<cfset local.response["message"] = "Product Added">
 			</cfif>
 		</cfif>
