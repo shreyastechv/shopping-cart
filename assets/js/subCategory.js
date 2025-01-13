@@ -110,6 +110,7 @@ function showAddSubCategoryModal() {
 	clearSubCategoryModal();
 	$("#subCategoryModalLabel").text("ADD CATEGORY");
 	$("#subCategoryModalBtn").text("Add SubCategory");
+	$("#subCategoryId").val("");
 	$("#subCategoryName").attr("data-sc-prevSubCategoryName", "");
 	$("#subCategoryForm")[0].reset();
 }
