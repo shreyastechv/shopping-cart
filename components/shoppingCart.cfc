@@ -164,7 +164,6 @@
 	<cffunction name="modifySubCategory" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="subCategoryId">
 		<cfargument name="subCategoryName">
-
 		<cfargument name="categoryId">
 
 		<cfset local.response = {}>
@@ -272,15 +271,74 @@
 	</cffunction>
 
 	<cffunction name="modifyProduct" access="remote" returnType="struct" returnFormat="json">
+		<cfargument name="productId">
 		<cfargument name="categorySelect">
 		<cfargument name="subCategorySelect">
 		<cfargument name="productName">
-		<cfargument name="productBrandSelect">
+		<cfargument name="brandSelect">
 		<cfargument name="productDesc">
 		<cfargument name="productPrice">
+		<cfargument name="productTax">
 		<cfargument name="productImage">
 
-		<cfreturn arguments>
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<cfquery name="local.qryCheckProduct">
+			SELECT
+				fldProduct_Id
+			FROM
+				tblProduct
+			WHERE
+				fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "cf_sql_varchar">
+				AND fldSubCategoryId = <cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "cf_sql_integer">
+				AND fldActive = 1
+		</cfquery>
+
+		<cfif local.qryCheckProduct.recordCount>
+			<cfset local.response["message"] = "SubCategory already exists!">
+		<cfelse>
+			<cfif len(trim(arguments.productId))>
+				<cfquery name="qryEditProduct">
+					UPDATE
+						tblProduct
+					SET
+						fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "cf_sql_varchar">,
+						fldSubCategoryId = <cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "cf_sql_integer">,
+						fldCategoryId = <cfqueryparam value = "#trim(arguments.categorySelect)#" cfsqltype = "cf_sql_integer">,
+						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
+					WHERE
+						fldProduct_Id = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "cf_sql_integer">
+				</cfquery>
+				<cfset local.response["message"] = "Product Updated">
+			<cfelse>
+				<cfquery name="local.qryAddProduct" result="local.resultAddProduct">
+					INSERT INTO
+						tblProduct (
+							fldProductName,
+							fldSubCategoryId,
+							fldBrandId,
+							fldDescription,
+							fldPrice,
+							fldTax,
+							fldCreatedBy
+						)
+					VALUES (
+						<cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "cf_sql_varchar">,
+						<cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "cf_sql_varchar">,
+						<cfqueryparam value = "#trim(arguments.brandSelect)#" cfsqltype = "cf_sql_integer">,
+						<cfqueryparam value = "#trim(arguments.productDesc)#" cfsqltype = "cf_sql_varchar">,
+						<cfqueryparam value = "#trim(arguments.productPrice)#" cfsqltype = "cf_sql_decimal">,
+						<cfqueryparam value = "#trim(arguments.productTax)#" cfsqltype = "cf_sql_decimal">,
+						<cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
+					)
+				</cfquery>
+				<cfset local.response["productId"] = local.resultAddProduct.GENERATED_KEY>
+				<cfset local.response["message"] = "Product Added">
+			</cfif>
+		</cfif>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="logOut" access="remote">

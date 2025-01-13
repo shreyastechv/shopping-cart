@@ -29,7 +29,15 @@ $(document).ready(function() {
 });
 
 function processproductForm() {
+	const productId= "";
+	const categorySelect = $("#categorySelect").val();
+	const subCategorySelect = $("#subCategorySelect").val();
+	const brandSelect = $("#brandSelect").val();
 	const formData = new FormData($("#productForm")[0]);
+	formData.append("productId", productId);
+	formData.append("categorySelect", categorySelect);
+	formData.append("subCategorySelect", subCategorySelect);
+	formData.append("brandSelect", brandSelect);
 	$.ajax({
 		type: "POST",
 		url: "./components/shoppingCart.cfc?method=modifyProduct",
@@ -38,7 +46,7 @@ function processproductForm() {
 		processData: false,
 		contentType: false,
 		success: function(response) {
-			const responseJSON = JSON.parse(responseJSON);
+			const responseJSON = JSON.parse(response);
 			console.log(responseJSON);
 		}
 	});
