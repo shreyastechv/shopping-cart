@@ -124,7 +124,6 @@ function showEditSubCategoryModal() {
 	$("#subCategoryId").val(subCategoryId);
 	$("#subCategoryName").attr("data-sc-prevSubCategoryName", subCategoryName);
 	$("#subCategoryName").val(subCategoryName);
-	$("#categorySelect").val(urlCategoryId).change();
 }
 
 function deleteSubCategory() {

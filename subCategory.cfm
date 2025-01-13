@@ -75,7 +75,14 @@
 						<select id="categorySelect" class="form-select" aria-label="Category Select">
 							<option value="0">Category Select</option>
 							<cfloop query="qryCategories">
-								<option value="#qryCategories.fldCategory_Id#">#qryCategories.fldCategoryName# </option>
+								<option
+									<cfif url.categoryId EQ qryCategories.fldCategory_Id>
+										selected
+									</cfif>
+									value="#qryCategories.fldCategory_Id#"
+								>
+									#qryCategories.fldCategoryName#
+								</option>
 							</cfloop>
 						</select>
 						<div id="categorySelectError" class="mt-2 text-danger"></div>
