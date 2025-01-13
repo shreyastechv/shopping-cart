@@ -133,6 +133,11 @@
 						<input type="number" step="0.01" min="0" id="productPrice" name="productPrice" placeholder="Product Price" class="form-control mb-1">
 						<div id="productPriceError" class="text-danger"></div>
 
+						<!--- Product Tax --->
+						<label for="productTax" class="fw-semibold">Product Price</label>
+						<input type="number" step="0.01" min="0" id="productTax" name="productTax" placeholder="Product Tax" class="form-control mb-1">
+						<div id="productTaxError" class="text-danger"></div>
+
 						<!--- Product Image --->
 						<label for="productImage" class="fw-semibold">Product Image</label>
 						<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control mb-1" multiple>
