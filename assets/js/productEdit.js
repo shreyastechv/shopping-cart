@@ -29,7 +29,7 @@ $(document).ready(function() {
 });
 
 function processproductForm() {
-	const formData = new FormData($(this)[0]);
+	const formData = new FormData($("#productForm")[0]);
 	$.ajax({
 		type: "POST",
 		url: "./components/shoppingCart.cfc?method=modifyProduct",

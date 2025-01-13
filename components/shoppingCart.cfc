@@ -271,14 +271,14 @@
 		<cfreturn local.qryGetBrands>
 	</cffunction>
 
-	<cffunction name="modifyProducts" access="remote" returnType="struct" returnFormat="json">
-		<cfargument  name="categorySelect">
-		<cfargument  name="subCategorySelect">
-		<cfargument  name="productName">
-		<cfargument  name="productBrandSelect">
-		<cfargument  name="productDesc">
-		<cfargument  name="productPrice">
-		<cfargument  name="productImage">
+	<cffunction name="modifyProduct" access="remote" returnType="struct" returnFormat="json">
+		<cfargument name="categorySelect">
+		<cfargument name="subCategorySelect">
+		<cfargument name="productName">
+		<cfargument name="productBrandSelect">
+		<cfargument name="productDesc">
+		<cfargument name="productPrice">
+		<cfargument name="productImage">
 
 		<cfreturn arguments>
 	</cffunction>
