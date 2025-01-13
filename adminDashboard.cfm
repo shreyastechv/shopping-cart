@@ -62,7 +62,6 @@
 						<div id="categoryModalMsg" class="mt-2"></div>
 					  </div>
 					  <div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 						<button type="submit" id="categoryModalBtn" class="btn btn-primary">Add Category</button>
 					  </div>
 				  </form>

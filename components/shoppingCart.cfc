@@ -144,7 +144,7 @@
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="getSubCategories" access="public" returnType="query">
+	<cffunction name="getSubCategories" access="remote" returnType="query" returnFormat="json">
 		<cfargument  name="categoryId">
 
 		<cfquery name="local.qryGetSubCategories">
@@ -240,6 +240,47 @@
 			WHERE
 				fldSubCategory_Id = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "cf_sql_integer">
 		</cfquery>
+	</cffunction>
+
+	<cffunction name="getProducts" access="public" returnType="query">
+		<cfargument  name="subCategoryId">
+
+		<cfquery name="local.qryGetProducts">
+			SELECT
+				fldProduct_Id,
+				fldProductName
+			FROM
+				tblProduct
+			WHERE
+				fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "cf_sql_integer">
+				AND fldActive = 1
+		</cfquery>
+
+		<cfreturn local.qryGetProducts>
+	</cffunction>
+
+	<cffunction name="getBrands" access="public" returnType="query">
+		<cfquery name="local.qryGetBrands">
+			SELECT
+				fldBrand_Id,
+				fldBrandName
+			FROM
+				tblBrands
+		</cfquery>
+
+		<cfreturn local.qryGetBrands>
+	</cffunction>
+
+	<cffunction name="modifyProducts" access="remote" returnType="struct" returnFormat="json">
+		<cfargument  name="categorySelect">
+		<cfargument  name="subCategorySelect">
+		<cfargument  name="productName">
+		<cfargument  name="productBrandSelect">
+		<cfargument  name="productDesc">
+		<cfargument  name="productPrice">
+		<cfargument  name="productImage">
+
+		<cfreturn arguments>
 	</cffunction>
 
 	<cffunction name="logOut" access="remote">

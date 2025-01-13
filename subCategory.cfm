@@ -20,7 +20,7 @@
 			<!--- Get Data --->
 			<cfset objShoppingCart = createObject("component", "components.shoppingCart")>
 			<cfset qryCategories = objShoppingCart.getCategories()>
-			<cfset qrySubCategories = objShoppingCart.getSubCategories(url.categoryId)>
+			<cfset qrySubCategories = objShoppingCart.getSubCategories(categoryId = url.categoryId)>
 
 			<!--- Header --->
 			<cfinclude template = "includes/header.cfm">
@@ -51,9 +51,9 @@
 									<button class="btn btn-lg" value="#qrySubCategories.fldSubCategory_Id#" onclick="deleteSubCategory()">
 										<i class="fa-solid fa-trash pe-none"></i>
 									</button>
-									<button class="btn btn-lg">
+									<a class="btn btn-lg" href="productEdit.cfm?subCategoryId=#qrySubCategories.fldSubCategory_Id#&subCategoryName=#qrySubCategories.fldSubCategoryName#&categoryId=#url.categoryId#&categoryName=#url.categoryName#">
 										<i class="fa-solid fa-chevron-right"></i>
-									</button>
+									</a>
 								</div>
 							</div>
 						</cfloop>
@@ -62,7 +62,7 @@
 			</div>
 
 			<!--- Sub Category Modal --->
-			<div class="modal fade" id="subCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal fade" id="subCategoryModal">
 			  <div class="modal-dialog">
 				<div class="modal-content">
 				  <div class="modal-header">
@@ -83,7 +83,6 @@
 						<div id="subCategoryModalMsg" class="mt-2"></div>
 					  </div>
 					  <div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 						<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Add Sub Category</button>
 					  </div>
 				  </form>

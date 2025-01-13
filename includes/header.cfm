@@ -3,7 +3,12 @@
 		<img class=" p-2 me-2" src="assets/images/shopping-cart-logo.png" height="45" alt="Logo Image">
 		<div class="text-white fw-semibold">SHOPPING CART</div>
 	</a>
-	<nav class="d-flex align-items-center gap-4">
+	<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
+		<a class="text-white text-decoration-none fs-4" href="adminDashboard.cfm">
+			ADMIN DASHBOARD
+		</a>
+	</cfif>
+	<nav class="d-flex align-items-center justify-content-between gap-4">
 		<cfif structKeyExists(session, "userId")>
 			<a class="text-white text-decoration-none" href="components/shoppingCart.cfc?method=logOut">
 				<i class="fa-solid fa-right-from-bracket"></i>
