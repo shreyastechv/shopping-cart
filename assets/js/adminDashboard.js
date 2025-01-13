@@ -9,9 +9,9 @@ function createCategoryItem(categoryId, categoryName) {
 				<button class="btn btn-lg" value="${categoryId}" onclick="deleteCategory()">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
-				<button class="btn btn-lg">
+				<a class="btn btn-lg" href="subCategory.cfm?categoryId=${categoryId}">
 					<i class="fa-solid fa-chevron-right"></i>
-				</button>
+				</a>
 			</div>
 		</div>
 	`;
@@ -20,7 +20,7 @@ function createCategoryItem(categoryId, categoryName) {
 
 function clearCategoryModal() {
 	$("#categoryName").removeClass("border-danger");
-	$("#categoryModalMessage").text("");
+	$("#categoryModalMsg").text("");
 }
 
 function processCategoryForm() {
@@ -32,17 +32,17 @@ function processCategoryForm() {
 	// Validation
 	if (categoryName.length === 0) {
 		$("#categoryName").addClass("border-danger");
-		$("#categoryModalMessage").text("Category name should not be empty");
+		$("#categoryModalMsg").text("Category name should not be empty");
 		return false;
 	}
 	else if (!/^[A-Za-z ]+$/.test(categoryName)) {
 		$("#categoryName").addClass("border-danger");
-		$("#categoryModalMessage").text("Category name should only contain letters!");
+		$("#categoryModalMsg").text("Category name should only contain letters!");
 		return false;
 	}
-	else if (prevCategoryName && prevCategoryName === categoryName) {
+	else if (prevCategoryName === categoryName) {
 		$("#categoryName").addClass("border-danger");
-		$("#categoryModalMessage").text("Category name unchanged");
+		$("#categoryModalMsg").text("Category name unchanged");
 		return false;
 	}
 
@@ -55,9 +55,9 @@ function processCategoryForm() {
 		},
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
-			$("#categoryModalMessage").addClass("text-success");
-			$("#categoryModalMessage").removeClass("text-danger");
-			$("#categoryModalMessage").text(responseJSON.message);
+			$("#categoryModalMsg").addClass("text-success");
+			$("#categoryModalMsg").removeClass("text-danger");
+			$("#categoryModalMsg").text(responseJSON.message);
 			if (responseJSON.message == "Category Added") {
 				categoryId = responseJSON.categoryId;
 				createCategoryItem(categoryId, categoryName);
@@ -66,14 +66,14 @@ function processCategoryForm() {
 				$("#categoryName-" + categoryId).text(categoryName);
 			}
 			else {
-				$("#categoryModalMessage").removeClass("text-success");
-				$("#categoryModalMessage").addClass("text-danger");
+				$("#categoryModalMsg").removeClass("text-success");
+				$("#categoryModalMsg").addClass("text-danger");
 			}
 		},
 		error: function () {
-			$("#categoryModalMessage").removeClass("text-success");
-			$("#categoryModalMessage").addClass("text-danger");
-			$("#categoryModalMessage").text("We encountered an error!");
+			$("#categoryModalMsg").removeClass("text-success");
+			$("#categoryModalMsg").addClass("text-danger");
+			$("#categoryModalMsg").text("We encountered an error!");
 		}
 	});
 
@@ -89,26 +89,29 @@ function showAddCategoryModal() {
 	$("#categoryName").attr("data-sc-prevCategoryName", "");
 }
 
-function showEditCategoryModal() {
+function showEditCategoryModal(val1, val2) {
+	const categoryId = event.target.value;
+	const categoryName = $("#categoryName-" + categoryId).text();
 	clearCategoryModal();
 	$("#categoryModalLabel").text("EDIT CATEGORY");
 	$("#categoryModalBtn").text("Edit Category");
-	$("#categoryId").val(event.target.value);
-	$("#categoryName").attr("data-sc-prevCategoryName", event.target.parentNode.parentNode.getElementsByTagName("div")[0].textContent);
-	$("#categoryName").val(event.target.parentNode.parentNode.getElementsByTagName("div")[0].textContent);
+	$("#categoryId").val(categoryId);
+	$("#categoryName").attr("data-sc-prevCategoryName", categoryName);
+	$("#categoryName").val(categoryName);
 }
 
 function deleteCategory() {
-	const deleteBtn = event.target;
-	if (confirm(`Delete contact '${event.target.parentNode.parentNode.childNodes[1].textContent}'?`)) {
+	const categoryId = event.target.value;
+	const categoryName = $("#categoryName-" + categoryId).text();
+	if (confirm(`Delete category - '${categoryName}'?`)) {
 		$.ajax({
 			type: "POST",
 			url: "./components/shoppingCart.cfc?method=deleteCategory",
 			data: {
-				categoryId: deleteBtn.value
+				categoryId: categoryId
 			},
 			success: function() {
-				deleteBtn.parentNode.parentNode.remove();
+				$("#categoryName-" + categoryId).parent().remove();
 			}
 		});
 	}

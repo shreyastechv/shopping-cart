@@ -37,9 +37,9 @@
 									<button class="btn btn-lg" value="#qryCategories.fldCategory_Id#" onclick="deleteCategory()">
 										<i class="fa-solid fa-trash pe-none"></i>
 									</button>
-									<button class="btn btn-lg">
+									<a class="btn btn-lg" href="subCategory.cfm?categoryId=#qryCategories.fldCategory_Id#&categoryName=#qryCategories.fldCategoryName#">
 										<i class="fa-solid fa-chevron-right"></i>
-									</button>
+									</a>
 								</div>
 							</div>
 						</cfloop>
@@ -59,7 +59,7 @@
 					  <div class="modal-body">
 					  	<input type="hidden" id="categoryId" name="categoryId" value="">
 						<input type="text" id="categoryName" name="categoryName" placeholder="Category name" class="form-control">
-						<div id="categoryModalMessage" class="mt-2"></div>
+						<div id="categoryModalMsg" class="mt-2"></div>
 					  </div>
 					  <div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
