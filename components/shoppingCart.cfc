@@ -457,6 +457,50 @@
 		<cfreturn local.imageArray>
 	</cffunction>
 
+	<cffunction name="setDefaultImage" access="remote">
+		<cfargument name="imageId">
+
+		<cfquery name="qryUnsetDefautImage">
+			UPDATE
+				tblProductImages AS p
+			JOIN (
+				SELECT
+					fldProductId
+				FROM
+					tblProductImages
+				WHERE
+					fldProductImage_Id = <cfqueryparam value="#trim(arguments.imageId)#" cfsqltype="cf_sql_integer">
+			) AS subquery
+			ON p.fldProductId = subquery.fldProductId
+			SET
+				p.fldDefaultImage = 0
+			WHERE
+				p.fldDefaultImage = 1;
+		</cfquery>
+
+		<cfquery name="qrySetDefautImage">
+			UPDATE
+				tblProductImages
+			SET
+				fldDefaultImage = 1
+			WHERE
+				fldProductImage_Id = <cfqueryparam value = "#trim(arguments.imageId)#" cfsqltype = "cf_sql_integer">
+		</cfquery>
+	</cffunction>
+
+	<cffunction name="deleteImage" access="remote">
+		<cfargument name="imageId">
+
+		<cfquery name="qryDeleteImage">
+			UPDATE
+				tblProductImages
+			SET
+				fldActive = 1
+			WHERE
+				fldProductImage_Id = <cfqueryparam value = "#trim(arguments.imageId)#" cfsqltype = "cf_sql_integer">
+		</cfquery>
+	</cffunction>
+
 	<cffunction name="logOut" access="remote">
 		<cfset structClear(session)>
 		<cflocation url="/">

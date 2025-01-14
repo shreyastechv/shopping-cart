@@ -214,13 +214,17 @@ function editDefaultImage() {
 			for(let i=0; i<responseJSON.length; i++) {
 				const isActive = i === 0 ? "active" : ""; // Set active for the first item
 				const footer = responseJSON[i].defaultImage === 1 ? `
-					Default Image
+					<div>
+						Default Image
+					</div>
 				`: `
-					<button class="btn btn-success" onclick="setDefaultImage()">Set as Default</button>
-					<button class="btn btn-danger" onclick="deleteImage()">Delete</button>
+					<div>
+						<button class="btn btn-success" value="${responseJSON[i].imageId}" onclick="setDefaultImage()">Set as Default</button>
+						<button class="btn btn-danger" value="${responseJSON[i].imageId}" onclick="deleteImage()">Delete</button>
+					</div>
 				`
 				const carouselItem = `
-					<div class="carousel-item ${isActive}" id="carouselItem-${responseJSON[i].imageId}">
+					<div class="carousel-item ${isActive}">
 						<img src="assets/images/productImages/${responseJSON[i].imageFileName}" class="d-block w-100" alt="Product Image">
 						${footer}
 					</div>
@@ -233,9 +237,33 @@ function editDefaultImage() {
 }
 
 function setDefaultImage() {
-	alert("def");
+	const btnElement = event.target;
+	const imageId = btnElement.value;
+	$.ajax({
+		type: "POST",
+		url: "./components/shoppingCart.cfc?method=setDefaultImage",
+		data: {
+			imageId: imageId
+		},
+		success: function() {
+			$(btnElement).parent().text("Default Image");
+		}
+	});
 }
 
 function deleteImage() {
-	alert("del");
+	const btnElement = event.target;
+	const imageId = btnElement.value;
+	$.ajax({
+		type: "POST",
+		url: "./components/shoppingCart.cfc?method=deleteImage",
+		data: {
+			imageId: imageId
+		},
+		success: function() {
+			const carousel = new bootstrap.Carousel($('#productImageCarousel'));
+			carousel.next();
+			$(btnElement).parent().parent().remove();
+		}
+	});
 }
