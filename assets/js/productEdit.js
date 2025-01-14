@@ -31,7 +31,7 @@ $(document).ready(function() {
 });
 
 function processproductForm() {
-	const productId= "";
+	const productId= $("#productId").val();
 	const categorySelect = $("#categorySelect").val();
 	const subCategorySelect = $("#subCategorySelect").val();
 	const brandSelect = $("#brandSelect").val();
@@ -92,4 +92,21 @@ function showEditProductModal() {
 			$("#subCategoryModalBtn").text("Edit Product");
 		}
 	});
+}
+
+function deleteProduct () {
+	const productId = event.target.value;
+	console.log(productId)
+	if (confirm("Delete product?")) {
+		$.ajax({
+			type: "POST",
+			url: "./components/shoppingCart.cfc?method=deleteProduct",
+			data: {
+				productId: productId
+			},
+			success: function() {
+				$(`#productContainer-${productId}`).remove();
+			}
+		})
+	}
 }
