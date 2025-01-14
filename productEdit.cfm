@@ -46,16 +46,14 @@
 							<div></div>
 						</div>
 						<cfloop query="qryProducts">
-							<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-								<div id="productName-#qryProducts.fldProduct_Id#" class="d-flex flex-column fs-5">
+							<div id="productContainer-#qryProducts.fldProduct_Id#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
+								<div class="d-flex flex-column fs-5">
 									<div class="fw-bold">#qryProducts.fldProductName#</div>
 									<div class="fw-semibold">#qryProducts.fldBrandName#</div>
 									<div class="text-success">Rs.#qryProducts.fldPrice#</div>
 								</div>
 								<div>
-									<img src="assets/images/productImages/#qryProducts.fldProductImage#" alt="Product Image" width="50">
-								</div>
-								<div>
+									<img class="me-5" src="assets/images/productImages/#qryProducts.fldProductImage#" alt="Product Image" width="50">
 									<button class="btn btn-lg" value="#qryProducts.fldProduct_Id#" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal()">
 										<i class="fa-solid fa-pen-to-square pe-none"></i>
 									</button>

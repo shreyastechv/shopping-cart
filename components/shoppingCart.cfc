@@ -344,7 +344,7 @@
 						fldTax = <cfqueryparam value = "#trim(arguments.productTax)#" cfsqltype = "cf_sql_decimal">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
 					WHERE
-						fldProduct_Id = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "cf_sql_integer">
+						fldProduct_Id = <cfqueryparam value = "#val(trim(arguments.productId))#" cfsqltype = "cf_sql_integer">
 				</cfquery>
 				<cfset local.response["message"] = "Product Updated">
 			<cfelse>
@@ -401,6 +401,32 @@
 		</cfif>
 
 		<cfreturn local.response>
+	</cffunction>
+
+	<cffunction name="deleteProduct" access="remote">
+		<cfargument name="productId">
+
+		<cfquery name="qryDeleteProducts">
+			UPDATE
+				tblProduct
+			SET
+				fldActive = 0,
+				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
+			WHERE
+				fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "cf_sql_integer">
+		</cfquery>
+
+		<cfquery name="qryDeleteProductImages">
+			UPDATE
+				tblProductImages
+			SET
+				fldActive = 0,
+				fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">,
+				fldDeactivatedDate = CURRENT_TIMESTAMP
+			WHERE
+				fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "cf_sql_integer">
+		</cfquery>
+
 	</cffunction>
 
 	<cffunction name="logOut" access="remote">
