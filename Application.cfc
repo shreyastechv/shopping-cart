@@ -9,8 +9,14 @@
 
 		<cfset local.publicPages = ["/login.cfm"]>
 
-		<cfif arrayFindNoCase(local.publicPages, arguments.targetPage) OR structKeyExists(session, "userId")>
+		<cfif arrayFindNoCase(local.publicPages, arguments.targetPage)>
 			<cfreturn true>
+		<cfelseif structKeyExists(session, "userId")>
+			<cfif arguments.targetPage EQ "/login.cfm">
+				<cflocation url="adminDashboard.cfm" addToken="false">
+			<cfelse>
+				<cfreturn true>
+			</cfif>
 		<cfelse>
 			<cflocation url="login.cfm" addToken="false">
 		</cfif>
