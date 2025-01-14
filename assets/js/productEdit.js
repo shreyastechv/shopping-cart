@@ -109,7 +109,6 @@ function processproductForm() {
 		contentType: false,
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
-			console.log(responseJSON)
 			if(responseJSON.message == "Product Updated") {
 				$(`#productName-${productId}`).text(productName);
 				$(`#brandName-${productId}`).text(brandName);
@@ -203,8 +202,40 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 }
 
 function editDefaultImage() {
+	const productId = event.target.value;
 	$.ajax({
-
+		type: "POST",
+		url: "./components/shoppingCart.cfc?method=getProductImages",
+		data: {
+			productId: productId
+		},
+		success: function(response) {
+			const responseJSON = JSON.parse(response);
+			for(let i=0; i<responseJSON.length; i++) {
+				const isActive = i === 0 ? "active" : ""; // Set active for the first item
+				const footer = responseJSON[i].defaultImage === 1 ? `
+					Default Image
+				`: `
+					<button class="btn btn-success" onclick="setDefaultImage()">Set as Default</button>
+					<button class="btn btn-danger" onclick="deleteImage()">Delete</button>
+				`
+				const carouselItem = `
+					<div class="carousel-item ${isActive}" id="carouselItem-${responseJSON[i].imageId}">
+						<img src="assets/images/productImages/${responseJSON[i].imageFileName}" class="d-block w-100" alt="Product Image">
+						${footer}
+					</div>
+				`;
+				$("#carouselContainer").append(carouselItem);
+			}
+		}
 	});
 	$("#productImageModal").modal("show");
+}
+
+function setDefaultImage() {
+	alert("def");
+}
+
+function deleteImage() {
+	alert("del");
 }

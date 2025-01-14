@@ -430,6 +430,33 @@
 
 	</cffunction>
 
+	<cffunction name="getProductImages" access="remote" returnType="array" returnFormat="json">
+		<cfargument name="productId">
+
+		<cfset local.imageArray = []>
+
+		<cfquery name="local.qryGetImages">
+			SELECT
+				fldProductImage_Id,
+				fldImageFileName,
+				fldDefaultImage
+			FROM
+				tblProductImages
+			WHERE
+				fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "cf_sql_integer">
+		</cfquery>
+
+		<cfloop query="local.qryGetImages">
+			<cfset local.imageStruct = {}>
+			<cfset local.imageStruct['imageId'] = local.qryGetImages.fldProductImage_Id>
+			<cfset local.imageStruct['imageFileName'] = local.qryGetImages.fldImageFileName>
+			<cfset local.imageStruct['defaultImage'] = local.qryGetImages.fldDefaultImage>
+			<cfset arrayAppend(local.imageArray, local.imageStruct)>
+		</cfloop>
+
+		<cfreturn local.imageArray>
+	</cffunction>
+
 	<cffunction name="logOut" access="remote">
 		<cfset structClear(session)>
 		<cflocation url="/">
