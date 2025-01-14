@@ -6,7 +6,6 @@
         <title>Log In - Shopping Cart</title>
 		<link rel="icon" href="favicon.ico">
 		<link href="assets/css/bootstrap.min.css" rel="stylesheet">
-		<script src="assets/js/fontawesome.js"></script>
     </head>
 
     <body>
@@ -20,19 +19,8 @@
 			/>
 		</cfif>
 
-		<!--- Navbar --->
-        <header class="header d-flex align-items-center justify-content-between fixed-top bg-success px-2">
-            <a class="d-flex align-items-center text-decoration-none" href="/">
-                <img class=" p-2 me-2" src="assets/images/shopping-cart-logo.png" height="45" alt="Logo Image">
-                <div class="text-white fw-semibold">SHOPPING CART</div>
-            </a>
-            <nav class="d-flex align-items-center gap-4">
-                <a class="text-white text-decoration-none" href="signup.cfm">
-                    <i class="fa-solid fa-user"></i>
-                    Sign Up
-                </a>
-            </nav>
-        </header>
+		<!--- Header --->
+		<cfinclude template = "includes/header.cfm">
 
 		<!--- Main Content --->
         <div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
@@ -63,8 +51,7 @@
 				</div>
             </div>
         </div>
-		<script src="assets/js/bootstrap.bundle.min.js"></script>
-		<script src="assets/js/jquery-3.7.1.min.js"></script>
+		<cfinclude template="includes/scripts.cfm">
 		<script src="assets/js/login.js"></script>
     </body>
 </html>

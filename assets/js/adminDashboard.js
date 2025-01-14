@@ -1,20 +1,48 @@
-function reloadCategoryList() {
-	$("#categoryMainContainer").load(document.URL +  " #categoryMainContainer");
+function createCategoryItem(categoryId, categoryName) {
+	const categoryItem = `
+		<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
+			<div id="categoryName-${categoryId}" class="fs-5">${categoryName}</div>
+			<div>
+				<button class="btn btn-lg" value="${categoryId}" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="showEditCategoryModal()">
+					<i class="fa-solid fa-pen-to-square pe-none"></i>
+				</button>
+				<button class="btn btn-lg" value="${categoryId}" onclick="deleteCategory()">
+					<i class="fa-solid fa-trash pe-none"></i>
+				</button>
+				<a class="btn btn-lg" href="subCategory.cfm?categoryId=${categoryId}">
+					<i class="fa-solid fa-chevron-right"></i>
+				</a>
+			</div>
+		</div>
+	`;
+	$("#categoryMainContainer").append(categoryItem);
+}
+
+function clearCategoryModal() {
+	$("#categoryName").removeClass("border-danger");
+	$("#categoryModalMsg").text("");
 }
 
 function processCategoryForm() {
-	const categoryId = $("#categoryId").val().trim();
+	clearCategoryModal();
+	let categoryId = $("#categoryId").val().trim();
 	const categoryName = $("#categoryName").val().trim();
+	const prevCategoryName = $("#categoryName").attr("data-sc-prevCategoryName").trim();
 
-	$("#categoryName").removeClass("border-danger bg-danger-subtle");
+	// Validation
 	if (categoryName.length === 0) {
-		$("#categoryName").addClass("border-danger bg-danger-subtle");
-		$("#categoryNameError").text("Category name should not be empty");
+		$("#categoryName").addClass("border-danger");
+		$("#categoryModalMsg").text("Category name should not be empty");
 		return false;
 	}
 	else if (!/^[A-Za-z ]+$/.test(categoryName)) {
-		$("#categoryName").addClass("border-danger bg-danger-subtle");
-		$("#categoryNameError").text("Category name should only contain letters!");
+		$("#categoryName").addClass("border-danger");
+		$("#categoryModalMsg").text("Category name should only contain letters!");
+		return false;
+	}
+	else if (prevCategoryName === categoryName) {
+		$("#categoryName").addClass("border-danger");
+		$("#categoryModalMsg").text("Category name unchanged");
 		return false;
 	}
 
@@ -27,20 +55,25 @@ function processCategoryForm() {
 		},
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
-			$("#categoryNameError").addClass("text-success");
-			$("#categoryNameError").removeClass("text-danger");
-			$("#categoryNameError").text(responseJSON.message);
+			$("#categoryModalMsg").addClass("text-success");
+			$("#categoryModalMsg").removeClass("text-danger");
+			$("#categoryModalMsg").text(responseJSON.message);
 			if (responseJSON.message == "Category Added") {
-				reloadCategoryList();
+				categoryId = responseJSON.categoryId;
+				createCategoryItem(categoryId, categoryName);
 			}
 			else if (responseJSON.message == "Category Updated") {
 				$("#categoryName-" + categoryId).text(categoryName);
 			}
+			else {
+				$("#categoryModalMsg").removeClass("text-success");
+				$("#categoryModalMsg").addClass("text-danger");
+			}
 		},
 		error: function () {
-			$("#categoryNameError").removeClass("text-success");
-			$("#categoryNameError").addClass("text-danger");
-			$("#categoryNameError").text("We encountered an error!");
+			$("#categoryModalMsg").removeClass("text-success");
+			$("#categoryModalMsg").addClass("text-danger");
+			$("#categoryModalMsg").text("We encountered an error!");
 		}
 	});
 
@@ -48,30 +81,37 @@ function processCategoryForm() {
 }
 
 function showAddCategoryModal() {
+	clearCategoryModal();
 	$("#categoryModalLabel").text("ADD CATEGORY");
 	$("#categoryModalBtn").text("Add Category");
 	$("#categoryId").val("");
 	$("#categoryName").val("");
+	$("#categoryName").attr("data-sc-prevCategoryName", "");
 }
 
-function showEditCategoryModal() {
+function showEditCategoryModal(val1, val2) {
+	const categoryId = event.target.value;
+	const categoryName = $("#categoryName-" + categoryId).text();
+	clearCategoryModal();
 	$("#categoryModalLabel").text("EDIT CATEGORY");
 	$("#categoryModalBtn").text("Edit Category");
-	$("#categoryId").val(event.target.value);
-	$("#categoryName").val(event.target.parentNode.parentNode.getElementsByTagName("div")[0].textContent);
+	$("#categoryId").val(categoryId);
+	$("#categoryName").attr("data-sc-prevCategoryName", categoryName);
+	$("#categoryName").val(categoryName);
 }
 
 function deleteCategory() {
-	const deleteBtn = event.target;
-	if (confirm(`Delete contact '${event.target.parentNode.parentNode.childNodes[1].textContent}'?`)) {
+	const categoryId = event.target.value;
+	const categoryName = $("#categoryName-" + categoryId).text();
+	if (confirm(`Delete category - '${categoryName}'?`)) {
 		$.ajax({
 			type: "POST",
 			url: "./components/shoppingCart.cfc?method=deleteCategory",
 			data: {
-				categoryId: deleteBtn.value
+				categoryId: categoryId
 			},
 			success: function() {
-				deleteBtn.parentNode.parentNode.remove();
+				$("#categoryName-" + categoryId).parent().remove();
 			}
 		});
 	}

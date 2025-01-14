@@ -3,41 +3,43 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sub Category Edit - Shopping Cart</title>
+        <title>Sub Category - Shopping Cart</title>
 		<link rel="icon" href="favicon.ico">
 		<link href="assets/css/bootstrap.min.css" rel="stylesheet">
-		<script src="assets/js/fontawesome.js"></script>
     </head>
 
     <body>
 		<cfoutput>
+			<!--- URL params --->
+			<cfparam  name="url.categoryId" default="0">
+			<cfparam  name="url.categoryName" default="Sub Categories">
+			<cfif url.categoryId LT 1>
+				<cflocation  url="adminDashboard.cfm" addToken="false">
+			</cfif>
+
 			<!--- Get Data --->
 			<cfset objShoppingCart = createObject("component", "components.shoppingCart")>
-			<cfset qrySubCategories = objShoppingCart.getSubCategories()>
+			<cfset qryCategories = objShoppingCart.getCategories()>
+			<cfset qrySubCategories = objShoppingCart.getSubCategories(categoryId = url.categoryId)>
 
-			<!--- Navbar --->
-			<header class="header d-flex align-items-center justify-content-between fixed-top bg-success px-2">
-				<a class="d-flex align-items-center text-decoration-none" href="/">
-					<img class=" p-2 me-2" src="assets/images/shopping-cart-logo.png" height="45" alt="Logo Image">
-					<div class="text-white fw-semibold">SHOPPING CART</div>
-				</a>
-				<nav class="d-flex align-items-center gap-4">
-					<a class="text-white text-decoration-none" href="signup.cfm">
-						<i class="fa-solid fa-right-from-bracket"></i>
-						Logout
-					</a>
-				</nav>
-			</header>
+			<!--- Header --->
+			<cfinclude template = "includes/header.cfm">
 
 			<!--- Main Content --->
 			<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
 				<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
 					<div id="subCategoryMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
-						<div class="d-flex justify-content-center align-items-center mb-4">
-							<h3 class="fw-semibold text-center mb-0 me-3">SUB CATEGORIES</h3>
-							<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showAddSubCategoryModal()">
-								Add+
-							</button>
+						<div class="d-flex justify-content-between align-items-center mb-4">
+							<a href="adminDashboard.cfm" class="btn">
+								<i class="fa-solid fa-chevron-left"></i>
+							</a>
+							<div class="d-flex">
+								<h3 class="fw-semibold text-center mb-0 me-3">#url.categoryName#</h3>
+								<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showAddSubCategoryModal()">
+									Add+
+								</button>
+							</div>
+							<div></div>
 						</div>
 						<cfloop query="qrySubCategories">
 							<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
@@ -49,9 +51,9 @@
 									<button class="btn btn-lg" value="#qrySubCategories.fldSubCategory_Id#" onclick="deleteSubCategory()">
 										<i class="fa-solid fa-trash pe-none"></i>
 									</button>
-									<button class="btn btn-lg">
+									<a class="btn btn-lg" href="productEdit.cfm?subCategoryId=#qrySubCategories.fldSubCategory_Id#&subCategoryName=#qrySubCategories.fldSubCategoryName#&categoryId=#url.categoryId#&categoryName=#url.categoryName#">
 										<i class="fa-solid fa-chevron-right"></i>
-									</button>
+									</a>
 								</div>
 							</div>
 						</cfloop>
@@ -60,21 +62,34 @@
 			</div>
 
 			<!--- Sub Category Modal --->
-			<div class="modal fade" id="subCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal fade" id="subCategoryModal">
 			  <div class="modal-dialog">
 				<div class="modal-content">
 				  <div class="modal-header">
 					<h1 class="modal-title fs-5" id="subCategoryModalLabel">Add Sub Category</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				  </div>
-				  <form id="subCategoryForm" class="form-group" onsubmit="return processSubCategoryForm()">
+				  <form id="subCategoryForm" method="post" class="form-group" onsubmit="return processSubCategoryForm()">
 					  <div class="modal-body">
 					  	<input type="hidden" id="subCategoryId" name="subCategoryId" value="">
-						<input type="text" id="subCategoryName" name="subCategoryName" placeholder="Sub Category name" class="form-control">
-						<div id="subCategoryNameError" class="text-danger"></div>
+						<select id="categorySelect" class="form-select" aria-label="Category Select">
+							<option value="0">Category Select</option>
+							<cfloop query="qryCategories">
+								<option
+									<cfif url.categoryId EQ qryCategories.fldCategory_Id>
+										selected
+									</cfif>
+									value="#qryCategories.fldCategory_Id#"
+								>
+									#qryCategories.fldCategoryName#
+								</option>
+							</cfloop>
+						</select>
+						<div id="categorySelectError" class="mt-2 text-danger"></div>
+						<input type="text" id="subCategoryName" name="subCategoryName" placeholder="Sub Category name" class="form-control mt-3">
+						<div id="subCategoryModalMsg" class="mt-2"></div>
 					  </div>
 					  <div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 						<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Add Sub Category</button>
 					  </div>
 				  </form>
@@ -82,8 +97,7 @@
 			  </div>
 			</div>
 		</cfoutput>
-		<script src="assets/js/bootstrap.bundle.min.js"></script>
-		<script src="assets/js/jquery-3.7.1.min.js"></script>
-		<script src="assets/js/adminDashboard.js"></script>
+		<cfinclude template="includes/scripts.cfm">
+		<script src="assets/js/subCategory.js"></script>
     </body>
 </html>

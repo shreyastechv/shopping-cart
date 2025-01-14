@@ -4,14 +4,15 @@
 	<cfset this.sessiontimeout = CreateTimeSpan(0, 1, 0, 0)>
 	<cfset this.dataSource = "shoppingCart">
 
-<!--- 	<cffunction  name="onRequestStart" returnType="boolean">
+	<cffunction name="onRequestStart">
 		<cfargument type="String" name="targetPage" required=true>
 
-		<cfif structKeyExists(session, "isLoggedIn")>
-			<cflocation url="#arguments.targetPage#">
+		<cfset local.publicPages = ["/login.cfm"]>
+
+		<cfif arrayFindNoCase(local.publicPages, arguments.targetPage) OR structKeyExists(session, "userId")>
+			<cfreturn true>
 		<cfelse>
-			<cflocation url="login.cfm" addToken="no">
+			<cflocation url="login.cfm" addToken="false">
 		</cfif>
-		<cfreturn true>
-	</cffunction> --->
+	</cffunction>
 </cfcomponent>

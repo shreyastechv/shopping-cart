@@ -6,7 +6,6 @@
         <title>Admin Dashboard - Shopping Cart</title>
 		<link rel="icon" href="favicon.ico">
 		<link href="assets/css/bootstrap.min.css" rel="stylesheet">
-		<script src="assets/js/fontawesome.js"></script>
     </head>
 
     <body>
@@ -15,19 +14,8 @@
 			<cfset objShoppingCart = createObject("component", "components.shoppingCart")>
 			<cfset qryCategories = objShoppingCart.getCategories()>
 
-			<!--- Navbar --->
-			<header class="header d-flex align-items-center justify-content-between fixed-top bg-success px-2">
-				<a class="d-flex align-items-center text-decoration-none" href="/">
-					<img class=" p-2 me-2" src="assets/images/shopping-cart-logo.png" height="45" alt="Logo Image">
-					<div class="text-white fw-semibold">SHOPPING CART</div>
-				</a>
-				<nav class="d-flex align-items-center gap-4">
-					<a class="text-white text-decoration-none" href="signup.cfm">
-						<i class="fa-solid fa-right-from-bracket"></i>
-						Logout
-					</a>
-				</nav>
-			</header>
+			<!--- Header --->
+			<cfinclude template = "includes/header.cfm">
 
 			<!--- Main Content --->
 			<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
@@ -49,9 +37,9 @@
 									<button class="btn btn-lg" value="#qryCategories.fldCategory_Id#" onclick="deleteCategory()">
 										<i class="fa-solid fa-trash pe-none"></i>
 									</button>
-									<button class="btn btn-lg">
+									<a class="btn btn-lg" href="subCategory.cfm?categoryId=#qryCategories.fldCategory_Id#&categoryName=#qryCategories.fldCategoryName#">
 										<i class="fa-solid fa-chevron-right"></i>
-									</button>
+									</a>
 								</div>
 							</div>
 						</cfloop>
@@ -60,21 +48,20 @@
 			</div>
 
 			<!--- Category Modal --->
-			<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal fade" id="categoryModal">
 			  <div class="modal-dialog">
 				<div class="modal-content">
 				  <div class="modal-header">
 					<h1 class="modal-title fs-5" id="categoryModalLabel">Add Category</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				  </div>
-				  <form id="categoryForm" class="form-group" onsubmit="return processCategoryForm()">
+				  <form id="categoryForm" method="post" class="form-group" onsubmit="return processCategoryForm()">
 					  <div class="modal-body">
 					  	<input type="hidden" id="categoryId" name="categoryId" value="">
 						<input type="text" id="categoryName" name="categoryName" placeholder="Category name" class="form-control">
-						<div id="categoryNameError" class="text-danger"></div>
+						<div id="categoryModalMsg" class="mt-2"></div>
 					  </div>
 					  <div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 						<button type="submit" id="categoryModalBtn" class="btn btn-primary">Add Category</button>
 					  </div>
 				  </form>
@@ -82,8 +69,7 @@
 			  </div>
 			</div>
 		</cfoutput>
-		<script src="assets/js/bootstrap.bundle.min.js"></script>
-		<script src="assets/js/jquery-3.7.1.min.js"></script>
+		<cfinclude template="includes/scripts.cfm">
 		<script src="assets/js/adminDashboard.js"></script>
     </body>
 </html>
