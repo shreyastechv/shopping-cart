@@ -382,6 +382,7 @@
 							)
 						VALUES
 							<cfloop array="#local.imageUploaded#" item="local.image" index="local.i">
+								<cfset local.response["defaultImageFile"] = local.image.serverFile>
 								(
 									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "cf_sql_integer">,
 									<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "cf_sql_varchar">,
