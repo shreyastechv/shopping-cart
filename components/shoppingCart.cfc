@@ -242,18 +242,33 @@
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="getProducts" access="public" returnType="query">
-		<cfargument  name="subCategoryId">
+	<cffunction name="getProducts" access="remote" returnType="query" returnFormat="json">
+		<cfargument name="subCategoryId">
+		<cfargument name="productId" required="false" default="">
 
 		<cfquery name="local.qryGetProducts">
 			SELECT
-				fldProduct_Id,
-				fldProductName
+				p.fldProduct_Id,
+				p.fldProductName,
+				p.fldBrandId,
+				p.fldDescription,
+				p.fldPrice,
+				p.fldTax,
+				b.fldBrandName,
+				i.fldImageFileName AS fldProductImage
 			FROM
-				tblProduct
+				tblProduct p
+				LEFT JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
+				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
 			WHERE
-				fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "cf_sql_integer">
-				AND fldActive = 1
+				p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "cf_sql_integer">
+				<cfif len(trim(arguments.productId))>
+					AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "cf_sql_integer">
+				</cfif>
+				AND i.fldDefaultImage = 1
+				AND p.fldActive = 1
+				AND b.fldActive = 1
+				AND i.fldActive = 1
 		</cfquery>
 
 		<cfreturn local.qryGetProducts>

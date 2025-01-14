@@ -1,7 +1,9 @@
+const urlSubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId');
+const urlcategoryId = new URLSearchParams(document.URL.split('?')[1]).get('categoryId');
+
 $(document).ready(function() {
 	$("#categorySelect").change(function() {
 		const categoryId = this.value;
-		console.log(categoryId)
 		if (categoryId == 0) {
 			$("#subCategorySelect").prop('disabled', true);
 		}
@@ -51,4 +53,43 @@ function processproductForm() {
 		}
 	});
 	event.preventDefault();
+}
+
+function showAddProductModal() {
+	$("#productForm")[0].reset();
+	$(".error").hide();
+	$("#productId").val("");
+	$("#categorySelect").val(urlcategoryId).change();
+	$("#subCategorySelect").val(urlSubCategoryId).change();
+	$("#subCategoryModalBtn").text("Add Product");
+}
+
+function showEditProductModal() {
+	const productId = event.target.value;
+	$(".error").hide();
+	$("#productId").val(productId);
+	$.ajax({
+		type: "POST",
+		url: "./components/shoppingCart.cfc?method=getProducts",
+		data: {
+			subCategoryId: urlSubCategoryId,
+			productId: productId
+		},
+		success: function(response) {
+			const responseJSON = JSON.parse(response);
+			const objProductData = {};
+			for(let i=0; i<responseJSON.COLUMNS.length; i++) {
+				objProductData[responseJSON.COLUMNS[i]] =responseJSON.DATA[0][i]
+			}
+
+			$("#categorySelect").val(urlcategoryId).change();
+			$("#subCategorySelect").val(urlSubCategoryId).change();
+			$("#productName").val(objProductData['FLDPRODUCTNAME']);
+			$("#brandSelect").val(objProductData['FLDBRANDID']).change();
+			$("#productDesc").val(objProductData['FLDDESCRIPTION']);
+			$("#productPrice").val(objProductData['FLDPRICE']);
+			$("#productTax").val(objProductData['FLDTAX']);
+			$("#subCategoryModalBtn").text("Edit Product");
+		}
+	});
 }
