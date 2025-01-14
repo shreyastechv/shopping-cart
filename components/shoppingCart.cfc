@@ -329,7 +329,7 @@
 		</cfquery>
 
 		<cfif local.qryCheckProduct.recordCount>
-			<cfset local.response["message"] = "SubCategory already exists!">
+			<cfset local.response["message"] = "Product already exists!">
 		<cfelse>
 			<cfif len(trim(arguments.productId))>
 				<cfquery name="qryEditProduct">
@@ -382,11 +382,11 @@
 							)
 						VALUES
 							<cfloop array="#local.imageUploaded#" item="local.image" index="local.i">
-								<cfset local.response["defaultImageFile"] = local.image.serverFile>
 								(
 									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "cf_sql_integer">,
 									<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "cf_sql_varchar">,
 									<cfif local.i EQ 1>
+										<cfset local.response["defaultImageFile"] = local.image.serverFile>
 										1,
 									<cfelse>
 										0,

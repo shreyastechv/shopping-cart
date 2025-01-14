@@ -52,7 +52,7 @@ function processproductForm() {
 		contentType: false,
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
-			console.log(responseJSON);
+			console.log(responseJSON)
 			if(responseJSON.message == "Product Updated") {
 				$(`#productName-${productId}`).text(productName);
 				$(`#brandName-${productId}`).text(brandName);
@@ -61,6 +61,7 @@ function processproductForm() {
 			else if (responseJSON.message == "Product Added") {
 				createProductItem(responseJSON.productId, productName, brandName, productPrice, responseJSON.defaultImageFile)
 			}
+			$("#productEditModalMsg").text(responseJSON.message);
 		}
 	});
 	event.preventDefault();
@@ -68,7 +69,7 @@ function processproductForm() {
 
 function showAddProductModal() {
 	$("#productForm")[0].reset();
-	$(".error").hide();
+	$(".error").text("");
 	$("#productId").val("");
 	$("#categorySelect").val(urlcategoryId).change();
 	$("#subCategorySelect").val(urlSubCategoryId).change();
@@ -77,7 +78,7 @@ function showAddProductModal() {
 
 function showEditProductModal() {
 	const productId = event.target.value;
-	$(".error").hide();
+	$(".error").text("");
 	$("#productId").val(productId);
 	$.ajax({
 		type: "POST",
@@ -107,7 +108,6 @@ function showEditProductModal() {
 
 function deleteProduct () {
 	const productId = event.target.value;
-	console.log(productId)
 	if (confirm("Delete product?")) {
 		$.ajax({
 			type: "POST",
