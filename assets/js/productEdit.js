@@ -38,6 +38,30 @@ function processproductForm() {
 	const productName = $("#productName").val();
 	const brandName = $(`#brandSelect option[value='${brandSelect}']`).text();
 	const productPrice = $("#productPrice").val();
+	// let valid = true;
+
+	// Category Validation
+	// if (categorySelect == 0) {
+	// 	$("#categorySelectError").text("Required field");
+	// 	valid = false;
+	// }
+
+	// SubCategory Validation
+
+	// Product Name Validation
+
+	// Brand Name Validation
+
+	// Product Description Validation
+
+	// Product Price Validation
+
+	// Product Tax Validation
+
+	// Product Image Validation
+
+	// if (!valid) return false;
+
 	const formData = new FormData($("#productForm")[0]);
 	formData.append("productId", productId);
 	formData.append("categorySelect", categorySelect);
