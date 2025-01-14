@@ -128,7 +128,7 @@
 								<option value="#qryBrands.fldBrand_Id#">#qryBrands.fldBrandName# </option>
 							</cfloop>
 						</select>
-						<div id="productBrandSelectError" class="text-danger error"></div>
+						<div id="brandSelectError" class="text-danger error"></div>
 
 						<!--- Product Description --->
 						<label for="productDesc" class="fw-semibold">Product Description</label>

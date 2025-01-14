@@ -35,32 +35,66 @@ function processproductForm() {
 	const categorySelect = $("#categorySelect").val();
 	const subCategorySelect = $("#subCategorySelect").val();
 	const brandSelect = $("#brandSelect").val();
-	const productName = $("#productName").val();
+	const productName = $("#productName").val().trim();
+	const productDesc = $("#productDesc").val().trim();
 	const brandName = $(`#brandSelect option[value='${brandSelect}']`).text();
-	const productPrice = $("#productPrice").val();
-	// let valid = true;
+	const productTax = $("#productTax").val().trim();
+	const productPrice = $("#productPrice").val().trim();
+	const productImage = $("#productImage")[0].files;
+	let valid = true;
+
+	// Reset Errors
+	$(".error").text("");
 
 	// Category Validation
-	// if (categorySelect == 0) {
-	// 	$("#categorySelectError").text("Required field");
-	// 	valid = false;
-	// }
+	if (categorySelect == 0) {
+		$("#categorySelectError").text("Required field");
+		valid = false;
+	}
 
 	// SubCategory Validation
+	if (subCategorySelect == 0) {
+		$("#subCategorySelectError").text("Required field");
+		valid = false;
+	}
 
 	// Product Name Validation
+	if (productName.length == 0) {
+		$("#productNameError").text("Required field");
+		valid = false;
+	}
 
 	// Brand Name Validation
+	if (brandSelect == 0) {
+		$("#brandSelectError").text("Required field");
+		valid = false;
+	}
 
 	// Product Description Validation
+	if (productDesc.length == 0) {
+		$("#productDescError").text("Required field");
+		valid = false;
+	}
 
 	// Product Price Validation
+	if (productPrice.length == 0) {
+		$("#productPriceError").text("Required field");
+		valid = false;
+	}
 
 	// Product Tax Validation
+	if (productTax.length == 0) {
+		$("#productTaxError").text("Required field");
+		valid = false;
+	}
 
 	// Product Image Validation
+	if (productImage.length == 0) {
+		$("#productImageError").text("Select atleast one image");
+		valid = false;
+	}
 
-	// if (!valid) return false;
+	if (!valid) return false;
 
 	const formData = new FormData($("#productForm")[0]);
 	formData.append("categorySelect", categorySelect);
@@ -170,7 +204,7 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 
 function editDefaultImage() {
 	$.ajax({
-  
+
 	});
 	$("#productImageModal").modal("show");
 }
