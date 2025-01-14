@@ -32,7 +32,7 @@
 			<!--- Main Content --->
 			<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
 				<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
-					<div id="subCategoryMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
+					<div id="productMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
 						<div class="d-flex justify-content-between align-items-center mb-4">
 							<a href="subCategory.cfm?categoryId=#url.categoryId#&categoryName=#url.categoryName#" class="btn">
 								<i class="fa-solid fa-chevron-left"></i>
@@ -48,9 +48,9 @@
 						<cfloop query="qryProducts">
 							<div id="productContainer-#qryProducts.fldProduct_Id#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 								<div class="d-flex flex-column fs-5">
-									<div class="fw-bold">#qryProducts.fldProductName#</div>
-									<div class="fw-semibold">#qryProducts.fldBrandName#</div>
-									<div class="text-success">Rs.#qryProducts.fldPrice#</div>
+									<div id="productName-#qryProducts.fldProduct_Id#" class="fw-bold">#qryProducts.fldProductName#</div>
+									<div id="brandName-#qryProducts.fldProduct_Id#" class="fw-semibold">#qryProducts.fldBrandName#</div>
+									<div id="price-#qryProducts.fldProduct_Id#" class="text-success">Rs.#qryProducts.fldPrice#</div>
 								</div>
 								<div>
 									<img class="me-5" src="assets/images/productImages/#qryProducts.fldProductImage#" alt="Product Image" width="50">
