@@ -63,7 +63,6 @@ function processproductForm() {
 	// if (!valid) return false;
 
 	const formData = new FormData($("#productForm")[0]);
-	formData.append("productId", productId);
 	formData.append("categorySelect", categorySelect);
 	formData.append("subCategorySelect", subCategorySelect);
 	formData.append("brandSelect", brandSelect);
@@ -166,4 +165,11 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 		</div>
 	`;
 	$("#productMainContainer").append(productItem);
+}
+
+function editDefaultImage() {
+	$.ajax({
+  
+	});
+	$("#productImageModal").modal("show");
 }
