@@ -124,6 +124,7 @@ function showEditProductModal() {
 			$("#productDesc").val(objProductData['FLDDESCRIPTION']);
 			$("#productPrice").val(objProductData['FLDPRICE']);
 			$("#productTax").val(objProductData['FLDTAX']);
+			$("#productImage").val("");
 			$("#subCategoryModalBtn").text("Edit Product");
 		}
 	});
