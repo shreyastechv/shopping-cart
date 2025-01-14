@@ -53,7 +53,9 @@
 									<div id="price-#qryProducts.fldProduct_Id#" class="text-success">Rs.#qryProducts.fldPrice#</div>
 								</div>
 								<div>
-									<img class="me-5" src="assets/images/productImages/#qryProducts.fldProductImage#" alt="Product Image" width="50">
+									<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage()">
+										<img src="assets/images/productImages/#qryProducts.fldProductImage#" alt="Product Image" width="50">
+									</button>
 									<button class="btn btn-lg" value="#qryProducts.fldProduct_Id#" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal()">
 										<i class="fa-solid fa-pen-to-square pe-none"></i>
 									</button>
@@ -153,6 +155,41 @@
 						<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Add Product</button>
 					  </div>
 				  </form>
+				</div>
+			  </div>
+			</div>
+
+			<!--- Product Image Modal --->
+			<div class="modal fade" id="productImageModal">
+			  <div class="modal-dialog w-50">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h1 class="modal-title fs-5" id="imageModalLabel">Product Images</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				  </div>
+				  <div class="modal-body">
+					<div id="productImageCarousel" class="carousel slide">
+					  <div class="carousel-inner">
+						<cfloop index="i" from="1" to="3">
+							<div class="carousel-item
+							<cfif i EQ 1> active</cfif>
+							">
+							  <img src="assets/images/shopping-cart-logo.png" class="d-block w-100" alt="Product Image">
+							  <button class="btn btn-success">Set as Default</button>
+							  <button class="btn btn-danger">Delete</button>
+							</div>
+						</cfloop>
+					  </div>
+					  <button class="carousel-control-prev" type="button" data-bs-target="##productImageCarousel" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Previous</span>
+					  </button>
+					  <button class="carousel-control-next" type="button" data-bs-target="##productImageCarousel" data-bs-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Next</span>
+					  </button>
+					</div>
+				  </div>
 				</div>
 			  </div>
 			</div>
