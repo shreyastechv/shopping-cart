@@ -1,7 +1,7 @@
 <cfcomponent>
 	<cffunction name="login" access="public" returnType="struct">
-		<cfargument name="userInput" type="string" required="true">
-		<cfargument name="password" type="string" required="true">
+		<cfargument name="userInput" type="string" required=true>
+		<cfargument name="password" type="string" required=true>
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
@@ -59,8 +59,8 @@
 	</cffunction>
 
 	<cffunction name="modifyCategory" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="categoryId" type="string" required="true">
-		<cfargument name="categoryName" type="string" required="true">
+		<cfargument name="categoryId" type="string" required=true>
+		<cfargument name="categoryName" type="string" required=true>
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
@@ -110,7 +110,7 @@
 	</cffunction>
 
 	<cffunction name="deleteCategory" access="remote" returnType="void">
-		<cfargument name="categoryId" type="string" required="true">
+		<cfargument name="categoryId" type="string" required=true>
 
 		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
 			UPDATE
@@ -151,7 +151,7 @@
 	</cffunction>
 
 	<cffunction name="getSubCategories" access="remote" returnType="query" returnFormat="json">
-		<cfargument name="categoryId" type="string" required="true">
+		<cfargument name="categoryId" type="string" required=true>
 
 		<cfquery name="local.qryGetSubCategories" dataSource="shoppingCart">
 			SELECT
@@ -168,9 +168,9 @@
 	</cffunction>
 
 	<cffunction name="modifySubCategory" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="subCategoryId" type="string" required="true">
-		<cfargument name="subCategoryName" type="string" required="true">
-		<cfargument name="categoryId" type="string" required="true">
+		<cfargument name="subCategoryId" type="string" required=true>
+		<cfargument name="subCategoryName" type="string" required=true>
+		<cfargument name="categoryId" type="string" required=true>
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
@@ -225,7 +225,7 @@
 	</cffunction>
 
 	<cffunction name="deleteSubCategory" access="remote" returnType="void">
-		<cfargument name="subCategoryId" type="string" required="true">
+		<cfargument name="subCategoryId" type="string" required=true>
 
 		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
 			UPDATE
@@ -249,8 +249,8 @@
 	</cffunction>
 
 	<cffunction name="getProducts" access="remote" returnType="query" returnFormat="json">
-		<cfargument name="subCategoryId" type="string" required="true">
-		<cfargument name="productId" type="string" required="false" default="">
+		<cfargument name="subCategoryId" type="string" required=true>
+		<cfargument name="productId" type="string" required=false default="">
 
 		<cfquery name="local.qryGetProducts" dataSource="shoppingCart">
 			SELECT
@@ -293,15 +293,15 @@
 	</cffunction>
 
 	<cffunction name="modifyProduct" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="productId" type="string" required="true">
-		<cfargument name="categorySelect" type="string" required="true">
-		<cfargument name="subCategorySelect" type="string" required="true">
-		<cfargument name="productName" type="string" required="true">
-		<cfargument name="brandSelect" type="string" required="true">
-		<cfargument name="productDesc" type="string" required="true">
-		<cfargument name="productPrice" type="string" required="true">
-		<cfargument name="productTax" type="string" required="true">
-		<cfargument name="productImage" type="string" required="true">
+		<cfargument name="productId" type="string" required=true>
+		<cfargument name="categorySelect" type="string" required=true>
+		<cfargument name="subCategorySelect" type="string" required=true>
+		<cfargument name="productName" type="string" required=true>
+		<cfargument name="brandSelect" type="string" required=true>
+		<cfargument name="productDesc" type="string" required=true>
+		<cfargument name="productPrice" type="string" required=true>
+		<cfargument name="productTax" type="string" required=true>
+		<cfargument name="productImage" type="string" required=true>
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
@@ -416,7 +416,7 @@
 	</cffunction>
 
 	<cffunction name="deleteProduct" access="remote" returnType="void">
-		<cfargument name="productId" type="string" required="true">
+		<cfargument name="productId" type="string" required=true>
 
 		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
 			UPDATE
@@ -442,7 +442,7 @@
 	</cffunction>
 
 	<cffunction name="getProductImages" access="remote" returnType="array" returnFormat="json">
-		<cfargument name="productId" type="string" required="true">
+		<cfargument name="productId" type="string" required=true>
 
 		<cfset local.imageArray = []>
 
@@ -470,7 +470,7 @@
 	</cffunction>
 
 	<cffunction name="setDefaultImage" access="remote" returnType="void">
-		<cfargument name="imageId" type="string" required="true">
+		<cfargument name="imageId" type="string" required=true>
 
 		<cfquery name="qryUnsetDefautImage" dataSource="shoppingCart">
 			UPDATE
@@ -501,7 +501,7 @@
 	</cffunction>
 
 	<cffunction name="deleteImage" access="remote" returnType="void">
-		<cfargument name="imageId" type="string" required="true">
+		<cfargument name="imageId" type="string" required=true>
 
 		<cfquery name="qryDeleteImage" dataSource="shoppingCart">
 			UPDATE
