@@ -32,7 +32,7 @@
 			<!--- Main Content --->
 			<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
 				<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
-					<div id="subCategoryMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
+					<div id="productMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
 						<div class="d-flex justify-content-between align-items-center mb-4">
 							<a href="subCategory.cfm?categoryId=#url.categoryId#&categoryName=#url.categoryName#" class="btn">
 								<i class="fa-solid fa-chevron-left"></i>
@@ -46,9 +46,16 @@
 							<div></div>
 						</div>
 						<cfloop query="qryProducts">
-							<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-								<div id="subCategoryName-#qryProducts.fldProduct_Id#" class="fs-5">#qryProducts.fldProductName#</div>
+							<div id="productContainer-#qryProducts.fldProduct_Id#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
+								<div class="d-flex flex-column fs-5">
+									<div id="productName-#qryProducts.fldProduct_Id#" class="fw-bold">#qryProducts.fldProductName#</div>
+									<div id="brandName-#qryProducts.fldProduct_Id#" class="fw-semibold">#qryProducts.fldBrandName#</div>
+									<div id="price-#qryProducts.fldProduct_Id#" class="text-success">Rs.#qryProducts.fldPrice#</div>
+								</div>
 								<div>
+									<button value="#qryProducts.fldProduct_Id#" class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage()">
+										<img class="pe-none" src="assets/images/productImages/#qryProducts.fldProductImage#" alt="Product Image" width="50">
+									</button>
 									<button class="btn btn-lg" value="#qryProducts.fldProduct_Id#" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal()">
 										<i class="fa-solid fa-pen-to-square pe-none"></i>
 									</button>
@@ -89,7 +96,7 @@
 								</option>
 							</cfloop>
 						</select>
-						<div id="categorySelectError" class="mt-2 text-danger"></div>
+						<div id="categorySelectError" class="mt-2 text-danger error error"></div>
 
 						<!--- SubCategory Select --->
 						<label for="subCategorySelect" class="fw-semibold">SubCategory Name</label>
@@ -106,12 +113,12 @@
 								</option>
 							</cfloop>
 						</select>
-						<div id="subCategorySelectError" class="mt-2 text-danger"></div>
+						<div id="subCategorySelectError" class="mt-2 text-danger error"></div>
 
 						<!--- Product Name --->
 						<label for="productName" class="fw-semibold">Product Name</label>
 						<input type="text" id="productName" name="productName" placeholder="Product Name" class="form-control mb-1">
-						<div id="productNameError" class="text-danger"></div>
+						<div id="productNameError" class="text-danger error"></div>
 
 						<!--- Product Brand --->
 						<label for="brandSelect" class="fw-semibold">Product Brand</label>
@@ -121,33 +128,59 @@
 								<option value="#qryBrands.fldBrand_Id#">#qryBrands.fldBrandName# </option>
 							</cfloop>
 						</select>
-						<div id="productBrandSelectError" class="text-danger"></div>
+						<div id="brandSelectError" class="text-danger error"></div>
 
 						<!--- Product Description --->
 						<label for="productDesc" class="fw-semibold">Product Description</label>
 						<textarea class="form-control mb-1" id="productDesc" name="productDesc" rows="4" cols="50" placeholder="Product Description"></textarea>
-						<div id="productDescError" class="text-danger"></div>
+						<div id="productDescError" class="text-danger error"></div>
 
 						<!--- Product Price --->
 						<label for="productPrice" class="fw-semibold">Product Price</label>
 						<input type="number" step="0.01" min="0" id="productPrice" name="productPrice" placeholder="Product Price" class="form-control mb-1">
-						<div id="productPriceError" class="text-danger"></div>
+						<div id="productPriceError" class="text-danger error"></div>
 
 						<!--- Product Tax --->
 						<label for="productTax" class="fw-semibold">Product Price</label>
 						<input type="number" step="0.01" min="0" id="productTax" name="productTax" placeholder="Product Tax" class="form-control mb-1">
-						<div id="productTaxError" class="text-danger"></div>
+						<div id="productTaxError" class="text-danger error"></div>
 
 						<!--- Product Image --->
 						<label for="productImage" class="fw-semibold">Product Image</label>
 						<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control mb-1" multiple>
-						<div id="productImageError" class="text-danger"></div>
+						<div id="productImageError" class="text-danger error"></div>
 					  </div>
 					  <div class="modal-footer">
-						<div id="productEditModalMsg" class="mt-2"></div>
+						<div id="productEditModalMsg" class="mt-2 error"></div>
 						<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Add Product</button>
 					  </div>
 				  </form>
+				</div>
+			  </div>
+			</div>
+
+			<!--- Product Image Modal --->
+			<div class="modal fade" id="productImageModal">
+			  <div class="modal-dialog w-50">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h1 class="modal-title fs-5" id="imageModalLabel">Product Images</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				  </div>
+				  <div class="modal-body">
+					<div id="productImageCarousel" class="carousel slide">
+					  <div id="carouselContainer" class="carousel-inner">
+					  </div>
+					  <button class="carousel-control-prev" type="button" data-bs-target="##productImageCarousel" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Previous</span>
+					  </button>
+					  <button class="carousel-control-next" type="button" data-bs-target="##productImageCarousel" data-bs-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Next</span>
+					  </button>
+					</div>
+				  </div>
 				</div>
 			  </div>
 			</div>

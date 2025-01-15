@@ -242,18 +242,33 @@
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="getProducts" access="public" returnType="query">
-		<cfargument  name="subCategoryId">
+	<cffunction name="getProducts" access="remote" returnType="query" returnFormat="json">
+		<cfargument name="subCategoryId">
+		<cfargument name="productId" required="false" default="">
 
 		<cfquery name="local.qryGetProducts">
 			SELECT
-				fldProduct_Id,
-				fldProductName
+				p.fldProduct_Id,
+				p.fldProductName,
+				p.fldBrandId,
+				p.fldDescription,
+				p.fldPrice,
+				p.fldTax,
+				b.fldBrandName,
+				i.fldImageFileName AS fldProductImage
 			FROM
-				tblProduct
+				tblProduct p
+				LEFT JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
+				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
 			WHERE
-				fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "cf_sql_integer">
-				AND fldActive = 1
+				p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "cf_sql_integer">
+				<cfif len(trim(arguments.productId))>
+					AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "cf_sql_integer">
+				</cfif>
+				AND i.fldDefaultImage = 1
+				AND p.fldActive = 1
+				AND b.fldActive = 1
+				AND i.fldActive = 1
 		</cfquery>
 
 		<cfreturn local.qryGetProducts>
@@ -314,7 +329,7 @@
 		</cfquery>
 
 		<cfif local.qryCheckProduct.recordCount>
-			<cfset local.response["message"] = "SubCategory already exists!">
+			<cfset local.response["message"] = "Product already exists!">
 		<cfelse>
 			<cfif len(trim(arguments.productId))>
 				<cfquery name="qryEditProduct">
@@ -329,7 +344,7 @@
 						fldTax = <cfqueryparam value = "#trim(arguments.productTax)#" cfsqltype = "cf_sql_decimal">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
 					WHERE
-						fldProduct_Id = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "cf_sql_integer">
+						fldProduct_Id = <cfqueryparam value = "#val(trim(arguments.productId))#" cfsqltype = "cf_sql_integer">
 				</cfquery>
 				<cfset local.response["message"] = "Product Updated">
 			<cfelse>
@@ -371,6 +386,7 @@
 									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "cf_sql_integer">,
 									<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "cf_sql_varchar">,
 									<cfif local.i EQ 1>
+										<cfset local.response["defaultImageFile"] = local.image.serverFile>
 										1,
 									<cfelse>
 										0,
@@ -386,6 +402,103 @@
 		</cfif>
 
 		<cfreturn local.response>
+	</cffunction>
+
+	<cffunction name="deleteProduct" access="remote">
+		<cfargument name="productId">
+
+		<cfquery name="qryDeleteProducts">
+			UPDATE
+				tblProduct
+			SET
+				fldActive = 0,
+				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
+			WHERE
+				fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "cf_sql_integer">
+		</cfquery>
+
+		<cfquery name="qryDeleteProductImages">
+			UPDATE
+				tblProductImages
+			SET
+				fldActive = 0,
+				fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">,
+				fldDeactivatedDate = CURRENT_TIMESTAMP
+			WHERE
+				fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "cf_sql_integer">
+		</cfquery>
+
+	</cffunction>
+
+	<cffunction name="getProductImages" access="remote" returnType="array" returnFormat="json">
+		<cfargument name="productId">
+
+		<cfset local.imageArray = []>
+
+		<cfquery name="local.qryGetImages">
+			SELECT
+				fldProductImage_Id,
+				fldImageFileName,
+				fldDefaultImage
+			FROM
+				tblProductImages
+			WHERE
+				fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "cf_sql_integer">
+		</cfquery>
+
+		<cfloop query="local.qryGetImages">
+			<cfset local.imageStruct = {}>
+			<cfset local.imageStruct['imageId'] = local.qryGetImages.fldProductImage_Id>
+			<cfset local.imageStruct['imageFileName'] = local.qryGetImages.fldImageFileName>
+			<cfset local.imageStruct['defaultImage'] = local.qryGetImages.fldDefaultImage>
+			<cfset arrayAppend(local.imageArray, local.imageStruct)>
+		</cfloop>
+
+		<cfreturn local.imageArray>
+	</cffunction>
+
+	<cffunction name="setDefaultImage" access="remote">
+		<cfargument name="imageId">
+
+		<cfquery name="qryUnsetDefautImage">
+			UPDATE
+				tblProductImages AS p
+			JOIN (
+				SELECT
+					fldProductId
+				FROM
+					tblProductImages
+				WHERE
+					fldProductImage_Id = <cfqueryparam value="#trim(arguments.imageId)#" cfsqltype="cf_sql_integer">
+			) AS subquery
+			ON p.fldProductId = subquery.fldProductId
+			SET
+				p.fldDefaultImage = 0
+			WHERE
+				p.fldDefaultImage = 1;
+		</cfquery>
+
+		<cfquery name="qrySetDefautImage">
+			UPDATE
+				tblProductImages
+			SET
+				fldDefaultImage = 1
+			WHERE
+				fldProductImage_Id = <cfqueryparam value = "#trim(arguments.imageId)#" cfsqltype = "cf_sql_integer">
+		</cfquery>
+	</cffunction>
+
+	<cffunction name="deleteImage" access="remote">
+		<cfargument name="imageId">
+
+		<cfquery name="qryDeleteImage">
+			UPDATE
+				tblProductImages
+			SET
+				fldActive = 1
+			WHERE
+				fldProductImage_Id = <cfqueryparam value = "#trim(arguments.imageId)#" cfsqltype = "cf_sql_integer">
+		</cfquery>
 	</cffunction>
 
 	<cffunction name="logOut" access="remote">

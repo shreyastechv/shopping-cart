@@ -17,6 +17,9 @@
 				returnVariable = "loginResult"
 				argumentCollection = "#form#"
 			/>
+			<cfif loginResult.message EQ "Login successfull">
+				<cflocation url="adminDashboard.cfm" addToken="false">
+			</cfif>
 		</cfif>
 
 		<!--- Header --->
