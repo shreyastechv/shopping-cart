@@ -10,9 +10,8 @@
 	</cfif>
 
 	<!--- Get Data --->
-	<cfset variables.objShoppingCart = createObject("component", "components.shoppingCart")>
-	<cfset variables.qryCategories = variables.objShoppingCart.getCategories()>
-	<cfset variables.qrySubCategories = variables.objShoppingCart.getSubCategories(categoryId = url.categoryId)>
+	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
+	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">

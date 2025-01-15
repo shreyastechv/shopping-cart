@@ -12,11 +12,10 @@
 	</cfif>
 
 	<!--- Get Data --->
-	<cfset variables.objShoppingCart = createObject("component", "components.shoppingCart")>
-	<cfset variables.qryCategories = variables.objShoppingCart.getCategories()>
-	<cfset variables.qrySubCategories = variables.objShoppingCart.getSubCategories(categoryId = url.categoryId)>
-	<cfset variables.qryProducts = variables.objShoppingCart.getProducts(subCategoryId = url.subCategoryId)>
-	<cfset variables.qryBrands = variables.objShoppingCart.getBrands()>
+	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
+	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
+	<cfset variables.qryProducts = application.shoppingCart.getProducts(subCategoryId = url.subCategoryId)>
+	<cfset variables.qryBrands = application.shoppingCart.getBrands()>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
@@ -43,7 +42,7 @@
 						</div>
 						<div>
 							<button value="#variables.qryProducts.fldProduct_Id#" class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage()">
-								<img class="pe-none" src="assets/images/productImages/#variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
+								<img class="pe-none" src="#application.productImageDirectory#/#variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
 							</button>
 							<button class="btn btn-lg" value="#variables.qryProducts.fldProduct_Id#" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal()">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>

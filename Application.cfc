@@ -4,6 +4,11 @@
 	<cfset this.sessiontimeout = CreateTimeSpan(0, 1, 0, 0)>
 	<cfset this.dataSource = "shoppingCart">
 
+	<cffunction name="onApplicationStart">
+		<cfset application.productImageDirectory = expandPath("assets/images/productImages")>
+		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
+	</cffunction>
+
 	<cffunction name="onRequestStart">
 		<cfargument type="String" name="targetPage" required=true>
 

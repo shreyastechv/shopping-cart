@@ -189,7 +189,7 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 			</div>
 			<div>
 				<button value="${prodId}" class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage()">
-					<img class="pe-none" src="assets/images/productImages/${imageFile}" alt="Product Image" width="50">
+					<img class="pe-none" src="${productImageDirectory}/${imageFile}" alt="Product Image" width="50">
 				</button>
 				<button class="btn btn-lg" value="${prodId}" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal()">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>

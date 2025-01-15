@@ -307,8 +307,8 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Create images dir if not exists --->
-		<cfif NOT directoryExists(expandPath("../assets/images/productImages"))>
-			<cfdirectory action="create" directory="#expandPath("../assets/images/productImages")#">
+		<cfif NOT directoryExists(application.productImageDirectory)>
+			<cfdirectory action="create" directory="#application.productImageDirectory#">
 		</cfif>
 
 		<cfquery name="local.qryCheckProduct" dataSource="shoppingCart">
@@ -329,7 +329,7 @@
 			<!--- Upload images --->
 			<cffile
 				action="uploadall"
-				destination="#expandpath("../assets/images/productImages")#"
+				destination="#application.productImageDirectory#"
 				nameconflict="MakeUnique"
 				accept="image/png,image/jpeg,.png,.jpg,.jpeg"
 				strict="true"

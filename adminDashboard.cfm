@@ -3,8 +3,7 @@
 
 <cfoutput>
 	<!--- Get Data --->
-	<cfset variables.objShoppingCart = createObject("component", "components.shoppingCart")>
-	<cfset variables.qryCategories = variables.objShoppingCart.getCategories()>
+	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">

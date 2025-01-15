@@ -3,12 +3,10 @@
 
 <!--- Login Logic --->
 <cfif structKeyExists(form, "loginBtn")>
-	<cfinvoke
-		component = "components.shoppingCart"
-		method = "login"
-		returnVariable = "variables.loginResult"
-		argumentCollection = "#form#"
-	/>
+	<cfset variables.loginResult = application.shoppingCart.login(
+		userInput = form.userInput,
+		password = form.password
+	)>
 	<cfif variables.loginResult.message EQ "Login successfull">
 		<cflocation url="adminDashboard.cfm" addToken="false">
 	</cfif>
