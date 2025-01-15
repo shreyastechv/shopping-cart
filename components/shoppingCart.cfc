@@ -434,7 +434,7 @@
 			SET
 				fldActive = 0,
 				fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
-				fldDeactivatedDate = CURRENT_TIMESTAMP
+				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">,
 			WHERE
 				fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
 		</cfquery>
