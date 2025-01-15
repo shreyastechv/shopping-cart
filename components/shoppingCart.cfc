@@ -458,10 +458,11 @@
 		</cfquery>
 
 		<cfloop query="local.qryGetImages">
-			<cfset local.imageStruct = {}>
-			<cfset local.imageStruct['imageId'] = local.qryGetImages.fldProductImage_Id>
-			<cfset local.imageStruct['imageFileName'] = local.qryGetImages.fldImageFileName>
-			<cfset local.imageStruct['defaultImage'] = local.qryGetImages.fldDefaultImage>
+			<cfset local.imageStruct = {
+				"imageId" = local.qryGetImages.fldProductImage_Id,
+				"imageFileName" = local.qryGetImages.fldImageFileName,
+				"defaultImage" = local.qryGetImages.fldDefaultImage
+			}>
 			<cfset arrayAppend(local.imageArray, local.imageStruct)>
 		</cfloop>
 
