@@ -20,11 +20,11 @@
 			</cfif>
 
 			<!--- Get Data --->
-			<cfset objShoppingCart = createObject("component", "components.shoppingCart")>
-			<cfset qryCategories = objShoppingCart.getCategories()>
-			<cfset qrySubCategories = objShoppingCart.getSubCategories(categoryId = url.categoryId)>
-			<cfset qryProducts = objShoppingCart.getProducts(subCategoryId = url.subCategoryId)>
-			<cfset qryBrands = objShoppingCart.getBrands()>
+			<cfset variables.objShoppingCart = createObject("component", "components.shoppingCart")>
+			<cfset variables.qryCategories = variables.objShoppingCart.getCategories()>
+			<cfset variables.qrySubCategories = variables.objShoppingCart.getSubCategories(categoryId = url.categoryId)>
+			<cfset variables.qryProducts = variables.objShoppingCart.getProducts(subCategoryId = url.subCategoryId)>
+			<cfset variables.qryBrands = variables.objShoppingCart.getBrands()>
 
 			<!--- Header --->
 			<cfinclude template = "includes/header.cfm">
@@ -45,21 +45,21 @@
 							</div>
 							<div></div>
 						</div>
-						<cfloop query="qryProducts">
-							<div id="productContainer-#qryProducts.fldProduct_Id#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
+						<cfloop query="variables.qryProducts">
+							<div id="productContainer-#variables.qryProducts.fldProduct_Id#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 								<div class="d-flex flex-column fs-5">
-									<div id="productName-#qryProducts.fldProduct_Id#" class="fw-bold">#qryProducts.fldProductName#</div>
-									<div id="brandName-#qryProducts.fldProduct_Id#" class="fw-semibold">#qryProducts.fldBrandName#</div>
-									<div id="price-#qryProducts.fldProduct_Id#" class="text-success">Rs.#qryProducts.fldPrice#</div>
+									<div id="productName-#variables.qryProducts.fldProduct_Id#" class="fw-bold">#variables.qryProducts.fldProductName#</div>
+									<div id="brandName-#variables.qryProducts.fldProduct_Id#" class="fw-semibold">#variables.qryProducts.fldBrandName#</div>
+									<div id="price-#variables.qryProducts.fldProduct_Id#" class="text-success">Rs.#variables.qryProducts.fldPrice#</div>
 								</div>
 								<div>
-									<button value="#qryProducts.fldProduct_Id#" class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage()">
-										<img class="pe-none" src="assets/images/productImages/#qryProducts.fldProductImage#" alt="Product Image" width="50">
+									<button value="#variables.qryProducts.fldProduct_Id#" class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage()">
+										<img class="pe-none" src="assets/images/productImages/#variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
 									</button>
-									<button class="btn btn-lg" value="#qryProducts.fldProduct_Id#" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal()">
+									<button class="btn btn-lg" value="#variables.qryProducts.fldProduct_Id#" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal()">
 										<i class="fa-solid fa-pen-to-square pe-none"></i>
 									</button>
-									<button class="btn btn-lg" value="#qryProducts.fldProduct_Id#" onclick="deleteProduct()">
+									<button class="btn btn-lg" value="#variables.qryProducts.fldProduct_Id#" onclick="deleteProduct()">
 										<i class="fa-solid fa-trash pe-none"></i>
 									</button>
 								</div>
@@ -85,14 +85,14 @@
 						<label for="categorySelect" class="fw-semibold">Category Name</label>
 						<select id="categorySelect" class="form-select" aria-label="Category Select">
 							<option value="0">Category Select</option>
-							<cfloop query="qryCategories">
+							<cfloop query="variables.qryCategories">
 								<option
-									<cfif url.categoryId EQ qryCategories.fldCategory_Id>
+									<cfif url.categoryId EQ variables.qryCategories.fldCategory_Id>
 										selected
 									</cfif>
-									value="#qryCategories.fldCategory_Id#"
+									value="#variables.qryCategories.fldCategory_Id#"
 								>
-									#qryCategories.fldCategoryName#
+									#variables.qryCategories.fldCategoryName#
 								</option>
 							</cfloop>
 						</select>
@@ -102,14 +102,14 @@
 						<label for="subCategorySelect" class="fw-semibold">SubCategory Name</label>
 						<select id="subCategorySelect" class="form-select" aria-label="SubCategory Select">
 							<option value="0">SubCategory Select</option>
-							<cfloop query="qrySubCategories">
+							<cfloop query="variables.qrySubCategories">
 								<option
-									<cfif url.subCategoryId EQ qrySubCategories.fldSubCategory_Id>
+									<cfif url.subCategoryId EQ variables.qrySubCategories.fldSubCategory_Id>
 										selected
 									</cfif>
-									value="#qrySubCategories.fldSubCategory_Id#"
+									value="#variables.qrySubCategories.fldSubCategory_Id#"
 								>
-									#qrySubCategories.fldSubCategoryName#
+									#variables.qrySubCategories.fldSubCategoryName#
 								</option>
 							</cfloop>
 						</select>
@@ -124,8 +124,8 @@
 						<label for="brandSelect" class="fw-semibold">Product Brand</label>
 						<select id="brandSelect" class="form-select" aria-label="SubCategory Select">
 							<option value="0">Brand Name</option>
-							<cfloop query="qryBrands">
-								<option value="#qryBrands.fldBrand_Id#">#qryBrands.fldBrandName# </option>
+							<cfloop query="variables.qryBrands">
+								<option value="#variables.qryBrands.fldBrand_Id#">#variables.qryBrands.fldBrandName# </option>
 							</cfloop>
 						</select>
 						<div id="brandSelectError" class="text-danger error"></div>

@@ -14,10 +14,10 @@
 			<cfinvoke
 				component = "components.shoppingCart"
 				method = "login"
-				returnVariable = "loginResult"
+				returnVariable = "variables.loginResult"
 				argumentCollection = "#form#"
 			/>
-			<cfif loginResult.message EQ "Login successfull">
+			<cfif variables.loginResult.message EQ "Login successfull">
 				<cflocation url="adminDashboard.cfm" addToken="false">
 			</cfif>
 		</cfif>
@@ -28,8 +28,8 @@
 		<!--- Main Content --->
         <div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
             <div id="submitMsgSection" class="text-danger p-2">
-				<cfif isDefined("loginResult.message")>
-					<cfoutput>#loginResult.message#</cfoutput>
+				<cfif isDefined("variables.loginResult.message")>
+					<cfoutput>#variables.loginResult.message#</cfoutput>
 				</cfif>
 			</div>
             <div class="row shadow-lg border-0 rounded-4 w-50 text-center">

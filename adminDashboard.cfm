@@ -11,8 +11,8 @@
     <body>
 		<cfoutput>
 			<!--- Get Data --->
-			<cfset objShoppingCart = createObject("component", "components.shoppingCart")>
-			<cfset qryCategories = objShoppingCart.getCategories()>
+			<cfset variables.objShoppingCart = createObject("component", "components.shoppingCart")>
+			<cfset variables.qryCategories = variables.objShoppingCart.getCategories()>
 
 			<!--- Header --->
 			<cfinclude template = "includes/header.cfm">
@@ -27,17 +27,17 @@
 								Add+
 							</button>
 						</div>
-						<cfloop query="qryCategories">
+						<cfloop query="variables.qryCategories">
 							<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-								<div id="categoryName-#qryCategories.fldCategory_Id#" class="fs-5">#qryCategories.fldCategoryName#</div>
+								<div id="categoryName-#variables.qryCategories.fldCategory_Id#" class="fs-5">#variables.qryCategories.fldCategoryName#</div>
 								<div>
-									<button class="btn btn-lg" value="#qryCategories.fldCategory_Id#" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal()">
+									<button class="btn btn-lg" value="#variables.qryCategories.fldCategory_Id#" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal()">
 										<i class="fa-solid fa-pen-to-square pe-none"></i>
 									</button>
-									<button class="btn btn-lg" value="#qryCategories.fldCategory_Id#" onclick="deleteCategory()">
+									<button class="btn btn-lg" value="#variables.qryCategories.fldCategory_Id#" onclick="deleteCategory()">
 										<i class="fa-solid fa-trash pe-none"></i>
 									</button>
-									<a class="btn btn-lg" href="subCategory.cfm?categoryId=#qryCategories.fldCategory_Id#&categoryName=#qryCategories.fldCategoryName#">
+									<a class="btn btn-lg" href="subCategory.cfm?categoryId=#variables.qryCategories.fldCategory_Id#&categoryName=#variables.qryCategories.fldCategoryName#">
 										<i class="fa-solid fa-chevron-right"></i>
 									</a>
 								</div>

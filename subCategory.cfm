@@ -18,9 +18,9 @@
 			</cfif>
 
 			<!--- Get Data --->
-			<cfset objShoppingCart = createObject("component", "components.shoppingCart")>
-			<cfset qryCategories = objShoppingCart.getCategories()>
-			<cfset qrySubCategories = objShoppingCart.getSubCategories(categoryId = url.categoryId)>
+			<cfset variables.objShoppingCart = createObject("component", "components.shoppingCart")>
+			<cfset variables.qryCategories = variables.objShoppingCart.getCategories()>
+			<cfset variables.qrySubCategories = variables.objShoppingCart.getSubCategories(categoryId = url.categoryId)>
 
 			<!--- Header --->
 			<cfinclude template = "includes/header.cfm">
@@ -41,17 +41,17 @@
 							</div>
 							<div></div>
 						</div>
-						<cfloop query="qrySubCategories">
+						<cfloop query="variables.qrySubCategories">
 							<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-								<div id="subCategoryName-#qrySubCategories.fldSubCategory_Id#" class="fs-5">#qrySubCategories.fldSubCategoryName#</div>
+								<div id="subCategoryName-#variables.qrySubCategories.fldSubCategory_Id#" class="fs-5">#variables.qrySubCategories.fldSubCategoryName#</div>
 								<div>
-									<button class="btn btn-lg" value="#qrySubCategories.fldSubCategory_Id#" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showEditSubCategoryModal()">
+									<button class="btn btn-lg" value="#variables.qrySubCategories.fldSubCategory_Id#" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showEditSubCategoryModal()">
 										<i class="fa-solid fa-pen-to-square pe-none"></i>
 									</button>
-									<button class="btn btn-lg" value="#qrySubCategories.fldSubCategory_Id#" onclick="deleteSubCategory()">
+									<button class="btn btn-lg" value="#variables.qrySubCategories.fldSubCategory_Id#" onclick="deleteSubCategory()">
 										<i class="fa-solid fa-trash pe-none"></i>
 									</button>
-									<a class="btn btn-lg" href="productEdit.cfm?subCategoryId=#qrySubCategories.fldSubCategory_Id#&subCategoryName=#qrySubCategories.fldSubCategoryName#&categoryId=#url.categoryId#&categoryName=#url.categoryName#">
+									<a class="btn btn-lg" href="productEdit.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#&subCategoryName=#variables.qrySubCategories.fldSubCategoryName#&categoryId=#url.categoryId#&categoryName=#url.categoryName#">
 										<i class="fa-solid fa-chevron-right"></i>
 									</a>
 								</div>
@@ -74,14 +74,14 @@
 					  	<input type="hidden" id="subCategoryId" name="subCategoryId" value="">
 						<select id="categorySelect" class="form-select" aria-label="Category Select">
 							<option value="0">Category Select</option>
-							<cfloop query="qryCategories">
+							<cfloop query="variables.qryCategories">
 								<option
-									<cfif url.categoryId EQ qryCategories.fldCategory_Id>
+									<cfif url.categoryId EQ variables.qryCategories.fldCategory_Id>
 										selected
 									</cfif>
-									value="#qryCategories.fldCategory_Id#"
+									value="#variables.qryCategories.fldCategory_Id#"
 								>
-									#qryCategories.fldCategoryName#
+									#variables.qryCategories.fldCategoryName#
 								</option>
 							</cfloop>
 						</select>
