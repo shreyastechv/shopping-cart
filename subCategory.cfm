@@ -5,7 +5,7 @@
 	<!--- URL params --->
 	<cfparam  name="url.categoryId" default="0">
 	<cfparam  name="url.categoryName" default="Sub Categories">
-	<cfif url.categoryId LT 1>
+	<cfif url.categoryId EQ 0>
 		<cflocation  url="adminDashboard.cfm" addToken="false">
 	</cfif>
 

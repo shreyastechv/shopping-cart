@@ -7,7 +7,7 @@
 	<cfparam  name="url.subCategoryName" default="Products">
 	<cfparam  name="url.categoryId" default="0">
 	<cfparam  name="url.categoryName" default="Sub categories">
-	<cfif url.subCategoryId LT 1>
+	<cfif url.subCategoryId EQ 0>
 		<cflocation  url="subCategory.cfm?categoryId=#url.categoryId#&categoryName=#url.categoryName#" addToken="false">
 	</cfif>
 
