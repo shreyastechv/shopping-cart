@@ -68,20 +68,25 @@
 			<cfset application.scriptPath = "assets/js/dummy.js">
 		</cfif>
 
-		<!--- Define publically viewable pages --->
-		<cfset local.publicPages = ["/login.cfm"]>
+		<!--- Define page types --->
+		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
+		<cfset local.privatePages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
 
 		<!--- Handle page restrictions --->
-		<cfif arrayFindNoCase(local.publicPages, arguments.targetPage)>
+		<cfif arrayFindNoCase(local.initialPages, arguments.targetPage)>
+			<cfif structKeyExists(session, "roleId") AND session.roleId>
+				<cfif session.roleId EQ 1>
+					<cflocation url="/adminDashboard.cfm" addToken="false">
+				<cfelse>
+					<cflocation url="/home.cfm" addToken="false">
+				</cfif>
+			</cfif>
 			<cfreturn true>
-		<cfelseif structKeyExists(session, "userId")>
-			<cfif arguments.targetPage EQ "/login.cfm">
-				<cflocation url="adminDashboard.cfm" addToken="false">
-			<cfelse>
+		<cfelseif arrayFindNoCase(local.privatePages, arguments.targetPage)>
+			<cfif structKeyExists(session, roleId) AND session.roleId EQ 1>
 				<cfreturn true>
 			</cfif>
-		<cfelse>
-			<cflocation url="/login.cfm" addToken="false">
+			<cflocation url="/home.cfm" addToken="false">
 		</cfif>
 	</cffunction>
 </cfcomponent>
