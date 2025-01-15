@@ -18,7 +18,7 @@
 				<cfreturn true>
 			</cfif>
 		<cfelse>
-			<cflocation url="login.cfm" addToken="false">
+			<cflocation url="/login.cfm" addToken="false">
 		</cfif>
 	</cffunction>
 </cfcomponent>
