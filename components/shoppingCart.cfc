@@ -12,7 +12,7 @@
 			<cfset local.response["message"] = "Enter a password">
 		</cfif>
 
-		<cfquery name="local.qryCheckUser">
+		<cfquery name="local.qryCheckUser" dataSource="shoppingCart">
 			SELECT
 				fldUser_Id,
 				fldFirstName,
@@ -45,7 +45,7 @@
 	</cffunction>
 
 	<cffunction name="getCategories" access="public" returnType="query">
-		<cfquery name="local.qryGetCategories">
+		<cfquery name="local.qryGetCategories" dataSource="shoppingCart">
 			SELECT
 				fldCategory_Id,
 				fldCategoryName
@@ -65,7 +65,7 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
-		<cfquery name="local.qryCheckCategory">
+		<cfquery name="local.qryCheckCategory" dataSource="shoppingCart">
 			SELECT
 				fldCategory_Id
 			FROM
@@ -79,7 +79,7 @@
 			<cfset local.response["message"] = "Category already exists!">
 		<cfelse>
 			<cfif len(trim(arguments.categoryId))>
-				<cfquery name="qryEditCategory">
+				<cfquery name="qryEditCategory" dataSource="shoppingCart">
 					UPDATE
 						tblCategory
 					SET
@@ -90,7 +90,7 @@
 				</cfquery>
 				<cfset local.response["message"] = "Category Updated">
 			<cfelse>
-				<cfquery name="local.qryAddCategory" result="local.resultAddCategory">
+				<cfquery name="local.qryAddCategory" result="local.resultAddCategory" dataSource="shoppingCart">
 					INSERT INTO
 						tblCategory (
 							fldCategoryName,
@@ -112,7 +112,7 @@
 	<cffunction name="deleteCategory" access="remote">
 		<cfargument name="categoryId">
 
-		<cfquery name="qryDeleteProducts">
+		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
 			UPDATE
 				tblProduct
 			SET
@@ -129,7 +129,7 @@
 				);
 		</cfquery>
 
-		<cfquery name="qryDeleteSubCategory">
+		<cfquery name="qryDeleteSubCategory" dataSource="shoppingCart">
 			UPDATE
 				tblSubCategory
 			SET
@@ -139,7 +139,7 @@
 				fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "cf_sql_integer">
 		</cfquery>
 
-		<cfquery name="qryDeleteCategory">
+		<cfquery name="qryDeleteCategory" dataSource="shoppingCart">
 			UPDATE
 				tblCategory
 			SET
@@ -153,7 +153,7 @@
 	<cffunction name="getSubCategories" access="remote" returnType="query" returnFormat="json">
 		<cfargument  name="categoryId">
 
-		<cfquery name="local.qryGetSubCategories">
+		<cfquery name="local.qryGetSubCategories" dataSource="shoppingCart">
 			SELECT
 				fldSubCategory_Id,
 				fldSubCategoryName
@@ -175,7 +175,7 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
-		<cfquery name="local.qryCheckSubCategory">
+		<cfquery name="local.qryCheckSubCategory" dataSource="shoppingCart">
 			SELECT
 				fldSubCategory_Id
 			FROM
@@ -191,7 +191,7 @@
 			<cfset local.response["message"] = "SubCategory already exists!">
 		<cfelse>
 			<cfif len(trim(arguments.subCategoryId))>
-				<cfquery name="qryEditSubCategory">
+				<cfquery name="qryEditSubCategory" dataSource="shoppingCart">
 					UPDATE
 						tblSubCategory
 					SET
@@ -203,7 +203,7 @@
 				</cfquery>
 				<cfset local.response["message"] = "SubCategory Updated">
 			<cfelse>
-				<cfquery name="local.qryAddSubCategory" result="local.resultAddSubCategory">
+				<cfquery name="local.qryAddSubCategory" result="local.resultAddSubCategory" dataSource="shoppingCart">
 					INSERT INTO
 						tblSubCategory (
 							fldSubCategoryName,
@@ -227,7 +227,7 @@
 	<cffunction name="deleteSubCategory" access="remote">
 		<cfargument name="subCategoryId">
 
-		<cfquery name="qryDeleteProducts">
+		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
 			UPDATE
 				tblProduct
 			SET
@@ -237,7 +237,7 @@
 				fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "cf_sql_integer">
 		</cfquery>
 
-		<cfquery name="qryDeleteSubCategory">
+		<cfquery name="qryDeleteSubCategory" dataSource="shoppingCart">
 			UPDATE
 				tblSubCategory
 			SET
@@ -252,7 +252,7 @@
 		<cfargument name="subCategoryId">
 		<cfargument name="productId" required="false" default="">
 
-		<cfquery name="local.qryGetProducts">
+		<cfquery name="local.qryGetProducts" dataSource="shoppingCart">
 			SELECT
 				p.fldProduct_Id,
 				p.fldProductName,
@@ -281,7 +281,7 @@
 	</cffunction>
 
 	<cffunction name="getBrands" access="public" returnType="query">
-		<cfquery name="local.qryGetBrands">
+		<cfquery name="local.qryGetBrands" dataSource="shoppingCart">
 			SELECT
 				fldBrand_Id,
 				fldBrandName
@@ -311,7 +311,7 @@
 			<cfdirectory action="create" directory="#expandPath("../assets/images/productImages")#">
 		</cfif>
 
-		<cfquery name="local.qryCheckProduct">
+		<cfquery name="local.qryCheckProduct" dataSource="shoppingCart">
 			SELECT
 				fldProduct_Id
 			FROM
@@ -338,7 +338,7 @@
 			>
 
 			<cfif len(trim(arguments.productId))>
-				<cfquery name="qryEditProduct">
+				<cfquery name="qryEditProduct" dataSource="shoppingCart">
 					UPDATE
 						tblProduct
 					SET
@@ -354,7 +354,7 @@
 				</cfquery>
 				<cfset local.response["message"] = "Product Updated">
 			<cfelse>
-				<cfquery name="local.qryAddProduct" result="local.resultAddProduct">
+				<cfquery name="local.qryAddProduct" result="local.resultAddProduct" dataSource="shoppingCart">
 					INSERT INTO
 						tblProduct (
 							fldProductName,
@@ -381,7 +381,7 @@
 
 			<!--- Store images in DB --->
 			<cfif arrayLen(local.imageUploaded)>
-				<cfquery name="qryAddImages">
+				<cfquery name="qryAddImages" dataSource="shoppingCart">
 					INSERT INTO
 						tblProductImages (
 							fldProductId,
@@ -418,7 +418,7 @@
 	<cffunction name="deleteProduct" access="remote">
 		<cfargument name="productId">
 
-		<cfquery name="qryDeleteProducts">
+		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
 			UPDATE
 				tblProduct
 			SET
@@ -428,7 +428,7 @@
 				fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "cf_sql_integer">
 		</cfquery>
 
-		<cfquery name="qryDeleteProductImages">
+		<cfquery name="qryDeleteProductImages" dataSource="shoppingCart">
 			UPDATE
 				tblProductImages
 			SET
@@ -446,7 +446,7 @@
 
 		<cfset local.imageArray = []>
 
-		<cfquery name="local.qryGetImages">
+		<cfquery name="local.qryGetImages" dataSource="shoppingCart">
 			SELECT
 				fldProductImage_Id,
 				fldImageFileName,
@@ -471,7 +471,7 @@
 	<cffunction name="setDefaultImage" access="remote">
 		<cfargument name="imageId">
 
-		<cfquery name="qryUnsetDefautImage">
+		<cfquery name="qryUnsetDefautImage" dataSource="shoppingCart">
 			UPDATE
 				tblProductImages AS p
 			JOIN (
@@ -489,7 +489,7 @@
 				p.fldDefaultImage = 1;
 		</cfquery>
 
-		<cfquery name="qrySetDefautImage">
+		<cfquery name="qrySetDefautImage" dataSource="shoppingCart">
 			UPDATE
 				tblProductImages
 			SET
@@ -502,7 +502,7 @@
 	<cffunction name="deleteImage" access="remote">
 		<cfargument name="imageId">
 
-		<cfquery name="qryDeleteImage">
+		<cfquery name="qryDeleteImage" dataSource="shoppingCart">
 			UPDATE
 				tblProductImages
 			SET
