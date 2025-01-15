@@ -203,8 +203,7 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 	$("#productMainContainer").append(productItem);
 }
 
-function editDefaultImage() {
-	const productId = event.target.value;
+function createCarousel(productId) {
 	$.ajax({
 		type: "POST",
 		url: "./components/shoppingCart.cfc?method=getProductImages",
@@ -217,15 +216,15 @@ function editDefaultImage() {
 			for(let i=0; i<responseJSON.length; i++) {
 				const isActive = i === 0 ? "active" : ""; // Set active for the first item
 				const footer = responseJSON[i].defaultImage === 1 ? `
-					<div>
+					<div class="text-center p-2">
 						Default Image
 					</div>
 				`: `
-					<div>
+					<div class="d-flex justify-content-center pt-3 gap-5">
 						<button class="btn btn-success" value="${responseJSON[i].imageId}" onclick="setDefaultImage()">Set as Default</button>
 						<button class="btn btn-danger" value="${responseJSON[i].imageId}" onclick="deleteImage()">Delete</button>
 					</div>
-				`
+				`;
 				const carouselItem = `
 					<div class="carousel-item ${isActive}">
 						<img src="assets/images/productImages/${responseJSON[i].imageFileName}" class="d-block w-100" alt="Product Image">
@@ -233,9 +232,15 @@ function editDefaultImage() {
 					</div>
 				`;
 				$("#carouselContainer").append(carouselItem);
+				$("#carouselContainer").attr("data-sc-productId", productId);
 			}
 		}
 	});
+}
+
+function editDefaultImage() {
+	const productId = event.target.value;
+	createCarousel(productId);
 	$("#productImageModal").modal("show");
 }
 
@@ -249,7 +254,8 @@ function setDefaultImage() {
 			imageId: imageId
 		},
 		success: function() {
-			$(btnElement).parent().text("Default Image");
+			const productId = $("#carouselContainer").attr("data-sc-productId");
+			createCarousel(productId);
 		}
 	});
 }
