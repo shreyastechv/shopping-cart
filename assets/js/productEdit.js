@@ -254,8 +254,9 @@ function setDefaultImage() {
 			imageId: imageId
 		},
 		success: function() {
-			const productId = $("#carouselContainer").attr("data-sc-productId");
-			createCarousel(productId);
+			// const productId = $("#carouselContainer").attr("data-sc-productId");
+			// createCarousel(productId);
+			window.location.reload();
 		}
 	});
 }

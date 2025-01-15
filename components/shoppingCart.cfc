@@ -305,17 +305,6 @@
 			<cfdirectory action="create" directory="#expandPath("../assets/images/productImages")#">
 		</cfif>
 
-		<!--- Upload images --->
-		<cffile
-			action="uploadall"
-			destination="#expandpath("../assets/images/productImages")#"
-			nameconflict="MakeUnique"
-			accept="image/png,image/jpeg,.png,.jpg,.jpeg"
-			strict="true"
-			result="local.imageUploaded"
-			allowedextensions=".png,.jpg,.jpeg"
-		>
-
 		<cfquery name="local.qryCheckProduct">
 			SELECT
 				fldProduct_Id
@@ -331,6 +320,17 @@
 		<cfif local.qryCheckProduct.recordCount>
 			<cfset local.response["message"] = "Product already exists!">
 		<cfelse>
+			<!--- Upload images --->
+			<cffile
+				action="uploadall"
+				destination="#expandpath("../assets/images/productImages")#"
+				nameconflict="MakeUnique"
+				accept="image/png,image/jpeg,.png,.jpg,.jpeg"
+				strict="true"
+				result="local.imageUploaded"
+				allowedextensions=".png,.jpg,.jpeg"
+			>
+
 			<cfif len(trim(arguments.productId))>
 				<cfquery name="qryEditProduct">
 					UPDATE
@@ -370,34 +370,39 @@
 					)
 				</cfquery>
 				<cfset local.response["productId"] = local.resultAddProduct.GENERATED_KEY>
-
-				<cfif arrayLen(local.imageUploaded)>
-					<cfquery name="qryAddImages">
-						INSERT INTO
-							tblProductImages (
-								fldProductId,
-								fldImageFileName,
-								fldDefaultImage,
-								fldCreatedBy
-							)
-						VALUES
-							<cfloop array="#local.imageUploaded#" item="local.image" index="local.i">
-								(
-									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "cf_sql_integer">,
-									<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "cf_sql_varchar">,
-									<cfif local.i EQ 1>
-										<cfset local.response["defaultImageFile"] = local.image.serverFile>
-										1,
-									<cfelse>
-										0,
-									</cfif>
-									<cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
-								)
-								<cfif local.i LT arrayLen(local.imageUploaded)>,</cfif>
-							</cfloop>
-					</cfquery>
-				</cfif>
 				<cfset local.response["message"] = "Product Added">
+			</cfif>
+
+			<!--- Store images in DB --->
+			<cfif arrayLen(local.imageUploaded)>
+				<cfquery name="qryAddImages">
+					INSERT INTO
+						tblProductImages (
+							fldProductId,
+							fldImageFileName,
+							fldDefaultImage,
+							fldCreatedBy
+						)
+					VALUES
+						<cfloop array="#local.imageUploaded#" item="local.image" index="local.i">
+							(
+								<cfif len(trim(arguments.productId))>
+									<cfqueryparam value = "#arguments.productId#" cfsqltype = "cf_sql_integer">,
+								<cfelse>
+									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "cf_sql_integer">,
+								</cfif>
+								<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "cf_sql_varchar">,
+								<cfif local.i EQ 1 AND len(trim(arguments.productId)) NEQ 0>
+									<cfset local.response["defaultImageFile"] = local.image.serverFile>
+									1,
+								<cfelse>
+									0,
+								</cfif>
+								<cfqueryparam value = "#session.userId#" cfsqltype = "cf_sql_integer">
+							)
+							<cfif local.i LT arrayLen(local.imageUploaded)>,</cfif>
+						</cfloop>
+				</cfquery>
 			</cfif>
 		</cfif>
 
