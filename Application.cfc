@@ -10,7 +10,7 @@
 	</cffunction>
 
 	<cffunction name="onRequestStart">
-		<cfargument type="String" name="targetPage" required=true>
+		<cfargument name="targetPage" type="string" required=true>
 
 		<!--- Map pages to title and script path --->
 		<cfset pageDetailsMapping = {
