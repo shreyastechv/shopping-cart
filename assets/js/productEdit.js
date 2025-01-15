@@ -213,6 +213,7 @@ function editDefaultImage() {
 		},
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
+			$("#carouselContainer").empty();
 			for(let i=0; i<responseJSON.length; i++) {
 				const isActive = i === 0 ? "active" : ""; // Set active for the first item
 				const footer = responseJSON[i].defaultImage === 1 ? `
