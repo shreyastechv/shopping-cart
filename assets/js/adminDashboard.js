@@ -92,7 +92,7 @@ function showAddCategoryModal() {
 	$("#categoryName").attr("data-sc-prevCategoryName", "");
 }
 
-function showEditCategoryModal(val1, val2) {
+function showEditCategoryModal(categoryId) {
 	const categoryId = event.target.value;
 	const categoryName = $("#categoryName-" + categoryId).text();
 	clearCategoryModal();
@@ -103,8 +103,7 @@ function showEditCategoryModal(val1, val2) {
 	$("#categoryName").val(categoryName);
 }
 
-function deleteCategory() {
-	const categoryId = event.target.value;
+function deleteCategory(categoryId) {
 	const categoryName = $("#categoryName-" + categoryId).text();
 	if (confirm(`Delete category - '${categoryName}'?`)) {
 		$.ajax({

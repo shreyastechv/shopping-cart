@@ -33,10 +33,10 @@
 					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 						<div id="subCategoryName-#variables.qrySubCategories.fldSubCategory_Id#" class="fs-5">#variables.qrySubCategories.fldSubCategoryName#</div>
 						<div>
-							<button class="btn btn-lg" value="#variables.qrySubCategories.fldSubCategory_Id#" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showEditSubCategoryModal()">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showEditSubCategoryModal(#variables.qrySubCategories.fldSubCategory_Id#)">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" value="#variables.qrySubCategories.fldSubCategory_Id#" onclick="deleteSubCategory()">
+							<button class="btn btn-lg" onclick="deleteSubCategory(#variables.qrySubCategories.fldSubCategory_Id#)">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
 							<a class="btn btn-lg" href="productEdit.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#&subCategoryName=#variables.qrySubCategories.fldSubCategoryName#&categoryId=#url.categoryId#&categoryName=#url.categoryName#">

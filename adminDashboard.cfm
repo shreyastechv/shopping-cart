@@ -19,10 +19,10 @@
 					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 						<div id="categoryName-#variables.qryCategories.fldCategory_Id#" class="fs-5">#variables.qryCategories.fldCategoryName#</div>
 						<div>
-							<button class="btn btn-lg" value="#variables.qryCategories.fldCategory_Id#" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal()">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal(#variables.qryCategories.fldCategory_Id#)">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" value="#variables.qryCategories.fldCategory_Id#" onclick="deleteCategory()">
+							<button class="btn btn-lg" onclick="deleteCategory(#variables.qryCategories.fldCategory_Id#)">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
 							<a class="btn btn-lg" href="subCategory.cfm?categoryId=#variables.qryCategories.fldCategory_Id#&categoryName=#variables.qryCategories.fldCategoryName#">

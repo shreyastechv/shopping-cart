@@ -132,8 +132,7 @@ function showAddProductModal() {
 	$("#subCategoryModalBtn").text("Add Product");
 }
 
-function showEditProductModal() {
-	const productId = event.target.value;
+function showEditProductModal(productId) {
 	$(".error").text("");
 	$("#productId").val(productId);
 	$.ajax({
@@ -163,8 +162,7 @@ function showEditProductModal() {
 	});
 }
 
-function deleteProduct () {
-	const productId = event.target.value;
+function deleteProduct (productId) {
 	if (confirm("Delete product?")) {
 		$.ajax({
 			type: "POST",
@@ -238,8 +236,7 @@ function createCarousel(productId) {
 	});
 }
 
-function editDefaultImage() {
-	const productId = event.target.value;
+function editDefaultImage(productId) {
 	createCarousel(productId);
 	$("#productImageModal").modal("show");
 }

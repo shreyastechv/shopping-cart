@@ -41,13 +41,13 @@
 							<div id="price-#variables.qryProducts.fldProduct_Id#" class="text-success">Rs.#variables.qryProducts.fldPrice#</div>
 						</div>
 						<div>
-							<button value="#variables.qryProducts.fldProduct_Id#" class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage()">
+							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#variables.qryProducts.fldProduct_Id#)">
 								<img class="pe-none" src="#application.productImageDirectory#/#variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
 							</button>
-							<button class="btn btn-lg" value="#variables.qryProducts.fldProduct_Id#" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal()">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal(#variables.qryProducts.fldProduct_Id#)">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" value="#variables.qryProducts.fldProduct_Id#" onclick="deleteProduct()">
+							<button class="btn btn-lg" onclick="deleteProduct(#variables.qryProducts.fldProduct_Id#)">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
 						</div>
