@@ -333,7 +333,7 @@
 				nameconflict="MakeUnique"
 				accept="image/png,image/jpeg,.png,.jpg,.jpeg"
 				strict="true"
-				result="local.imageUploaded"
+				result="local.uploadedImages"
 				allowedextensions=".png,.jpg,.jpeg"
 			>
 
@@ -376,11 +376,12 @@
 					)
 				</cfquery>
 				<cfset local.response["productId"] = local.resultAddProduct.GENERATED_KEY>
+				<cfset local.response["defaultImageFile"] = local.uploadedImages[1].serverFile>
 				<cfset local.response["message"] = "Product Added">
 			</cfif>
 
 			<!--- Store images in DB --->
-			<cfif arrayLen(local.imageUploaded)>
+			<cfif arrayLen(local.uploadedImages)>
 				<cfquery name="qryAddImages" dataSource="shoppingCart">
 					INSERT INTO
 						tblProductImages (
@@ -390,7 +391,7 @@
 							fldCreatedBy
 						)
 					VALUES
-						<cfloop array="#local.imageUploaded#" item="local.image" index="local.i">
+						<cfloop array="#local.uploadedImages#" item="local.image" index="local.i">
 							(
 								<cfif len(trim(arguments.productId))>
 									<cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">,
@@ -399,14 +400,13 @@
 								</cfif>
 								<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "varchar">,
 								<cfif local.i EQ 1 AND len(trim(arguments.productId)) NEQ 0>
-									<cfset local.response["defaultImageFile"] = local.image.serverFile>
 									1,
 								<cfelse>
 									0,
 								</cfif>
 								<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 							)
-							<cfif local.i LT arrayLen(local.imageUploaded)>,</cfif>
+							<cfif local.i LT arrayLen(local.uploadedImages)>,</cfif>
 						</cfloop>
 				</cfquery>
 			</cfif>
