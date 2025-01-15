@@ -48,43 +48,43 @@ function processproductForm() {
 
 	// Category Validation
 	if (categorySelect == 0) {
-		$("#categorySelectError").text("Required field");
+		$("#categorySelectError").text("Select a category");
 		valid = false;
 	}
 
 	// SubCategory Validation
 	if (subCategorySelect == 0) {
-		$("#subCategorySelectError").text("Required field");
+		$("#subCategorySelectError").text("Select a subcategory");
 		valid = false;
 	}
 
 	// Product Name Validation
 	if (productName.length == 0) {
-		$("#productNameError").text("Required field");
+		$("#productNameError").text("Input a product name");
 		valid = false;
 	}
 
 	// Brand Name Validation
 	if (brandSelect == 0) {
-		$("#brandSelectError").text("Required field");
+		$("#brandSelectError").text("Select a brand");
 		valid = false;
 	}
 
 	// Product Description Validation
 	if (productDesc.length == 0) {
-		$("#productDescError").text("Required field");
+		$("#productDescError").text("Input a description");
 		valid = false;
 	}
 
 	// Product Price Validation
 	if (productPrice.length == 0) {
-		$("#productPriceError").text("Required field");
+		$("#productPriceError").text("Input a price");
 		valid = false;
 	}
 
 	// Product Tax Validation
 	if (productTax.length == 0) {
-		$("#productTaxError").text("Required field");
+		$("#productTaxError").text("Input tax");
 		valid = false;
 	}
 
