@@ -109,7 +109,7 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="deleteCategory" access="remote">
+	<cffunction name="deleteCategory" access="remote" returnType="void">
 		<cfargument name="categoryId" type="string" required="true">
 
 		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
@@ -224,7 +224,7 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="deleteSubCategory" access="remote">
+	<cffunction name="deleteSubCategory" access="remote" returnType="void">
 		<cfargument name="subCategoryId" type="string" required="true">
 
 		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
@@ -415,7 +415,7 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="deleteProduct" access="remote">
+	<cffunction name="deleteProduct" access="remote" returnType="void">
 		<cfargument name="productId" type="string" required="true">
 
 		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
@@ -468,7 +468,7 @@
 		<cfreturn local.imageArray>
 	</cffunction>
 
-	<cffunction name="setDefaultImage" access="remote">
+	<cffunction name="setDefaultImage" access="remote" returnType="void">
 		<cfargument name="imageId" type="string" required="true">
 
 		<cfquery name="qryUnsetDefautImage" dataSource="shoppingCart">
@@ -499,7 +499,7 @@
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="deleteImage" access="remote">
+	<cffunction name="deleteImage" access="remote" returnType="void">
 		<cfargument name="imageId" type="string" required="true">
 
 		<cfquery name="qryDeleteImage" dataSource="shoppingCart">
@@ -512,7 +512,7 @@
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="logOut" access="remote">
+	<cffunction name="logOut" access="remote" returnType="void">
 		<cfset structClear(session)>
 		<cflocation url="/">
 	</cffunction>
