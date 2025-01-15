@@ -6,6 +6,12 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
+		<cfif len(trim(arguments.userInput)) EQ 0>
+			<cfset local.response["message"] = "Enter an email/password">
+		<cfelseif len(trim(arguments.password)) EQ 0>
+			<cfset local.response["message"] = "Enter a password">
+		</cfif>
+
 		<cfquery name="local.qryCheckUser">
 			SELECT
 				fldUser_Id,
