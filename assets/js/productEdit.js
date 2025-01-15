@@ -215,7 +215,7 @@ function createCarousel(productId) {
 			$("#carouselContainer").empty();
 			for(let i=0; i<responseJSON.length; i++) {
 				const isActive = i === 0 ? "active" : ""; // Set active for the first item
-				const footer = responseJSON[i].defaultImage === 1 ? `
+				const bottomDiv = responseJSON[i].defaultImage === 1 ? `
 					<div class="text-center p-2">
 						Default Image
 					</div>
@@ -228,7 +228,7 @@ function createCarousel(productId) {
 				const carouselItem = `
 					<div class="carousel-item ${isActive}">
 						<img src="assets/images/productImages/${responseJSON[i].imageFileName}" class="d-block w-100" alt="Product Image">
-						${footer}
+						${bottomDiv}
 					</div>
 				`;
 				$("#carouselContainer").append(carouselItem);
