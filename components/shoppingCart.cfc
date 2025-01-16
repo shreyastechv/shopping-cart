@@ -97,14 +97,12 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Category Id Validation --->
-		<cfif len(arguments.categoryId) EQ 0>
-			<cfset local.response["message"] &= "Category Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.categoryId)>
+		<cfif len(arguments.categoryId) AND NOT isValid("integer", arguments.categoryId)>
 			<cfset local.response["message"] &= "Category Id should be an integer">
 		</cfif>
 
 		<!--- Category Name Validation --->
-		<cfif len(arguments.categoryId) EQ 0>
+		<cfif len(arguments.categoryName) EQ 0>
 			<cfset local.response["message"] &= "Category Name should not be empty. ">
 		</cfif>
 
@@ -257,9 +255,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- SubCategory Id Validation --->
-		<cfif len(arguments.subCategoryId) EQ 0>
-			<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.subCategoryId)>
+		<cfif len(arguments.subCategoryId) AND NOT isValid("integer", arguments.subCategoryId)>
 			<cfset local.response["message"] &= "SubCategory Id should be an integer">
 		</cfif>
 
@@ -448,15 +444,11 @@
 		<cfargument name="productTax" type="string" required=true>
 		<cfargument name="productImage" type="string" required=true>
 
-		<!--- Create images dir if not exists --->
-		<cfif NOT directoryExists(application.productImageDirectory)>
-			<cfdirectory action="create" directory="#application.productImageDirectory#">
-		</cfif>
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
 
 		<!--- Product Id Validation --->
-		<cfif len(arguments.productId) EQ 0>
-			<cfset local.response["message"] &= "Product Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.productId)>
+		<cfif len(arguments.productId) AND NOT isValid("integer", arguments.productId)>
 			<cfset local.response["message"] &= "Product Id should be an integer">
 		</cfif>
 
@@ -526,6 +518,11 @@
 		<cfif local.qryCheckProduct.recordCount>
 			<cfset local.response["message"] = "Product already exists!">
 		<cfelse>
+			<!--- Create images dir if not exists --->
+			<cfif NOT directoryExists(application.productImageDirectory)>
+				<cfdirectory action="create" directory="#application.productImageDirectory#">
+			</cfif>
+
 			<!--- Upload images --->
 			<cffile
 				action="uploadall"

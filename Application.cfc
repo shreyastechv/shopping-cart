@@ -21,7 +21,7 @@
 		</cfoutput>
 	</cffunction>
 
-	<cffunction name="onError">
+	<!--- <cffunction name="onError">
 		<cfargument name="exception" required=true>
 		<cfargument name="eventName" type="string" required=true>
 
@@ -39,7 +39,7 @@
 				<p>Error Event: #arguments.eventName#</p>
 			</cfoutput>
 		</cfif>
-	</cffunction>
+	</cffunction> --->
 
 	<cffunction name="onRequestStart">
 		<cfargument name="targetPage" type="string" required=true>
