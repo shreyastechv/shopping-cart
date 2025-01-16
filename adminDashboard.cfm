@@ -42,7 +42,7 @@
 			<h1 class="modal-title fs-5" id="categoryModalLabel">Add Category</h1>
 			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		  </div>
-		  <form id="categoryForm" method="post" class="form-group" onsubmit="return processCategoryForm()">
+		  <form id="categoryForm" method="post" class="form-group" onsubmit="processCategoryForm()">
 			  <div class="modal-body">
 				<input type="hidden" id="categoryId" name="categoryId" value="">
 				<input type="text" id="categoryName" name="categoryName" placeholder="Category name" class="form-control">

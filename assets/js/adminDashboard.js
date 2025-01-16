@@ -24,6 +24,7 @@ function clearCategoryModal() {
 }
 
 function processCategoryForm() {
+	event.preventDefault();
 	clearCategoryModal();
 	let categoryId = $("#categoryId").val().trim();
 	const categoryName = $("#categoryName").val().trim();
@@ -79,8 +80,6 @@ function processCategoryForm() {
 			$("#categoryModalMsg").text("We encountered an error!");
 		}
 	});
-
-	event.preventDefault();
 }
 
 function showAddCategoryModal() {

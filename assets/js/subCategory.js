@@ -31,6 +31,7 @@ function clearSubCategoryModal() {
 }
 
 function processSubCategoryForm() {
+	event.preventDefault();
 	clearSubCategoryModal();
 	let subCategoryId = $("#subCategoryId").val().trim();
 	const subCategoryName = $("#subCategoryName").val().trim();
@@ -102,8 +103,6 @@ function processSubCategoryForm() {
 			$("#subCategoryModalMsg").text("We encountered an error!");
 		}
 	});
-
-	event.preventDefault();
 }
 
 function showAddSubCategoryModal() {

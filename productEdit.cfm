@@ -62,7 +62,7 @@
 			<h1 class="modal-title fs-5" id="subCategoryModalLabel">Add Sub Category</h1>
 			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		  </div>
-		  <form id="productForm" method="post" class="form-group" enctype="multipart/form-data" onsubmit="return processproductForm()">
+		  <form id="productForm" method="post" class="form-group" enctype="multipart/form-data" onsubmit="processproductForm()">
 			  <div class="modal-body">
 				<input type="hidden" id="productId" name="productId" value="">
 

@@ -1,6 +1,7 @@
 function validateForm() {
 	const userInput = $("#userInput").val().trim();
 	const password = $("#password").val().trim();
+	let valid = true;
 
 	$(".error").text("");
 	$("#userInput").removeClass("border-danger bg-danger-subtle");
@@ -32,6 +33,5 @@ function validateForm() {
 		valid = false;
 	}
 
-	if (!valid) return false;
-	return true;
+	if (!valid) event.preventDefault();
 }

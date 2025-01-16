@@ -54,7 +54,7 @@
 			<h1 class="modal-title fs-5" id="subCategoryModalLabel">Add Sub Category</h1>
 			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		  </div>
-		  <form id="subCategoryForm" method="post" class="form-group" onsubmit="return processSubCategoryForm()">
+		  <form id="subCategoryForm" method="post" class="form-group" onsubmit="processSubCategoryForm()">
 			  <div class="modal-body">
 				<input type="hidden" id="subCategoryId" name="subCategoryId" value="">
 				<select id="categorySelect" class="form-select" aria-label="Category Select">

@@ -34,6 +34,8 @@ $(document).ready(function() {
 });
 
 function processproductForm() {
+	event.preventDefault();
+
 	const productId= $("#productId").val();
 	const categorySelect = $("#categorySelect").val();
 	const subCategorySelect = $("#subCategorySelect").val();
@@ -123,7 +125,6 @@ function processproductForm() {
 			$("#productEditModalMsg").text(responseJSON.message);
 		}
 	});
-	event.preventDefault();
 }
 
 function showAddProductModal() {

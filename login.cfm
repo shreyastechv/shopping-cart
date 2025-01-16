@@ -21,7 +21,7 @@
 			<div class="text-center mb-4">
 				<h3 class="fw-semibold mt-3">LOGIN</h3>
 			</div>
-			<form id="loginForm" name="loginForm" method="post" onsubmit="return validateForm()">
+			<form id="loginForm" name="loginForm" method="post" onsubmit="validateForm()">
 				<div class="mb-3">
 					<input type="text" class="form-control" id="userInput" name="userInput" placeholder="Email or Phone Number" autocomplete="username">
 					<div id="userInputError" class="error text-danger"></div>
