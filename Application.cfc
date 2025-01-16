@@ -39,19 +39,19 @@
 
 		<!--- Map pages to title and script path --->
 		<cfset pageDetailsMapping = {
-			"/shopping-cart/login.cfm": {
+			"/login.cfm": {
 				"pageTitle": "Log In",
 				"scriptPath": "assets/js/login.js"
 			},
-			"/shopping-cart/adminDashboard.cfm": {
+			"/adminDashboard.cfm": {
 				"pageTitle": "Admin Dashboard",
 				"scriptPath": "assets/js/adminDashboard.js"
 			},
-			"/shopping-cart/subCategory.cfm": {
+			"/subCategory.cfm": {
 				"pageTitle": "Sub Category",
 				"scriptPath": "assets/js/subCategory.js"
 			},
-			"/shopping-cart/productEdit.cfm": {
+			"/productEdit.cfm": {
 				"pageTitle": "Product Edit",
 				"scriptPath": "assets/js/productEdit.js"
 			}
