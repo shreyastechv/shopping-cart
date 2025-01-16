@@ -1,5 +1,3 @@
-<!--- Header --->
-
 <cfoutput>
 	<!--- Get Data --->
 	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
@@ -56,5 +54,3 @@
 	  </div>
 	</div>
 </cfoutput>
-
-<!--- Footer --->
