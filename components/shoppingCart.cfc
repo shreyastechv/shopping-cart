@@ -9,6 +9,86 @@
 		<cfreturn arguments.args>
 	</cffunction>
 
+	<cffunction name="signup" access="public" returnType="struct">
+		<cfargument name="firstName" type="string" required=true>
+		<cfargument name="lastName" type="string" required=true>
+		<cfargument name="email" type="string" required=true>
+		<cfargument name="phone" type="string" required=true>
+		<cfargument name="password" type="string" required=true>
+		<cfargument name="confirmPassword" type="string" required=true>
+
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<!--- Trim arguments --->
+		<cfset arguments = trimArguments(arguments)>
+
+		<!--- Firstname Validation --->
+		<cfif len(arguments.firstName) EQ 0>
+			<cfset local.response["message"] &= "Enter first name. ">
+		<cfelseif NOT isValid("regex", arguments.firstName, "[^0-9]+")>
+			<cfset local.response["message"] &= "First name should not contain any digits. ">
+		</cfif>
+
+		<!--- Lastname Validation --->
+		<cfif len(arguments.lastname) EQ 0>
+			<cfset local.response["message"] &= "Enter last name. ">
+		<cfelseif NOT isValid("regex", arguments.lastname, "[^0-9]+")>
+			<cfset local.response["message"] &= "Last name should not contain any digits. ">
+		</cfif>
+
+		<!--- Email Validation --->
+		<cfif len(arguments.email) EQ 0>
+			<cfset local.response["message"] &= "Enter an email address. ">
+		<cfelseif NOT isValid("email", arguments.email)>
+			<cfset local.response["message"] &= "Invalid email. ">
+		</cfif>
+
+		<!--- Phone Number Validation --->
+		<cfif len(arguments.phone) EQ 0>
+			<cfset local.response["message"] &= "Enter an phone number. ">
+		<cfelseif NOT isValid("regex", arguments.phone, "^\d{10}$")>
+			<cfset local.response["message"] &= "Phone number should be 10 digits long. ">
+		</cfif>
+
+		<!--- Password Validation --->
+		<cfif len(arguments.password) EQ 0>
+			<cfset local.response["message"] &= "Enter a password. ">
+		</cfif>
+
+		<!--- Confirm Password Validation --->
+		<cfif len(arguments.confirmPassword) EQ 0>
+			<cfset local.response["message"] &= "Confirm the password. ">
+		<cfelseif arguments.password NEQ arguments.confirmPassword>
+			<cfset local.response["message"] &= "Passwords must be equal. ">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
+		<cfquery name="local.qryCheckUser" dataSource="shoppingCart">
+			SELECT
+				fldUser_Id
+			FROM
+				tblUser
+			WHERE
+				(fldEmail = <cfqueryparam value = "#trim(arguments.email)#" cfsqltype = "varchar">
+				OR fldPhone = <cfqueryparam value = "#trim(arguments.phone)#" cfsqltype = "varchar">)
+				AND fldActive = 1
+		</cfquery>
+
+		<cfif local.qryCheckUser.recordCount>
+			<cfset local.response["message"] = "Email or Phone number already exists.">
+		<cfelse>
+			<cfset local.response["message"] = "User does not exist">
+		</cfif>
+
+		<cfreturn local.response>
+	</cffunction>
+
 	<cffunction name="login" access="public" returnType="struct">
 		<cfargument name="userInput" type="string" required=true>
 		<cfargument name="password" type="string" required=true>
@@ -22,7 +102,7 @@
 		<!--- UserInput Validation --->
 		<cfif len(trim(arguments.userInput)) EQ 0>
 			<cfset local.response["message"] &= "Enter an Email or Phone Number. ">
-		<cfelseif isValid("integer", arguments.userInput)>
+		<cfelseif isValid("integer", arguments.userInput) AND arguments.userInput GT 0>
 			<cfif len(arguments.userInput) NEQ 10>
 				<cfset local.response["message"] &= "Phone number should be 10 digits long. ">
 			</cfif>
@@ -64,7 +144,7 @@
 				<cfset session.userFullname = local.qryCheckUser.fldFirstName & " " & local.qryCheckUser.fldLastName>
 				<cfset session.userId = local.qryCheckUser.fldUser_Id>
 				<cfset session.roleId = local.qryCheckUser.fldRoleId>
-				<cfset local.response["message"] = "Login successfull">
+				<cfset local.response["message"] = "Login successful">
 			<cfelse>
 				<cfset local.response["message"] = "Wrong username or password">
 			</cfif>

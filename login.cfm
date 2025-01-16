@@ -4,7 +4,7 @@
 		userInput = form.userInput,
 		password = form.password
 	)>
-	<cfif variables.loginResult.message EQ "Login successfull">
+	<cfif variables.loginResult.message EQ "Login successful">
 		<cflocation url="adminDashboard.cfm" addToken="false">
 	</cfif>
 </cfif>
