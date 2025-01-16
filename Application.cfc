@@ -30,8 +30,6 @@
 				<h2>An unexpected error occurred.</h2>
 				<p>Please provide the following information to technical support:</p>
 				<p>Error Event: #Arguments.EventName#</p>
-				<p>Error details:<br>
-				<cfdump var=#Arguments.Exception#></p>
 			</cfoutput>
 		</cfif>
 	</cffunction>
@@ -83,7 +81,7 @@
 			</cfif>
 			<cfreturn true>
 		<cfelseif arrayFindNoCase(local.privatePages, arguments.targetPage)>
-			<cfif structKeyExists(session, roleId) AND session.roleId EQ 1>
+			<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
 				<cfreturn true>
 			</cfif>
 			<cflocation url="/home.cfm" addToken="false">
