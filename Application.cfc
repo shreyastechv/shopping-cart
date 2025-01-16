@@ -5,7 +5,8 @@
 	<cfset this.dataSource = "shoppingCart">
 
 	<cffunction name="onApplicationStart">
-		<cfset application.productImageDirectory = expandPath("assets/images/productImages")>
+		<cfset application.relativeProductImageDirectory = "/assets/images/productImages">
+		<cfset application.productImageDirectory = expandPath(application.relativeProductImageDirectory)>
 		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
 	</cffunction>
 
@@ -27,6 +28,11 @@
 		<!--- Display an error message if there is a page context --->
 		<cfif NOT (arguments.eventName IS "onSessionEnd") OR
 			(arguments.eventName IS "onApplicationEnd")>
+
+			<!--- Reset page content in case of error --->
+			<cfcontent reset=true>
+
+			<!--- Print error message --->
 			<cfoutput>
 				<h2>An unexpected error occurred.</h2>
 				<p>Please provide the following information to technical support:</p>
