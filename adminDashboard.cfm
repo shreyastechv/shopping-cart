@@ -1,5 +1,4 @@
 <!--- Header --->
-<cfinclude template = "includes/header.cfm">
 
 <cfoutput>
 	<!--- Get Data --->
@@ -59,4 +58,3 @@
 </cfoutput>
 
 <!--- Footer --->
-<cfinclude template = "includes/footer.cfm">

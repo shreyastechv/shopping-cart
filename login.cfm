@@ -1,6 +1,3 @@
-<!--- Header --->
-<cfinclude template = "includes/header.cfm">
-
 <!--- Login Logic --->
 <cfif structKeyExists(form, "loginBtn")>
 	<cfset variables.loginResult = application.shoppingCart.login(
@@ -41,6 +38,3 @@
 		</div>
 	</div>
 </div>
-
-<!--- Footer --->
-<cfinclude template = "includes/footer.cfm">

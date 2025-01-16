@@ -87,4 +87,17 @@
 			<cflocation url="/home.cfm" addToken="false">
 		</cfif>
 	</cffunction>
+
+	<cffunction name="onRequest">
+		<cfargument name="targetPage" type="String" required=true>
+
+		<!--- Common Header file --->
+		<cfinclude  template="/includes/header.cfm">
+
+		<!--- Requested page content --->
+		<cfinclude  template="#arguments.targetPage#">
+
+		<!--- Common Footer file --->
+		<cfinclude  template="/includes/footer.cfm">
+	</cffunction>
 </cfcomponent>

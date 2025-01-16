@@ -1,6 +1,3 @@
-<!--- Header --->
-<cfinclude template = "includes/header.cfm">
-
 <cfoutput>
 	<!--- URL params --->
 	<cfparam  name="url.subCategoryId" default="0">
@@ -173,6 +170,3 @@
 	  </div>
 	</div>
 </cfoutput>
-
-<!--- Footer --->
-<cfinclude template = "includes/footer.cfm">
