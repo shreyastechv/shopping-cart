@@ -11,7 +11,8 @@
 
 	<cffunction name="onMissingTemplate">
 		<cfargument name="targetPage" type="string" required=true>
-		<cflog type="error" text="Missing template: #Arguments.targetPage#">
+
+		<cflog type="error" text="Missing template: #arguments.targetPage#">
 		<cfoutput>
 			<h3>#Arguments.targetPage# could not be found.</h3>
 			<p>You requested a non-existent ColdFusion page.<br />
@@ -20,16 +21,16 @@
 	</cffunction>
 
 	<cffunction name="onError">
-		<cfargument name="Exception" required=true>
-		<cfargument type="String" name="EventName" required=true>
+		<cfargument name="exception" required=true>
+		<cfargument name="eventName" type="string" required=true>
 
-		<!--- Display an error message if there is a page context. --->
-		<cfif NOT (Arguments.EventName IS "onSessionEnd") OR
-			(Arguments.EventName IS "onApplicationEnd")>
+		<!--- Display an error message if there is a page context --->
+		<cfif NOT (arguments.eventName IS "onSessionEnd") OR
+			(arguments.eventName IS "onApplicationEnd")>
 			<cfoutput>
 				<h2>An unexpected error occurred.</h2>
 				<p>Please provide the following information to technical support:</p>
-				<p>Error Event: #Arguments.EventName#</p>
+				<p>Error Event: #arguments.eventName#</p>
 			</cfoutput>
 		</cfif>
 	</cffunction>
@@ -38,7 +39,7 @@
 		<cfargument name="targetPage" type="string" required=true>
 
 		<!--- Map pages to title and script path --->
-		<cfset pageDetailsMapping = {
+		<cfset local.local.pageDetailsMapping = {
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"scriptPath": "assets/js/login.js"
@@ -58,9 +59,9 @@
 		}>
 
 		<!--- Set page title and script tag path dynamically --->
-		<cfif StructKeyExists(pageDetailsMapping, arguments.targetPage)>
-			<cfset application.pageTitle = pageDetailsMapping[arguments.targetPage]["pageTitle"]>
-			<cfset application.scriptPath = pageDetailsMapping[arguments.targetPage]["scriptPath"]>
+		<cfif StructKeyExists(local.pageDetailsMapping, arguments.targetPage)>
+			<cfset application.pageTitle = local.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
+			<cfset application.scriptPath = local.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
 		<cfelse>
 			<cfset application.pageTitle = "Title">
 			<cfset application.scriptPath = "assets/js/dummy.js">
