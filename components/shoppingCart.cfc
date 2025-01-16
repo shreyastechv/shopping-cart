@@ -1,4 +1,14 @@
 <cfcomponent>
+	<cffunction name="trimArguments" access="private" returnType="struct">
+		<cfargument name="args" type="struct" required=true>
+
+		<cfloop collection="#arguments.args#" item="arg">
+			<cfset arguments.args[arg] = trim(arguments.args[arg])>
+		</cfloop>
+
+		<cfreturn arguments.args>
+	</cffunction>
+
 	<cffunction name="login" access="public" returnType="struct">
 		<cfargument name="userInput" type="string" required=true>
 		<cfargument name="password" type="string" required=true>
@@ -6,12 +16,33 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
+		<!--- Trim arguments --->
+		<cfset arguments = trimArguments(arguments)>
+
+		<!--- UserInput Validation --->
 		<cfif len(trim(arguments.userInput)) EQ 0>
-			<cfset local.response["message"] = "Enter an email/password">
-		<cfelseif len(trim(arguments.password)) EQ 0>
-			<cfset local.response["message"] = "Enter a password">
+			<cfset local.response["message"] &= "Enter an Email or Phone Number. ">
+		<cfelseif isValid("integer", arguments.userInput)>
+			<cfif len(arguments.userInput) NEQ 10>
+				<cfset local.response["message"] &= "Phone number should be 10 digits long. ">
+			</cfif>
+		<cfelse>
+			<cfif NOT isValid("email", arguments.userInput)>
+				<cfset local.response["message"] &= "Invalid email. ">
+			</cfif>
 		</cfif>
 
+		<!--- Password Validation --->
+		<cfif len(arguments.password) EQ 0>
+			<cfset local.response["message"] &= "Enter a password. ">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryCheckUser" dataSource="shoppingCart">
 			SELECT
 				fldUser_Id,
@@ -65,6 +96,24 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
+		<!--- Category Id Validation --->
+		<cfif len(arguments.categoryId) EQ 0>
+			<cfset local.response["message"] &= "Category Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.categoryId)>
+			<cfset local.response["message"] &= "Category Id should be an integer">
+		</cfif>
+
+		<!--- Category Name Validation --->
+		<cfif len(arguments.categoryId) EQ 0>
+			<cfset local.response["message"] &= "Category Name should not be empty. ">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryCheckCategory" dataSource="shoppingCart">
 			SELECT
 				fldCategory_Id
@@ -112,6 +161,22 @@
 	<cffunction name="deleteCategory" access="remote" returnType="void">
 		<cfargument name="categoryId" type="string" required=true>
 
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<!--- Category Id Validation --->
+		<cfif len(arguments.categoryId) EQ 0>
+			<cfset local.response["message"] &= "Category Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.categoryId)>
+			<cfset local.response["message"] &= "Category Id should be an integer">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
 			UPDATE
 				tblProduct
@@ -153,6 +218,22 @@
 	<cffunction name="getSubCategories" access="remote" returnType="query" returnFormat="json">
 		<cfargument name="categoryId" type="string" required=true>
 
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<!--- Category Id Validation --->
+		<cfif len(arguments.categoryId) EQ 0>
+			<cfset local.response["message"] &= "Category Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.categoryId)>
+			<cfset local.response["message"] &= "Category Id should be an integer">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetSubCategories" dataSource="shoppingCart">
 			SELECT
 				fldSubCategory_Id,
@@ -175,6 +256,31 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
+		<!--- SubCategory Id Validation --->
+		<cfif len(arguments.subCategoryId) EQ 0>
+			<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.subCategoryId)>
+			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		</cfif>
+
+		<!--- SubCategory Name Validation --->
+		<cfif len(arguments.subCategoryName) EQ 0>
+			<cfset local.response["message"] &= "SubCategory Name should not be empty. ">
+		</cfif>
+
+		<!--- Category Id Validation --->
+		<cfif len(arguments.categoryId) EQ 0>
+			<cfset local.response["message"] &= "Category Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.categoryId)>
+			<cfset local.response["message"] &= "Category Id should be an integer">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryCheckSubCategory" dataSource="shoppingCart">
 			SELECT
 				fldSubCategory_Id
@@ -227,6 +333,22 @@
 	<cffunction name="deleteSubCategory" access="remote" returnType="void">
 		<cfargument name="subCategoryId" type="string" required=true>
 
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<!--- SubCategory Id Validation --->
+		<cfif len(arguments.subCategoryId) EQ 0>
+			<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.subCategoryId)>
+			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
 			UPDATE
 				tblProduct
@@ -252,6 +374,31 @@
 		<cfargument name="subCategoryId" type="string" required=true>
 		<cfargument name="productId" type="string" required=false default="">
 
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<!--- SubCategory Id Validation --->
+		<cfif len(arguments.subCategoryId) EQ 0>
+			<cfif structKeyExists(arguments, "productId")>
+				<!--- Product Id Validation --->
+				<cfif len(arguments.productId) EQ 0>
+					<cfset local.response["message"] &= "Product Id should not be empty. ">
+				<cfelseif NOT isValid("integer", arguments.productId)>
+					<cfset local.response["message"] &= "Product Id should be an integer">
+				</cfif>
+			<cfelse>
+				<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
+			</cfif>
+		<cfelseif NOT isValid("integer", arguments.subCategoryId)>
+			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetProducts" dataSource="shoppingCart">
 			SELECT
 				p.fldProduct_Id,
@@ -301,14 +448,69 @@
 		<cfargument name="productTax" type="string" required=true>
 		<cfargument name="productImage" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-
 		<!--- Create images dir if not exists --->
 		<cfif NOT directoryExists(application.productImageDirectory)>
 			<cfdirectory action="create" directory="#application.productImageDirectory#">
 		</cfif>
 
+		<!--- Product Id Validation --->
+		<cfif len(arguments.productId) EQ 0>
+			<cfset local.response["message"] &= "Product Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.productId)>
+			<cfset local.response["message"] &= "Product Id should be an integer">
+		</cfif>
+
+		<!--- Category Id Validation --->
+		<cfif len(arguments.categorySelect) EQ 0>
+			<cfset local.response["message"] &= "Category Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.categorySelect)>
+			<cfset local.response["message"] &= "Category Id should be an integer">
+		</cfif>
+
+		<!--- SubCategory Id Validation --->
+		<cfif len(arguments.subCategorySelect) EQ 0>
+			<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.subCategorySelect)>
+			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		</cfif>
+
+		<!--- Product Description Validation --->
+		<cfif len(arguments.productDesc) EQ 0>
+			<cfset local.response["message"] &= "Product Description should not be empty. ">
+		</cfif>
+
+		<!--- Brand Id Validation --->
+		<cfif len(arguments.brandSelect) EQ 0>
+			<cfset local.response["message"] &= "Brand Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.brandSelect)>
+			<cfset local.response["message"] &= "Brand Id should be an integer">
+		</cfif>
+
+		<!--- Product Name Validation --->
+		<cfif len(arguments.productName) EQ 0>
+			<cfset local.response["message"] &= "Product Name should not be empty. ">
+		</cfif>
+
+		<!--- Price Validation --->
+		<cfif len(arguments.productPrice) EQ 0>
+			<cfset local.response["message"] &= "Price should not be empty. ">
+		<cfelseif NOT isValid("float", arguments.productPrice)>
+			<cfset local.response["message"] &= "Price should be an number">
+		</cfif>
+
+		<!--- Tax Validation --->
+		<cfif len(arguments.productTax) EQ 0>
+			<cfset local.response["message"] &= "Tax should not be empty. ">
+		<cfelseif NOT isValid("float", arguments.productTax)>
+			<cfset local.response["message"] &= "Tax should be an number">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryCheckProduct" dataSource="shoppingCart">
 			SELECT
 				fldProduct_Id
@@ -416,6 +618,17 @@
 	<cffunction name="deleteProduct" access="remote" returnType="void">
 		<cfargument name="productId" type="string" required=true>
 
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<!--- Product Id Validation --->
+		<cfif len(arguments.productId) EQ 0>
+			<cfset local.response["message"] &= "Product Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.productId)>
+			<cfset local.response["message"] &= "Product Id should be an integer">
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
 			UPDATE
 				tblProduct
@@ -442,8 +655,18 @@
 	<cffunction name="getProductImages" access="remote" returnType="array" returnFormat="json">
 		<cfargument name="productId" type="string" required=true>
 
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
 		<cfset local.imageArray = []>
 
+		<!--- Product Id Validation --->
+		<cfif len(arguments.productId) EQ 0>
+			<cfset local.response["message"] &= "Product Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.productId)>
+			<cfset local.response["message"] &= "Product Id should be an integer">
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetImages" dataSource="shoppingCart">
 			SELECT
 				fldProductImage_Id,
@@ -470,6 +693,17 @@
 	<cffunction name="setDefaultImage" access="remote" returnType="void">
 		<cfargument name="imageId" type="string" required=true>
 
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<!--- Image Id Validation --->
+		<cfif len(arguments.imageId) EQ 0>
+			<cfset local.response["message"] &= "Image Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.imageId)>
+			<cfset local.response["message"] &= "Image Id should be an integer">
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="qryUnsetDefautImage" dataSource="shoppingCart">
 			UPDATE
 				tblProductImages AS p
@@ -501,6 +735,17 @@
 	<cffunction name="deleteImage" access="remote" returnType="void">
 		<cfargument name="imageId" type="string" required=true>
 
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<!--- Image Id Validation --->
+		<cfif len(arguments.imageId) EQ 0>
+			<cfset local.response["message"] &= "Image Id should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.imageId)>
+			<cfset local.response["message"] &= "Image Id should be an integer">
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="qryDeleteImage" dataSource="shoppingCart">
 			UPDATE
 				tblProductImages
