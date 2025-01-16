@@ -24,6 +24,9 @@ $(document).ready(function() {
 						const optionTag = `<option value="${subCategoryId}">${subCategoryName}</option>`;
 						$("#subCategorySelect").append(optionTag);
 					}
+					if (categoryId == urlcategoryId) {
+						$("#subCategorySelect").val(urlSubCategoryId).change();
+					}
 				}
 			});
 		}
@@ -128,7 +131,6 @@ function showAddProductModal() {
 	$(".error").text("");
 	$("#productId").val("");
 	$("#categorySelect").val(urlcategoryId).change();
-	$("#subCategorySelect").val(urlSubCategoryId).change();
 	$("#subCategoryModalBtn").text("Add Product");
 }
 
