@@ -407,14 +407,15 @@
 				i.fldImageFileName AS fldProductImage
 			FROM
 				tblProduct p
-				LEFT JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id AND b.fldActive = 1
-				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId AND i.fldActive = 1
+				LEFT JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
+				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
+				AND i.fldActive = 1
+				AND i.fldDefaultImage = 1
 			WHERE
 				p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
 				<cfif len(trim(arguments.productId))>
 					AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
 				</cfif>
-				AND i.fldDefaultImage = 1
 				AND p.fldActive = 1
 		</cfquery>
 
@@ -596,7 +597,7 @@
 									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "integer">,
 								</cfif>
 								<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "varchar">,
-								<cfif local.i EQ 1 AND len(trim(arguments.productId)) NEQ 0>
+								<cfif local.i EQ 1 AND len(trim(arguments.productId)) EQ 0>
 									1,
 								<cfelse>
 									0,
@@ -642,7 +643,7 @@
 			SET
 				fldActive = 0,
 				fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
-				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">,
+				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
 			WHERE
 				fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
 		</cfquery>
