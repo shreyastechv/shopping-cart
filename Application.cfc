@@ -44,6 +44,11 @@
 	<cffunction name="onRequestStart">
 		<cfargument name="targetPage" type="string" required=true>
 
+		<!--- Hot reloading application if required --->
+		<cfif structKeyExists(url, "reload") AND url.reload EQ 1>
+			<cfset onApplicationStart()>
+		</cfif>
+
 		<!--- Map pages to title and script path --->
 		<cfset local.local.pageDetailsMapping = {
 			"/login.cfm": {
@@ -96,7 +101,7 @@
 	</cffunction>
 
 	<cffunction name="onRequest">
-		<cfargument name="targetPage" type="String" required=true>
+		<cfargument name="targetPage" type="string" required=true>
 
 		<!--- Common Header file --->
 		<cfinclude  template="/includes/header.cfm">
