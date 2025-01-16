@@ -93,7 +93,6 @@ function showAddCategoryModal() {
 }
 
 function showEditCategoryModal(categoryId) {
-	const categoryId = event.target.value;
 	const categoryName = $("#categoryName-" + categoryId).text();
 	clearCategoryModal();
 	$("#categoryModalLabel").text("EDIT CATEGORY");
