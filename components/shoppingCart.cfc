@@ -568,8 +568,8 @@
 						<cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "varchar">,
 						<cfqueryparam value = "#trim(arguments.brandSelect)#" cfsqltype = "integer">,
 						<cfqueryparam value = "#trim(arguments.productDesc)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(arguments.productPrice)#" cfsqltype = "decimal">,
-						<cfqueryparam value = "#trim(arguments.productTax)#" cfsqltype = "decimal">,
+						<cfqueryparam value = "#val(arguments.productPrice)#" cfsqltype = "decimal" scale = "2">,
+						<cfqueryparam value = "#val(arguments.productTax)#" cfsqltype = "decimal" scale = "2">,
 						<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					)
 				</cfquery>
