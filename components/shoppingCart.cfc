@@ -264,8 +264,8 @@
 				i.fldImageFileName AS fldProductImage
 			FROM
 				tblProduct p
-				LEFT JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
-				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
+				LEFT JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id AND b.fldActive = 1
+				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId AND i.fldActive = 1
 			WHERE
 				p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
 				<cfif len(trim(arguments.productId))>
@@ -273,8 +273,6 @@
 				</cfif>
 				AND i.fldDefaultImage = 1
 				AND p.fldActive = 1
-				AND b.fldActive = 1
-				AND i.fldActive = 1
 		</cfquery>
 
 		<cfreturn local.qryGetProducts>
