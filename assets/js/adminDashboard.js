@@ -24,27 +24,31 @@ function clearCategoryModal() {
 }
 
 function processCategoryForm() {
+	event.preventDefault();
 	clearCategoryModal();
 	let categoryId = $("#categoryId").val().trim();
 	const categoryName = $("#categoryName").val().trim();
 	const prevCategoryName = $("#categoryName").attr("data-sc-prevCategoryName").trim();
+	let valid = true;
 
 	// Validation
 	if (categoryName.length === 0) {
 		$("#categoryName").addClass("border-danger");
 		$("#categoryModalMsg").text("Category name should not be empty");
-		return false;
+		valid = false;
 	}
 	else if (!/^[A-Za-z ]+$/.test(categoryName)) {
 		$("#categoryName").addClass("border-danger");
 		$("#categoryModalMsg").text("Category name should only contain letters!");
-		return false;
+		valid = false;
 	}
 	else if (prevCategoryName === categoryName) {
 		$("#categoryName").addClass("border-danger");
 		$("#categoryModalMsg").text("Category name unchanged");
-		return false;
+		valid = false;
 	}
+
+	if(!valid) return false;
 
 	$.ajax({
 		type: "POST",
@@ -76,8 +80,6 @@ function processCategoryForm() {
 			$("#categoryModalMsg").text("We encountered an error!");
 		}
 	});
-
-	event.preventDefault();
 }
 
 function showAddCategoryModal() {
@@ -89,8 +91,7 @@ function showAddCategoryModal() {
 	$("#categoryName").attr("data-sc-prevCategoryName", "");
 }
 
-function showEditCategoryModal(val1, val2) {
-	const categoryId = event.target.value;
+function showEditCategoryModal(categoryId) {
 	const categoryName = $("#categoryName-" + categoryId).text();
 	clearCategoryModal();
 	$("#categoryModalLabel").text("EDIT CATEGORY");
@@ -100,8 +101,7 @@ function showEditCategoryModal(val1, val2) {
 	$("#categoryName").val(categoryName);
 }
 
-function deleteCategory() {
-	const categoryId = event.target.value;
+function deleteCategory(categoryId) {
 	const categoryName = $("#categoryName-" + categoryId).text();
 	if (confirm(`Delete category - '${categoryName}'?`)) {
 		$.ajax({

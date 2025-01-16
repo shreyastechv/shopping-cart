@@ -31,6 +31,7 @@ function clearSubCategoryModal() {
 }
 
 function processSubCategoryForm() {
+	event.preventDefault();
 	clearSubCategoryModal();
 	let subCategoryId = $("#subCategoryId").val().trim();
 	const subCategoryName = $("#subCategoryName").val().trim();
@@ -102,8 +103,6 @@ function processSubCategoryForm() {
 			$("#subCategoryModalMsg").text("We encountered an error!");
 		}
 	});
-
-	event.preventDefault();
 }
 
 function showAddSubCategoryModal() {
@@ -115,8 +114,7 @@ function showAddSubCategoryModal() {
 	$("#subCategoryForm")[0].reset();
 }
 
-function showEditSubCategoryModal() {
-	const subCategoryId = event.target.value;
+function showEditSubCategoryModal(categoryId) {
 	const subCategoryName = $("#subCategoryName-" + subCategoryId).text();
 	clearSubCategoryModal();
 	$("#subCategoryModalLabel").text("EDIT CATEGORY");
@@ -126,8 +124,7 @@ function showEditSubCategoryModal() {
 	$("#subCategoryName").val(subCategoryName);
 }
 
-function deleteSubCategory() {
-	const subCategoryId = event.target.value;
+function deleteSubCategory(subCategoryId) {
 	const subCategoryName = $("#subCategoryName-" + subCategoryId).text();
 	if (confirm(`Delete subCategory - '${subCategoryName}'?`)) {
 		$.ajax({
