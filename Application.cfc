@@ -9,7 +9,7 @@
 		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
 
 		<!--- Create images dir if not exists --->
-		<cfif NOT directoryExists(application.productImageDirectory)>
+		<cfif NOT directoryExists(expandPath(application.productImageDirectory))>
 			<cfdirectory action="create" directory="#expandPath(application.productImageDirectory)#">
 		</cfif>
 
