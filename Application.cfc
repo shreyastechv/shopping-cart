@@ -84,7 +84,7 @@
 			<cfset application.scriptPath = local.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
 		<cfelse>
 			<cfset application.pageTitle = "Title">
-			<cfset application.scriptPath = "assets/js/dummy.js">
+			<cfset application.scriptPath = "">
 		</cfif>
 
 		<!--- Define page types --->
