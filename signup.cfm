@@ -1,4 +1,4 @@
-<!--- Login Logic --->
+<!--- Signup Logic --->
 <cfif structKeyExists(form, "signupBtn")>
 	<cfset variables.signupResult = application.shoppingCart.signup(
 		firstName = form.firstName,
