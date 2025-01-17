@@ -50,10 +50,14 @@
 		</cfif>
 
 		<!--- Map pages to title and script path --->
-		<cfset local.local.pageDetailsMapping = {
+		<cfset local.pageDetailsMapping = {
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"scriptPath": "assets/js/login.js"
+			},
+			"/signup.cfm": {
+				"pageTitle": "Sign Up",
+				"scriptPath": "assets/js/signup.js"
 			},
 			"/adminDashboard.cfm": {
 				"pageTitle": "Admin Dashboard",
