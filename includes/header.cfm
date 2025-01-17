@@ -8,6 +8,7 @@
 			<link rel="icon" href="favicon.ico">
 			<link href="assets/css/bootstrap.min.css" rel="stylesheet">
 			<link href="assets/css/header.css" rel="stylesheet">
+			<link href="#application.cssPath#" rel="stylesheet">
 			<script src="assets/js/header.js"></script>
 		</head>
 

@@ -55,30 +55,36 @@
 			<cfset onApplicationStart()>
 		</cfif>
 
-		<!--- Map pages to title and script path --->
+		<!--- Map pages to title, css and script path --->
 		<cfset local.pageDetailsMapping = {
 			"/index.cfm": {
 				"pageTitle": "Home Page",
+				"cssPath": "assets/css/index.css",
 				"scriptPath": "assets/js/index.js"
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
+				"cssPath": "",
 				"scriptPath": "assets/js/login.js"
 			},
 			"/signup.cfm": {
 				"pageTitle": "Sign Up",
+				"cssPath": "",
 				"scriptPath": "assets/js/signup.js"
 			},
 			"/adminDashboard.cfm": {
 				"pageTitle": "Admin Dashboard",
+				"cssPath": "",
 				"scriptPath": "assets/js/adminDashboard.js"
 			},
 			"/subCategory.cfm": {
 				"pageTitle": "Sub Category",
+				"cssPath": "",
 				"scriptPath": "assets/js/subCategory.js"
 			},
 			"/productEdit.cfm": {
 				"pageTitle": "Product Edit",
+				"cssPath": "",
 				"scriptPath": "assets/js/productEdit.js"
 			}
 		}>
@@ -87,9 +93,11 @@
 		<cfif StructKeyExists(local.pageDetailsMapping, arguments.targetPage)>
 			<cfset application.pageTitle = local.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
 			<cfset application.scriptPath = local.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
+			<cfset application.cssPath = local.pageDetailsMapping[arguments.targetPage]["cssPath"]>
 		<cfelse>
 			<cfset application.pageTitle = "Title">
 			<cfset application.scriptPath = "">
+			<cfset application.cssPath = "">
 		</cfif>
 
 		<!--- Define page types --->

@@ -527,6 +527,36 @@
 		<cfreturn local.qryGetProducts>
 	</cffunction>
 
+	<cffunction name="getRandomProducts" access="public" returnType="array">
+		<cfset local.arrayRandomProducts = []>
+
+		<cfquery name="local.qryRandomProducts" dataSource="shoppingCart">
+			SELECT
+				p.fldProduct_Id,
+				p.fldProductName,
+				i.fldImageFileName
+			FROM
+				tblProduct p
+				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId AND i.fldDefaultImage = 1 AND i.fldActive = 1
+			WHERE
+				p.fldActive = 1
+			ORDER BY
+				RAND()
+			LIMIT 8
+		</cfquery>
+
+		<cfloop query="local.qryRandomProducts">
+			<cfset local.structRandomProducts = {
+				"productId" = local.qryRandomProducts.fldProduct_Id,
+				"productName" = local.qryRandomProducts.fldProductName,
+				"imageFile" = local.qryRandomProducts.fldImageFileName
+			}>
+			<cfset arrayAppend(local.arrayRandomProducts, local.structRandomProducts)>
+		</cfloop>
+
+		<cfreturn local.arrayRandomProducts>
+	</cffunction>
+
 	<cffunction name="getBrands" access="public" returnType="query">
 		<cfquery name="local.qryGetBrands" dataSource="shoppingCart">
 			SELECT
