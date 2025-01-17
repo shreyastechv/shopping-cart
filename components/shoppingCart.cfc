@@ -542,7 +542,7 @@
 				p.fldActive = 1
 			ORDER BY
 				RAND()
-			LIMIT 8
+			LIMIT 12
 		</cfquery>
 
 		<cfloop query="local.qryRandomProducts">
