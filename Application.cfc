@@ -54,13 +54,13 @@
 		<cfset local.pageDetailsMapping = {
 			"/index.cfm": {
 				"pageTitle": "Home Page",
-				"cssPath": "assets/css/home.css",
-				"scriptPath": "assets/js/home.js"
+				"cssPath": "assets/css/index.css",
+				"scriptPath": "assets/js/index.js"
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"cssPath": "",
-				"scriptPath": "assets/js/index.js"
+				"scriptPath": "assets/js/home.js"
 			},
 			"/signup.cfm": {
 				"pageTitle": "Sign Up",
