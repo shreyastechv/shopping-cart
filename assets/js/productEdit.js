@@ -95,7 +95,7 @@ function processproductForm() {
 	}
 
 	// Product Image Validation
-	if (productId.length == 0 && productImage.length == 0) { // Check only when adding products not when editing
+	if (productId.length == 0 && productImage.length == 0) { // Validate product image only when adding products not when editing
 		$("#productImageError").text("Select atleast one image");
 		valid = false;
 	}
@@ -194,7 +194,7 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 			</div>
 			<div>
 				<button value="${prodId}" class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage()">
-					<img class="pe-none" src="${productImageDirectory}/${imageFile}" alt="Product Image" width="50">
+					<img class="pe-none" src="${productImageDirectory}${imageFile}" alt="Product Image" width="50">
 				</button>
 				<button class="btn btn-lg" value="${prodId}" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal()">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>
@@ -233,7 +233,7 @@ function createCarousel(productId) {
 				`;
 				const carouselItem = `
 					<div class="carousel-item ${isActive}">
-						<img src="assets/images/productImages/${responseJSON[i].imageFileName}" class="d-block w-100" alt="Product Image">
+						<img src="${productImageDirectory}${responseJSON[i].imageFileName}" class="d-block w-100" alt="Product Image">
 						${bottomDiv}
 					</div>
 				`;

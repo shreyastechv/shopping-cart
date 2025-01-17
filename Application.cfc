@@ -5,7 +5,7 @@
 	<cfset this.dataSource = "shoppingCart">
 
 	<cffunction name="onApplicationStart">
-		<cfset application.relativeProductImageDirectory = "/assets/images/productImages">
+		<cfset application.relativeProductImageDirectory = "/assets/images/productImages/">
 		<cfset application.productImageDirectory = expandPath(application.relativeProductImageDirectory)>
 		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
 	</cffunction>

@@ -39,7 +39,7 @@
 						</div>
 						<div>
 							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#variables.qryProducts.fldProduct_Id#)">
-								<img class="pe-none" src="#application.relativeProductImageDirectory#/#variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
+								<img class="pe-none" src="#application.relativeProductImageDirectory##variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
 							</button>
 							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal(#variables.qryProducts.fldProduct_Id#)">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
