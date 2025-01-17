@@ -27,10 +27,17 @@
 							Logout
 						</a>
 					<cfelse>
-						<a class="text-white text-decoration-none" href="signup.cfm">
-							<i class="fa-solid fa-right-from-bracket"></i>
-							Login
-						</a>
+						<cfif cgi.SCRIPT_NAME EQ "/signup.cfm">
+							<a class="text-white text-decoration-none" href="login.cfm">
+								<i class="fa-solid fa-right-from-bracket"></i>
+								Log In
+							</a>
+						<cfelse>
+							<a class="text-white text-decoration-none" href="signup.cfm">
+								<i class="fa-solid fa-user"></i>
+								Sign Up
+							</a>
+						</cfif>
 					</cfif>
 				</nav>
 			</header>
