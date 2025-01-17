@@ -67,8 +67,9 @@ function processSubCategoryForm() {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=modifySubCategory",
+		url: "./components/shoppingCart.cfc",
 		data: {
+			method: "modifySubCategory",
 			subCategoryId: subCategoryId,
 			subCategoryName: subCategoryName,
 			categoryId: categoryId
@@ -129,8 +130,9 @@ function deleteSubCategory(subCategoryId) {
 	if (confirm(`Delete subCategory - '${subCategoryName}'?`)) {
 		$.ajax({
 			type: "POST",
-			url: "./components/shoppingCart.cfc?method=deleteSubCategory",
+			url: "./components/shoppingCart.cfc",
 			data: {
+				method: "deleteSubCategory",
 				subCategoryId: subCategoryId
 			},
 			success: function() {

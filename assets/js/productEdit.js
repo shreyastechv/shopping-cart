@@ -11,8 +11,9 @@ $(document).ready(function() {
 			$("#subCategorySelect").prop("disabled", false);
 			$.ajax({
 				type: "POST",
-				url: "./components/shoppingCart.cfc?method=getSubCategories",
+				url: "./components/shoppingCart.cfc",
 				data: {
+					method: "getSubCategories",
 					categoryId: categoryId
 				},
 				success: function(response) {
@@ -105,9 +106,10 @@ function processproductForm() {
 	formData.append("categorySelect", categorySelect);
 	formData.append("subCategorySelect", subCategorySelect);
 	formData.append("brandSelect", brandSelect);
+	formData.append("method", "modifyProduct");
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=modifyProduct",
+		url: "./components/shoppingCart.cfc",
 		data: formData,
 		enctype: 'multipart/form-data',
 		processData: false,
@@ -140,8 +142,9 @@ function showEditProductModal(productId) {
 	$("#productId").val(productId);
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=getProducts",
+		url: "./components/shoppingCart.cfc",
 		data: {
+			method: "getProducts",
 			subCategoryId: urlSubCategoryId,
 			productId: productId
 		},
@@ -169,8 +172,9 @@ function deleteProduct (productId) {
 	if (confirm("Delete product?")) {
 		$.ajax({
 			type: "POST",
-			url: "./components/shoppingCart.cfc?method=deleteProduct",
+			url: "./components/shoppingCart.cfc",
 			data: {
+				method: "deleteProduct",
 				productId: productId
 			},
 			success: function() {
@@ -207,8 +211,9 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 function createCarousel(productId) {
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=getProductImages",
+		url: "./components/shoppingCart.cfc",
 		data: {
+			method: "getProductImages",
 			productId: productId
 		},
 		success: function(response) {
@@ -249,8 +254,9 @@ function setDefaultImage() {
 	const imageId = btnElement.value;
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=setDefaultImage",
+		url: "./components/shoppingCart.cfc",
 		data: {
+			method: "setDefaultImage",
 			imageId: imageId
 		},
 		success: function() {
@@ -266,8 +272,9 @@ function deleteImage() {
 	const imageId = btnElement.value;
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=deleteImage",
+		url: "./components/shoppingCart.cfc",
 		data: {
+			method: "deleteImage",
 			imageId: imageId
 		},
 		success: function() {

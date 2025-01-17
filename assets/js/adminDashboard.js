@@ -52,8 +52,9 @@ function processCategoryForm() {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=modifyCategory",
+		url: "./components/shoppingCart.cfc",
 		data: {
+			method: "modifyCategory",
 			categoryId: categoryId,
 			categoryName: categoryName
 		},
@@ -106,8 +107,9 @@ function deleteCategory(categoryId) {
 	if (confirm(`Delete category - '${categoryName}'?`)) {
 		$.ajax({
 			type: "POST",
-			url: "./components/shoppingCart.cfc?method=deleteCategory",
+			url: "./components/shoppingCart.cfc",
 			data: {
+				method: "deleteCategory",
 				categoryId: categoryId
 			},
 			success: function() {
