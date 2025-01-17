@@ -4,13 +4,14 @@
 	<cfset this.sessiontimeout = CreateTimeSpan(0, 1, 0, 0)>
 	<cfset this.dataSource = "shoppingCart">
 
-	<cffunction name="onApplicationStart">
+	<cffunction name="onApplicationStart" returnType="boolean">
 		<cfset application.relativeProductImageDirectory = "/assets/images/productImages/">
 		<cfset application.productImageDirectory = expandPath(application.relativeProductImageDirectory)>
 		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
+		<cfreturn true>
 	</cffunction>
 
-	<cffunction name="onMissingTemplate">
+	<cffunction name="onMissingTemplate" returnType="void">
 		<cfargument name="targetPage" type="string" required=true>
 
 		<cflog type="error" text="Missing template: #arguments.targetPage#">
@@ -21,7 +22,7 @@
 		</cfoutput>
 	</cffunction>
 
-	<!--- <cffunction name="onError">
+	<!--- <cffunction name="onError" returnType="void">
 		<cfargument name="exception" required=true>
 		<cfargument name="eventName" type="string" required=true>
 
@@ -41,7 +42,7 @@
 		</cfif>
 	</cffunction> --->
 
-	<cffunction name="onRequestStart">
+	<cffunction name="onRequestStart" returnType="boolean">
 		<cfargument name="targetPage" type="string" required=true>
 
 		<!--- Hot reloading application if required --->
@@ -99,16 +100,16 @@
 					<cflocation url="/" addToken="false">
 				</cfif>
 			</cfif>
-			<cfreturn true>
 		<cfelseif arrayFindNoCase(local.privatePages, arguments.targetPage)>
-			<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-				<cfreturn true>
+			<cfif (NOT structKeyExists(session, "roleId")) OR (session.roleId NEQ 1)>
+				<cflocation url="/" addToken="false">
 			</cfif>
-			<cflocation url="/home.cfm" addToken="false">
 		</cfif>
+
+		<cfreturn true>
 	</cffunction>
 
-	<cffunction name="onRequest">
+	<cffunction name="onRequest" returnType="void">
 		<cfargument name="targetPage" type="string" required=true>
 
 		<!--- Common Header file --->
