@@ -8,16 +8,16 @@
 		password = form.password,
 		confirmPassword = form.confirmPassword
 	)>
-	<cfif variables.signupResult.message EQ "Account Created Successfully">
-		<cflocation url="adminDashboard.cfm" addToken="false">
-	</cfif>
 </cfif>
 
 <!--- Main Content --->
 <div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
 	<div id="submitMsgSection" class="text-danger p-2">
-		<cfif isDefined("variables.signupResult.message")>
+		<cfif structKeyExists(variables, "signupResult")>
 			<cfoutput>#variables.signupResult.message#</cfoutput>
+			<cfif arrayContainsNoCase(["Email or Phone number already exists.", "Account created successfully"], variables.signupResult.message)>
+				Click <a href="/login.cfm" class="text-decoration-none text-success">here</a> to login
+			</cfif>
 		</cfif>
 	</div>
 	<div class="row shadow-lg border-0 rounded-4 w-50 text-center">
@@ -27,30 +27,30 @@
 			</div>
 			<form id="signupForm" name="loginForm" method="post" onsubmit="validateForm()">
 				<div class="mb-3">
-					<input type="text" class="form-control" id="firstName" name="firstName" placeholder="First name" autocomplete="given-name">
+					<input type="text" class="form-control input" id="firstName" name="firstName" placeholder="First name" autocomplete="given-name">
 					<div id="firstNameError" class="error text-danger"></div>
 				</div>
 				<div class="mb-3">
-					<input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last name" autocomplete="family-name">
+					<input type="text" class="form-control input" id="lastName" name="lastName" placeholder="Last name" autocomplete="family-name">
 					<div id="lastNameError" class="error text-danger"></div>
 				</div>
 				<div class="mb-3">
-					<input type="text" class="form-control" id="email" name="email" placeholder="Email" autocomplete="email">
+					<input type="text" class="form-control input" id="email" name="email" placeholder="Email" autocomplete="email">
 					<div id="emailError" class="error text-danger"></div>
 				</div>
 				<div class="mb-3">
-					<input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" autocomplete="tel">
+					<input type="text" class="form-control input" id="phone" name="phone" placeholder="Phone" autocomplete="tel">
 					<div id="phoneError" class="error text-danger"></div>
 				</div>
 				<div class="mb-3">
-					<input type="password" class="form-control" id="password" name="password" placeholder="Password" autocomplete="new-password">
+					<input type="password" class="form-control input" id="password" name="password" placeholder="Password" autocomplete="new-password">
 					<div id="passwordError" class="error text-danger"></div>
 				</div>
 				<div class="mb-3">
-					<input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" autocomplete="new-password">
+					<input type="password" class="form-control input" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" autocomplete="new-password">
 					<div id="confirmPasswordError" class="error text-danger"></div>
 				</div>
-				<button type="submit" id="signupBtn" name="loginBtn" class="btn btn-success w-100 rounded-pill">SIGN UP</button>
+				<button type="submit" id="signupBtn" name="signupBtn" class="btn btn-success w-100 rounded-pill">SIGN UP</button>
 			</form>
 			<div class="text-center mt-3">
 				Already have an account? <a class="text-success text-decoration-none" href="signup.cfm">Login Here</a>

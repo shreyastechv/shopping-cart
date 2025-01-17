@@ -83,7 +83,32 @@
 		<cfif local.qryCheckUser.recordCount>
 			<cfset local.response["message"] = "Email or Phone number already exists.">
 		<cfelse>
-			<cfset local.response["message"] = "User does not exist">
+			<!--- Generate random salt string --->
+			<cfset local.saltString = generateSecretKey("AES", 128)>
+			<cfset local.hashedPassword = hash(arguments.password & local.saltString, "SHA-512", "UTF-8", 50)>
+			<cfquery name="local.qryAddUser" dataSource="shoppingCart">
+				INSERT INTO
+					tblUser (
+						fldFirstName,
+						fldLastName,
+						fldEmail,
+						fldPhone,
+						fldRoleId,
+						fldHashedPassword,
+						fldUserSaltString
+					)
+				VALUES (
+					<cfqueryparam value = "#trim(arguments.firstName)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(arguments.lastName)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(arguments.email)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(arguments.phone)#" cfsqltype = "varchar">,
+					2,
+					<cfqueryparam value = "#trim(local.hashedPassword)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(local.saltString)#" cfsqltype = "varchar">
+				)
+			</cfquery>
+
+			<cfset local.response["message"] = "Account created successfully.">
 		</cfif>
 
 		<cfreturn local.response>
