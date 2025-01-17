@@ -52,7 +52,7 @@ function processSubCategoryForm() {
 		$("#subCategoryModalMsg").text("SubCategory name should not be empty");
 		valid = false;
 	}
-	else if (!/^[A-Za-z ]+$/.test(subCategoryName)) {
+	else if (!/^[A-Za-z'& ]+$/.test(subCategoryName)) {
 		$("#subCategoryName").addClass("border-danger");
 		$("#subCategoryModalMsg").text("SubCategory name should only contain letters!");
 		valid = false;
@@ -108,7 +108,7 @@ function processSubCategoryForm() {
 
 function showAddSubCategoryModal() {
 	clearSubCategoryModal();
-	$("#subCategoryModalLabel").text("ADD CATEGORY");
+	$("#subCategoryModalLabel").text("ADD SUBCATEGORY");
 	$("#subCategoryModalBtn").text("Add SubCategory");
 	$("#subCategoryId").val("");
 	$("#subCategoryName").attr("data-sc-prevSubCategoryName", "");
@@ -118,7 +118,7 @@ function showAddSubCategoryModal() {
 function showEditSubCategoryModal(categoryId) {
 	const subCategoryName = $("#subCategoryName-" + subCategoryId).text();
 	clearSubCategoryModal();
-	$("#subCategoryModalLabel").text("EDIT CATEGORY");
+	$("#subCategoryModalLabel").text("EDIT SUBCATEGORY");
 	$("#subCategoryModalBtn").text("Edit SubCategory");
 	$("#subCategoryId").val(subCategoryId);
 	$("#subCategoryName").attr("data-sc-prevSubCategoryName", subCategoryName);
