@@ -60,7 +60,7 @@
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"cssPath": "",
-				"scriptPath": "assets/js/home.js"
+				"scriptPath": "assets/js/login.js"
 			},
 			"/signup.cfm": {
 				"pageTitle": "Sign Up",
