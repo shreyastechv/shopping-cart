@@ -51,6 +51,10 @@
 
 		<!--- Map pages to title and script path --->
 		<cfset local.pageDetailsMapping = {
+			"/index.cfm": {
+				"pageTitle": "Home Page",
+				"scriptPath": "assets/js/home.js"
+			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"scriptPath": "assets/js/login.js"
@@ -92,7 +96,7 @@
 				<cfif session.roleId EQ 1>
 					<cflocation url="/adminDashboard.cfm" addToken="false">
 				<cfelse>
-					<cflocation url="/home.cfm" addToken="false">
+					<cflocation url="/" addToken="false">
 				</cfif>
 			</cfif>
 			<cfreturn true>
