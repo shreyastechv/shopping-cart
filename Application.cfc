@@ -5,9 +5,14 @@
 	<cfset this.dataSource = "shoppingCart">
 
 	<cffunction name="onApplicationStart" returnType="boolean">
-		<cfset application.relativeProductImageDirectory = "/assets/images/productImages/">
-		<cfset application.productImageDirectory = expandPath(application.relativeProductImageDirectory)>
+		<cfset application.productImageDirectory = "/assets/images/productImages/">
 		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
+
+		<!--- Create images dir if not exists --->
+		<cfif NOT directoryExists(application.productImageDirectory)>
+			<cfdirectory action="create" directory="#expandPath(application.productImageDirectory)#">
+		</cfif>
+
 		<cfreturn true>
 	</cffunction>
 

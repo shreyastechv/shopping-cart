@@ -624,15 +624,10 @@
 		<cfif local.qryCheckProduct.recordCount>
 			<cfset local.response["message"] = "Product already exists!">
 		<cfelse>
-			<!--- Create images dir if not exists --->
-			<cfif NOT directoryExists(application.productImageDirectory)>
-				<cfdirectory action="create" directory="#application.productImageDirectory#">
-			</cfif>
-
 			<!--- Upload images --->
 			<cffile
 				action="uploadall"
-				destination="#application.productImageDirectory#"
+				destination="#expandPath(application.productImageDirectory)#"
 				nameconflict="MakeUnique"
 				accept="image/png,image/jpeg,.png,.jpg,.jpeg"
 				strict="true"
@@ -861,6 +856,5 @@
 
 	<cffunction name="logOut" access="remote" returnType="void">
 		<cfset structClear(session)>
-		<cflocation url="/">
 	</cffunction>
 </cfcomponent>
