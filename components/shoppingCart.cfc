@@ -472,28 +472,28 @@
 	</cffunction>
 
 	<cffunction name="getProducts" access="remote" returnType="query" returnFormat="json">
-		<cfargument name="subCategoryId" type="string" required=false default="0">
-		<cfargument name="productId" type="string" required=false default="0">
+		<cfargument name="subCategoryId" type="string" required=false default="">
+		<cfargument name="productId" type="string" required=false default="">
 		<cfargument name="random" type="string" required=false default="0">
 		<cfargument name="limit" type="string" required="false" default="">
+		<cfargument name="sort" type="string" required="false" default="">
 
  		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
 		<!--- SubCategory Id Validation --->
-		<cfif len(arguments.subCategoryId) EQ 0>
-			<cfif structKeyExists(arguments, "productId")>
-				<!--- Product Id Validation --->
-				<cfif len(arguments.productId) EQ 0>
-					<cfset local.response["message"] &= "Product Id should not be empty. ">
-				<cfelseif NOT isValid("integer", arguments.productId)>
-					<cfset local.response["message"] &= "Product Id should be an integer">
-				</cfif>
-			<cfelse>
-				<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
-			</cfif>
-		<cfelseif NOT isValid("integer", arguments.subCategoryId)>
+		<cfif len(trim(arguments.subCategoryId)) AND isValid("integer", arguments.subCategoryId) EQ false>
 			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		</cfif>
+
+		<!--- Product ID Validation --->
+		<cfif len(trim(arguments.productId)) AND isValid("integer", arguments.productId) EQ false>
+			<cfset local.response["message"] &= "Product Id should be an integer">
+		</cfif>
+
+		<!--- Orderby Validation --->
+		<cfif NOT arrayContainsNoCase(["asc",  "desc", ""], arguments.sort)>
+			<cfset local.response["message"] &= "Sort value should either be asc or desc">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -531,9 +531,12 @@
 			<cfif arguments.random EQ 1>
 				ORDER BY
 					RAND()
+			<cfelseif len(trim(arguments.sort))>
+				ORDER BY
+					p.fldPrice #arguments.sort#
 			</cfif>
 			<cfif len(trim(arguments.limit))>
-				LIMIT <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
+				LIMIT <cfqueryparam value = "#val(arguments.limit)#" cfsqltype = "integer">
 			</cfif>
 		</cfquery>
 
