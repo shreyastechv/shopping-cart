@@ -27,7 +27,7 @@
 	<!--- Main Content --->
 	<div class="d-flex flex-column">
 		<cfif structKeyExists(variables, "qrySubCategories")>
-			<!--- Category Page --->
+			<!--- Category Listing --->
 			<cfloop query="variables.qrySubCategories">
 				<a href="products.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
 				<cfset local.qryProducts = application.shoppingCart.getProducts(
@@ -38,7 +38,7 @@
 				<cf_productlist qryProducts="#local.qryProducts#">
 			</cfloop>
 		<cfelse>
-			<!--- Sub Category Page --->
+			<!--- Sub Category Listing --->
 			<cf_productlist qryProducts="#variables.qryProducts#">
 		</cfif>
 	</div>
