@@ -1,3 +1,4 @@
+<!--- Attribute Params --->
 <cfparam name="attributes.qryProducts" default="">
 
 <cfoutput>
@@ -7,6 +8,7 @@
 				<img src="#application.productImageDirectory&attributes.qryProducts.fldProductImage#" class="productThumbnail" alt="Random Product Image">
 				<div>
 					<p class="fs-3 text-dark fw-semibold">#attributes.qryProducts.fldProductName#</p>
+					<p class="fs-5 text-success fw-semibold">Rs. #attributes.qryProducts.fldPrice#</p>
 				</div>
 			</div>
 		</cfloop>
