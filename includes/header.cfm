@@ -15,7 +15,7 @@
 		<cfset variables.qryCategories = application.shoppingCart.getCategories()>
 
 		<body>
-			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success ps-2">
+			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2">
 				<a class="d-flex align-items-center text-decoration-none" href="/">
 					<img class="p-2 me-2" src="assets/images/shopping-cart-logo.png" height="45" alt="Logo Image">
 					<div class="text-white fw-semibold">SHOPPING CART</div>
@@ -47,7 +47,7 @@
 				</nav>
 			</header>
 
-			<div class="border-bottom border-success-subtle">
+			<div class="border-bottom border-success-subtle shadow-sm">
 				<cfif (structKeyExists(session, "roleId") EQ false) OR structKeyExists(session, "roleId") AND session.roleId NEQ 1>
 					<cfif NOT arrayContainsNoCase(["/login.cfm", "/signup.cfm"], cgi.SCRIPT_NAME)>
 						<nav class="navbar navbar-expand-lg bg-body-tertiary">
