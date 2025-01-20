@@ -1,4 +1,7 @@
-<cfset variables.arrayRandomProducts = application.shoppingCart.getRandomProducts()>
+<cfset variables.qryRandomProducts = application.shoppingCart.getProducts(
+	random = 1,
+	limit = 12
+)>
 
 <cfoutput>
 	<!--- Main Content --->
@@ -9,11 +12,11 @@
 	<!--- Random Products --->
 	<div class="h2 px-2 pt-3 pb-1">Random Products</div>
 	<div class="d-flex flex-wrap px-3 py-1">
-		<cfloop array="#variables.arrayRandomProducts#" item="local.product">
+		<cfloop query="#variables.qryRandomProducts#">
 			<div class="w-16 d-flex flex-column align-items-center border rounded border-dark mb-3">
-				<img src="#application.productImageDirectory&local.product.imageFile#" class="productThumbnail" alt="Random Product Image">
+				<img src="#application.productImageDirectory&variables.qryRandomProducts.fldProductImage#" class="productThumbnail" alt="Random Product Image">
 				<div>
-					<p class="fs-3 text-dark fw-semibold">#local.product.productName#</p>
+					<p class="fs-3 text-dark fw-semibold">#variables.qryRandomProducts.fldProductName#</p>
 				</div>
 			</div>
 		</cfloop>

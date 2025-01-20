@@ -472,8 +472,8 @@
 	</cffunction>
 
 	<cffunction name="getProducts" access="remote" returnType="query" returnFormat="json">
-		<cfargument name="subCategoryId" type="string" required=true>
-		<cfargument name="productId" type="string" required=false default="">
+		<cfargument name="subCategoryId" type="string" required=false default="0">
+		<cfargument name="productId" type="string" required=false default="0">
 		<cfargument name="random" type="string" required=false default="0">
 		<cfargument name="limit" type="string" required="false" default="">
 
@@ -519,11 +519,15 @@
 				AND i.fldActive = 1
 				AND i.fldDefaultImage = 1
 			WHERE
-				p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
-				<cfif len(trim(arguments.productId))>
-					AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+				<cfif len(trim(arguments.subCategoryId)) AND arguments.subCategoryId NEQ 0>
+					p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
+					AND p.fldActive = 1
+				<cfelseif len(trim(arguments.productId)) AND arguments.productId NEQ 0>
+					p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+					AND p.fldActive = 1
+				<cfelse>
+					p.fldActive = 1
 				</cfif>
-				AND p.fldActive = 1
 			<cfif arguments.random EQ 1>
 				ORDER BY
 					RAND()
@@ -534,36 +538,6 @@
 		</cfquery>
 
 		<cfreturn local.qryGetProducts>
-	</cffunction>
-
-	<cffunction name="getRandomProducts" access="public" returnType="array">
-		<cfset local.arrayRandomProducts = []>
-
-		<cfquery name="local.qryRandomProducts" dataSource="shoppingCart">
-			SELECT
-				p.fldProduct_Id,
-				p.fldProductName,
-				i.fldImageFileName
-			FROM
-				tblProduct p
-				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId AND i.fldDefaultImage = 1 AND i.fldActive = 1
-			WHERE
-				p.fldActive = 1
-			ORDER BY
-				RAND()
-			LIMIT 12
-		</cfquery>
-
-		<cfloop query="local.qryRandomProducts">
-			<cfset local.structRandomProducts = {
-				"productId" = local.qryRandomProducts.fldProduct_Id,
-				"productName" = local.qryRandomProducts.fldProductName,
-				"imageFile" = local.qryRandomProducts.fldImageFileName
-			}>
-			<cfset arrayAppend(local.arrayRandomProducts, local.structRandomProducts)>
-		</cfloop>
-
-		<cfreturn local.arrayRandomProducts>
 	</cffunction>
 
 	<cffunction name="getBrands" access="public" returnType="query">
