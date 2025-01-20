@@ -12,7 +12,7 @@ function createSubCategoryItem(subCategoryId, subCategoryName) {
 				<button class="btn btn-lg" value="${subCategoryId}" onclick="deleteSubCategory()">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
-				<a class="btn btn-lg" href="productEdit.cfm?subCategoryId=${subCategoryId}&subCategoryName=${subCategoryName}&categoryId=${urlCategoryId}&categoryName=${urlCategoryName}">
+				<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=${subCategoryId}&subCategoryName=${subCategoryName}&categoryId=${urlCategoryId}&categoryName=${urlCategoryName}">
 					<i class="fa-solid fa-chevron-right"></i>
 				</a>
 			</div>

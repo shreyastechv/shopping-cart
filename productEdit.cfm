@@ -19,7 +19,7 @@
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
 			<div id="productMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
 				<div class="d-flex justify-content-between align-items-center mb-4">
-					<a href="subCategory.cfm?categoryId=#url.categoryId#&categoryName=#url.categoryName#" class="btn">
+					<a href="/subCategory.cfm?categoryId=#url.categoryId#&categoryName=#url.categoryName#" class="btn">
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">

@@ -15,7 +15,7 @@
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
 			<div id="subCategoryMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
 				<div class="d-flex justify-content-between align-items-center mb-4">
-					<a href="adminDashboard.cfm" class="btn">
+					<a href="/adminDashboard.cfm" class="btn">
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">
@@ -36,7 +36,7 @@
 							<button class="btn btn-lg" onclick="deleteSubCategory(#variables.qrySubCategories.fldSubCategory_Id#)">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
-							<a class="btn btn-lg" href="productEdit.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#&subCategoryName=#variables.qrySubCategories.fldSubCategoryName#&categoryId=#url.categoryId#&categoryName=#url.categoryName#">
+							<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#&subCategoryName=#variables.qrySubCategories.fldSubCategoryName#&categoryId=#url.categoryId#&categoryName=#url.categoryName#">
 								<i class="fa-solid fa-chevron-right"></i>
 							</a>
 						</div>

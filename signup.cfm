@@ -53,7 +53,7 @@
 				<button type="submit" id="signupBtn" name="signupBtn" class="btn btn-success w-100 rounded-pill">SIGN UP</button>
 			</form>
 			<div class="text-center mt-3">
-				Already have an account? <a class="text-success text-decoration-none" href="login.cfm">Login Here</a>
+				Already have an account? <a class="text-success text-decoration-none" href="/login.cfm">Login Here</a>
 			</div>
 		</div>
 	</div>

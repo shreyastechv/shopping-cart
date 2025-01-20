@@ -29,7 +29,7 @@
 		<cfif structKeyExists(variables, "qrySubCategories")>
 			<!--- Category Listing --->
 			<cfloop query="variables.qrySubCategories">
-				<a href="products.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
+				<a href="/products.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
 				<cfset local.qryProducts = application.shoppingCart.getProducts(
 					subCategoryId = variables.qrySubCategories.fldSubCategory_Id,
 					random = 1,
