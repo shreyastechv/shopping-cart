@@ -474,8 +474,10 @@
 	<cffunction name="getProducts" access="remote" returnType="query" returnFormat="json">
 		<cfargument name="subCategoryId" type="string" required=true>
 		<cfargument name="productId" type="string" required=false default="">
+		<cfargument name="random" type="string" required=false default="0">
+		<cfargument name="limit" type="string" required="false" default="">
 
-		<cfset local.response = {}>
+ 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
 		<!--- SubCategory Id Validation --->
@@ -522,6 +524,13 @@
 					AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
 				</cfif>
 				AND p.fldActive = 1
+			<cfif arguments.random EQ 1>
+				ORDER BY
+					RAND()
+			</cfif>
+			<cfif len(trim(arguments.limit))>
+				LIMIT <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
+			</cfif>
 		</cfquery>
 
 		<cfreturn local.qryGetProducts>
