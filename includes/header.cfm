@@ -47,7 +47,7 @@
 				</nav>
 			</header>
 
-			<div>
+			<div class="border-bottom border-success-subtle">
 				<cfif (structKeyExists(session, "roleId") EQ false) OR structKeyExists(session, "roleId") AND session.roleId NEQ 1>
 					<cfif NOT arrayContainsNoCase(["/login.cfm", "/signup.cfm"], cgi.SCRIPT_NAME)>
 						<nav class="navbar navbar-expand-lg bg-body-tertiary">
