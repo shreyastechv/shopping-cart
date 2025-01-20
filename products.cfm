@@ -22,7 +22,6 @@
 	)>
 </cfif>
 
-
 <cfoutput>
 	<!--- Main Content --->
 	<div class="d-flex flex-column">
@@ -38,6 +37,12 @@
 				<cf_productlist qryProducts="#local.qryProducts#">
 			</cfloop>
 		<cfelse>
+			<!--- Sorting --->
+			<div class="d-flex gap-2 px-3 py-2">
+				<a class="text-decoration-none" href="/products.cfm?subCategoryId=#url.subCategoryId#&sort=asc">Price: Low to High</a>
+				<a class="text-decoration-none" href="/products.cfm?subCategoryId=#url.subCategoryId#&sort=desc">Price: High to Low</a>
+			</div>
+
 			<!--- Sub Category Listing --->
 			<cf_productlist qryProducts="#variables.qryProducts#">
 		</cfif>
