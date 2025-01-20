@@ -15,7 +15,7 @@
 		<cfset variables.qryCategories = application.shoppingCart.getCategories()>
 
 		<body>
-			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success ps-2 pe-3">
+			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success ps-2">
 				<a class="d-flex align-items-center text-decoration-none" href="/">
 					<img class="p-2 me-2" src="assets/images/shopping-cart-logo.png" height="45" alt="Logo Image">
 					<div class="text-white fw-semibold">SHOPPING CART</div>
