@@ -4,6 +4,7 @@
 <!--- URL params --->
 <cfparam name="url.categoryId" default="0">
 <cfparam name="url.subCategoryId" default="0">
+<cfparam name="url.sort" default="">
 
 <!--- Check url params --->
 <cfif url.categoryId EQ 0 AND url.subCategoryId EQ 0>
@@ -16,8 +17,8 @@
 	<!--- Get Data if subCategoryId is given --->
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(
 		subCategoryId = url.subCategoryId,
-		random = 1,
-		limit = 8
+		limit = 8,
+		sort = url.sort
 	)>
 </cfif>
 
@@ -26,8 +27,9 @@
 	<!--- Main Content --->
 	<div class="d-flex flex-column">
 		<cfif structKeyExists(variables, "qrySubCategories")>
+			<!--- Category Page --->
 			<cfloop query="variables.qrySubCategories">
-				<div class="h4">#variables.qrySubCategories.fldSubCategoryName#</div>
+				<a href="products.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
 				<cfset local.qryProducts = application.shoppingCart.getProducts(
 					subCategoryId = variables.qrySubCategories.fldSubCategory_Id,
 					random = 1,
@@ -36,6 +38,7 @@
 				<cf_productlist qryProducts="#local.qryProducts#">
 			</cfloop>
 		<cfelse>
+			<!--- Sub Category Page --->
 			<cf_productlist qryProducts="#variables.qryProducts#">
 		</cfif>
 	</div>
