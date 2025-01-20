@@ -28,33 +28,15 @@
 		<cfif structKeyExists(variables, "qrySubCategories")>
 			<cfloop query="variables.qrySubCategories">
 				<div class="h4">#variables.qrySubCategories.fldSubCategoryName#</div>
-				<cfset variables.qryProducts = application.shoppingCart.getProducts(
+				<cfset local.qryProducts = application.shoppingCart.getProducts(
 					subCategoryId = variables.qrySubCategories.fldSubCategory_Id,
 					random = 1,
 					limit = 4
 				)>
-				<div class="d-flex flex-wrap px-3 py-1">
-					<cfloop query="variables.qryProducts">
-						<div class="w-16 d-flex flex-column align-items-center border rounded border-dark mb-3">
-							<img src="#application.productImageDirectory&variables.qryProducts.fldProductImage#" class="productThumbnail" alt="Random Product Image">
-							<div>
-								<p class="fs-3 text-dark fw-semibold">#variables.qryProducts.fldProductName#</p>
-							</div>
-						</div>
-					</cfloop>
-				</div>
+				<cf_productlist qryProducts="#local.qryProducts#">
 			</cfloop>
 		<cfelse>
-			<div class="d-flex flex-wrap px-3 py-1">
-				<cfloop query="variables.qryProducts">
-					<div class="w-16 d-flex flex-column align-items-center border rounded border-dark mb-3">
-						<img src="#application.productImageDirectory&variables.qryProducts.fldProductImage#" class="productThumbnail" alt="Random Product Image">
-						<div>
-							<p class="fs-3 text-dark fw-semibold">#variables.qryProducts.fldProductName#</p>
-						</div>
-					</div>
-				</cfloop>
-			</div>
+			<cf_productlist qryProducts="#variables.qryProducts#">
 		</cfif>
 	</div>
 </cfoutput>
