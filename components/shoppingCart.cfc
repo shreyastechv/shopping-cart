@@ -477,6 +477,8 @@
 		<cfargument name="random" type="string" required=false default="0">
 		<cfargument name="limit" type="string" required="false" default="">
 		<cfargument name="sort" type="string" required="false" default="">
+		<cfargument name="min" type="string" required="false" default="0">
+		<cfargument name="max" type="string" required="false" default="">
 
  		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
@@ -494,6 +496,11 @@
 		<!--- Orderby Validation --->
 		<cfif NOT arrayContainsNoCase(["asc",  "desc", ""], arguments.sort)>
 			<cfset local.response["message"] &= "Sort value should either be asc or desc">
+		</cfif>
+
+		<!--- Min Max Validation --->
+		<cfif len(trim(arguments.max)) AND arguments.max LT arguments.min>
+			<cfset local.response["message"] &= "Max should be greater than or equal to Min">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -519,15 +526,17 @@
 				AND i.fldActive = 1
 				AND i.fldDefaultImage = 1
 			WHERE
-				<cfif len(trim(arguments.subCategoryId)) AND arguments.subCategoryId NEQ 0>
-					p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
-					AND p.fldActive = 1
-				<cfelseif len(trim(arguments.productId)) AND arguments.productId NEQ 0>
-					p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
-					AND p.fldActive = 1
-				<cfelse>
-					p.fldActive = 1
-				</cfif>
+			p.fldActive = 1
+			<cfif len(trim(arguments.subCategoryId)) AND arguments.subCategoryId NEQ 0>
+				AND p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
+			<cfelseif len(trim(arguments.productId)) AND arguments.productId NEQ 0>
+				AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+			</cfif>
+
+			<cfif len(trim(arguments.max))>
+				AND p.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
+					AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
+			</cfif>
 			<cfif arguments.random EQ 1>
 				ORDER BY
 					RAND()

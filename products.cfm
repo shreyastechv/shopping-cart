@@ -5,6 +5,8 @@
 <cfparam name="url.categoryId" default="0">
 <cfparam name="url.subCategoryId" default="0">
 <cfparam name="url.sort" default="">
+<cfparam name="url.min" default="0">
+<cfparam name="url.max" default="">
 
 <!--- Check url params --->
 <cfif url.categoryId EQ 0 AND url.subCategoryId EQ 0>
@@ -18,6 +20,8 @@
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(
 		subCategoryId = url.subCategoryId,
 		limit = 8,
+		min = url.min,
+		max = (len(trim(url.max)) ? val(url.max) : ""),
 		sort = url.sort
 	)>
 </cfif>
