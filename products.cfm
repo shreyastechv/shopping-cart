@@ -5,17 +5,19 @@
 <cfparam name="url.categoryId" default="0">
 <cfparam name="url.subCategoryId" default="0">
 <cfparam name="url.sort" default="">
-<cfparam name="url.filterRange" default="">
-<cfparam name="url.min" default="0">
-<cfparam name="url.max" default="">
 <cfparam name="url.search" default="">
 
+<!--- Form Variables --->
+<cfparam name="form.filterRange" default="">
+<cfparam name="form.min" default="0">
+<cfparam name="form.max" default="">
+
 <!--- Check filtering --->
-<cfif len(trim(url.filterRange))>
-	<cfset variables.rangeArray = ListToArray(url.filterRange, "-")>
+<cfif len(trim(form.filterRange))>
+	<cfset variables.rangeArray = ListToArray(form.filterRange, "-")>
 	<cfif arrayLen(variables.rangeArray) GTE 2 AND (variables.rangeArray[1] GTE 0 AND variables.rangeArray[2] GT variables.rangeArray[1])>
-		<cfset url.min = variables.rangeArray[1]>
-		<cfset url.max = variables.rangeArray[2]>
+		<cfset form.min = variables.rangeArray[1]>
+		<cfset form.max = variables.rangeArray[2]>
 	</cfif>
 </cfif>
 
@@ -28,8 +30,8 @@
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(
 		subCategoryId = url.subCategoryId,
 		limit = 8,
-		min = url.min,
-		max = (len(trim(url.max)) ? val(url.max) : ""),
+		min = form.min,
+		max = (len(trim(form.max)) ? val(form.max) : ""),
 		sort = url.sort
 	)>
 <cfelseif len(trim(url.search))>
@@ -79,7 +81,7 @@
 						</button>
 						<ul class="dropdown-menu p-2">
 							<div class="text-center">Price Filter</div>
-							<form id="filterForm" name="filterForm" method="get">
+							<form id="filterForm" name="filterForm" method="post">
 								<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
 								<li class="d-flex flex-column justify-content-start">
 									<div>
