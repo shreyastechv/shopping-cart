@@ -12,7 +12,9 @@
 			<script src="/assets/js/header.js"></script>
 		</head>
 
+		<!--- Variables --->
 		<cfset variables.qryCategories = application.shoppingCart.getCategories()>
+		<cfset variables.cartItems = application.shoppingCart.getCart()>
 
 		<body>
 			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2">
@@ -31,6 +33,17 @@
 					</form>
 				</cfif>
 				<nav class="d-flex align-items-center justify-content-between gap-4">
+					<!--- Cart Button --->
+					<button type="button" class="btn btn-outline-light btn-sm position-relative" onclick="location.href='/cart.cfm'">
+						<i class="fa-solid fa-cart-shopping"></i>
+						Cart
+						<cfif structKeyExists(session, "userId")>
+							<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light">
+								#arrayLen(variables.cartItems)#
+							<span class="visually-hidden">products in cart</span></span>
+						</cfif>
+					</button>
+
 					<cfif structKeyExists(session, "userId")>
 						<button class="btn text-white text-decoration-none" onclick="logOut()">
 							<i class="fa-solid fa-right-from-bracket"></i>

@@ -887,6 +887,33 @@
 		</cfquery>
 	</cffunction>
 
+	<cffunction name="getCart" access="public" returnType="array">
+		<cfset local.cartItems = []>
+
+		<!--- UserId Validation --->
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfreturn local.cartItems>
+		</cfif>
+
+		<cfquery name="local.qryGetCart">
+			SELECT
+				fldCart_Id
+			FROM
+				tblCart
+			WHERE
+				fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+		</cfquery>
+
+		<cfloop query="local.qryGetCart">
+			<cfset local.item = {
+				"cartId" = local.qryGetCart.fldCart_Id
+			}>
+			<cfset arrayAppend(local.cartItems, local.item)>
+		</cfloop>
+
+		<cfreturn local.cartItems>
+	</cffunction>
+
 	<cffunction name="logOut" access="remote" returnType="void">
 		<cfset structClear(session)>
 	</cffunction>
