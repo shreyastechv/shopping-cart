@@ -11,6 +11,18 @@
 	<cflocation url="/" addToken="false">
 </cfif>
 
+<!--- Handle Add to Cart --->
+<cfif structKeyExists(form, "addToCart")>
+	<cfif structKeyExists(session, "useId")>
+		<cfset application.shoppingCart.addToCart(
+			productId = url.productId
+		)>
+		<cflocation url="/productPage.cfm?productId=#url.productId#" addToken="true">
+	<cfelse>
+		<cflocation url="/login.cfm" addToken="true">
+	</cfif>
+</cfif>
+
 <cfoutput>
 	<div class="container mt-5">
 		<div class="row">
@@ -45,8 +57,10 @@
 
 				<!-- Action Buttons -->
 				<div class="mt-4">
-					<button class="btn btn-primary btn-lg mr-3">Add to Cart</button>
-					<button class="btn btn-danger btn-lg">Buy Now</button>
+					<form method="post">
+						<button type="submit" name="addToCart" class="btn btn-primary btn-lg mr-3">Add to Cart</button>
+						<button type="submit" name="buyNow" class="btn btn-danger btn-lg">Buy Now</button>
+					</form>
 				</div>
 			</div>
 		</div>

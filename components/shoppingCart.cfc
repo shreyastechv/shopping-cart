@@ -914,6 +914,50 @@
 		<cfreturn local.cartItems>
 	</cffunction>
 
+	<cffunction name="addToCart" access="remote" returnType="void">
+		<cfargument name="productId" type="string" required=true>
+
+		<!--- Check whether the item is present in cart --->
+		<cfquery name="local.qryCheckCart">
+			SELECT
+				fldCart_Id,
+				fldQuantity
+			FROM
+				tblCart
+			WHERE
+				fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+				AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+		</cfquery>
+
+		<cfif local.qryCheckCart.recordCount>
+			<!--- Update cart in case it already have the product --->
+			<cfquery name="local.qryEditCart">
+				UPDATE
+					tblCart
+				SET
+					fldQuantity = #local.qryCheckCart.fldQuantity + 1#
+				WHERE
+					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+					AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+			</cfquery>
+		<cfelse>
+			<!--- Add product to cart in case it do not have it already --->
+			<cfquery name="local.qryAddToCart">
+				INSERT INTO
+					tblCart (
+						fldUserId,
+						fldProductId,
+						fldQuantity
+					)
+				VALUES (
+					<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
+					<cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">,
+					1
+				)
+			</cfquery>
+		</cfif>
+	</cffunction>
+
 	<cffunction name="logOut" access="remote" returnType="void">
 		<cfset structClear(session)>
 	</cffunction>
