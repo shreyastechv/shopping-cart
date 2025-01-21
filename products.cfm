@@ -8,6 +8,7 @@
 <cfparam name="url.filterRange" default="">
 <cfparam name="url.min" default="0">
 <cfparam name="url.max" default="">
+<cfparam name="url.search" default="">
 
 <!--- Check filtering --->
 <cfif len(trim(url.filterRange))>
@@ -17,14 +18,12 @@
 		<cfset url.max = variables.rangeArray[2]>
 	</cfif>
 </cfif>
+
 <!--- Check other url params --->
-<cfif url.categoryId EQ 0 AND url.subCategoryId EQ 0>
-	<!--- Exit if categoryId and subCategoryId are not given --->
-	<cflocation  url="/" addToken="false">
-<cfelseif url.categoryId NEQ 0>
+<cfif url.categoryId NEQ 0>
 	<!--- Get Data if categoryId is given --->
 	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
-<cfelse>
+<cfelseif url.subCategoryId NEQ 0>
 	<!--- Get Data if subCategoryId is given --->
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(
 		subCategoryId = url.subCategoryId,
@@ -33,6 +32,14 @@
 		max = (len(trim(url.max)) ? val(url.max) : ""),
 		sort = url.sort
 	)>
+<cfelseif len(trim(url.search))>
+	<!--- Get Data if search is given --->
+	<cfset variables.qryProducts = application.shoppingCart.getProducts(
+		searchTerm = url.search
+	)>
+<cfelse>
+	<!--- Exit if Required URL Params are not passed --->
+	<cflocation url="/" addToken="false">
 </cfif>
 
 <cfoutput>
@@ -51,49 +58,57 @@
 			</cfloop>
 		<cfelse>
 			<div class="d-flex justify-content-between p-1">
-				<!--- Sorting --->
-				<div class="d-flex gap-2 px-3 py-2">
-					<a class="text-decoration-none" href="/products.cfm?subCategoryId=#url.subCategoryId#&sort=asc">Price: Low to High</a>
-					<a class="text-decoration-none" href="/products.cfm?subCategoryId=#url.subCategoryId#&sort=desc">Price: High to Low</a>
-				</div>
 
-				<!--- Filtering --->
-				<div class="filter dropdown">
-					<button class="btn btn-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<i class="fa-solid fa-filter"></i>
-						Filter
-					</button>
-					<ul class="dropdown-menu p-2">
-						<div class="text-center">Price Filter</div>
-						<form id="filterForm" name="filterForm" method="get">
-							<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
-							<li class="d-flex flex-column justify-content-start">
-								<div>
-									<input type="radio" name="filterRange" value="0-100"> 0 - 100
-								</div>
-								<div>
-									<input type="radio" name="filterRange" value="101-500"> 101 - 500
-								</div>
-								<div>
-									<input type="radio" name="filterRange" value="501-1000"> 501 - 1000
-								</div>
-								<div>
-									<input type="radio" name="filterRange" value="1001-2000"> 1001 - 2000
-								</div>
-								<div>
-									<input type="radio" name="filterRange" value="2001-5000"> 2001 - 5000
-								</div>
-							</li>
-							<li class="d-flex m-1">
-								<input type="number" class="form-control" id="min" name="min" min="0" placeholder="Min">
-								<input type="number" class="form-control" id="max" name="max" placeholder="Max">
-							<li>
-							<li>
-								<button class="btn btn-success" type="submit" id="filterBtn">Apply</button>
-							</li>
-						</form>
-					</ul>
-				</div>
+				<!--- Sorting and Filtering only shown if search results are not shown --->
+				<cfif len(trim(url.search))>
+					<div class="fs-4 fw-semibold px-2">
+						Search Results for '#url.search#'
+					</div>
+				<cfelse>
+					<!--- Sorting --->
+					<div class="d-flex gap-2 px-3 py-2">
+						<a class="text-decoration-none" href="/products.cfm?subCategoryId=#url.subCategoryId#&sort=asc">Price: Low to High</a>
+						<a class="text-decoration-none" href="/products.cfm?subCategoryId=#url.subCategoryId#&sort=desc">Price: High to Low</a>
+					</div>
+
+					<!--- Filtering --->
+					<div class="filter dropdown">
+						<button class="btn btn-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="fa-solid fa-filter"></i>
+							Filter
+						</button>
+						<ul class="dropdown-menu p-2">
+							<div class="text-center">Price Filter</div>
+							<form id="filterForm" name="filterForm" method="get">
+								<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
+								<li class="d-flex flex-column justify-content-start">
+									<div>
+										<input type="radio" name="filterRange" value="0-100"> 0 - 100
+									</div>
+									<div>
+										<input type="radio" name="filterRange" value="101-500"> 101 - 500
+									</div>
+									<div>
+										<input type="radio" name="filterRange" value="501-1000"> 501 - 1000
+									</div>
+									<div>
+										<input type="radio" name="filterRange" value="1001-2000"> 1001 - 2000
+									</div>
+									<div>
+										<input type="radio" name="filterRange" value="2001-5000"> 2001 - 5000
+									</div>
+								</li>
+								<li class="d-flex m-1">
+									<input type="number" class="form-control" id="min" name="min" min="0" placeholder="Min">
+									<input type="number" class="form-control" id="max" name="max" placeholder="Max">
+								<li>
+								<li>
+									<button class="btn btn-success" type="submit" id="filterBtn">Apply</button>
+								</li>
+							</form>
+						</ul>
+					</div>
+				</cfif>
 			</div>
 
 			<!--- Sub Category Listing --->

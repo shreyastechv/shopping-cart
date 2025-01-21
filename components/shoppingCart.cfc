@@ -479,6 +479,7 @@
 		<cfargument name="sort" type="string" required="false" default="">
 		<cfargument name="min" type="string" required="false" default="0">
 		<cfargument name="max" type="string" required="false" default="">
+		<cfargument name="searchTerm" type="string" required="false" default="">
 
  		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
@@ -526,17 +527,23 @@
 				AND i.fldActive = 1
 				AND i.fldDefaultImage = 1
 			WHERE
-			p.fldActive = 1
-			<cfif len(trim(arguments.subCategoryId)) AND arguments.subCategoryId NEQ 0>
-				AND p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
-			<cfelseif len(trim(arguments.productId)) AND arguments.productId NEQ 0>
-				AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
-			</cfif>
+				p.fldActive = 1
+				<cfif len(trim(arguments.subCategoryId)) AND arguments.subCategoryId NEQ 0>
+					AND p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
+				<cfelseif len(trim(arguments.productId)) AND arguments.productId NEQ 0>
+					AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+				</cfif>
 
-			<cfif len(trim(arguments.max))>
-				AND p.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
-					AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
-			</cfif>
+				<cfif len(trim(arguments.max))>
+					AND p.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
+						AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
+				</cfif>
+
+				<cfif len(trim(arguments.searchTerm))>
+					AND (p.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+						OR p.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
+				</cfif>
+
 			<cfif arguments.random EQ 1>
 				ORDER BY
 					RAND()
