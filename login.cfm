@@ -33,7 +33,7 @@
 				<button type="submit" id="loginBtn" name="loginBtn" class="btn btn-success w-100 rounded-pill">LOGIN</button>
 			</form>
 			<div class="text-center mt-3">
-				Don't have an account? <a class="text-success text-decoration-none" href="signup.cfm">Register Here</a>
+				Don't have an account? <a class="text-success text-decoration-none" href="/signup.cfm">Register Here</a>
 			</div>
 		</div>
 	</div>

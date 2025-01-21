@@ -8,6 +8,40 @@
 		<cfset application.productImageDirectory = "/assets/images/productImages/">
 		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
 
+		<!--- Map pages to title, css and script path --->
+		<cfset application.pageDetailsMapping = {
+			"/index.cfm": {
+				"pageTitle": "Home Page",
+				"cssPath": "assets/css/index.css",
+				"scriptPath": "assets/js/index.js"
+			},
+			"/login.cfm": {
+				"pageTitle": "Log In",
+				"cssPath": "",
+				"scriptPath": "assets/js/login.js"
+			},
+			"/signup.cfm": {
+				"pageTitle": "Sign Up",
+				"cssPath": "",
+				"scriptPath": "assets/js/signup.js"
+			},
+			"/adminDashboard.cfm": {
+				"pageTitle": "Admin Dashboard",
+				"cssPath": "",
+				"scriptPath": "assets/js/adminDashboard.js"
+			},
+			"/subCategory.cfm": {
+				"pageTitle": "Sub Category",
+				"cssPath": "",
+				"scriptPath": "assets/js/subCategory.js"
+			},
+			"/productEdit.cfm": {
+				"pageTitle": "Product Edit",
+				"cssPath": "",
+				"scriptPath": "assets/js/productEdit.js"
+			}
+		}>
+
 		<!--- Create images dir if not exists --->
 		<cfif NOT directoryExists(expandPath(application.productImageDirectory))>
 			<cfdirectory action="create" directory="#expandPath(application.productImageDirectory)#">
@@ -55,45 +89,11 @@
 			<cfset onApplicationStart()>
 		</cfif>
 
-		<!--- Map pages to title, css and script path --->
-		<cfset local.pageDetailsMapping = {
-			"/index.cfm": {
-				"pageTitle": "Home Page",
-				"cssPath": "assets/css/index.css",
-				"scriptPath": "assets/js/index.js"
-			},
-			"/login.cfm": {
-				"pageTitle": "Log In",
-				"cssPath": "",
-				"scriptPath": "assets/js/login.js"
-			},
-			"/signup.cfm": {
-				"pageTitle": "Sign Up",
-				"cssPath": "",
-				"scriptPath": "assets/js/signup.js"
-			},
-			"/adminDashboard.cfm": {
-				"pageTitle": "Admin Dashboard",
-				"cssPath": "",
-				"scriptPath": "assets/js/adminDashboard.js"
-			},
-			"/subCategory.cfm": {
-				"pageTitle": "Sub Category",
-				"cssPath": "",
-				"scriptPath": "assets/js/subCategory.js"
-			},
-			"/productEdit.cfm": {
-				"pageTitle": "Product Edit",
-				"cssPath": "",
-				"scriptPath": "assets/js/productEdit.js"
-			}
-		}>
-
 		<!--- Set page title and script tag path dynamically --->
-		<cfif StructKeyExists(local.pageDetailsMapping, arguments.targetPage)>
-			<cfset application.pageTitle = local.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
-			<cfset application.scriptPath = local.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
-			<cfset application.cssPath = local.pageDetailsMapping[arguments.targetPage]["cssPath"]>
+		<cfif StructKeyExists(application.pageDetailsMapping, arguments.targetPage)>
+			<cfset application.pageTitle = application.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
+			<cfset application.scriptPath = application.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
+			<cfset application.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
 		<cfelse>
 			<cfset application.pageTitle = "Title">
 			<cfset application.scriptPath = "">

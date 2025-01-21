@@ -472,26 +472,35 @@
 	</cffunction>
 
 	<cffunction name="getProducts" access="remote" returnType="query" returnFormat="json">
-		<cfargument name="subCategoryId" type="string" required=true>
+		<cfargument name="subCategoryId" type="string" required=false default="">
 		<cfargument name="productId" type="string" required=false default="">
+		<cfargument name="random" type="string" required=false default="0">
+		<cfargument name="limit" type="string" required="false" default="">
+		<cfargument name="sort" type="string" required="false" default="">
+		<cfargument name="min" type="string" required="false" default="0">
+		<cfargument name="max" type="string" required="false" default="">
 
-		<cfset local.response = {}>
+ 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
 		<!--- SubCategory Id Validation --->
-		<cfif len(arguments.subCategoryId) EQ 0>
-			<cfif structKeyExists(arguments, "productId")>
-				<!--- Product Id Validation --->
-				<cfif len(arguments.productId) EQ 0>
-					<cfset local.response["message"] &= "Product Id should not be empty. ">
-				<cfelseif NOT isValid("integer", arguments.productId)>
-					<cfset local.response["message"] &= "Product Id should be an integer">
-				</cfif>
-			<cfelse>
-				<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
-			</cfif>
-		<cfelseif NOT isValid("integer", arguments.subCategoryId)>
+		<cfif len(trim(arguments.subCategoryId)) AND isValid("integer", arguments.subCategoryId) EQ false>
 			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		</cfif>
+
+		<!--- Product ID Validation --->
+		<cfif len(trim(arguments.productId)) AND isValid("integer", arguments.productId) EQ false>
+			<cfset local.response["message"] &= "Product Id should be an integer">
+		</cfif>
+
+		<!--- Orderby Validation --->
+		<cfif NOT arrayContainsNoCase(["asc",  "desc", ""], arguments.sort)>
+			<cfset local.response["message"] &= "Sort value should either be asc or desc">
+		</cfif>
+
+		<!--- Min Max Validation --->
+		<cfif len(trim(arguments.max)) AND arguments.max LT arguments.min>
+			<cfset local.response["message"] &= "Max should be greater than or equal to Min">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -517,44 +526,30 @@
 				AND i.fldActive = 1
 				AND i.fldDefaultImage = 1
 			WHERE
-				p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
-				<cfif len(trim(arguments.productId))>
-					AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
-				</cfif>
-				AND p.fldActive = 1
+			p.fldActive = 1
+			<cfif len(trim(arguments.subCategoryId)) AND arguments.subCategoryId NEQ 0>
+				AND p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
+			<cfelseif len(trim(arguments.productId)) AND arguments.productId NEQ 0>
+				AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+			</cfif>
+
+			<cfif len(trim(arguments.max))>
+				AND p.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
+					AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
+			</cfif>
+			<cfif arguments.random EQ 1>
+				ORDER BY
+					RAND()
+			<cfelseif len(trim(arguments.sort))>
+				ORDER BY
+					p.fldPrice #arguments.sort#
+			</cfif>
+			<cfif len(trim(arguments.limit))>
+				LIMIT <cfqueryparam value = "#val(arguments.limit)#" cfsqltype = "integer">
+			</cfif>
 		</cfquery>
 
 		<cfreturn local.qryGetProducts>
-	</cffunction>
-
-	<cffunction name="getRandomProducts" access="public" returnType="array">
-		<cfset local.arrayRandomProducts = []>
-
-		<cfquery name="local.qryRandomProducts" dataSource="shoppingCart">
-			SELECT
-				p.fldProduct_Id,
-				p.fldProductName,
-				i.fldImageFileName
-			FROM
-				tblProduct p
-				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId AND i.fldDefaultImage = 1 AND i.fldActive = 1
-			WHERE
-				p.fldActive = 1
-			ORDER BY
-				RAND()
-			LIMIT 12
-		</cfquery>
-
-		<cfloop query="local.qryRandomProducts">
-			<cfset local.structRandomProducts = {
-				"productId" = local.qryRandomProducts.fldProduct_Id,
-				"productName" = local.qryRandomProducts.fldProductName,
-				"imageFile" = local.qryRandomProducts.fldImageFileName
-			}>
-			<cfset arrayAppend(local.arrayRandomProducts, local.structRandomProducts)>
-		</cfloop>
-
-		<cfreturn local.arrayRandomProducts>
 	</cffunction>
 
 	<cffunction name="getBrands" access="public" returnType="query">

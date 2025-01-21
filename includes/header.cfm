@@ -6,22 +6,22 @@
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title>#application.pageTitle# - Shopping Cart</title>
 			<link rel="icon" href="favicon.ico">
-			<link href="assets/css/bootstrap.min.css" rel="stylesheet">
-			<link href="assets/css/header.css" rel="stylesheet">
+			<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+			<link href="/assets/css/header.css" rel="stylesheet">
 			<link href="#application.cssPath#" rel="stylesheet">
-			<script src="assets/js/header.js"></script>
+			<script src="/assets/js/header.js"></script>
 		</head>
 
 		<cfset variables.qryCategories = application.shoppingCart.getCategories()>
 
 		<body>
-			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success ps-2 pe-3">
+			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2">
 				<a class="d-flex align-items-center text-decoration-none" href="/">
 					<img class="p-2 me-2" src="assets/images/shopping-cart-logo.png" height="45" alt="Logo Image">
 					<div class="text-white fw-semibold">SHOPPING CART</div>
 				</a>
 				<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-					<a class="text-white text-decoration-none fs-4" href="adminDashboard.cfm">
+					<a class="text-white text-decoration-none fs-4" href="/adminDashboard.cfm">
 						ADMIN DASHBOARD
 					</a>
 				</cfif>
@@ -33,12 +33,12 @@
 						</button>
 					<cfelse>
 						<cfif cgi.SCRIPT_NAME EQ "/login.cfm">
-							<a class="text-white text-decoration-none" href="signup.cfm">
+							<a class="text-white text-decoration-none" href="/signup.cfm">
 								<i class="fa-solid fa-user"></i>
 								Sign Up
 							</a>
 						<cfelse>
-							<a class="text-white text-decoration-none" href="login.cfm">
+							<a class="text-white text-decoration-none" href="/login.cfm">
 								<i class="fa-solid fa-right-from-bracket"></i>
 								Log In
 							</a>
@@ -47,7 +47,7 @@
 				</nav>
 			</header>
 
-			<div>
+			<div class="border-bottom border-success-subtle shadow-sm">
 				<cfif (structKeyExists(session, "roleId") EQ false) OR structKeyExists(session, "roleId") AND session.roleId NEQ 1>
 					<cfif NOT arrayContainsNoCase(["/login.cfm", "/signup.cfm"], cgi.SCRIPT_NAME)>
 						<nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -55,8 +55,7 @@
 								<ul class="navbar-nav w-100 d-flex justify-content-between">
 									<cfloop query="variables.qryCategories">
 										<li class="nav-item dropdown">
-											<a class="nav-link" href="##" role="button" data-bs-toggle="dropdown"
-												aria-expanded="false">
+											<a class="nav-link" href="/products.cfm?categoryId=#variables.qryCategories.fldCategory_Id#">
 												#variables.qryCategories.fldCategoryName#
 											</a>
 											<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(
@@ -65,7 +64,7 @@
 											<cfif variables.qrySubCategories.recordCount>
 												<ul class="dropdown-menu">
 													<cfloop query="variables.qrySubCategories">
-														<li><a class="dropdown-item" href="##">#variables.qrySubCategories.fldSubCategoryName#</a></li>
+														<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#">#variables.qrySubCategories.fldSubCategoryName#</a></li>
 													</cfloop>
 												</ul>
 											</cfif>
