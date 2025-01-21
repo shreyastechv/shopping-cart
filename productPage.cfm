@@ -40,6 +40,7 @@
 				<h1 class="display-4">#variables.qryProductInfo.fldProductName#</h1>
 				<p class="lead">#variables.qryProductInfo.fldBrandName#</p>
 				<p class="h4 text-success">Rs. #variables.qryProductInfo.fldPrice#</p>
+				<p class="h6 text-secondary">Tax: #variables.qryProductInfo.fldTax#%</p>
 				<p class="mt-4">#variables.qryProductInfo.fldDescription#</p>
 
 				<!-- Action Buttons -->
