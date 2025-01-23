@@ -38,7 +38,7 @@
 						Cart
 						<cfif structKeyExists(session, "userId")>
 							<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light">
-								#arrayLen(session.cart)#
+								#structCount(session.cart)#
 							<span class="visually-hidden">products in cart</span></span>
 						</cfif>
 					</button>

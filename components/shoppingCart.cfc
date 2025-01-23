@@ -888,8 +888,8 @@
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="getCart" access="public" returnType="array">
-		<cfset local.cartItems = []>
+	<cffunction name="getCart" access="public" returnType="struct">
+		<cfset local.cartItems = {}>
 
 		<!--- UserId Validation --->
 		<cfif NOT structKeyExists(session, "userId")>
@@ -898,7 +898,9 @@
 
 		<cfquery name="local.qryGetCart">
 			SELECT
-				fldCart_Id
+				fldCart_Id,
+				fldProductId,
+				fldQuantity
 			FROM
 				tblCart
 			WHERE
@@ -906,10 +908,10 @@
 		</cfquery>
 
 		<cfloop query="local.qryGetCart">
-			<cfset local.item = {
-				"cartId" = local.qryGetCart.fldCart_Id
+			<cfset local.cartItems[local.qryGetCart.fldProductId] = {
+				"cartId" = local.qryGetCart.fldCart_Id,
+				"quantity" = local.qryGetCart.fldProductId
 			}>
-			<cfset arrayAppend(local.cartItems, local.item)>
 		</cfloop>
 
 		<cfreturn local.cartItems>
@@ -941,9 +943,12 @@
 					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
 					AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
 			</cfquery>
+
+			<!--- Increment quantity of product in session variable --->
+			<cfset session.cart[arguments.productId].quantity += 1>
 		<cfelse>
 			<!--- Add product to cart in case it do not have it already --->
-			<cfquery name="local.qryAddToCart">
+			<cfquery name="local.qryAddToCart" result="local.resultAddToCart">
 				INSERT INTO
 					tblCart (
 						fldUserId,
@@ -956,6 +961,12 @@
 					1
 				)
 			</cfquery>
+
+			<!--- Add product to session variable --->
+			<cfset session.cart[arguments.productId] = {
+				"cartId" = local.resultAddToCart.GENERATED_KEY,
+				"quantity" = 1
+			}>
 		</cfif>
 	</cffunction>
 
