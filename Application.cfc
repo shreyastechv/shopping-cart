@@ -139,4 +139,8 @@
 		<!--- Common Footer file --->
 		<cfinclude  template="/includes/footer.cfm">
 	</cffunction>
+
+	<cffunction name="onSessionEnd" returnType="void">
+		<cfset structClear(session)>
+	</cffunction>
 </cfcomponent>
