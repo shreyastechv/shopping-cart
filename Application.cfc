@@ -82,7 +82,7 @@
 		</cfif>
 	</cffunction> --->
 
-	<cffunction name="onSessionStart" returnType="boolean">
+	<cffunction name="onSessionStart" returnType="void">
 		<cfset session.cart = []>
 	</cffunction>
 
