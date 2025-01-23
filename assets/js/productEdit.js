@@ -145,7 +145,6 @@ function showEditProductModal(productId) {
 		url: "./components/shoppingCart.cfc",
 		data: {
 			method: "getProducts",
-			subCategoryId: urlSubCategoryId,
 			productId: productId
 		},
 		success: function(response) {

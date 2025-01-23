@@ -12,7 +12,9 @@
 			<script src="/assets/js/header.js"></script>
 		</head>
 
+		<!--- Variables --->
 		<cfset variables.qryCategories = application.shoppingCart.getCategories()>
+		<cfset variables.cartItems = application.shoppingCart.getCart()>
 
 		<body>
 			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2">
@@ -24,8 +26,24 @@
 					<a class="text-white text-decoration-none fs-4" href="/adminDashboard.cfm">
 						ADMIN DASHBOARD
 					</a>
+				<cfelse>
+					<form class="d-flex p-1 w-50" method="get" action="/products.cfm">
+						<input class="form-control me-2" type="search" name="search" placeholder="Search">
+						<button class="btn btn-outline-light" type="submit">Search</button>
+					</form>
 				</cfif>
 				<nav class="d-flex align-items-center justify-content-between gap-4">
+					<!--- Cart Button --->
+					<button type="button" class="btn btn-outline-light btn-sm position-relative" onclick="location.href='/cart.cfm'">
+						<i class="fa-solid fa-cart-shopping"></i>
+						Cart
+						<cfif structKeyExists(session, "userId")>
+							<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light">
+								#arrayLen(variables.cartItems)#
+							<span class="visually-hidden">products in cart</span></span>
+						</cfif>
+					</button>
+
 					<cfif structKeyExists(session, "userId")>
 						<button class="btn text-white text-decoration-none" onclick="logOut()">
 							<i class="fa-solid fa-right-from-bracket"></i>
@@ -48,7 +66,7 @@
 			</header>
 
 			<div class="border-bottom border-success-subtle shadow-sm">
-				<cfif (structKeyExists(session, "roleId") EQ false) OR structKeyExists(session, "roleId") AND session.roleId NEQ 1>
+				<cfif (structKeyExists(session, "roleId") EQ false) OR (session.roleId EQ 2)>
 					<cfif NOT arrayContainsNoCase(["/login.cfm", "/signup.cfm"], cgi.SCRIPT_NAME)>
 						<nav class="navbar navbar-expand-lg bg-body-tertiary">
 							<div class="container-fluid">

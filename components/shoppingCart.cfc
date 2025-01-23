@@ -479,6 +479,7 @@
 		<cfargument name="sort" type="string" required="false" default="">
 		<cfargument name="min" type="string" required="false" default="0">
 		<cfargument name="max" type="string" required="false" default="">
+		<cfargument name="searchTerm" type="string" required="false" default="">
 
  		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
@@ -526,17 +527,24 @@
 				AND i.fldActive = 1
 				AND i.fldDefaultImage = 1
 			WHERE
-			p.fldActive = 1
-			<cfif len(trim(arguments.subCategoryId)) AND arguments.subCategoryId NEQ 0>
-				AND p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
-			<cfelseif len(trim(arguments.productId)) AND arguments.productId NEQ 0>
-				AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
-			</cfif>
+				p.fldActive = 1
+				<cfif len(trim(arguments.subCategoryId)) AND arguments.subCategoryId NEQ 0>
+					AND p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
+				<cfelseif len(trim(arguments.productId)) AND arguments.productId NEQ 0>
+					AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+				</cfif>
 
-			<cfif len(trim(arguments.max))>
-				AND p.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
-					AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
-			</cfif>
+				<cfif len(trim(arguments.max))>
+					AND p.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
+						AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
+				</cfif>
+
+				<cfif len(trim(arguments.searchTerm))>
+					AND (p.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+						OR p.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+						OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
+				</cfif>
+
 			<cfif arguments.random EQ 1>
 				ORDER BY
 					RAND()
@@ -877,6 +885,77 @@
 			WHERE
 				fldProductImage_Id = <cfqueryparam value = "#trim(arguments.imageId)#" cfsqltype = "integer">
 		</cfquery>
+	</cffunction>
+
+	<cffunction name="getCart" access="public" returnType="array">
+		<cfset local.cartItems = []>
+
+		<!--- UserId Validation --->
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfreturn local.cartItems>
+		</cfif>
+
+		<cfquery name="local.qryGetCart">
+			SELECT
+				fldCart_Id
+			FROM
+				tblCart
+			WHERE
+				fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+		</cfquery>
+
+		<cfloop query="local.qryGetCart">
+			<cfset local.item = {
+				"cartId" = local.qryGetCart.fldCart_Id
+			}>
+			<cfset arrayAppend(local.cartItems, local.item)>
+		</cfloop>
+
+		<cfreturn local.cartItems>
+	</cffunction>
+
+	<cffunction name="addToCart" access="remote" returnType="void">
+		<cfargument name="productId" type="string" required=true>
+
+		<!--- Check whether the item is present in cart --->
+		<cfquery name="local.qryCheckCart">
+			SELECT
+				fldCart_Id,
+				fldQuantity
+			FROM
+				tblCart
+			WHERE
+				fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+				AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+		</cfquery>
+
+		<cfif local.qryCheckCart.recordCount>
+			<!--- Update cart in case it already have the product --->
+			<cfquery name="local.qryEditCart">
+				UPDATE
+					tblCart
+				SET
+					fldQuantity = #local.qryCheckCart.fldQuantity + 1#
+				WHERE
+					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+					AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+			</cfquery>
+		<cfelse>
+			<!--- Add product to cart in case it do not have it already --->
+			<cfquery name="local.qryAddToCart">
+				INSERT INTO
+					tblCart (
+						fldUserId,
+						fldProductId,
+						fldQuantity
+					)
+				VALUES (
+					<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
+					<cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">,
+					1
+				)
+			</cfquery>
+		</cfif>
 	</cffunction>
 
 	<cffunction name="logOut" access="remote" returnType="void">
