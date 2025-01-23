@@ -117,7 +117,7 @@
 
 				<!--- Product Description --->
 				<label for="productDesc" class="fw-semibold">Product Description</label>
-				<textarea class="form-control mb-1" id="productDesc" name="productDesc" rows="4" cols="50" placeholder="Product Description"></textarea>
+				<textarea class="form-control mb-1" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400" placeholder="Product Description"></textarea>
 				<div id="productDescError" class="text-danger error"></div>
 
 				<!--- Product Price --->
