@@ -71,8 +71,11 @@
 							<div class="container-fluid">
 								<ul class="navbar-nav w-100 d-flex justify-content-between">
 									<cfloop query="variables.qryCategories">
+										<!--- Encrypt Category ID URL param --->
+										<cfset variables.encryptedCategoryId = application.shoppingCart.encryptUrlParam(variables.qryCategories.fldCategory_Id)>
+
 										<li class="nav-item dropdown">
-											<a class="nav-link" href="/products.cfm?categoryId=#variables.qryCategories.fldCategory_Id#">
+											<a class="nav-link" href="/products.cfm?categoryId=#variables.encryptedCategoryId#">
 												#variables.qryCategories.fldCategoryName#
 											</a>
 											<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(
@@ -81,7 +84,10 @@
 											<cfif variables.qrySubCategories.recordCount>
 												<ul class="dropdown-menu">
 													<cfloop query="variables.qrySubCategories">
-														<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#">#variables.qrySubCategories.fldSubCategoryName#</a></li>
+														<!--- Encrypt SubCategory ID URL param --->
+														<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
+
+														<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#">#variables.qrySubCategories.fldSubCategoryName#</a></li>
 													</cfloop>
 												</ul>
 											</cfif>

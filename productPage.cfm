@@ -1,15 +1,17 @@
 <!--- URL params --->
-<cfparam name="url.productId" default="0">
+<cfparam name="url.productId" default="">
+
+<!--- Decrypt URL Params --->
+<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
 
 <!--- Check URL params --->
-<cfif url.productId NEQ 0>
-	<!--- Get Data if productId is given --->
-	<cfset variables.qryProductInfo = application.shoppingCart.getProducts(productId = url.productId)>
-	<cfset variables.qryProductImages = application.shoppingCart.getProductImages(productId = url.productId)>
-<cfelse>
-	<!--- Exit if Required URL Params are not passed --->
+<cfif variables.productId EQ -1>
 	<cflocation url="/" addToken="false">
 </cfif>
+
+<!--- Get Data if productId is given --->
+<cfset variables.qryProductInfo = application.shoppingCart.getProducts(productId = variables.productId)>
+<cfset variables.qryProductImages = application.shoppingCart.getProductImages(productId = variables.productId)>
 
 <!--- Handle Add to Cart --->
 <cfif structKeyExists(form, "addToCart")>

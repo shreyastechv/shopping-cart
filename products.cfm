@@ -1,10 +1,14 @@
 <!--- Clear variables scope to prevent issues --->
 <cfset structClear(variables)>
 
-<!--- URL params --->
-<cfparam name="url.categoryId" default="0">
-<cfparam name="url.subCategoryId" default="0">
+<!--- URL Params --->
+<cfparam name="url.categoryId" default="">
+<cfparam name="url.subCategoryId" default="">
 <cfparam name="url.search" default="">
+
+<!--- Decrypt URL Params --->
+<cfset variables.categoryId = application.shoppingCart.decryptUrlParam(url.categoryId)>
+<cfset variables.subCategoryId = application.shoppingCart.decryptUrlParam(url.subCategoryId)>
 
 <!--- Form Variables --->
 <cfparam name="form.filterRange" default="">
@@ -21,14 +25,14 @@
 	</cfif>
 </cfif>
 
-<!--- Check other url params --->
-<cfif url.categoryId NEQ 0>
+<!--- Check URL Params --->
+<cfif variables.categoryId NEQ -1>
 	<!--- Get Data if categoryId is given --->
-	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
-<cfelseif url.subCategoryId NEQ 0>
+	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
+<cfelseif variables.subCategoryId NEQ -1>
 	<!--- Get Data if subCategoryId is given --->
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(
-		subCategoryId = url.subCategoryId,
+		subCategoryId = variables.subCategoryId,
 		limit = 6,
 		min = form.min,
 		max = (len(trim(form.max)) ? val(form.max) : ""),
@@ -50,7 +54,10 @@
 		<cfif structKeyExists(variables, "qrySubCategories")>
 			<!--- Category Listing --->
 			<cfloop query="variables.qrySubCategories">
-				<a href="/products.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
+				<!--- Encrypt SubCategory ID since it is passed to URL param --->
+				<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
+
+				<a href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
 				<cfset local.qryProducts = application.shoppingCart.getProducts(
 					subCategoryId = variables.qrySubCategories.fldSubCategory_Id,
 					random = 1,
@@ -64,7 +71,11 @@
 				<!--- Sorting and Filtering only shown if search results are not shown --->
 				<cfif len(trim(url.search))>
 					<div class="fs-4 fw-semibold px-2">
-						Search Results for '#url.search#'
+						<cfif variables.qryProducts.recordCount>
+							Search Results for '#url.search#'
+						<cfelse>
+							No Results found for '#url.search#'
+						</cfif>
 					</div>
 				<cfelse>
 					<!--- Sorting --->
@@ -84,7 +95,6 @@
 						<ul class="dropdown-menu p-2">
 							<div class="text-center">Price Filter</div>
 							<form id="filterForm" name="filterForm" method="post">
-								<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
 								<li class="d-flex flex-column justify-content-start">
 									<div>
 										<input type="radio" name="filterRange" value="0-100"> 0 - 100

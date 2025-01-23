@@ -973,7 +973,7 @@
 	<cffunction name="encryptUrlParam" access="public" returnType="string">
 		<cfargument name="urlParam" type="string" required=true>
 
-		<cfset local.encryptedParam = encrypt(arguments.urlParam, session.secretKey, "AES", "Base64")>
+		<cfset local.encryptedParam = encrypt(arguments.urlParam, application.secretKey, "AES", "Base64")>
 		<cfset local.encodedParam = urlEncodedFormat(local.encryptedParam)>
 
 		<cfreturn local.encodedParam>
@@ -985,7 +985,7 @@
 		<!--- Handle exception in case decryption failes --->
 		<cftry>
 			<cfset local.decodedParam = urlDecode(arguments.urlParam)>
-			<cfset local.decryptedParam = decrypt(local.decodedParam, session.secretKey, "AES", "Base64")>
+			<cfset local.decryptedParam = decrypt(local.decodedParam, application.secretKey, "AES", "Base64")>
 
 			<cfreturn local.decryptedParam>
 

@@ -48,6 +48,9 @@
 			<cfdirectory action="create" directory="#expandPath(application.productImageDirectory)#">
 		</cfif>
 
+		<!--- Key for encrypting and decrypting URL params --->
+		<cfset application.secretKey = generateSecretKey('AES')>
+
 		<cfreturn true>
 	</cffunction>
 
@@ -85,9 +88,6 @@
 	<cffunction name="onSessionStart" returnType="void">
 		<!--- Variable for storing cart information --->
 		<cfset session.cart = []>
-
-		<!--- Key for encrypting and decrypting URL params --->
-		<cfset session.secretKey = generateSecretKey('AES')>
 	</cffunction>
 
 	<cffunction name="onRequestStart" returnType="boolean">

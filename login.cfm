@@ -7,9 +7,15 @@
 	<cfif variables.loginResult.message EQ "Login successful">
 		<!--- Add product to cart if user came from product page --->
 		<cfif structKeyExists(url, "productId") AND len(trim(url.productId))>
-			<cfset application.shoppingCart.addToCart(
-				productId = url.productId
-			)>
+			<!--- Decrypt Product ID --->
+			<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
+
+			<!--- Add product to cart only if properly decrypted --->
+			<cfif variables.productId NEQ -1>
+				<cfset application.shoppingCart.addToCart(
+					productId = variables.productId
+				)>
+			</cfif>
 		</cfif>
 		<!--- Redirect admin to admin dashboard page --->
 		<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
