@@ -11,6 +11,10 @@
 				productId = url.productId
 			)>
 		</cfif>
+		<!--- Redirect admin to admin dashboard page --->
+		<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
+			<cflocation url="/adminDashboard.cfm" addToken="false">
+		</cfif>
 		<cflocation url="/" addToken="false">
 	</cfif>
 </cfif>
