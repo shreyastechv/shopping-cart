@@ -19,7 +19,7 @@
 		)>
 		<cflocation url="/productPage.cfm?productId=#url.productId#" addToken="no">
 	<cfelse>
-		<cflocation url="/login.cfm" addToken="no">
+		<cflocation url="/login.cfm?productId=#url.productId#" addToken="no">
 	</cfif>
 </cfif>
 

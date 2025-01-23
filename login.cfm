@@ -5,7 +5,13 @@
 		password = form.password
 	)>
 	<cfif variables.loginResult.message EQ "Login successful">
-		<cflocation url="adminDashboard.cfm" addToken="false">
+		<!--- Add product to cart if user came from product page --->
+		<cfif structKeyExists(url, "productId") AND len(trim(url.productId))>
+			<cfset application.shoppingCart.addToCart(
+				productId = url.productId
+			)>
+		</cfif>
+		<cflocation url="/" addToken="false">
 	</cfif>
 </cfif>
 
