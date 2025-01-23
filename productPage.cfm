@@ -13,13 +13,13 @@
 
 <!--- Handle Add to Cart --->
 <cfif structKeyExists(form, "addToCart")>
-	<cfif structKeyExists(session, "useId")>
+	<cfif structKeyExists(session, "userId")>
 		<cfset application.shoppingCart.addToCart(
 			productId = url.productId
 		)>
-		<cflocation url="/productPage.cfm?productId=#url.productId#" addToken="true">
+		<cflocation url="/productPage.cfm?productId=#url.productId#" addToken="no">
 	<cfelse>
-		<cflocation url="/login.cfm" addToken="true">
+		<cflocation url="/login.cfm" addToken="no">
 	</cfif>
 </cfif>
 
