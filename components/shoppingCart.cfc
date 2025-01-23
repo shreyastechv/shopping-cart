@@ -970,6 +970,32 @@
 		</cfif>
 	</cffunction>
 
+	<cffunction name="encryptUrlParam" access="public" returnType="string">
+		<cfargument name="urlParam" type="string" required=true>
+
+		<cfset local.encryptedParam = encrypt(arguments.urlParam, session.secretKey, "AES", "Base64")>
+		<cfset local.encodedParam = urlEncodedFormat(local.encryptedParam)>
+
+		<cfreturn local.encodedParam>
+	</cffunction>
+
+	<cffunction name="decryptUrlParam" access="public" returnType="string">
+		<cfargument name="urlParam" type="string" required=true>
+
+		<!--- Handle exception in case decryption failes --->
+		<cftry>
+			<cfset local.decodedParam = urlDecode(arguments.urlParam)>
+			<cfset local.decryptedParam = decrypt(local.decodedParam, session.secretKey, "AES", "Base64")>
+
+			<cfreturn local.decryptedParam>
+
+			<cfcatch type="any">
+				<!--- Return -1 if decryption fails --->
+				<cfreturn "-1">
+			</cfcatch>
+		</cftry>
+	</cffunction>
+
 	<cffunction name="logOut" access="remote" returnType="void">
 		<cfset structClear(session)>
 	</cffunction>
