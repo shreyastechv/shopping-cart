@@ -14,7 +14,6 @@
 
 		<!--- Variables --->
 		<cfset variables.qryCategories = application.shoppingCart.getCategories()>
-		<cfset variables.cartItems = application.shoppingCart.getCart()>
 
 		<body>
 			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2">
@@ -39,7 +38,7 @@
 						Cart
 						<cfif structKeyExists(session, "userId")>
 							<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light">
-								#arrayLen(variables.cartItems)#
+								#arrayLen(session.cart)#
 							<span class="visually-hidden">products in cart</span></span>
 						</cfif>
 					</button>

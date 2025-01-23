@@ -82,6 +82,10 @@
 		</cfif>
 	</cffunction> --->
 
+	<cffunction name="onSessionStart" returnType="boolean">
+		<cfset session.cart = []>
+	</cffunction>
+
 	<cffunction name="onRequestStart" returnType="boolean">
 		<cfargument name="targetPage" type="string" required=true>
 

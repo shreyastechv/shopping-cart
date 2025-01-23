@@ -29,7 +29,7 @@
 	<!--- Get Data if subCategoryId is given --->
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(
 		subCategoryId = url.subCategoryId,
-		limit = 8,
+		limit = 6,
 		min = form.min,
 		max = (len(trim(form.max)) ? val(form.max) : ""),
 		sort = form.sort
@@ -54,7 +54,7 @@
 				<cfset local.qryProducts = application.shoppingCart.getProducts(
 					subCategoryId = variables.qrySubCategories.fldSubCategory_Id,
 					random = 1,
-					limit = 4
+					limit = 6
 				)>
 				<cf_productlist qryProducts="#local.qryProducts#">
 			</cfloop>
@@ -117,6 +117,9 @@
 
 			<!--- Sub Category Listing --->
 			<cf_productlist qryProducts="#variables.qryProducts#">
+
+			<!--- View More Button --->
+			<button class="btn">View More</button>
 		</cfif>
 	</div>
 </cfoutput>

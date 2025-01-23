@@ -169,6 +169,7 @@
 				<cfset session.userFullname = local.qryCheckUser.fldFirstName & " " & local.qryCheckUser.fldLastName>
 				<cfset session.userId = local.qryCheckUser.fldUser_Id>
 				<cfset session.roleId = local.qryCheckUser.fldRoleId>
+				<cfset session.cart = getCart()>
 				<cfset local.response["message"] = "Login successful">
 			<cfelse>
 				<cfset local.response["message"] = "Wrong username or password">

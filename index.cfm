@@ -10,6 +10,7 @@
 	</div>
 
 	<!--- Random Products --->
+	<cfdump  var="#session.cart#">
 	<div class="h2 px-2 pt-3 pb-1">Random Products</div>
 	<cf_productlist qryProducts="#variables.qryRandomProducts#">
 </cfoutput>
