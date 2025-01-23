@@ -3,6 +3,7 @@
 	<cfset this.sessionManagement = true>
 	<cfset this.sessiontimeout = CreateTimeSpan(0, 1, 0, 0)>
 	<cfset this.dataSource = "shoppingCart">
+	<cfset This.customTagPaths = expandPath("/customTags")>
 
 	<cffunction name="onApplicationStart" returnType="boolean">
 		<cfset application.productImageDirectory = "/assets/images/productImages/">
