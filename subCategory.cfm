@@ -31,6 +31,9 @@
 					<div></div>
 				</div>
 				<cfloop query="variables.qrySubCategories">
+					<!--- Encrypt SubCategory ID since it is passed to URL param --->
+					<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
+
 					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 						<div id="subCategoryName-#variables.qrySubCategories.fldSubCategory_Id#" class="fs-5">#variables.qrySubCategories.fldSubCategoryName#</div>
 						<div>
@@ -40,7 +43,7 @@
 							<button class="btn btn-lg" onclick="deleteSubCategory(#variables.qrySubCategories.fldSubCategory_Id#)">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
-							<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#&subCategoryName=#variables.qrySubCategories.fldSubCategoryName#&categoryId=#url.categoryId#&categoryName=#url.categoryName#">
+							<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=#variables.encryptedSubCategoryId#&subCategoryName=#variables.qrySubCategories.fldSubCategoryName#&categoryId=#variables.categoryId#&categoryName=#url.categoryName#">
 								<i class="fa-solid fa-chevron-right"></i>
 							</a>
 						</div>
