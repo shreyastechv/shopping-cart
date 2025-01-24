@@ -126,10 +126,6 @@
 			<cfif (NOT structKeyExists(session, "roleId")) OR (session.roleId NEQ 1)>
 				<cflocation url="/" addToken="false">
 			</cfif>
-		<cfelse>
-			<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-				<cflocation url="/adminDashboard.cfm" addToken="no">
-			</cfif>
 		</cfif>
 
 		<cfreturn true>
