@@ -17,10 +17,8 @@
 				)>
 			</cfif>
 		</cfif>
-		<!--- Redirect admin to admin dashboard page --->
-		<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-			<cflocation url="/adminDashboard.cfm" addToken="false">
-		</cfif>
+
+		<!--- Redirect user/admin to root of page which will then be handled by application.cfc --->
 		<cflocation url="/" addToken="false">
 	</cfif>
 </cfif>
