@@ -29,7 +29,7 @@
 			"/cart.cfm": {
 				"pageTitle": "Cart Page",
 				"cssPath": "",
-				"scriptPath": ""
+				"scriptPath": "assets/js/cart.js"
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",

@@ -36,11 +36,11 @@
 									<p class="mb-1">Actual Price: <span class="fw-bold">Rs. #local.actualPrice#</span></p>
 									<p class="mb-1">Tax: <span class="fw-bold">#local.qryProductInfo.fldTax# %</span></p>
 									<div class="d-flex align-items-center">
-										<button class="btn btn-outline-primary btn-sm me-2">-</button>
+										<button class="btn btn-outline-primary btn-sm me-2" onclick="editCartItem(#local.productId#, 'decrement')">-</button>
 										<input type="text" class="form-control text-center w-25" value="#session.cart[local.productId].quantity#" readonly>
-										<button class="btn btn-outline-primary btn-sm ms-2">+</button>
+										<button class="btn btn-outline-primary btn-sm ms-2" onclick="editCartItem(#local.productId#, 'increment')">+</button>
 									</div>
-									<button class="btn btn-danger btn-sm mt-3">Remove</button>
+									<button class="btn btn-danger btn-sm mt-3" onclick="editCartItem(#local.productId#, 'delete')">Remove</button>
 								</div>
 							</div>
 						</div>
