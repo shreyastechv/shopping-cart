@@ -984,8 +984,9 @@
 
 		<!--- Handle exception in case decryption failes --->
 		<cftry>
-			<cfset local.decodedParam = urlDecode(arguments.urlParam)>
-			<cfset local.decryptedParam = decrypt(local.decodedParam, application.secretKey, "AES", "Base64")>
+			<!--- URL Decode not needed since it is handled by cfml page --->
+			<!--- <cfset local.decodedParam = urlDecode(arguments.urlParam)> --->
+			<cfset local.decryptedParam = decrypt(arguments.urlParam, application.secretKey, "AES", "Base64")>
 
 			<cfreturn local.decryptedParam>
 
