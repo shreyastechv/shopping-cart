@@ -760,6 +760,11 @@
 			<cfset local.response["message"] &= "Product Id should be an integer">
 		</cfif>
 
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
 			UPDATE
@@ -798,6 +803,11 @@
 			<cfset local.response["message"] &= "Product Id should be an integer">
 		</cfif>
 
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetImages" dataSource="shoppingCart">
 			SELECT
@@ -833,6 +843,11 @@
 			<cfset local.response["message"] &= "Image Id should not be empty. ">
 		<cfelseif NOT isValid("integer", arguments.imageId)>
 			<cfset local.response["message"] &= "Image Id should be an integer">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
@@ -875,6 +890,11 @@
 			<cfset local.response["message"] &= "Image Id should not be empty. ">
 		<cfelseif NOT isValid("integer", arguments.imageId)>
 			<cfset local.response["message"] &= "Image Id should be an integer">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
