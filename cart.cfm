@@ -58,12 +58,12 @@
 						<h4 class="card-title">Price Details</h4>
 						<hr>
 						<p class="d-flex justify-content-between">
-							<span>Total Tax:</span>
-							<span class="fw-bold">Rs. #variables.totalTax#</span>
-						</p>
-						<p class="d-flex justify-content-between">
 							<span>Total Price:</span>
 							<span class="fw-bold">Rs. #variables.totalPrice#</span>
+						</p>
+						<p class="d-flex justify-content-between">
+							<span>Total Tax:</span>
+							<span class="fw-bold">Rs. #variables.totalTax#</span>
 						</p>
 						<p class="d-flex justify-content-between">
 							<span>Actual Price:</span>
