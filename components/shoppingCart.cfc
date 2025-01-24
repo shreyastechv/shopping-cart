@@ -930,7 +930,7 @@
 		<cfloop query="local.qryGetCart">
 			<cfset local.cartItems[local.qryGetCart.fldProductId] = {
 				"cartId" = local.qryGetCart.fldCart_Id,
-				"quantity" = local.qryGetCart.fldProductId
+				"quantity" = local.qryGetCart.fldQuantity
 			}>
 		</cfloop>
 
