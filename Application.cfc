@@ -16,6 +16,21 @@
 				"cssPath": "assets/css/index.css",
 				"scriptPath": "assets/js/index.js"
 			},
+			"/products.cfm": {
+				"pageTitle": "Product Listing",
+				"cssPath": "",
+				"scriptPath": ""
+			},
+			"/productPage.cfm": {
+				"pageTitle": "Product Page",
+				"cssPath": "",
+				"scriptPath": ""
+			},
+			"/cart.cfm": {
+				"pageTitle": "Cart Page",
+				"cssPath": "",
+				"scriptPath": ""
+			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"cssPath": "",
