@@ -27,7 +27,7 @@
 					<div class="card mb-3">
 						<div class="row g-0">
 							<div class="col-md-4">
-								<img src="https://via.placeholder.com/150" class="img-fluid rounded-start" alt="Product">
+								<img src="#application.productImageDirectory&local.qryProductInfo.fldProductImage#" class="img-fluid rounded-start" alt="Product">
 							</div>
 							<div class="col-md-8">
 								<div class="card-body">
