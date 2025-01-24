@@ -69,7 +69,7 @@
 					<cfif NOT arrayContainsNoCase(["/login.cfm", "/signup.cfm"], cgi.SCRIPT_NAME)>
 						<nav class="navbar navbar-expand-lg bg-body-tertiary">
 							<div class="container-fluid">
-								<ul class="navbar-nav w-100 d-flex justify-content-between">
+								<ul class="navbar-nav w-100 d-flex justify-content-evenly">
 									<cfloop query="variables.qryCategories">
 										<!--- Encrypt Category ID URL param --->
 										<cfset variables.encryptedCategoryId = application.shoppingCart.encryptUrlParam(variables.qryCategories.fldCategory_Id)>
