@@ -5,7 +5,23 @@
 		password = form.password
 	)>
 	<cfif variables.loginResult.message EQ "Login successful">
-		<cflocation url="adminDashboard.cfm" addToken="false">
+		<!--- Add product to cart if user came from product page --->
+		<cfif structKeyExists(url, "productId") AND len(trim(url.productId))>
+			<!--- Decrypt Product ID --->
+			<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
+
+			<!--- Add product to cart only if properly decrypted --->
+			<cfif variables.productId NEQ -1>
+				<cfset application.shoppingCart.addToCart(
+					productId = variables.productId
+				)>
+			</cfif>
+		</cfif>
+		<!--- Redirect admin to admin dashboard page --->
+		<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
+			<cflocation url="/adminDashboard.cfm" addToken="false">
+		</cfif>
+		<cflocation url="/" addToken="false">
 	</cfif>
 </cfif>
 

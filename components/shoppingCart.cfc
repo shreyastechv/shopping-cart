@@ -169,6 +169,7 @@
 				<cfset session.userFullname = local.qryCheckUser.fldFirstName & " " & local.qryCheckUser.fldLastName>
 				<cfset session.userId = local.qryCheckUser.fldUser_Id>
 				<cfset session.roleId = local.qryCheckUser.fldRoleId>
+				<cfset session.cart = getCart()>
 				<cfset local.response["message"] = "Login successful">
 			<cfelse>
 				<cfset local.response["message"] = "Wrong username or password">
@@ -887,8 +888,8 @@
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="getCart" access="public" returnType="array">
-		<cfset local.cartItems = []>
+	<cffunction name="getCart" access="public" returnType="struct">
+		<cfset local.cartItems = {}>
 
 		<!--- UserId Validation --->
 		<cfif NOT structKeyExists(session, "userId")>
@@ -897,7 +898,9 @@
 
 		<cfquery name="local.qryGetCart">
 			SELECT
-				fldCart_Id
+				fldCart_Id,
+				fldProductId,
+				fldQuantity
 			FROM
 				tblCart
 			WHERE
@@ -905,10 +908,10 @@
 		</cfquery>
 
 		<cfloop query="local.qryGetCart">
-			<cfset local.item = {
-				"cartId" = local.qryGetCart.fldCart_Id
+			<cfset local.cartItems[local.qryGetCart.fldProductId] = {
+				"cartId" = local.qryGetCart.fldCart_Id,
+				"quantity" = local.qryGetCart.fldProductId
 			}>
-			<cfset arrayAppend(local.cartItems, local.item)>
 		</cfloop>
 
 		<cfreturn local.cartItems>
@@ -940,9 +943,12 @@
 					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
 					AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
 			</cfquery>
+
+			<!--- Increment quantity of product in session variable --->
+			<cfset session.cart[arguments.productId].quantity += 1>
 		<cfelse>
 			<!--- Add product to cart in case it do not have it already --->
-			<cfquery name="local.qryAddToCart">
+			<cfquery name="local.qryAddToCart" result="local.resultAddToCart">
 				INSERT INTO
 					tblCart (
 						fldUserId,
@@ -955,7 +961,39 @@
 					1
 				)
 			</cfquery>
+
+			<!--- Add product to session variable --->
+			<cfset session.cart[arguments.productId] = {
+				"cartId" = local.resultAddToCart.GENERATED_KEY,
+				"quantity" = 1
+			}>
 		</cfif>
+	</cffunction>
+
+	<cffunction name="encryptUrlParam" access="public" returnType="string">
+		<cfargument name="urlParam" type="string" required=true>
+
+		<cfset local.encryptedParam = encrypt(arguments.urlParam, application.secretKey, "AES", "Base64")>
+		<cfset local.encodedParam = urlEncodedFormat(local.encryptedParam)>
+
+		<cfreturn local.encodedParam>
+	</cffunction>
+
+	<cffunction name="decryptUrlParam" access="public" returnType="string">
+		<cfargument name="urlParam" type="string" required=true>
+
+		<!--- Handle exception in case decryption failes --->
+		<cftry>
+			<cfset local.decodedParam = urlDecode(arguments.urlParam)>
+			<cfset local.decryptedParam = decrypt(local.decodedParam, application.secretKey, "AES", "Base64")>
+
+			<cfreturn local.decryptedParam>
+
+			<cfcatch type="any">
+				<!--- Return -1 if decryption fails --->
+				<cfreturn "-1">
+			</cfcatch>
+		</cftry>
 	</cffunction>
 
 	<cffunction name="logOut" access="remote" returnType="void">

@@ -3,6 +3,7 @@
 	<cfset this.sessionManagement = true>
 	<cfset this.sessiontimeout = CreateTimeSpan(0, 1, 0, 0)>
 	<cfset this.dataSource = "shoppingCart">
+	<cfset This.customTagPaths = expandPath("/customTags")>
 
 	<cffunction name="onApplicationStart" returnType="boolean">
 		<cfset application.productImageDirectory = "/assets/images/productImages/">
@@ -47,6 +48,9 @@
 			<cfdirectory action="create" directory="#expandPath(application.productImageDirectory)#">
 		</cfif>
 
+		<!--- Key for encrypting and decrypting URL params --->
+		<cfset application.secretKey = generateSecretKey('AES')>
+
 		<cfreturn true>
 	</cffunction>
 
@@ -80,6 +84,11 @@
 			</cfoutput>
 		</cfif>
 	</cffunction> --->
+
+	<cffunction name="onSessionStart" returnType="void">
+		<!--- Variable for storing cart information --->
+		<cfset session.cart = []>
+	</cffunction>
 
 	<cffunction name="onRequestStart" returnType="boolean">
 		<cfargument name="targetPage" type="string" required=true>
@@ -133,5 +142,9 @@
 
 		<!--- Common Footer file --->
 		<cfinclude  template="/includes/footer.cfm">
+	</cffunction>
+
+	<cffunction name="onSessionEnd" returnType="void">
+		<cfset structClear(session)>
 	</cffunction>
 </cfcomponent>

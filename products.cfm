@@ -1,16 +1,20 @@
 <!--- Clear variables scope to prevent issues --->
 <cfset structClear(variables)>
 
-<!--- URL params --->
-<cfparam name="url.categoryId" default="0">
-<cfparam name="url.subCategoryId" default="0">
-<cfparam name="url.sort" default="">
+<!--- URL Params --->
+<cfparam name="url.categoryId" default="">
+<cfparam name="url.subCategoryId" default="">
 <cfparam name="url.search" default="">
+
+<!--- Decrypt URL Params --->
+<cfset variables.categoryId = application.shoppingCart.decryptUrlParam(url.categoryId)>
+<cfset variables.subCategoryId = application.shoppingCart.decryptUrlParam(url.subCategoryId)>
 
 <!--- Form Variables --->
 <cfparam name="form.filterRange" default="">
 <cfparam name="form.min" default="0">
 <cfparam name="form.max" default="">
+<cfparam name="form.sort" default="">
 
 <!--- Check filtering --->
 <cfif len(trim(form.filterRange))>
@@ -21,18 +25,18 @@
 	</cfif>
 </cfif>
 
-<!--- Check other url params --->
-<cfif url.categoryId NEQ 0>
+<!--- Check URL Params --->
+<cfif variables.categoryId NEQ -1>
 	<!--- Get Data if categoryId is given --->
-	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
-<cfelseif url.subCategoryId NEQ 0>
+	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
+<cfelseif variables.subCategoryId NEQ -1>
 	<!--- Get Data if subCategoryId is given --->
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(
-		subCategoryId = url.subCategoryId,
-		limit = 8,
+		subCategoryId = variables.subCategoryId,
+		limit = 6,
 		min = form.min,
 		max = (len(trim(form.max)) ? val(form.max) : ""),
-		sort = url.sort
+		sort = form.sort
 	)>
 <cfelseif len(trim(url.search))>
 	<!--- Get Data if search is given --->
@@ -50,11 +54,14 @@
 		<cfif structKeyExists(variables, "qrySubCategories")>
 			<!--- Category Listing --->
 			<cfloop query="variables.qrySubCategories">
-				<a href="/products.cfm?subCategoryId=#variables.qrySubCategories.fldSubCategory_Id#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
+				<!--- Encrypt SubCategory ID since it is passed to URL param --->
+				<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
+
+				<a href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
 				<cfset local.qryProducts = application.shoppingCart.getProducts(
 					subCategoryId = variables.qrySubCategories.fldSubCategory_Id,
 					random = 1,
-					limit = 4
+					limit = 6
 				)>
 				<cf_productlist qryProducts="#local.qryProducts#">
 			</cfloop>
@@ -64,13 +71,19 @@
 				<!--- Sorting and Filtering only shown if search results are not shown --->
 				<cfif len(trim(url.search))>
 					<div class="fs-4 fw-semibold px-2">
-						Search Results for '#url.search#'
+						<cfif variables.qryProducts.recordCount>
+							Search Results for '#url.search#'
+						<cfelse>
+							No Results found for '#url.search#'
+						</cfif>
 					</div>
 				<cfelse>
 					<!--- Sorting --->
-					<div class="d-flex gap-2 px-3 py-2">
-						<a class="text-decoration-none" href="/products.cfm?subCategoryId=#url.subCategoryId#&sort=asc">Price: Low to High</a>
-						<a class="text-decoration-none" href="/products.cfm?subCategoryId=#url.subCategoryId#&sort=desc">Price: High to Low</a>
+					<div class="d-flex gap-2 px-1">
+						<form method="post">
+							<button class="btn" type="submit" name="sort" value="asc">Price: Low to High</button>
+							<button class="btn" type="submit" name="sort" value="desc">Price: High to Low</button>
+						</form>
 					</div>
 
 					<!--- Filtering --->
@@ -82,7 +95,6 @@
 						<ul class="dropdown-menu p-2">
 							<div class="text-center">Price Filter</div>
 							<form id="filterForm" name="filterForm" method="post">
-								<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
 								<li class="d-flex flex-column justify-content-start">
 									<div>
 										<input type="radio" name="filterRange" value="0-100"> 0 - 100
@@ -115,6 +127,9 @@
 
 			<!--- Sub Category Listing --->
 			<cf_productlist qryProducts="#variables.qryProducts#">
+
+			<!--- View More Button --->
+			<button class="btn">View More</button>
 		</cfif>
 	</div>
 </cfoutput>
