@@ -135,9 +135,11 @@
 			<cf_productlist qryProducts="#variables.qryProducts#">
 
 			<!--- View More Button --->
-			<form method="post">
-				<button class="btn" type="submit" name="viewMoreBtn">View More</button>
-			</form>
+			<cfif variables.qryProducts.recordCount>
+				<form method="post">
+					<button class="btn" type="submit" name="viewMoreBtn">View More</button>
+				</form>
+			</cfif>
 		</cfif>
 	</div>
 </cfoutput>
