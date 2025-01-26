@@ -15,6 +15,12 @@
 <cfparam name="form.min" default="0">
 <cfparam name="form.max" default="">
 <cfparam name="form.sort" default="">
+<cfparam name="form.limit" default=6>
+
+<!--- Increment limit variable if view more btn is pressed --->
+<cfif structKeyExists(form, "viewMoreBtn")>
+	<cfset form.limit += 6>
+</cfif>
 
 <!--- Check filtering --->
 <cfif len(trim(form.filterRange))>
@@ -33,7 +39,7 @@
 	<!--- Get Data if subCategoryId is given --->
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(
 		subCategoryId = variables.subCategoryId,
-		limit = 6,
+		limit = form.limit,
 		min = form.min,
 		max = (len(trim(form.max)) ? val(form.max) : ""),
 		sort = form.sort
@@ -129,7 +135,9 @@
 			<cf_productlist qryProducts="#variables.qryProducts#">
 
 			<!--- View More Button --->
-			<button class="btn">View More</button>
+			<form method="post">
+				<button class="btn" type="submit" name="viewMoreBtn">View More</button>
+			</form>
 		</cfif>
 	</div>
 </cfoutput>

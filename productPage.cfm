@@ -17,7 +17,7 @@
 <cfif structKeyExists(form, "addToCart")>
 	<cfif structKeyExists(session, "userId")>
 		<cfset application.shoppingCart.addToCart(
-			productId = url.productId
+			productId = application.shoppingCart.decryptUrlParam(url.productId)
 		)>
 		<cflocation url="/productPage.cfm?productId=#url.productId#" addToken="no">
 	<cfelse>

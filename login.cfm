@@ -1,3 +1,7 @@
+<!--- URL Params --->
+<cfparam name="url.productId" default="">
+<cfparam name="url.redirect" default ="/">
+
 <!--- Login Logic --->
 <cfif structKeyExists(form, "loginBtn")>
 	<cfset variables.loginResult = application.shoppingCart.login(
@@ -6,7 +10,7 @@
 	)>
 	<cfif variables.loginResult.message EQ "Login successful">
 		<!--- Add product to cart if user came from product page --->
-		<cfif structKeyExists(url, "productId") AND len(trim(url.productId))>
+		<cfif len(trim(url.productId))>
 			<!--- Decrypt Product ID --->
 			<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
 
@@ -17,11 +21,9 @@
 				)>
 			</cfif>
 		</cfif>
-		<!--- Redirect admin to admin dashboard page --->
-		<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-			<cflocation url="/adminDashboard.cfm" addToken="false">
-		</cfif>
-		<cflocation url="/" addToken="false">
+
+		<!--- Redirect user/admin to url.redirect --->
+		<cflocation url="#url.redirect#" addToken="false">
 	</cfif>
 </cfif>
 

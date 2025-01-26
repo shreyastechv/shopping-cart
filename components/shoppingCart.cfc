@@ -760,6 +760,11 @@
 			<cfset local.response["message"] &= "Product Id should be an integer">
 		</cfif>
 
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
 			UPDATE
@@ -798,6 +803,11 @@
 			<cfset local.response["message"] &= "Product Id should be an integer">
 		</cfif>
 
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetImages" dataSource="shoppingCart">
 			SELECT
@@ -833,6 +843,11 @@
 			<cfset local.response["message"] &= "Image Id should not be empty. ">
 		<cfelseif NOT isValid("integer", arguments.imageId)>
 			<cfset local.response["message"] &= "Image Id should be an integer">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
@@ -877,6 +892,11 @@
 			<cfset local.response["message"] &= "Image Id should be an integer">
 		</cfif>
 
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="qryDeleteImage" dataSource="shoppingCart">
 			UPDATE
@@ -910,7 +930,7 @@
 		<cfloop query="local.qryGetCart">
 			<cfset local.cartItems[local.qryGetCart.fldProductId] = {
 				"cartId" = local.qryGetCart.fldCart_Id,
-				"quantity" = local.qryGetCart.fldProductId
+				"quantity" = local.qryGetCart.fldQuantity
 			}>
 		</cfloop>
 
@@ -970,6 +990,87 @@
 		</cfif>
 	</cffunction>
 
+	<cffunction name="modifyCart" access="remote" returnType="struct" returnFormat="json">
+		<cfargument name="productId" type="string" required=true default="">
+		<cfargument name="action" type="string" required=true default="">
+
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<!--- Validate productId --->
+		<cfif NOT len(trim(arguments.productId))>
+			<cfset local.response["message"] &= "Product ID should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.productId)>
+			<cfset local.response["message"] &= "Product ID should be an integer. ">
+		</cfif>
+
+		<!--- Validate Action --->
+		<cfif NOT len(trim(arguments.action))>
+			<cfset local.response["message"] &= "Action should not be empty. ">
+		<cfelseif NOT arrayContainsNoCase(["increment", "decrement", "delete"], arguments.action)>
+			<cfset local.response["message"] &= "Specified action is not valid. ">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
+		<cfif arguments.action EQ "increment">
+
+			<!--- Increment product quantity in cart --->
+			<cfquery name="local.qryIncrItem">
+				UPDATE
+					tblCart
+				SET
+					fldQuantity = fldQuantity + 1
+				WHERE
+					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+			</cfquery>
+
+			<!--- Increment quantity of product in session variable --->
+			<cfset session.cart[arguments.productId].quantity += 1>
+
+			<cfset local.response["message"] = "Product Quantity Incremented">
+
+		<cfelseif arguments.action EQ "decrement" AND session.cart[arguments.productId].quantity GT 1>
+
+			<!--- Decrement product quantity in cart --->
+			<cfquery name="local.qryDecrItem">
+				UPDATE
+					tblCart
+				SET
+					fldQuantity = fldQuantity - 1
+				WHERE
+					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+			</cfquery>
+
+			<!--- Decrement quantity of product in session variable --->
+			<cfset session.cart[arguments.productId].quantity -= 1>
+
+			<cfset local.response["message"] = "Product Quantity Decremented">
+
+		<cfelse>
+
+			<!--- Delete product from cart --->
+			<cfquery name="local.qryDeleteItem">
+				DELETE FROM
+					tblCart
+				WHERE
+					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+			</cfquery>
+
+			<!--- Delete productId key from struct in session variable --->
+			<cfset structDelete(session.cart, arguments.productId)>
+
+			<cfset local.response["message"] = "Product Deleted">
+
+		</cfif>
+
+		<cfreturn local.response>
+	</cffunction>
+
 	<cffunction name="encryptUrlParam" access="public" returnType="string">
 		<cfargument name="urlParam" type="string" required=true>
 
@@ -984,8 +1085,9 @@
 
 		<!--- Handle exception in case decryption failes --->
 		<cftry>
-			<cfset local.decodedParam = urlDecode(arguments.urlParam)>
-			<cfset local.decryptedParam = decrypt(local.decodedParam, application.secretKey, "AES", "Base64")>
+			<!--- URL Decode not needed since it is handled by cfml page --->
+			<!--- <cfset local.decodedParam = urlDecode(arguments.urlParam)> --->
+			<cfset local.decryptedParam = decrypt(arguments.urlParam, application.secretKey, "AES", "Base64")>
 
 			<cfreturn local.decryptedParam>
 
