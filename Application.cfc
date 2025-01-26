@@ -26,11 +26,6 @@
 				"cssPath": "",
 				"scriptPath": ""
 			},
-			"/cart.cfm": {
-				"pageTitle": "Cart Page",
-				"cssPath": "",
-				"scriptPath": "assets/js/cart.js"
-			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"cssPath": "",
