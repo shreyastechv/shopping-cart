@@ -64,6 +64,7 @@
 				</nav>
 			</header>
 
+			<!--- Category - SubCategory Dropdown --->
 			<div class="border-bottom border-success-subtle shadow-sm">
 				<cfif (structKeyExists(session, "roleId") EQ false) OR (session.roleId EQ 2)>
 					<cfif NOT arrayContainsNoCase(["/login.cfm", "/signup.cfm"], cgi.SCRIPT_NAME)>
