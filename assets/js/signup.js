@@ -16,7 +16,7 @@ function validateForm() {
 		$("#firstName").addClass("border-danger");
 		valid = false;
 	}
-	else if (!/[^0-9]+/.test(firstName)) {
+	else if (/\d/.test(firstName)) {
 		$("#firstNameError").text("First name should not contain any digits");
 		$("#firstName").addClass("border-danger");
 		valid = false;
@@ -28,7 +28,7 @@ function validateForm() {
 		$("#lastName").addClass("border-danger");
 		valid = false;
 	}
-	else if (!/[^0-9]+/.test(lastName)) {
+	else if (/\d/.test(lastName)) {
 		$("#lastNameError").text("Last name should not contain any digits");
 		$("#lastName").addClass("border-danger");
 		valid = false;

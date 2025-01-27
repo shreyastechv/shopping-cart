@@ -4,11 +4,11 @@
 		<head>
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>#application.pageTitle# - Shopping Cart</title>
+			<title>#request.pageTitle# - Shopping Cart</title>
 			<link rel="icon" href="favicon.ico">
 			<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
 			<link href="/assets/css/header.css" rel="stylesheet">
-			<link href="#application.cssPath#" rel="stylesheet">
+			<link href="#request.cssPath#" rel="stylesheet">
 			<script src="/assets/js/header.js"></script>
 		</head>
 
@@ -27,7 +27,7 @@
 					</a>
 				<cfelse>
 					<form class="d-flex p-1 w-50" method="get" action="/products.cfm">
-						<input class="form-control me-2" type="search" name="search" placeholder="Search">
+						<input class="form-control me-2" type="search" name="search" placeholder="Search" onblur="this.value = this.value.trim()">
 						<button class="btn btn-outline-light" type="submit">Search</button>
 					</form>
 				</cfif>

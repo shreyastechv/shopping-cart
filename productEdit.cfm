@@ -28,7 +28,7 @@
 					</a>
 					<div class="d-flex">
 						<h3 class="fw-semibold text-center mb-0 me-3">#url.subCategoryName#</h3>
-						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal()">
+						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal(#variables.subCategoryId#)">
 							Add+
 						</button>
 					</div>
@@ -45,7 +45,7 @@
 							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#variables.qryProducts.fldProduct_Id#)">
 								<img class="pe-none" src="#application.productImageDirectory##variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
 							</button>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal(#variables.qryProducts.fldProduct_Id#)">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal(#variables.qryProducts.fldProduct_Id#,#variables.subCategoryId#)">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
 							<button class="btn btn-lg" onclick="deleteProduct(#variables.qryProducts.fldProduct_Id#)">
