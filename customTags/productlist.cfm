@@ -11,9 +11,9 @@
 				<div class="card rounded-3 h-100 shadow" onclick="location.href='/productPage.cfm?productId=#variables.encryptedProductId#'" role="button">
 					<img src="#application.productImageDirectory&attributes.qryProducts.fldProductImage#" class="p-1 rounded-3" alt="Random Product Image">
 					<div class="card-body">
-						<p class="card-text">#attributes.qryProducts.fldProductName#</p>
-						<p class="card-text text-truncate">#attributes.qryProducts.fldDescription#</p>
-						<p class="card-text">Rs. #attributes.qryProducts.fldPrice#</p>
+						<div class="card-text fw-semibold mb-1">#attributes.qryProducts.fldProductName#</div>
+						<div class="card-text text-secondary text-truncate mb-1">#attributes.qryProducts.fldDescription#</div>
+						<div class="card-text fw-bold mb-1">Rs. #attributes.qryProducts.fldPrice#</div>
 					</div>
 				</div>
 			</div>

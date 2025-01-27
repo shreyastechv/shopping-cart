@@ -56,7 +56,7 @@
 
 <cfoutput>
 	<!--- Main Content --->
-	<div class="d-flex flex-column">
+	<div class="d-flex flex-column m-3">
 		<cfif structKeyExists(variables, "qrySubCategories")>
 			<!--- Category Listing --->
 			<cfloop query="variables.qrySubCategories">
@@ -90,10 +90,10 @@
 					</div>
 				<cfelse>
 					<!--- Sorting --->
-					<div class="d-flex gap-2 px-1">
+					<div class="d-flex px-3 pb-2">
 						<form method="post">
-							<button class="btn" type="submit" name="sort" value="asc">Price: Low to High</button>
-							<button class="btn" type="submit" name="sort" value="desc">Price: High to Low</button>
+							<button class="btn btn-primary" type="submit" name="sort" value="asc">Price: Low to High</button>
+							<button class="btn btn-primary" type="submit" name="sort" value="desc">Price: High to Low</button>
 						</form>
 					</div>
 
