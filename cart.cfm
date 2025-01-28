@@ -27,9 +27,9 @@
 					<cfset variables.totalPrice += local.price>
 					<cfset variables.totalActualPrice += local.actualPrice>
 
-					<div class="card mb-3">
+					<div class="card mb-3 shadow">
 						<div class="row g-0">
-							<div class="col-md-4">
+							<div class="col-md-4 p-3">
 								<a href="/productPage.cfm?productId=#variables.encryptedProductId#">
 									<img src="#application.productImageDirectory&local.qryProductInfo.fldProductImage#" class="img-fluid rounded-start" alt="Product">
 								</a>
@@ -58,7 +58,7 @@
 
 			<!-- Price Details Section -->
 			<div class="col-md-4">
-				<div class="card">
+				<div class="card shadow">
 					<div class="card-body">
 						<h4 class="card-title">Price Details</h4>
 						<hr>
