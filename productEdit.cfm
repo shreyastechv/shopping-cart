@@ -1,17 +1,21 @@
 <cfoutput>
+	<!--- Check presence of url params --->
+	<cfif NOT structKeyExists(url, "subCategoryId")>
+		<cflocation url="#cgi.http_referer#" addToken="no">
+	</cfif>
+
 	<!--- URL params --->
-	<cfparam  name="url.subCategoryId" default="0">
 	<cfparam  name="url.subCategoryName" default="Products">
 	<cfparam  name="url.categoryId" default="0">
 	<cfparam  name="url.categoryName" default="Sub categories">
-	<cfif url.subCategoryId EQ 0>
-		<cflocation  url="subCategory.cfm?categoryId=#url.categoryId#&categoryName=#url.categoryName#" addToken="false">
-	</cfif>
+
+	<!--- Decrypt URL Params --->
+	<cfset variables.subCategoryId = application.shoppingCart.decryptUrlParam(url.subCategoryId)>
 
 	<!--- Get Data --->
 	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
 	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
-	<cfset variables.qryProducts = application.shoppingCart.getProducts(subCategoryId = url.subCategoryId)>
+	<cfset variables.qryProducts = application.shoppingCart.getProducts(subCategoryId = variables.subCategoryId)>
 	<cfset variables.qryBrands = application.shoppingCart.getBrands()>
 
 	<!--- Main Content --->
@@ -19,12 +23,12 @@
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
 			<div id="productMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
 				<div class="d-flex justify-content-between align-items-center mb-4">
-					<a href="subCategory.cfm?categoryId=#url.categoryId#&categoryName=#url.categoryName#" class="btn">
+					<a href="#cgi.http_referer#" class="btn">
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">
 						<h3 class="fw-semibold text-center mb-0 me-3">#url.subCategoryName#</h3>
-						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal()">
+						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal(#variables.subCategoryId#)">
 							Add+
 						</button>
 					</div>
@@ -39,9 +43,9 @@
 						</div>
 						<div>
 							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#variables.qryProducts.fldProduct_Id#)">
-								<img class="pe-none" src="#application.relativeProductImageDirectory#/#variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
+								<img class="pe-none" src="#application.productImageDirectory##variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
 							</button>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal(#variables.qryProducts.fldProduct_Id#)">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal(#variables.qryProducts.fldProduct_Id#,#variables.subCategoryId#)">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
 							<button class="btn btn-lg" onclick="deleteProduct(#variables.qryProducts.fldProduct_Id#)">
@@ -89,7 +93,7 @@
 					<option value="0">SubCategory Select</option>
 					<cfloop query="variables.qrySubCategories">
 						<option
-							<cfif url.subCategoryId EQ variables.qrySubCategories.fldSubCategory_Id>
+							<cfif variables.subCategoryId EQ variables.qrySubCategories.fldSubCategory_Id>
 								selected
 							</cfif>
 							value="#variables.qrySubCategories.fldSubCategory_Id#"
@@ -117,7 +121,7 @@
 
 				<!--- Product Description --->
 				<label for="productDesc" class="fw-semibold">Product Description</label>
-				<textarea class="form-control mb-1" id="productDesc" name="productDesc" rows="4" cols="50" placeholder="Product Description"></textarea>
+				<textarea class="form-control mb-1" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400" placeholder="Product Description"></textarea>
 				<div id="productDescError" class="text-danger error"></div>
 
 				<!--- Product Price --->

@@ -1,4 +1,4 @@
-const urlSubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId');
+// const urlSubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId');
 const urlcategoryId = new URLSearchParams(document.URL.split('?')[1]).get('categoryId');
 
 $(document).ready(function() {
@@ -11,8 +11,9 @@ $(document).ready(function() {
 			$("#subCategorySelect").prop("disabled", false);
 			$.ajax({
 				type: "POST",
-				url: "./components/shoppingCart.cfc?method=getSubCategories",
+				url: "./components/shoppingCart.cfc",
 				data: {
+					method: "getSubCategories",
 					categoryId: categoryId
 				},
 				success: function(response) {
@@ -24,9 +25,9 @@ $(document).ready(function() {
 						const optionTag = `<option value="${subCategoryId}">${subCategoryName}</option>`;
 						$("#subCategorySelect").append(optionTag);
 					}
-					if (categoryId == urlcategoryId) {
-						$("#subCategorySelect").val(urlSubCategoryId).change();
-					}
+					// if (categoryId == urlcategoryId) {
+					// 	$("#subCategorySelect").val(urlSubCategoryId).change();
+					// }
 				}
 			});
 		}
@@ -94,7 +95,7 @@ function processproductForm() {
 	}
 
 	// Product Image Validation
-	if (productId.length == 0 && productImage.length == 0) { // Check only when adding products not when editing
+	if (productId.length == 0 && productImage.length == 0) { // Validate product image only when adding products not when editing
 		$("#productImageError").text("Select atleast one image");
 		valid = false;
 	}
@@ -105,9 +106,10 @@ function processproductForm() {
 	formData.append("categorySelect", categorySelect);
 	formData.append("subCategorySelect", subCategorySelect);
 	formData.append("brandSelect", brandSelect);
+	formData.append("method", "modifyProduct");
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=modifyProduct",
+		url: "./components/shoppingCart.cfc",
 		data: formData,
 		enctype: 'multipart/form-data',
 		processData: false,
@@ -131,7 +133,7 @@ function showAddProductModal() {
 	$("#productForm")[0].reset();
 	$(".error").text("");
 	$("#productId").val("");
-	$("#categorySelect").val(urlcategoryId).change();
+	// $("#categorySelect").val(urlcategoryId).change();
 	$("#subCategoryModalBtn").text("Add Product");
 }
 
@@ -140,9 +142,9 @@ function showEditProductModal(productId) {
 	$("#productId").val(productId);
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=getProducts",
+		url: "./components/shoppingCart.cfc",
 		data: {
-			subCategoryId: urlSubCategoryId,
+			method: "getProducts",
 			productId: productId
 		},
 		success: function(response) {
@@ -153,7 +155,7 @@ function showEditProductModal(productId) {
 			}
 
 			$("#categorySelect").val(urlcategoryId).change();
-			$("#subCategorySelect").val(urlSubCategoryId).change();
+			// $("#subCategorySelect").val(urlSubCategoryId).change();
 			$("#productName").val(objProductData['FLDPRODUCTNAME']);
 			$("#brandSelect").val(objProductData['FLDBRANDID']).change();
 			$("#productDesc").val(objProductData['FLDDESCRIPTION']);
@@ -169,8 +171,9 @@ function deleteProduct (productId) {
 	if (confirm("Delete product?")) {
 		$.ajax({
 			type: "POST",
-			url: "./components/shoppingCart.cfc?method=deleteProduct",
+			url: "./components/shoppingCart.cfc",
 			data: {
+				method: "deleteProduct",
 				productId: productId
 			},
 			success: function() {
@@ -190,7 +193,7 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 			</div>
 			<div>
 				<button value="${prodId}" class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage()">
-					<img class="pe-none" src="${productImageDirectory}/${imageFile}" alt="Product Image" width="50">
+					<img class="pe-none" src="${productImageDirectory}${imageFile}" alt="Product Image" width="50">
 				</button>
 				<button class="btn btn-lg" value="${prodId}" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal()">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>
@@ -207,8 +210,9 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 function createCarousel(productId) {
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=getProductImages",
+		url: "./components/shoppingCart.cfc",
 		data: {
+			method: "getProductImages",
 			productId: productId
 		},
 		success: function(response) {
@@ -228,7 +232,7 @@ function createCarousel(productId) {
 				`;
 				const carouselItem = `
 					<div class="carousel-item ${isActive}">
-						<img src="assets/images/productImages/${responseJSON[i].imageFileName}" class="d-block w-100" alt="Product Image">
+						<img src="${productImageDirectory}${responseJSON[i].imageFileName}" class="d-block w-100" alt="Product Image">
 						${bottomDiv}
 					</div>
 				`;
@@ -249,8 +253,9 @@ function setDefaultImage() {
 	const imageId = btnElement.value;
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=setDefaultImage",
+		url: "./components/shoppingCart.cfc",
 		data: {
+			method: "setDefaultImage",
 			imageId: imageId
 		},
 		success: function() {
@@ -266,8 +271,9 @@ function deleteImage() {
 	const imageId = btnElement.value;
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=deleteImage",
+		url: "./components/shoppingCart.cfc",
 		data: {
+			method: "deleteImage",
 			imageId: imageId
 		},
 		success: function() {

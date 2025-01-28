@@ -12,7 +12,7 @@ function createSubCategoryItem(subCategoryId, subCategoryName) {
 				<button class="btn btn-lg" value="${subCategoryId}" onclick="deleteSubCategory()">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
-				<a class="btn btn-lg" href="productEdit.cfm?subCategoryId=${subCategoryId}&subCategoryName=${subCategoryName}&categoryId=${urlCategoryId}&categoryName=${urlCategoryName}">
+				<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=${subCategoryId}&subCategoryName=${subCategoryName}&categoryId=${urlCategoryId}&categoryName=${urlCategoryName}">
 					<i class="fa-solid fa-chevron-right"></i>
 				</a>
 			</div>
@@ -52,7 +52,7 @@ function processSubCategoryForm() {
 		$("#subCategoryModalMsg").text("SubCategory name should not be empty");
 		valid = false;
 	}
-	else if (!/^[A-Za-z ]+$/.test(subCategoryName)) {
+	else if (!/^[A-Za-z'& ]+$/.test(subCategoryName)) {
 		$("#subCategoryName").addClass("border-danger");
 		$("#subCategoryModalMsg").text("SubCategory name should only contain letters!");
 		valid = false;
@@ -67,8 +67,9 @@ function processSubCategoryForm() {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=modifySubCategory",
+		url: "./components/shoppingCart.cfc",
 		data: {
+			method: "modifySubCategory",
 			subCategoryId: subCategoryId,
 			subCategoryName: subCategoryName,
 			categoryId: categoryId
@@ -107,7 +108,7 @@ function processSubCategoryForm() {
 
 function showAddSubCategoryModal() {
 	clearSubCategoryModal();
-	$("#subCategoryModalLabel").text("ADD CATEGORY");
+	$("#subCategoryModalLabel").text("ADD SUBCATEGORY");
 	$("#subCategoryModalBtn").text("Add SubCategory");
 	$("#subCategoryId").val("");
 	$("#subCategoryName").attr("data-sc-prevSubCategoryName", "");
@@ -117,7 +118,7 @@ function showAddSubCategoryModal() {
 function showEditSubCategoryModal(categoryId) {
 	const subCategoryName = $("#subCategoryName-" + subCategoryId).text();
 	clearSubCategoryModal();
-	$("#subCategoryModalLabel").text("EDIT CATEGORY");
+	$("#subCategoryModalLabel").text("EDIT SUBCATEGORY");
 	$("#subCategoryModalBtn").text("Edit SubCategory");
 	$("#subCategoryId").val(subCategoryId);
 	$("#subCategoryName").attr("data-sc-prevSubCategoryName", subCategoryName);
@@ -129,8 +130,9 @@ function deleteSubCategory(subCategoryId) {
 	if (confirm(`Delete subCategory - '${subCategoryName}'?`)) {
 		$.ajax({
 			type: "POST",
-			url: "./components/shoppingCart.cfc?method=deleteSubCategory",
+			url: "./components/shoppingCart.cfc",
 			data: {
+				method: "deleteSubCategory",
 				subCategoryId: subCategoryId
 			},
 			success: function() {
