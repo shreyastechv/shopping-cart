@@ -3,7 +3,7 @@
 	<cfset this.sessionManagement = true>
 	<cfset this.sessiontimeout = CreateTimeSpan(0, 1, 0, 0)>
 	<cfset this.dataSource = "shoppingCart">
-	<cfset this.customTagPaths = expandPath("/customTags")>
+	<cfset This.customTagPaths = expandPath("/customTags")>
 
 	<cffunction name="onApplicationStart" returnType="boolean">
 		<cfset application.productImageDirectory = "/assets/images/productImages/">
@@ -25,6 +25,11 @@
 				"pageTitle": "Product Page",
 				"cssPath": "",
 				"scriptPath": ""
+			},
+			"/cart.cfm": {
+				"pageTitle": "Cart Page",
+				"cssPath": "",
+				"scriptPath": "assets/js/cart.js"
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
@@ -108,6 +113,17 @@
 			<cfset onApplicationStart()>
 		</cfif>
 
+		<!--- Set page title and script tag path dynamically --->
+		<cfif StructKeyExists(application.pageDetailsMapping, arguments.targetPage)>
+			<cfset application.pageTitle = application.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
+			<cfset application.scriptPath = application.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
+			<cfset application.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
+		<cfelse>
+			<cfset application.pageTitle = "Title">
+			<cfset application.scriptPath = "">
+			<cfset application.cssPath = "">
+		</cfif>
+
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
 		<cfset local.privatePages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
@@ -152,6 +168,10 @@
 
 		<!--- Common Footer file --->
 		<cfinclude template="/includes/footer.cfm">
+	</cffunction>
+
+	<cffunction name="onSessionEnd" returnType="void">
+		<cfset structClear(session)>
 	</cffunction>
 
 	<cffunction name="onSessionEnd" returnType="void">
