@@ -173,8 +173,4 @@
 	<cffunction name="onSessionEnd" returnType="void">
 		<cfset structClear(session)>
 	</cffunction>
-
-	<cffunction name="onSessionEnd" returnType="void">
-		<cfset structClear(session)>
-	</cffunction>
 </cfcomponent>
