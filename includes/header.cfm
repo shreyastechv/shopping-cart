@@ -14,6 +14,22 @@
 
 		<!--- Variables --->
 		<cfset variables.qryCategories = application.shoppingCart.getCategories()>
+		<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories()>
+		<cfset variables.catToSubcatMapping = {}>
+
+		<!--- Loop through sub categories --->
+		<cfloop query="variables.qrySubCategories">
+			<!--- If category id does not exist in mapping, create it --->
+			<cfif NOT structKeyExists(variables.catToSubcatMapping, variables.qrySubCategories.fldCategoryId)>
+				<cfset variables.catToSubcatMapping[variables.qrySubCategories.fldCategoryId] = []>
+			</cfif>
+
+			<!--- Map sub category info to category id --->
+			<cfset arrayAppend(variables.catToSubcatMapping[variables.qrySubCategories.fldCategoryId], {
+				"subCategoryId" = variables.qrySubCategories.fldSubCategory_Id,
+				"subCategoryName" = variables.qrySubCategories.fldSubCategoryName
+			})>
+		</cfloop>
 
 		<body>
 			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2">
@@ -79,16 +95,13 @@
 											<a class="nav-link" href="/products.cfm?categoryId=#variables.encryptedCategoryId#">
 												#variables.qryCategories.fldCategoryName#
 											</a>
-											<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(
-												categoryId = variables.qryCategories.fldCategory_Id
-											)>
 											<cfif variables.qrySubCategories.recordCount>
 												<ul class="dropdown-menu">
-													<cfloop query="variables.qrySubCategories">
+													<cfloop array="#variables.catToSubcatMapping[variables.qryCategories.fldCategory_Id]#" item="local.subCategory">
 														<!--- Encrypt SubCategory ID URL param --->
-														<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
+														<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(local.subCategory.subCategoryId)>
 
-														<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#">#variables.qrySubCategories.fldSubCategoryName#</a></li>
+														<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#">#local.subCategory.subCategoryName#</a></li>
 													</cfloop>
 												</ul>
 											</cfif>

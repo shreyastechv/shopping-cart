@@ -17,11 +17,6 @@
 <cfparam name="form.sort" default="">
 <cfparam name="form.limit" default=6>
 
-<!--- Increment limit variable if view more btn is pressed --->
-<cfif structKeyExists(form, "viewMoreBtn")>
-	<cfset form.limit += 6>
-</cfif>
-
 <!--- Check filtering --->
 <cfif len(trim(form.filterRange))>
 	<cfset variables.rangeArray = ListToArray(form.filterRange, "-")>
@@ -77,7 +72,7 @@
 				</cfif>
 			</cfloop>
 		<cfelse>
-			<div class="d-flex justify-content-between p-1">
+			<div class="d-flex justify-content-start p-1">
 
 				<!--- Sorting and Filtering only shown if search results are not shown --->
 				<cfif len(trim(url.search))>
@@ -92,13 +87,13 @@
 					<!--- Sorting --->
 					<div class="d-flex px-3 pb-2">
 						<form method="post">
-							<button class="btn btn-primary" type="submit" name="sort" value="asc">Price: Low to High</button>
+							<button class="btn btn-primary me-sm-2" type="submit" name="sort" value="asc">Price: Low to High</button>
 							<button class="btn btn-primary" type="submit" name="sort" value="desc">Price: High to Low</button>
 						</form>
 					</div>
 
 					<!--- Filtering --->
-					<div class="filter dropdown">
+					<div class="filter dropdown pe-3">
 						<button class="btn btn-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<i class="fa-solid fa-filter"></i>
 							Filter
@@ -136,18 +131,18 @@
 				</cfif>
 			</div>
 
-			<!--- Sub Category Listing --->
-			<cfif variables.qryProducts.recordCount>
-				<cf_productlist qryProducts="#variables.qryProducts#">
-			<cfelse>
-				<div class="fs-4 fw-semibold text-center mx-3 mt-4">No Products Found</div>
-			</cfif>
+			<!--- Sub Category / Search Listing --->
+			<cf_productlist qryProducts="#variables.qryProducts#">
 
-			<!--- View More Button --->
-			<cfif variables.qryProducts.recordCount>
-				<form method="post">
-					<button class="btn" type="submit" name="viewMoreBtn">View More</button>
-				</form>
+			<cfif NOT len(trim(url.search))>
+				<cfif variables.qryProducts.recordCount>
+					<!--- View More Button --->
+					<div>
+						<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore(#variables.subCategoryId#)">View More</button>
+					</div>
+				<cfelse>
+					<div class="fs-4 fw-semibold text-center mx-3 mt-4">No Products Found</div>
+				</cfif>
 			</cfif>
 		</cfif>
 	</div>

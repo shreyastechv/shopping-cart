@@ -19,7 +19,7 @@
 			"/products.cfm": {
 				"pageTitle": "Product Listing",
 				"cssPath": "",
-				"scriptPath": ""
+				"scriptPath": "assets/js/products.js"
 			},
 			"/productPage.cfm": {
 				"pageTitle": "Product Page",

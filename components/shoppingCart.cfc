@@ -320,15 +320,13 @@
 	</cffunction>
 
 	<cffunction name="getSubCategories" access="remote" returnType="query" returnFormat="json">
-		<cfargument name="categoryId" type="string" required=true>
+		<cfargument name="categoryId" type="string" required=false>
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
 		<!--- Category Id Validation --->
-		<cfif len(arguments.categoryId) EQ 0>
-			<cfset local.response["message"] &= "Category Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.categoryId)>
+		<cfif structKeyExists(arguments, "categoryId") AND isValid("integer", arguments.categoryId) EQ false>
 			<cfset local.response["message"] &= "Category Id should be an integer">
 		</cfif>
 
@@ -341,12 +339,15 @@
 		<cfquery name="local.qryGetSubCategories">
 			SELECT
 				fldSubCategory_Id,
-				fldSubCategoryName
+				fldSubCategoryName,
+				fldCategoryId
 			FROM
 				tblSubCategory
 			WHERE
-				fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
-				AND fldActive = 1
+				fldActive = 1
+				<cfif structKeyExists(arguments, "categoryId") AND len(trim(arguments.categoryId))>
+					AND fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
+				</cfif>
 		</cfquery>
 
 		<cfreturn local.qryGetSubCategories>
@@ -477,6 +478,7 @@
 		<cfargument name="productId" type="string" required=false default="">
 		<cfargument name="random" type="string" required=false default="0">
 		<cfargument name="limit" type="string" required="false" default="">
+		<cfargument name="offset" type="string" required="false" default=0>
 		<cfargument name="sort" type="string" required="false" default="">
 		<cfargument name="min" type="string" required="false" default="0">
 		<cfargument name="max" type="string" required="false" default="">
@@ -556,6 +558,9 @@
 
 			<cfif len(trim(arguments.limit))>
 				LIMIT <cfqueryparam value = "#val(arguments.limit)#" cfsqltype = "integer">
+				<cfif len(trim(arguments.offset))>
+					OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
+				</cfif>
 			</cfif>
 		</cfquery>
 
