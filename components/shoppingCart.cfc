@@ -184,12 +184,22 @@
 	<cffunction name="getCategories" access="public" returnType="query">
 		<cfquery name="local.qryGetCategories">
 			SELECT
-				fldCategory_Id,
-				fldCategoryName
+				c.fldCategory_Id,
+				c.fldCategoryName
 			FROM
-				tblCategory
+				tblCategory c
 			WHERE
-				fldActive = 1
+				c.fldActive = 1
+				-- Below code is to make sure to return only no-empty categories
+				AND EXISTS (
+					SELECT
+						1
+					FROM
+						tblSubCategory sc
+					WHERE
+						sc.fldCategoryId = c.fldCategory_Id
+						AND sc.fldActive = 1
+				)
 		</cfquery>
 
 		<cfreturn local.qryGetCategories>
@@ -338,16 +348,26 @@
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetSubCategories">
 			SELECT
-				fldSubCategory_Id,
-				fldSubCategoryName,
-				fldCategoryId
+				sc.fldSubCategory_Id,
+				sc.fldSubCategoryName,
+				sc.fldCategoryId
 			FROM
-				tblSubCategory
+				tblSubCategory sc
 			WHERE
-				fldActive = 1
+				sc.fldActive = 1
 				<cfif structKeyExists(arguments, "categoryId") AND len(trim(arguments.categoryId))>
-					AND fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
+					AND sc.fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
 				</cfif>
+				-- Below code is to make sure to return only no-empty subcategories
+				AND EXISTS (
+					SELECT
+						1
+					FROM
+						tblProduct p
+					WHERE
+						p.fldSubCategoryId = sc.fldSubCategory_Id
+						AND p.fldActive = 1
+				)
 		</cfquery>
 
 		<cfreturn local.qryGetSubCategories>
