@@ -16,6 +16,9 @@
 					<!--- Get Product Details --->
 					<cfset local.qryProductInfo = application.shoppingCart.getProducts(productId = local.productId)>
 
+					<!--- Encrypt Product ID since it is passed to URL param --->
+					<cfset variables.encryptedProductId = application.shoppingCart.encryptUrlParam(local.productId)>
+
 					<!--- Calculate price and actual price --->
 					<cfset local.actualPrice = local.qryProductInfo.fldPrice>
 					<cfset local.price = local.qryProductInfo.fldPrice * (100 + local.qryProductInfo.fldTax) / 100>
@@ -27,7 +30,9 @@
 					<div class="card mb-3">
 						<div class="row g-0">
 							<div class="col-md-4">
-								<img src="#application.productImageDirectory&local.qryProductInfo.fldProductImage#" class="img-fluid rounded-start" alt="Product">
+								<a href="/productPage.cfm?productId=#variables.encryptedProductId#">
+									<img src="#application.productImageDirectory&local.qryProductInfo.fldProductImage#" class="img-fluid rounded-start" alt="Product">
+								</a>
 							</div>
 							<div class="col-md-8">
 								<div class="card-body">
