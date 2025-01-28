@@ -102,7 +102,7 @@
 
 	<cffunction name="onSessionStart" returnType="void">
 		<!--- Variable for storing cart information --->
-		<cfset session.cart = []>
+		<cfset session.cart = {}>
 	</cffunction>
 
 	<cffunction name="onRequestStart" returnType="boolean">
