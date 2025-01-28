@@ -77,7 +77,7 @@
 				</cfif>
 			</cfloop>
 		<cfelse>
-			<div class="d-flex justify-content-between p-1">
+			<div class="d-flex justify-content-end p-1">
 
 				<!--- Sorting and Filtering only shown if search results are not shown --->
 				<cfif len(trim(url.search))>
@@ -92,13 +92,13 @@
 					<!--- Sorting --->
 					<div class="d-flex px-3 pb-2">
 						<form method="post">
-							<button class="btn btn-primary" type="submit" name="sort" value="asc">Price: Low to High</button>
+							<button class="btn btn-primary me-sm-2" type="submit" name="sort" value="asc">Price: Low to High</button>
 							<button class="btn btn-primary" type="submit" name="sort" value="desc">Price: High to Low</button>
 						</form>
 					</div>
 
 					<!--- Filtering --->
-					<div class="filter dropdown">
+					<div class="filter dropdown pe-3">
 						<button class="btn btn-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<i class="fa-solid fa-filter"></i>
 							Filter
@@ -146,7 +146,7 @@
 			<!--- View More Button --->
 			<cfif variables.qryProducts.recordCount>
 				<form method="post">
-					<button class="btn" type="submit" name="viewMoreBtn">View More</button>
+					<button class="btn btn-warning mx-3" type="submit" name="viewMoreBtn">View More</button>
 				</form>
 			</cfif>
 		</cfif>
