@@ -9,10 +9,6 @@
 
 <cfoutput>
 	<div class="container my-5">
-<div id="maxQuantityAlert" class="alert alert-warning alert-dismissible fade show d-none" role="alert">
-  <strong>Hey, #session.fullName#</strong> Maximum allowed quantity for this item is reached.
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
 		<div class="row">
 			<!-- Products Section -->
 			<div class="col-md-8">
@@ -44,9 +40,9 @@
 							<div class="col-md-8">
 								<div class="card-body">
 									<h5 class="card-title">#local.qryProductInfo.fldProductName#</h5>
-									<p class="mb-1">Price: <span class="fw-bold">Rs. #local.price#</span></p>
-									<p class="mb-1">Actual Price: <span class="fw-bold">Rs. #local.actualPrice#</span></p>
-									<p class="mb-1">Tax: <span class="fw-bold">#local.qryProductInfo.fldTax# %</span></p>
+									<p class="mb-1">Price: <span class="fw-bold">Rs. <span name="price">#local.price#</span></span></p>
+									<p class="mb-1">Actual Price: <span class="fw-bold">Rs. <span name="actualPrice">#local.actualPrice#</span></span></p>
+									<p class="mb-1">Tax: <span class="fw-bold"><span name="tax">#local.qryProductInfo.fldTax#</span> %</span></p>
 									<div class="d-flex align-items-center">
 										<button class="btn btn-outline-primary btn-sm me-2" name="decBtn" onclick="editCartItem('#local.randomId#', #local.productId#, 'decrement')"
 										<cfif session.cart[local.productId].quantity EQ 1>
@@ -76,15 +72,15 @@
 						<hr>
 						<p class="d-flex justify-content-between">
 							<span>Total Price:</span>
-							<span class="fw-bold">Rs. #variables.totalPrice#</span>
+							<span class="fw-bold">Rs. <span id="totalPrice">#variables.totalPrice#</span></span>
 						</p>
 						<p class="d-flex justify-content-between">
 							<span>Total Tax:</span>
-							<span class="fw-bold">Rs. #variables.totalTax#</span>
+							<span class="fw-bold">Rs. <span id="totalTax">#variables.totalTax#</span></span>
 						</p>
 						<p class="d-flex justify-content-between">
 							<span>Actual Price:</span>
-							<span class="fw-bold">Rs. #variables.totalActualPrice#</span>
+							<span class="fw-bold">Rs. <span id="totalActualPrice">#variables.totalActualPrice#</span></span>
 						</p>
 						<button class="btn btn-success w-100">Checkout</button>
 					</div>
