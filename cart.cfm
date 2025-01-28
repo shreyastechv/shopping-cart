@@ -9,6 +9,10 @@
 
 <cfoutput>
 	<div class="container my-5">
+<div id="maxQuantityAlert" class="alert alert-warning alert-dismissible fade show d-none" role="alert">
+  <strong>Hey, #session.fullName#</strong> Maximum allowed quantity for this item is reached.
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 		<div class="row">
 			<!-- Products Section -->
 			<div class="col-md-8">
@@ -27,7 +31,10 @@
 					<cfset variables.totalPrice += local.price>
 					<cfset variables.totalActualPrice += local.actualPrice>
 
-					<div class="card mb-3 shadow">
+					<!--- Generate random id for the mian container div --->
+					<cfset local.randomId = replace(rand(), ".", "", "all")>
+
+					<div class="card mb-3 shadow" id="#local.randomId#">
 						<div class="row g-0">
 							<div class="col-md-4 p-3">
 								<a href="/productPage.cfm?productId=#variables.encryptedProductId#">
@@ -41,11 +48,16 @@
 									<p class="mb-1">Actual Price: <span class="fw-bold">Rs. #local.actualPrice#</span></p>
 									<p class="mb-1">Tax: <span class="fw-bold">#local.qryProductInfo.fldTax# %</span></p>
 									<div class="d-flex align-items-center">
-										<button class="btn btn-outline-primary btn-sm me-2" onclick="editCartItem(#local.productId#, 'decrement')">-</button>
-										<input type="text" class="form-control text-center w-25" value="#session.cart[local.productId].quantity#" readonly>
-										<button class="btn btn-outline-primary btn-sm ms-2" onclick="editCartItem(#local.productId#, 'increment')">+</button>
+										<button class="btn btn-outline-primary btn-sm me-2" name="decBtn" onclick="editCartItem('#local.randomId#', #local.productId#, 'decrement')"
+										<cfif session.cart[local.productId].quantity EQ 1>
+											disabled
+										</cfif>
+										>-</button>
+
+										<input type="text" name="quantity" class="form-control text-center w-25" value="#session.cart[local.productId].quantity#" onchange="handleQuantityChange('#local.randomId#')" readonly>
+										<button class="btn btn-outline-primary btn-sm ms-2" name="incBtn" onclick="editCartItem('#local.randomId#', #local.productId#, 'increment')">+</button>
 									</div>
-									<button class="btn btn-danger btn-sm mt-3" onclick="editCartItem(#local.productId#, 'delete')">Remove</button>
+									<button class="btn btn-danger btn-sm mt-3" onclick="editCartItem('#local.randomid#', #local.productId#, 'delete')">Remove</button>
 								</div>
 							</div>
 						</div>

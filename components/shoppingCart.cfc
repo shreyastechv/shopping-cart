@@ -166,7 +166,7 @@
 
 		<cfif local.qryCheckUser.recordCount>
 			<cfif local.qryCheckUser.fldHashedPassword EQ hash(arguments.password & local.qryCheckUser.fldUserSaltString, "SHA-512", "UTF-8", 50)>
-				<cfset session.userFullname = local.qryCheckUser.fldFirstName & " " & local.qryCheckUser.fldLastName>
+				<cfset session.fullName = local.qryCheckUser.fldFirstName & " " & local.qryCheckUser.fldLastName>
 				<cfset session.userId = local.qryCheckUser.fldUser_Id>
 				<cfset session.roleId = local.qryCheckUser.fldRoleId>
 				<cfset session.cart = getCart()>
