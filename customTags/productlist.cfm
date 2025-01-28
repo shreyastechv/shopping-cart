@@ -2,7 +2,7 @@
 <cfparam name="attributes.qryProducts" default="">
 
 <cfoutput>
-	<div class="row px-3 py-1">
+	<div class="row px-3 py-1" id="products">
 		<cfloop query="attributes.qryProducts">
 			<!--- Encrypt Product ID since it is passed to URL param --->
 			<cfset variables.encryptedProductId = application.shoppingCart.encryptUrlParam(attributes.qryProducts.fldProduct_Id)>

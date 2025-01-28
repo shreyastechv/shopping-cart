@@ -478,6 +478,7 @@
 		<cfargument name="productId" type="string" required=false default="">
 		<cfargument name="random" type="string" required=false default="0">
 		<cfargument name="limit" type="string" required="false" default="">
+		<cfargument name="offset" type="string" required="false" default=0>
 		<cfargument name="sort" type="string" required="false" default="">
 		<cfargument name="min" type="string" required="false" default="0">
 		<cfargument name="max" type="string" required="false" default="">
@@ -557,6 +558,9 @@
 
 			<cfif len(trim(arguments.limit))>
 				LIMIT <cfqueryparam value = "#val(arguments.limit)#" cfsqltype = "integer">
+				<cfif len(trim(arguments.offset))>
+					OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
+				</cfif>
 			</cfif>
 		</cfquery>
 

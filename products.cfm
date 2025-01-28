@@ -17,11 +17,6 @@
 <cfparam name="form.sort" default="">
 <cfparam name="form.limit" default=6>
 
-<!--- Increment limit variable if view more btn is pressed --->
-<cfif structKeyExists(form, "viewMoreBtn")>
-	<cfset form.limit += 6>
-</cfif>
-
 <!--- Check filtering --->
 <cfif len(trim(form.filterRange))>
 	<cfset variables.rangeArray = ListToArray(form.filterRange, "-")>
@@ -77,7 +72,7 @@
 				</cfif>
 			</cfloop>
 		<cfelse>
-			<div class="d-flex justify-content-end p-1">
+			<div class="d-flex justify-content-start p-1">
 
 				<!--- Sorting and Filtering only shown if search results are not shown --->
 				<cfif len(trim(url.search))>
@@ -136,18 +131,18 @@
 				</cfif>
 			</div>
 
-			<!--- Sub Category Listing --->
-			<cfif variables.qryProducts.recordCount>
-				<cf_productlist qryProducts="#variables.qryProducts#">
-			<cfelse>
-				<div class="fs-4 fw-semibold text-center mx-3 mt-4">No Products Found</div>
-			</cfif>
+			<!--- Sub Category / Search Listing --->
+			<cf_productlist qryProducts="#variables.qryProducts#">
 
-			<!--- View More Button --->
-			<cfif variables.qryProducts.recordCount>
-				<form method="post">
-					<button class="btn btn-warning mx-3" type="submit" name="viewMoreBtn">View More</button>
-				</form>
+			<cfif NOT len(trim(url.search))>
+				<cfif variables.qryProducts.recordCount>
+					<!--- View More Button --->
+					<div>
+						<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore(#variables.subCategoryId#)">View More</button>
+					</div>
+				<cfelse>
+					<div class="fs-4 fw-semibold text-center mx-3 mt-4">No Products Found</div>
+				</cfif>
 			</cfif>
 		</cfif>
 	</div>
