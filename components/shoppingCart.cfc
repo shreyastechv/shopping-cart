@@ -26,14 +26,14 @@
 		<!--- Firstname Validation --->
 		<cfif len(arguments.firstName) EQ 0>
 			<cfset local.response["message"] &= "Enter first name. ">
-		<cfelseif NOT isValid("regex", arguments.firstName, "[^0-9]+")>
+		<cfelseif isValid("regex", arguments.firstName, "/\d/")>
 			<cfset local.response["message"] &= "First name should not contain any digits. ">
 		</cfif>
 
 		<!--- Lastname Validation --->
 		<cfif len(arguments.lastname) EQ 0>
 			<cfset local.response["message"] &= "Enter last name. ">
-		<cfelseif NOT isValid("regex", arguments.lastname, "[^0-9]+")>
+		<cfelseif isValid("regex", arguments.lastName, "/\d/")>
 			<cfset local.response["message"] &= "Last name should not contain any digits. ">
 		</cfif>
 
@@ -69,7 +69,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="local.qryCheckUser" dataSource="shoppingCart">
+		<cfquery name="local.qryCheckUser">
 			SELECT
 				fldUser_Id
 			FROM
@@ -86,7 +86,7 @@
 			<!--- Generate random salt string --->
 			<cfset local.saltString = generateSecretKey("AES", 128)>
 			<cfset local.hashedPassword = hash(arguments.password & local.saltString, "SHA-512", "UTF-8", 50)>
-			<cfquery name="local.qryAddUser" dataSource="shoppingCart">
+			<cfquery name="local.qryAddUser">
 				INSERT INTO
 					tblUser (
 						fldFirstName,
@@ -148,7 +148,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="local.qryCheckUser" dataSource="shoppingCart">
+		<cfquery name="local.qryCheckUser">
 			SELECT
 				fldUser_Id,
 				fldFirstName,
@@ -182,7 +182,7 @@
 	</cffunction>
 
 	<cffunction name="getCategories" access="public" returnType="query">
-		<cfquery name="local.qryGetCategories" dataSource="shoppingCart">
+		<cfquery name="local.qryGetCategories">
 			SELECT
 				fldCategory_Id,
 				fldCategoryName
@@ -218,7 +218,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="local.qryCheckCategory" dataSource="shoppingCart">
+		<cfquery name="local.qryCheckCategory">
 			SELECT
 				fldCategory_Id
 			FROM
@@ -232,7 +232,7 @@
 			<cfset local.response["message"] = "Category already exists!">
 		<cfelse>
 			<cfif len(trim(arguments.categoryId))>
-				<cfquery name="qryEditCategory" dataSource="shoppingCart">
+				<cfquery name="qryEditCategory">
 					UPDATE
 						tblCategory
 					SET
@@ -243,7 +243,7 @@
 				</cfquery>
 				<cfset local.response["message"] = "Category Updated">
 			<cfelse>
-				<cfquery name="local.qryAddCategory" result="local.resultAddCategory" dataSource="shoppingCart">
+				<cfquery name="local.qryAddCategory" result="local.resultAddCategory">
 					INSERT INTO
 						tblCategory (
 							fldCategoryName,
@@ -281,7 +281,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
+		<cfquery name="qryDeleteProducts">
 			UPDATE
 				tblProduct
 			SET
@@ -298,7 +298,7 @@
 				);
 		</cfquery>
 
-		<cfquery name="qryDeleteSubCategory" dataSource="shoppingCart">
+		<cfquery name="qryDeleteSubCategory">
 			UPDATE
 				tblSubCategory
 			SET
@@ -308,7 +308,7 @@
 				fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
 		</cfquery>
 
-		<cfquery name="qryDeleteCategory" dataSource="shoppingCart">
+		<cfquery name="qryDeleteCategory">
 			UPDATE
 				tblCategory
 			SET
@@ -338,7 +338,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="local.qryGetSubCategories" dataSource="shoppingCart">
+		<cfquery name="local.qryGetSubCategories">
 			SELECT
 				fldSubCategory_Id,
 				fldSubCategoryName
@@ -383,7 +383,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="local.qryCheckSubCategory" dataSource="shoppingCart">
+		<cfquery name="local.qryCheckSubCategory">
 			SELECT
 				fldSubCategory_Id
 			FROM
@@ -399,7 +399,7 @@
 			<cfset local.response["message"] = "SubCategory already exists!">
 		<cfelse>
 			<cfif len(trim(arguments.subCategoryId))>
-				<cfquery name="qryEditSubCategory" dataSource="shoppingCart">
+				<cfquery name="qryEditSubCategory">
 					UPDATE
 						tblSubCategory
 					SET
@@ -411,7 +411,7 @@
 				</cfquery>
 				<cfset local.response["message"] = "SubCategory Updated">
 			<cfelse>
-				<cfquery name="local.qryAddSubCategory" result="local.resultAddSubCategory" dataSource="shoppingCart">
+				<cfquery name="local.qryAddSubCategory" result="local.resultAddSubCategory">
 					INSERT INTO
 						tblSubCategory (
 							fldSubCategoryName,
@@ -451,7 +451,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
+		<cfquery name="qryDeleteProducts">
 			UPDATE
 				tblProduct
 			SET
@@ -461,7 +461,7 @@
 				fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
 		</cfquery>
 
-		<cfquery name="qryDeleteSubCategory" dataSource="shoppingCart">
+		<cfquery name="qryDeleteSubCategory">
 			UPDATE
 				tblSubCategory
 			SET
@@ -511,7 +511,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="local.qryGetProducts" dataSource="shoppingCart">
+		<cfquery name="local.qryGetProducts">
 			SELECT
 				p.fldProduct_Id,
 				p.fldProductName,
@@ -525,8 +525,8 @@
 				tblProduct p
 				LEFT JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
 				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
-				AND i.fldActive = 1
-				AND i.fldDefaultImage = 1
+					AND i.fldActive = 1
+					AND i.fldDefaultImage = 1
 			WHERE
 				p.fldActive = 1
 				<cfif len(trim(arguments.subCategoryId)) AND arguments.subCategoryId NEQ 0>
@@ -553,6 +553,7 @@
 				ORDER BY
 					p.fldPrice #arguments.sort#
 			</cfif>
+
 			<cfif len(trim(arguments.limit))>
 				LIMIT <cfqueryparam value = "#val(arguments.limit)#" cfsqltype = "integer">
 			</cfif>
@@ -562,7 +563,7 @@
 	</cffunction>
 
 	<cffunction name="getBrands" access="public" returnType="query">
-		<cfquery name="local.qryGetBrands" dataSource="shoppingCart">
+		<cfquery name="local.qryGetBrands">
 			SELECT
 				fldBrand_Id,
 				fldBrandName
@@ -643,7 +644,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="local.qryCheckProduct" dataSource="shoppingCart">
+		<cfquery name="local.qryCheckProduct">
 			SELECT
 				fldProduct_Id
 			FROM
@@ -670,7 +671,7 @@
 			>
 
 			<cfif len(trim(arguments.productId))>
-				<cfquery name="qryEditProduct" dataSource="shoppingCart">
+				<cfquery name="qryEditProduct">
 					UPDATE
 						tblProduct
 					SET
@@ -686,7 +687,7 @@
 				</cfquery>
 				<cfset local.response["message"] = "Product Updated">
 			<cfelse>
-				<cfquery name="local.qryAddProduct" result="local.resultAddProduct" dataSource="shoppingCart">
+				<cfquery name="local.qryAddProduct" result="local.resultAddProduct">
 					INSERT INTO
 						tblProduct (
 							fldProductName,
@@ -714,7 +715,7 @@
 
 			<!--- Store images in DB --->
 			<cfif arrayLen(local.uploadedImages)>
-				<cfquery name="qryAddImages" dataSource="shoppingCart">
+				<cfquery name="qryAddImages">
 					INSERT INTO
 						tblProductImages (
 							fldProductId,
@@ -766,7 +767,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryDeleteProducts" dataSource="shoppingCart">
+		<cfquery name="qryDeleteProducts">
 			UPDATE
 				tblProduct
 			SET
@@ -776,7 +777,7 @@
 				fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
 		</cfquery>
 
-		<cfquery name="qryDeleteProductImages" dataSource="shoppingCart">
+		<cfquery name="qryDeleteProductImages">
 			UPDATE
 				tblProductImages
 			SET
@@ -809,7 +810,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="local.qryGetImages" dataSource="shoppingCart">
+		<cfquery name="local.qryGetImages">
 			SELECT
 				fldProductImage_Id,
 				fldImageFileName,
@@ -851,7 +852,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryUnsetDefautImage" dataSource="shoppingCart">
+		<cfquery name="qryUnsetDefautImage">
 			UPDATE
 				tblProductImages AS p
 			JOIN (
@@ -869,7 +870,7 @@
 				p.fldDefaultImage = 1;
 		</cfquery>
 
-		<cfquery name="qrySetDefautImage" dataSource="shoppingCart">
+		<cfquery name="qrySetDefautImage">
 			UPDATE
 				tblProductImages
 			SET
@@ -898,7 +899,7 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryDeleteImage" dataSource="shoppingCart">
+		<cfquery name="qryDeleteImage">
 			UPDATE
 				tblProductImages
 			SET

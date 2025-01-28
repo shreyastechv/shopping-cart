@@ -47,7 +47,7 @@
 <cfelseif len(trim(url.search))>
 	<!--- Get Data if search is given --->
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(
-		searchTerm = url.search
+		searchTerm = trim(url.search)
 	)>
 <cfelse>
 	<!--- Exit if Required URL Params are not passed --->
@@ -56,20 +56,25 @@
 
 <cfoutput>
 	<!--- Main Content --->
-	<div class="d-flex flex-column">
+	<div class="d-flex flex-column m-3">
 		<cfif structKeyExists(variables, "qrySubCategories")>
 			<!--- Category Listing --->
 			<cfloop query="variables.qrySubCategories">
 				<!--- Encrypt SubCategory ID since it is passed to URL param --->
 				<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
 
-				<a href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
-				<cfset local.qryProducts = application.shoppingCart.getProducts(
+				<!--- Gather products --->
+				<cfset variables.qryProducts = application.shoppingCart.getProducts(
 					subCategoryId = variables.qrySubCategories.fldSubCategory_Id,
 					random = 1,
 					limit = 6
 				)>
-				<cf_productlist qryProducts="#local.qryProducts#">
+
+				<!--- Show subcategory if it has products --->
+				<cfif variables.qryProducts.recordCount>
+					<a href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
+					<cf_productlist qryProducts="#variables.qryProducts#">
+				</cfif>
 			</cfloop>
 		<cfelse>
 			<div class="d-flex justify-content-between p-1">
@@ -78,17 +83,17 @@
 				<cfif len(trim(url.search))>
 					<div class="fs-4 fw-semibold px-2">
 						<cfif variables.qryProducts.recordCount>
-							Search Results for '#url.search#'
+							Search Results for '#trim(url.search)#'
 						<cfelse>
-							No Results found for '#url.search#'
+							No Results found for '#trim(url.search)#'
 						</cfif>
 					</div>
 				<cfelse>
 					<!--- Sorting --->
-					<div class="d-flex gap-2 px-1">
+					<div class="d-flex px-3 pb-2">
 						<form method="post">
-							<button class="btn" type="submit" name="sort" value="asc">Price: Low to High</button>
-							<button class="btn" type="submit" name="sort" value="desc">Price: High to Low</button>
+							<button class="btn btn-primary" type="submit" name="sort" value="asc">Price: Low to High</button>
+							<button class="btn btn-primary" type="submit" name="sort" value="desc">Price: High to Low</button>
 						</form>
 					</div>
 
@@ -132,7 +137,11 @@
 			</div>
 
 			<!--- Sub Category Listing --->
-			<cf_productlist qryProducts="#variables.qryProducts#">
+			<cfif variables.qryProducts.recordCount>
+				<cf_productlist qryProducts="#variables.qryProducts#">
+			<cfelse>
+				<div class="fs-4 fw-semibold text-center mx-3 mt-4">No Products Found</div>
+			</cfif>
 
 			<!--- View More Button --->
 			<cfif variables.qryProducts.recordCount>

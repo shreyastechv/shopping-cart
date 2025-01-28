@@ -2,17 +2,19 @@
 <cfparam name="attributes.qryProducts" default="">
 
 <cfoutput>
-	<div class="d-flex flex-wrap px-3 py-1">
+	<div class="row px-3 py-1">
 		<cfloop query="attributes.qryProducts">
 			<!--- Encrypt Product ID since it is passed to URL param --->
 			<cfset variables.encryptedProductId = application.shoppingCart.encryptUrlParam(attributes.qryProducts.fldProduct_Id)>
 
-			<div onclick="location.href='/productPage.cfm?productId=#variables.encryptedProductId#'" role="button" class="pe-auto w-16 d-flex flex-column align-items-center border rounded border-dark mb-3">
-				<img src="#application.productImageDirectory&attributes.qryProducts.fldProductImage#" class="productThumbnail" alt="Random Product Image">
-				<div>
-					<p class="fs-3 text-dark fw-semibold">#attributes.qryProducts.fldProductName#</p>
-					<p class="fs-6 text-dark text-truncate" style="max-width: 190px;">#attributes.qryProducts.fldDescription#</p>
-					<p class="fs-5 text-success fw-semibold">Rs. #attributes.qryProducts.fldPrice#</p>
+			<div class="col-sm-2 mb-4">
+				<div class="card rounded-3 h-100 shadow" onclick="location.href='/productPage.cfm?productId=#variables.encryptedProductId#'" role="button">
+					<img src="#application.productImageDirectory&attributes.qryProducts.fldProductImage#" class="p-1 rounded-3" alt="Random Product Image">
+					<div class="card-body">
+						<div class="card-text fw-semibold mb-1">#attributes.qryProducts.fldProductName#</div>
+						<div class="card-text text-secondary text-truncate mb-1">#attributes.qryProducts.fldDescription#</div>
+						<div class="card-text fw-bold mb-1">Rs. #attributes.qryProducts.fldPrice#</div>
+					</div>
 				</div>
 			</div>
 		</cfloop>

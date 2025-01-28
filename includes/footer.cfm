@@ -7,8 +7,8 @@
 					var productImageDirectory = "#application.productImageDirectory#";
 				</script>
 			</cfif>
-			<cfif structKeyExists(application, "scriptPath") AND len(trim(application.scriptPath))>
-				<script src="#application.scriptPath#"></script>
+			<cfif structKeyExists(application, "scriptPath") AND len(trim(request.scriptPath))>
+				<script src="#request.scriptPath#"></script>
 			</cfif>
 		</body>
 	</cfoutput>
