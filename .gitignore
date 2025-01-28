@@ -1,1 +1,7 @@
 assets/images/productImages/*
+CFIDE/
+WEB-INF/
+cf_scripts/
+cfide
+crossdomain.xml
+restplay/

@@ -1,11 +1,29 @@
+<!--- URL Params --->
+<cfparam name="url.productId" default="">
+<cfparam name="url.redirect" default ="/">
+
 <!--- Login Logic --->
 <cfif structKeyExists(form, "loginBtn")>
 	<cfset variables.loginResult = application.shoppingCart.login(
 		userInput = form.userInput,
 		password = form.password
 	)>
-	<cfif variables.loginResult.message EQ "Login successfull">
-		<cflocation url="adminDashboard.cfm" addToken="false">
+	<cfif variables.loginResult.message EQ "Login successful">
+		<!--- Add product to cart if user came from product page --->
+		<cfif len(trim(url.productId))>
+			<!--- Decrypt Product ID --->
+			<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
+
+			<!--- Add product to cart only if properly decrypted --->
+			<cfif variables.productId NEQ -1>
+				<cfset application.shoppingCart.addToCart(
+					productId = variables.productId
+				)>
+			</cfif>
+		</cfif>
+
+		<!--- Redirect user/admin to url.redirect --->
+		<cflocation url="#url.redirect#" addToken="false">
 	</cfif>
 </cfif>
 
@@ -33,7 +51,7 @@
 				<button type="submit" id="loginBtn" name="loginBtn" class="btn btn-success w-100 rounded-pill">LOGIN</button>
 			</form>
 			<div class="text-center mt-3">
-				Don't have an account? <a class="text-success text-decoration-none" href="signup.cfm">Register Here</a>
+				Don't have an account? <a class="text-success text-decoration-none" href="/signup.cfm">Register Here</a>
 			</div>
 		</div>
 	</div>

@@ -19,7 +19,7 @@
 			"/products.cfm": {
 				"pageTitle": "Product Listing",
 				"cssPath": "",
-				"scriptPath": ""
+				"scriptPath": "assets/js/products.js"
 			},
 			"/productPage.cfm": {
 				"pageTitle": "Product Page",
@@ -75,7 +75,7 @@
 		<cflog type="error" text="Missing template: #arguments.targetPage#">
 		<cfoutput>
 			<h3>#Arguments.targetPage# could not be found.</h3>
-			<p>You requested a non-existent ColdFusion page.<br />
+			<p>You requested a non-existent page.<br />
 			Please check the URL.</p>
 		</cfoutput>
 	</cffunction>
@@ -149,14 +149,29 @@
 	<cffunction name="onRequest" returnType="void">
 		<cfargument name="targetPage" type="string" required=true>
 
+		<!--- Set page title and script tag path dynamically --->
+		<cfif StructKeyExists(application.pageDetailsMapping, arguments.targetPage)>
+			<cfset request.pageTitle = application.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
+			<cfset request.scriptPath = application.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
+			<cfset request.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
+		<cfelse>
+			<cfset request.pageTitle = "Title">
+			<cfset request.scriptPath = "">
+			<cfset request.cssPath = "">
+		</cfif>
+
 		<!--- Common Header file --->
-		<cfinclude  template="/includes/header.cfm">
+		<cfinclude template="/includes/header.cfm">
 
 		<!--- Requested page content --->
-		<cfinclude  template="#arguments.targetPage#">
+		<cfinclude template="#arguments.targetPage#">
 
 		<!--- Common Footer file --->
-		<cfinclude  template="/includes/footer.cfm">
+		<cfinclude template="/includes/footer.cfm">
+	</cffunction>
+
+	<cffunction name="onSessionEnd" returnType="void">
+		<cfset structClear(session)>
 	</cffunction>
 
 	<cffunction name="onSessionEnd" returnType="void">

@@ -9,7 +9,7 @@ function createCategoryItem(categoryId, categoryName) {
 				<button class="btn btn-lg" value="${categoryId}" onclick="deleteCategory()">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
-				<a class="btn btn-lg" href="subCategory.cfm?categoryId=${categoryId}">
+				<a class="btn btn-lg" href="/subCategory.cfm?categoryId=${categoryId}">
 					<i class="fa-solid fa-chevron-right"></i>
 				</a>
 			</div>
@@ -37,7 +37,7 @@ function processCategoryForm() {
 		$("#categoryModalMsg").text("Category name should not be empty");
 		valid = false;
 	}
-	else if (!/^[A-Za-z ]+$/.test(categoryName)) {
+	else if (!/^[A-Za-z'& ]+$/.test(categoryName)) {
 		$("#categoryName").addClass("border-danger");
 		$("#categoryModalMsg").text("Category name should only contain letters!");
 		valid = false;
@@ -52,8 +52,9 @@ function processCategoryForm() {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc?method=modifyCategory",
+		url: "./components/shoppingCart.cfc",
 		data: {
+			method: "modifyCategory",
 			categoryId: categoryId,
 			categoryName: categoryName
 		},
@@ -106,8 +107,9 @@ function deleteCategory(categoryId) {
 	if (confirm(`Delete category - '${categoryName}'?`)) {
 		$.ajax({
 			type: "POST",
-			url: "./components/shoppingCart.cfc?method=deleteCategory",
+			url: "./components/shoppingCart.cfc",
 			data: {
+				method: "deleteCategory",
 				categoryId: categoryId
 			},
 			success: function() {
