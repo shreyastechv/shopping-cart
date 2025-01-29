@@ -52,7 +52,7 @@
 					<button type="button" class="btn btn-outline-light btn-sm position-relative" onclick="location.href='/cart.cfm'">
 						<i class="fa-solid fa-cart-shopping"></i>
 						Cart
-						<cfif structKeyExists(session, "userId")>
+						<cfif structKeyExists(session, "cart")>
 							<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light">
 								#structCount(session.cart)#
 							<span class="visually-hidden">products in cart</span></span>
