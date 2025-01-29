@@ -1,3 +1,23 @@
+function handleProfileChange() {
+	const firstNameNoChange = $("#userFirstName").val().trim() == $("#userFirstName").prop("defaultValue");
+	const lastNameNoChange = $("#userLastName").val().trim() == $("#userLastName").prop("defaultValue");
+	const emailNoChange = $("#userEmail").val().trim() == $("#userEmail").prop("defaultValue");
+	const phoneNoChange = $("#userPhone").val().trim() == $("#userPhone").prop("defaultValue");
+
+	if (firstNameNoChange && lastNameNoChange && emailNoChange && phoneNoChange) {
+		$("#profileSubmitBtn").prop("disabled", true);
+	} else {
+		$("#profileSubmitBtn").prop("disabled", false);
+	}
+}
+
+$(document).ready(function() {
+	$("#userFirstName").keyup(handleProfileChange);
+	$("#userFirstName").keyup(handleProfileChange);
+	$("#userEmail").keyup(handleProfileChange);
+	$("#userPhone").keyup(handleProfileChange);
+});
+
 function processAddressForm() {
 	// Remove error msgs and red borders from inputs
 	$(".addressInput").removeClass("border-danger");
@@ -96,7 +116,7 @@ function deleteAddress(containerId, addressId) {
 			method: "deleteAddress",
 			addressId: addressId
 		},
-		success: function(response) {
+		success: function() {
 			$(`#${containerId}`).remove();
 		}
 	});

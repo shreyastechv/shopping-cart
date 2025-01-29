@@ -27,7 +27,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
-                        <h4 class="mb-1">#session.firstName & " " & session.lastName#</h4>
+                        <h4 class="fw-semibold mb-1">#session.firstName & " " & session.lastName#</h4>
                         <p class="text-muted mb-0">#session.email#</p>
                     </div>
 
@@ -184,14 +184,16 @@
 						</div>
 						<div class="mb-3">
 							<label for="userPhone" class="form-label">Phone number</label>
-							<input type="text" class="form-control profileInput" id="userPhone" name="phone" value="#session.phone#" autocomplete="on">
+							<input type="text" class="form-control profileInput" id="userPhone" name="phone" maxlength="10" value="#session.phone#" autocomplete="on">
 							<div id="userPhoneError" class="form-text text-danger profileError"></div>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<div id="profileError" class="profileError text-danger"></div>
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Save changes</button>
+						<div>
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-primary" id="profileSubmitBtn" disabled>Save changes</button>
+						</div>
 					</div>
 				</form>
 			</div>
