@@ -48,6 +48,12 @@
 					</form>
 				</cfif>
 				<nav class="d-flex align-items-center justify-content-between gap-4">
+					<!--- Profile Button --->
+					<button type="button" class="btn btn-outline-light btn-sm position-relative" onclick="location.href='/profile.cfm'">
+						<i class="fa-regular fa-circle-user"></i>
+						Profile
+					</button>
+
 					<!--- Cart Button --->
 					<button type="button" class="btn btn-outline-light btn-sm position-relative" onclick="location.href='/cart.cfm'">
 						<i class="fa-solid fa-cart-shopping"></i>
