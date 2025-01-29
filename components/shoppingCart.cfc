@@ -358,16 +358,6 @@
 				<cfif structKeyExists(arguments, "categoryId") AND len(trim(arguments.categoryId))>
 					AND sc.fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
 				</cfif>
-				-- Below code is to make sure to return only no-empty subcategories
-				AND EXISTS (
-					SELECT
-						1
-					FROM
-						tblProduct p
-					WHERE
-						p.fldSubCategoryId = sc.fldSubCategory_Id
-						AND p.fldActive = 1
-				)
 		</cfquery>
 
 		<cfreturn local.qryGetSubCategories>
