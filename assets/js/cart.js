@@ -58,11 +58,11 @@ function editCartItem(containerId, productId, action) {
 
 				const newTotalTax = newTotalPrice - newTotalActualPrice;
 
-				$(`#${containerId} span[name="price"]`).text(newPrice);
-				$(`#${containerId} span[name="actualPrice"]`).text(newActualPrice);
-				$("#totalPrice").text(newTotalPrice);
-				$("#totalActualPrice").text(newTotalActualPrice);
-				$("#totalTax").text(newTotalTax);
+				$(`#${containerId} span[name="price"]`).text(newPrice.toFixed(2));
+				$(`#${containerId} span[name="actualPrice"]`).text(newActualPrice.toFixed(2));
+				$("#totalPrice").text(newTotalPrice.toFixed(2));
+				$("#totalActualPrice").text(newTotalActualPrice.toFixed(2));
+				$("#totalTax").text(newTotalTax.toFixed(2));
 				$(`#${containerId} input[name="quantity"]`).val(quantity+1).change();
 			}
 			else if (action == "decrement") {
@@ -80,11 +80,11 @@ function editCartItem(containerId, productId, action) {
 
 				const newTotalTax = newTotalPrice - newTotalActualPrice;
 
-				$(`#${containerId} span[name="price"]`).text(newPrice);
-				$(`#${containerId} span[name="actualPrice"]`).text(newActualPrice);
-				$("#totalPrice").text(newTotalPrice);
-				$("#totalActualPrice").text(newTotalActualPrice);
-				$("#totalTax").text(newTotalTax);
+				$(`#${containerId} span[name="price"]`).text(newPrice.toFixed(2));
+				$(`#${containerId} span[name="actualPrice"]`).text(newActualPrice.toFixed(2));
+				$("#totalPrice").text(newTotalPrice.toFixed(2));
+				$("#totalActualPrice").text(newTotalActualPrice.toFixed(2));
+				$("#totalTax").text(newTotalTax.toFixed(2));
 				$(`#${containerId} input[name="quantity"]`).val(quantity-1).change();
 			}
 			else if (action == "delete") {
