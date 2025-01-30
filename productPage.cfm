@@ -19,7 +19,7 @@
 		<cfset application.shoppingCart.addToCart(
 			productId = application.shoppingCart.decryptUrlParam(url.productId)
 		)>
-		<cflocation url="/productPage.cfm?productId=#url.productId#" addToken="no">
+		<cflocation url="#cgi.HTTP_URL#" addToken="no">
 	<cfelse>
 		<cflocation url="/login.cfm?productId=#url.productId#" addToken="no">
 	</cfif>
