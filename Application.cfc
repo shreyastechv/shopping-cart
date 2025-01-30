@@ -39,7 +39,7 @@
 			"/checkout.cfm": {
 				"pageTitle": "Order Summary",
 				"cssPath": "",
-				"scriptPath": ""
+				"scriptPath": "assets/js/checkout.js"
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",

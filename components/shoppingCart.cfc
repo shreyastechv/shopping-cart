@@ -1240,6 +1240,25 @@
 		<cfreturn local.response>
 	</cffunction>
 
+	<cffunction name="validateCard" access="remote" returnType="struct" returnformat="json">
+		<cfargument name="cardNumber" type="string" required=true>
+		<cfargument name="cvv" type="string" required=true>
+
+		<cfset local.response = {}>
+		<cfset local.reponse["success"] = false>
+		<cfset local.reponse["message"] = "">
+		<cfset local.validCardNumber = "1234567890123456">
+		<cfset local.validCvv = "123">
+
+		<cfif (arguments.cardNumber EQ local.validCardNumber) AND (arguments.cvv EQ local.validcvv)>
+			<cfset local.response["success"] = true>
+		<cfelse>
+			<cfset local.response["message"] = "Wrong Card number or CVV">
+		</cfif>
+
+		<cfreturn local.response>
+	</cffunction>
+
 	<cffunction name="encryptUrlParam" access="public" returnType="string">
 		<cfargument name="urlParam" type="string" required=true>
 

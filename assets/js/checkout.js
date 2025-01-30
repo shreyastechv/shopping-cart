@@ -1,0 +1,56 @@
+function handleCheckout() {
+	event.preventDefault();
+
+	// Remove error msgs and red borders from inputs
+	$(".cardInput").removeClass("border-danger");
+	$(".cardError").empty();
+
+	let valid = true;
+	const cardNumber = $("#cardNumber");
+	const cardNumberError = $("#cardNumberError");
+	const formattedCardNumber = cardNumber.val().trim().replaceAll("-", "");
+	const cvv = $("#cvv");
+	const cvvError = $("#cvvError");
+
+	if (formattedCardNumber.length == 0) {
+		cardNumber.addClass("border-danger");
+		cardNumberError.text("Card number is required");
+		valid = false;
+	} else if (formattedCardNumber.length != 16) {
+		cardNumber.addClass("border-danger");
+		cardNumberError.text("Not a valid card number");
+		valid = false;
+	}
+
+	if (cvv.val().trim().length == 0) {
+		cvv.addClass("border-danger");
+		cvvError.text("CVV number is required");
+		valid = false;
+	} else if (cvv.val().trim().length != 3) {
+		cvv.addClass("border-danger");
+		cvvError.text("CVV is not valid");
+		valid = false;
+	}
+
+	// Validate card nummber and cvv
+	$.ajax({
+		type: "POST",
+		url: "./components/shoppingCart.cfc",
+		data: {
+			method: "validateCard",
+			cardNumber: formattedCardNumber,
+			cvv: cvv.val().trim()
+		},
+		success: function (respose) {
+			const resposeJSON = JSON.parse(respose);
+
+			if (typeof resposeJSON.success !== "undefined") {
+			} else {
+				cardNumber.addClass("border-danger");
+				cvv.addClass("border-danger");
+				cardNumberError.text(resposeJSON.message);
+			}
+		}
+	})
+
+}
