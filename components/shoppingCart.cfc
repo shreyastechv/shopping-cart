@@ -153,6 +153,8 @@
 				fldUser_Id,
 				fldFirstName,
 				fldLastName,
+				fldEmail,
+				fldPhone,
 				fldRoleId,
 				fldUserSaltString,
 				fldHashedPassword
@@ -166,7 +168,10 @@
 
 		<cfif local.qryCheckUser.recordCount>
 			<cfif local.qryCheckUser.fldHashedPassword EQ hash(arguments.password & local.qryCheckUser.fldUserSaltString, "SHA-512", "UTF-8", 50)>
-				<cfset session.fullName = local.qryCheckUser.fldFirstName & " " & local.qryCheckUser.fldLastName>
+				<cfset session.firstName = local.qryCheckUser.fldFirstName>
+				<cfset session.lastName = local.qryCheckUser.fldLastName>
+				<cfset session.email = local.qryCheckUser.fldEmail>
+				<cfset session.phone = local.qryCheckUser.fldPhone>
 				<cfset session.userId = local.qryCheckUser.fldUser_Id>
 				<cfset session.roleId = local.qryCheckUser.fldRoleId>
 				<cfset session.cart = getCart()>
@@ -358,16 +363,6 @@
 				<cfif structKeyExists(arguments, "categoryId") AND len(trim(arguments.categoryId))>
 					AND sc.fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
 				</cfif>
-				-- Below code is to make sure to return only no-empty subcategories
-				AND EXISTS (
-					SELECT
-						1
-					FROM
-						tblProduct p
-					WHERE
-						p.fldSubCategoryId = sc.fldSubCategory_Id
-						AND p.fldActive = 1
-				)
 		</cfquery>
 
 		<cfreturn local.qryGetSubCategories>
@@ -1092,6 +1087,154 @@
 
 			<cfset local.response["message"] = "Product Deleted">
 
+		</cfif>
+
+		<cfreturn local.response>
+	</cffunction>
+
+	<cffunction name="getAddress" access="public" returnType="array">
+		<cfset local.addresses = []>
+
+		<cfquery name="local.qryGetAddress">
+			SELECT
+				fldAddress_Id,
+				fldFirstName,
+				fldLastName,
+				fldAddressLine1,
+				fldAddressLine2,
+				fldCity,
+				fldState,
+				fldPincode,
+				fldPhone
+			FROM
+				tblAddress
+			WHERE
+				fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+				AND fldActive = 1
+		</cfquery>
+
+		<cfloop query="local.qryGetAddress">
+			<cfset arrayAppend(local.addresses, {
+				"addressId" = local.qryGetAddress.fldAddress_Id,
+				"fullName" = local.qryGetAddress.fldFirstName & " " & local.qryGetAddress.fldLastName,
+				"addressLine1" = local.qryGetAddress.fldAddressLine1,
+				"addressLine2" = local.qryGetAddress.fldAddressLine2,
+				"city" = local.qryGetAddress.fldCity,
+				"state" = local.qryGetAddress.fldState,
+				"pincode" = local.qryGetAddress.fldPincode,
+				"phone" = local.qryGetAddress.fldPhone
+			})>
+		</cfloop>
+
+		<cfreturn local.addresses>
+	</cffunction>
+
+	<cffunction name="addAddress" access="public" returnType="void">
+		<cfargument name="firstName" type="string" required=true>
+		<cfargument name="lastName" type="string" required=true>
+		<cfargument name="addressLine1" type="string" required=true>
+		<cfargument name="addressLine2" type="string" required=true>
+		<cfargument name="city" type="string" required=true>
+		<cfargument name="state" type="string" required=true>
+		<cfargument name="pincode" type="string" required=true>
+		<cfargument name="phone" type="string" required=true>
+
+		<cfquery name="qryAddAddress">
+			INSERT INTO
+				tblAddress (
+					fldUserId,
+					fldFirstName,
+					fldLastName,
+					fldAddressLine1,
+					fldAddressLine2,
+					fldCity,
+					fldState,
+					fldPincode,
+					fldPhone
+				)
+			VALUES (
+				<cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
+				<cfqueryparam value = "#trim(arguments.firstName)#" cfsqltype = "varchar">,
+				<cfqueryparam value = "#trim(arguments.lastName)#" cfsqltype = "varchar">,
+				<cfqueryparam value = "#trim(arguments.addressLine1)#" cfsqltype = "varchar">,
+				<cfqueryparam value = "#trim(arguments.addressLine2)#" cfsqltype = "varchar">,
+				<cfqueryparam value = "#trim(arguments.city)#" cfsqltype = "varchar">,
+				<cfqueryparam value = "#trim(arguments.state)#" cfsqltype = "varchar">,
+				<cfqueryparam value = "#trim(arguments.pincode)#" cfsqltype = "varchar">,
+				<cfqueryparam value = "#trim(arguments.phone)#" cfsqltype = "varchar">
+			)
+		</cfquery>
+	</cffunction>
+
+	<cffunction name="deleteAddress" access="remote" returnType="void">
+		<cfargument name="addressId" type="string" required=true>
+
+		<cfquery name="local.qryDeleteAddress">
+			UPDATE
+				tblAddress
+			SET
+				fldActive = 0,
+				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
+			WHERE
+				fldAddress_Id = <cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "integer">
+		</cfquery>
+	</cffunction>
+
+	<cffunction name="editProfile" access="remote" returnType="struct" returnFormat="json">
+		<cfargument name="firstName" type="string" required=true>
+		<cfargument name="lastName" type="string" required=true>
+		<cfargument name="email" type="string" required=true>
+		<cfargument name="phone" type="string" required=true>
+
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfset local.response["message"] &= "Cannot proceed without loggin in">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
+		<cfquery name="local.qryCheckUser">
+			-- Check if email or phone number already exists
+			SELECT
+				fldUser_Id
+			FROM
+				tblUser
+			WHERE
+				fldActive = 1
+				AND (
+					fldEmail = <cfqueryparam value = "#trim(arguments.email)#" cfsqltype = "varchar">
+					OR fldPhone = <cfqueryparam value = "#trim(arguments.phone)#" cfsqltype = "varchar">
+				)
+		</cfquery>
+
+		<cfif (local.qryCheckUser.recordCount NEQ 1) OR (local.qryCheckUser.fldUser_Id NEQ session.userId)>
+			<cfset local.response["message"] = "Email or Phone number already exits.">
+		<cfelse>
+			<cfquery name="local.qryEditProfile">
+				UPDATE
+					tblUser
+				SET
+					fldFirstName = <cfqueryparam value = "#trim(arguments.firstName)#" cfsqltype = "varchar">,
+					fldLastName = <cfqueryparam value = "#trim(arguments.lastName)#" cfsqltype = "varchar">,
+					fldEmail = <cfqueryparam value = "#trim(arguments.email)#" cfsqltype = "varchar">,
+					fldPhone = <cfqueryparam value = "#trim(arguments.phone)#" cfsqltype = "varchar">,
+					fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+				WHERE
+					fldUser_Id = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+			</cfquery>
+
+			<cfset session.firstName = arguments.firstName>
+			<cfset session.lastName = arguments.lastName>
+			<cfset session.email = arguments.email>
+			<cfset session.phone = arguments.phone>
+
+			<cfset local.response["message"] = "Profile Updated successfully">
 		</cfif>
 
 		<cfreturn local.response>

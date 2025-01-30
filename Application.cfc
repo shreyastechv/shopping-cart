@@ -16,6 +16,11 @@
 				"cssPath": "assets/css/index.css",
 				"scriptPath": "assets/js/index.js"
 			},
+			"/profile.cfm": {
+				"pageTitle": "User Profile",
+				"cssPath": "",
+				"scriptPath": "assets/js/profile.js"
+			},
 			"/products.cfm": {
 				"pageTitle": "Product Listing",
 				"cssPath": "",
@@ -126,18 +131,18 @@
 
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
-		<cfset local.privatePages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
+		<cfset local.adminPages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
 
 		<!--- Handle page restrictions --->
 		<cfif arrayFindNoCase(local.initialPages, arguments.targetPage)>
-			<cfif structKeyExists(session, "roleId") AND session.roleId>
+			<cfif structKeyExists(session, "roleId")>
 				<cfif session.roleId EQ 1>
 					<cflocation url="/adminDashboard.cfm" addToken="false">
 				<cfelse>
 					<cflocation url="/" addToken="false">
 				</cfif>
 			</cfif>
-		<cfelseif arrayFindNoCase(local.privatePages, arguments.targetPage)>
+		<cfelseif arrayFindNoCase(local.adminPages, arguments.targetPage)>
 			<cfif (NOT structKeyExists(session, "roleId")) OR (session.roleId NEQ 1)>
 				<cflocation url="/" addToken="false">
 			</cfif>
