@@ -30,7 +30,7 @@
 		<div class="row d-flex justify-content-center">
 			<!-- Product Image -->
 			<div class="col-md-4" data-bs-theme="dark">
-				<div id="productImages" class="carousel slide">
+				<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 h-100 shadow">
 					<div class="carousel-inner">
 						<cfloop array="#variables.qryProductImages#" item="local.imageItem">
 							<div class="carousel-item #(local.imageItem.defaultImage EQ 1 ? "active" : "")#">
