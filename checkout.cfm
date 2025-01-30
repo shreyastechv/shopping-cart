@@ -211,19 +211,16 @@
 
 	<!-- Order Success Modal -->
 	<div class="modal fade" id="orderSuccess" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-		aria-labelledby="staticBackdropLabel" aria-hidden="true">
-		<div class="modal-dialog">
+		aria-labelledby="orderSuccessLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					...
-				</div>
-				<div class="modal-footer d-flex justify-content-center">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Understood</button>
+				<div class="modal-body d-flex flex-column align-items-center justify-content-center p-4 gap-3">
+					<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
+					<div class="text-success fs-5">
+						Order Placed Successfully
+						<i class="fa-regular fa-circle-check"></i>
+					</div>
+					<a class="btn btn-primary" href="/">Continue</a>
 				</div>
 			</div>
 		</div>

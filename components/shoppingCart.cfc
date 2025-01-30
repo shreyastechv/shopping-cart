@@ -939,19 +939,24 @@
 
 		<cfquery name="local.qryGetCart">
 			SELECT
-				fldCart_Id,
-				fldProductId,
-				fldQuantity
+				c.fldCart_Id,
+				c.fldProductId,
+				c.fldQuantity,
+				p.fldPrice,
+				p.fldTax
 			FROM
-				tblCart
+				tblCart c
+				INNER JOIN tblProduct p ON c.fldProductId = p.fldProduct_Id
 			WHERE
-				fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+				c.fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
 		</cfquery>
 
 		<cfloop query="local.qryGetCart">
 			<cfset local.cartItems[local.qryGetCart.fldProductId] = {
 				"cartId" = local.qryGetCart.fldCart_Id,
-				"quantity" = local.qryGetCart.fldQuantity
+				"quantity" = local.qryGetCart.fldQuantity,
+				"unitPrice" = local.qryGetCart.fldPrice,
+				"unitTax" = local.qryGetCart.fldTax
 			}>
 		</cfloop>
 
@@ -964,8 +969,7 @@
 		<!--- Check whether the item is present in cart --->
 		<cfquery name="local.qryCheckCart">
 			SELECT
-				fldCart_Id,
-				fldQuantity
+				fldCart_Id
 			FROM
 				tblCart
 			WHERE
@@ -979,7 +983,7 @@
 				UPDATE
 					tblCart
 				SET
-					fldQuantity = #local.qryCheckCart.fldQuantity + 1#
+					fldQuantity = fldQuantity + 1
 				WHERE
 					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
 					AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
@@ -988,6 +992,11 @@
 			<!--- Increment quantity of product in session variable --->
 			<cfset session.cart[arguments.productId].quantity += 1>
 		<cfelse>
+			<!--- Get Product Into --->
+			<cfset local.productInfo = getProducts(
+				productId = arguments.productId
+			)>
+
 			<!--- Add product to cart in case it do not have it already --->
 			<cfquery name="local.qryAddToCart" result="local.resultAddToCart">
 				INSERT INTO
@@ -1006,7 +1015,9 @@
 			<!--- Add product to session variable --->
 			<cfset session.cart[arguments.productId] = {
 				"cartId" = local.resultAddToCart.GENERATED_KEY,
-				"quantity" = 1
+				"quantity" = 1,
+				"price" = local.productInfo.fldPrice,
+				"tax" = local.productInfo.fldTax
 			}>
 		</cfif>
 	</cffunction>
@@ -1053,6 +1064,7 @@
 			<!--- Increment quantity of product in session variable --->
 			<cfset session.cart[arguments.productId].quantity += 1>
 
+			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Incremented">
 
 		<cfelseif arguments.action EQ "decrement" AND session.cart[arguments.productId].quantity GT 1>
@@ -1070,6 +1082,7 @@
 			<!--- Decrement quantity of product in session variable --->
 			<cfset session.cart[arguments.productId].quantity -= 1>
 
+			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Decremented">
 
 		<cfelse>
@@ -1085,6 +1098,7 @@
 			<!--- Delete productId key from struct in session variable --->
 			<cfset structDelete(session.cart, arguments.productId)>
 
+			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
 
 		</cfif>
@@ -1257,6 +1271,79 @@
 		</cfif>
 
 		<cfreturn local.response>
+	</cffunction>
+
+	<cffunction name="createOrder" access="remote" returnType="struct">
+		<cfargument name="addressId" type="string" required=true>
+
+		<cfset local.response = {}>
+		<cfset local.reponse["success"] = false>
+		<cfset local.reponse["message"] = "">
+
+		<!--- Check whether user is logged in --->
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfset local.reponse["message"] &= "User not logged in">
+		</cfif>
+
+		<!--- Address Id Validation --->
+		<cfif NOT len(trim(arguments.addressId))>
+			<cfset local.reponse["message"] &= "Address Id is required">
+		<cfelseif NOT isValid("integer", arguments.addressId)>
+			<cfset local.response["message"] &= "Address Id should be an integer">
+		</cfif>
+
+		<!--- Return if error message exists --->
+		<cfif structKeyExists(local.response, "message")>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Create Order Id --->
+		<cfset local.orderId = createUUID()>
+
+		<!--- Calculate Total price and Total tax --->
+		local.priceDetails = session.cart.reduce(function(result,key,value){
+			result.totalPrice += value.price * ( 1 + value.tax);
+			result.totalTax += value.price * value.tax;
+			return result;
+		},{totalPrice = 0, totalTax = 0});
+
+		<!--- Insert into order table --->
+		<cfquery name="local.qryCreateOrder">
+			INSERT INTO
+				tblOrder (
+					fldOrder_Id,
+					fldUserId,
+					fldAddressId,
+					fldTotalPrice,
+					fldTotalTax
+				)
+			VALUES (
+				<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "integer">,
+				<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
+				<cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "varchar">,
+				<cfqueryparam value = "#trim(local.priceDetails.totalPrice)#" cfsqltype = "decimal">,
+				<cfqueryparam value = "#trim(local.priceDetails.totalTax)#" cfsqltype = "decimal">
+			)
+		</cfquery>
+
+		<!--- Insert into order items table --->
+		<cfquery name="local.qryCreateOrderItems">
+			INSERT INTO
+				tblOrderItems (
+					fldOrderId,
+					fldProductId,
+					fldQuantity,
+					fldUnitPrice,
+					fldUnitTax
+				)
+			VALUES (
+				<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "integer">,
+				<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
+				<cfqueryparam value = "#trim(session.cart[arguments.productId].quantity)#" cfsqltype = "varchar">,
+				<cfqueryparam value = "#trim(session.cart[arguments.productId].price)#" cfsqltype = "decimal">,
+				<cfqueryparam value = "#trim(session.cart[arguments.productId].tax)#" cfsqltype = "decimal">
+			)
+		</cfquery>
 	</cffunction>
 
 	<cffunction name="encryptUrlParam" access="public" returnType="string">
