@@ -36,6 +36,11 @@
 				"cssPath": "",
 				"scriptPath": "assets/js/cart.js"
 			},
+			"/orderSummary.cfm": {
+				"pageTitle": "Order Summary",
+				"cssPath": "",
+				"scriptPath": ""
+			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"cssPath": "",
