@@ -36,7 +36,7 @@
 				"cssPath": "",
 				"scriptPath": "assets/js/cart.js"
 			},
-			"/orderSummary.cfm": {
+			"/checkout.cfm": {
 				"pageTitle": "Order Summary",
 				"cssPath": "",
 				"scriptPath": ""
