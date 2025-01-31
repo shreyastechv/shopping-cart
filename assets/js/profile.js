@@ -11,11 +11,11 @@ function handleProfileChange() {
 	}
 }
 
-$(document).ready(function() {
-	$("#userFirstName").keyup(handleProfileChange);
-	$("#userFirstName").keyup(handleProfileChange);
-	$("#userEmail").keyup(handleProfileChange);
-	$("#userPhone").keyup(handleProfileChange);
+$(document).ready(function () {
+	// Handle enabling or disabling submit btn when input fields are updated
+	$(".profileInput").each((index, element) => {
+		$(element).keyup(handleProfileChange);
+	});
 });
 
 function processAddressForm() {
@@ -41,7 +41,7 @@ function processAddressForm() {
 	const phone = $("#phone");
 	const phoneError = $("#phoneError");
 
-	if(firstName.val().trim().length === 0) {
+	if (firstName.val().trim().length === 0) {
 		firstName.addClass("border-danger");
 		firstNameError.text("First name is required.")
 		valid = false;
@@ -51,7 +51,7 @@ function processAddressForm() {
 		valid = false;
 	}
 
-	if(lastName.val().trim().length === 0) {
+	if (lastName.val().trim().length === 0) {
 		lastName.addClass("border-danger");
 		lastNameError.text("Last name is required.")
 		valid = false;
@@ -61,31 +61,31 @@ function processAddressForm() {
 		valid = false;
 	}
 
-	if(address.val().trim().length === 0) {
+	if (address.val().trim().length === 0) {
 		address.addClass("border-danger");
 		addressError.text("Address is required.")
 		valid = false;
 	}
 
-	if(landmark.val().trim().length === 0) {
+	if (landmark.val().trim().length === 0) {
 		landmark.addClass("border-danger");
 		landmarkError.text("Landmark is required.")
 		valid = false;
 	}
 
-	if(city.val().trim().length === 0) {
+	if (city.val().trim().length === 0) {
 		city.addClass("border-danger");
 		cityError.text("City is required.")
 		valid = false;
 	}
 
-	if(state.val().trim().length === 0) {
+	if (state.val().trim().length === 0) {
 		state.addClass("border-danger");
 		stateError.text("State is required.")
 		valid = false;
 	}
 
-	if(pincode.val().trim().length === 0) {
+	if (pincode.val().trim().length === 0) {
 		pincode.addClass("border-danger");
 		pincodeError.text("Pincode is required.")
 		valid = false;
@@ -95,11 +95,11 @@ function processAddressForm() {
 		valid = false;
 	}
 
-	if(phone.val().trim().length === 0) {
+	if (phone.val().trim().length === 0) {
 		phone.addClass("border-danger");
 		phoneError.text("Phone number is required.")
 		valid = false;
-	} else if(!/^\d{10}$/.test(phone.val().trim())) {
+	} else if (!/^\d{10}$/.test(phone.val().trim())) {
 		phone.addClass("border-danger");
 		phoneError.text("Phone number should be 10 digits")
 		valid = false;
@@ -116,7 +116,7 @@ function deleteAddress(containerId, addressId) {
 			method: "deleteAddress",
 			addressId: addressId
 		},
-		success: function() {
+		success: function () {
 			$(`#${containerId}`).remove();
 		}
 	});
@@ -139,7 +139,7 @@ function processProfileForm() {
 	const phone = $("#userPhone");
 	const phoneError = $("#userPhoneError");
 
-	if(firstName.val().trim().length === 0) {
+	if (firstName.val().trim().length === 0) {
 		firstName.addClass("border-danger");
 		firstNameError.text("First name is required.")
 		valid = false;
@@ -149,7 +149,7 @@ function processProfileForm() {
 		valid = false;
 	}
 
-	if(lastName.val().trim().length === 0) {
+	if (lastName.val().trim().length === 0) {
 		lastName.addClass("border-danger");
 		lastNameError.text("Last name is required.")
 		valid = false;
@@ -170,11 +170,11 @@ function processProfileForm() {
 		valid = false;
 	}
 
-	if(phone.val().trim().length === 0) {
+	if (phone.val().trim().length === 0) {
 		phone.addClass("border-danger");
 		phoneError.text("Phone number is required.")
 		valid = false;
-	} else if(!/^\d{10}$/.test(phone.val().trim())) {
+	} else if (!/^\d{10}$/.test(phone.val().trim())) {
 		phone.addClass("border-danger");
 		phoneError.text("Phone number should be 10 digits")
 		valid = false;
@@ -192,7 +192,7 @@ function processProfileForm() {
 			email: email.val().trim(),
 			phone: phone.val().trim()
 		},
-		success: function(response) {
+		success: function (response) {
 			const responseJSON = JSON.parse(response);
 			if (responseJSON.message == "Profile Updated successfully") {
 				location.reload()
@@ -205,8 +205,8 @@ function processProfileForm() {
 
 // Handle profile modal close event to re-fill data
 $("#profileModal").on("hidden.bs.modal", function () {
-	$("#userFirstName").val($("#userFirstName").prop("defaultValue"));
-	$("#userLastName").val($("#userLastName").prop("defaultValue"));
-	$("#userEmail").val($("#userEmail").prop("defaultValue"));
-	$("#userPhone").val($("#userPhone").prop("defaultValue"));
+	// Reset value of all input fields to their originale value
+	$(".profileInput").each((index, element) => {
+		element.value = element.defaultValue;
+	});
 });

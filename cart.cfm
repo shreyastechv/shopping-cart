@@ -82,7 +82,7 @@
 							<span>Actual Price:</span>
 							<span class="fw-bold">Rs. <span id="totalActualPrice">#variables.totalActualPrice#</span></span>
 						</p>
-						<button class="btn btn-success w-100">Checkout</button>
+						<button class="btn btn-success w-100" onclick="location.href='checkout.cfm'">Checkout</button>
 					</div>
 				</div>
 			</div>
