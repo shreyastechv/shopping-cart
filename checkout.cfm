@@ -247,6 +247,14 @@
 							<i class="fa-regular fa-circle-check"></i>
 						</div>
 						<a class="btn btn-primary" href="/">Continue</a>
+					<div name="error" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
+						<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
+						<div class="text-danger fs-5">
+							Sorry! There was an error.
+							<i class="fa-regular fa-circle-check"></i>
+						</div>
+						<a class="btn btn-primary" href="/">Go to Home</a>
+					</div>
 					</div>
 				</div>
 			</div>

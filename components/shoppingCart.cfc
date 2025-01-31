@@ -1303,8 +1303,6 @@
 			<cfset local.response["message"] &= "Address Id should be an integer. ">
 		</cfif>
 
-		<cfdump var = "#local.response#">
-
 		<!--- Return message if validation fails --->
 		<cfif structKeyExists(local.response, "message") AND len(trim(local.response.message))>
 			<cfreturn local.response>
@@ -1513,11 +1511,11 @@
 			Your order was placed successfully.
 
 			Delivery Address:
-			#local.address[1].fldFirstName# #local.address[1].fldLastName#,
-			#local.address[1].fldAddressLine1#,
-			#local.address[1].fldAddressLine2#,
-			#local.address[1].fldCity#, #local.address[1].fldState# - #local.address[1].fldPincode#,
-			#local.address[1].fldPhone#
+			#local.address[1].fullName#,
+			#local.address[1].addressLine1#,
+			#local.address[1].addressLine2#,
+			#local.address[1].city#, #local.address[1].state# - #local.address[1].pincode#,
+			#local.address[1].phone#
 
 			Order Id: #arguments.orderId#
         </cfmail>

@@ -47,8 +47,8 @@ function handleCheckout(productId) {
 			cardNumber: formattedCardNumber,
 			cvv: cvv.val().trim()
 		},
-		success: function (respose) {
-			const resposeJSON = JSON.parse(respose);
+		success: function (response) {
+			const resposeJSON = JSON.parse(response);
 
 			if (resposeJSON.success) {
 				if (productId.trim().length) {
@@ -97,6 +97,10 @@ function buyNow(addressId, productId) {
 				$("#orderSuccess div[name='loading']").addClass("d-none");
 				$("#orderSuccess div[name='success']").removeClass("d-none")
 			}, 1000);
+		},
+		error: function() {
+			$("#orderSuccess div[name='loading']").addClass("d-none");
+			$("#orderSuccess div[name='error']").removeClass("d-none")
 		}
 	})
 }
