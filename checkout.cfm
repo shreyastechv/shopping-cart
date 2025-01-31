@@ -215,12 +215,22 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-body d-flex flex-column align-items-center justify-content-center p-4 gap-3">
-					<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
-					<div class="text-success fs-5">
-						Order Placed Successfully
-						<i class="fa-regular fa-circle-check"></i>
+					<div name="loading" class="text-info d-flex justify-content-center gap-2">
+						<div class="spinner-border" role="status">
+							<span class="visually-hidden">Please wait...</span>
+						</div>
+						<div class="fs-5">
+							Please wait...
+						</div>
 					</div>
-					<a class="btn btn-primary" href="/">Continue</a>
+					<div name="success" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
+						<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
+						<div class="text-success fs-5">
+							Order Placed Successfully
+							<i class="fa-regular fa-circle-check"></i>
+						</div>
+						<a class="btn btn-primary" href="/">Continue</a>
+					</div>
 				</div>
 			</div>
 		</div>

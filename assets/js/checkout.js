@@ -11,7 +11,7 @@ function handleCheckout() {
 	const formattedCardNumber = cardNumber.val().trim().replaceAll("-", "");
 	const cvv = $("#cvv");
 	const cvvError = $("#cvvError");
-  const addressId = $('input[name="addressId"]:checked').val();
+	const addressId = $('input[name="addressId"]:checked').val();
 
 	if (formattedCardNumber.length == 0) {
 		cardNumber.addClass("border-danger");
@@ -35,6 +35,9 @@ function handleCheckout() {
 
 	if (!valid) return;
 
+	// Show modal
+	$("#orderSuccess").modal("show");
+
 	// Validate card nummber and cvv
 	$.ajax({
 		type: "POST",
@@ -48,8 +51,7 @@ function handleCheckout() {
 			const resposeJSON = JSON.parse(respose);
 
 			if (typeof resposeJSON.success !== "undefined") {
-				$("#orderSuccess").modal("show");
-        createOrder(addressId);
+				createOrder(addressId);
 			} else {
 				cardNumber.addClass("border-danger");
 				cvv.addClass("border-danger");
@@ -65,8 +67,13 @@ function createOrder(addressId) {
 		url: "./components/shoppingCart.cfc",
 		data: {
 			method: "createOrder",
-      addressId: addressId
+			addressId: addressId
 		},
-		success: function () {}
+		success: function () {
+			setTimeout(() => {
+				$("#orderSuccess div[name='loading']").addClass("d-none");
+				$("#orderSuccess div[name='success']").removeClass("d-none")
+			}, 1000);
+		}
 	})
 }

@@ -1301,11 +1301,11 @@
 		<cfset local.orderId = createUUID()>
 
 		<!--- Calculate Total price and Total tax --->
-		local.priceDetails = session.cart.reduce(function(result,key,value){
-			result.totalPrice += value.price * ( 1 + value.tax);
-			result.totalTax += value.price * value.tax;
+		<cfset local.priceDetails = session.cart.reduce(function(result,key,value){
+			result.totalPrice += value.unitPrice * ( 1 + value.unitTax);
+			result.totalTax += value.unitPrice * value.unitTax;
 			return result;
-		},{totalPrice = 0, totalTax = 0});
+		},{totalPrice = 0, totalTax = 0})>
 
 		<!--- Insert into order table --->
 		<cfquery name="local.qryCreateOrder">
@@ -1318,7 +1318,7 @@
 					fldTotalTax
 				)
 			VALUES (
-				<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "integer">,
+				<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
 				<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
 				<cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "varchar">,
 				<cfqueryparam value = "#trim(local.priceDetails.totalPrice)#" cfsqltype = "decimal">,
@@ -1336,14 +1336,38 @@
 					fldUnitPrice,
 					fldUnitTax
 				)
-			VALUES (
-				<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "integer">,
-				<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-				<cfqueryparam value = "#trim(session.cart[arguments.productId].quantity)#" cfsqltype = "varchar">,
-				<cfqueryparam value = "#trim(session.cart[arguments.productId].price)#" cfsqltype = "decimal">,
-				<cfqueryparam value = "#trim(session.cart[arguments.productId].tax)#" cfsqltype = "decimal">
-			)
+			VALUES
+			<cfset local.index = 1>
+			<cfloop collection="#session.cart#" item="local.productId">
+				(
+					<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
+					<cfqueryparam value = "#trim(session.cart[local.productId].quantity)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(session.cart[local.productId].unitPrice)#" cfsqltype = "decimal">,
+					<cfqueryparam value = "#trim(session.cart[local.productId].unitTax)#" cfsqltype = "decimal">
+				)
+				<cfif local.index LT structCount(session.cart)>
+					,
+				</cfif>
+				<cfset local.index += 1>
+			</cfloop>
 		</cfquery>
+
+		<!--- Delete from cart table --->
+		<cfquery name="local.qryDeleteCart">
+			DELETE FROM
+				tblCart
+			WHERE
+				fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+		</cfquery>
+
+		<!--- Empty cart structure in session --->
+		<cfset structClear(session.cart)>
+
+		<!--- Set success status --->
+		<cfset local.reponse["success"] = true>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="encryptUrlParam" access="public" returnType="string">
