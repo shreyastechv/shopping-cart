@@ -1370,6 +1370,103 @@
 		<cfreturn local.response>
 	</cffunction>
 
+	<cffunction name="buyNow" access="remote" returnType="struct">
+		<cfargument name="addressId" type="string" required=true>
+		<cfargument name="productId" type="string" required=true>
+		<cfargument name="quantity" type="integer" required=true>
+
+		<cfset local.response = {}>
+		<cfset local.reponse["success"] = false>
+		<cfset local.reponse["message"] = "">
+
+		<!--- Check whether user is logged in --->
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfset local.reponse["message"] &= "User not logged in">
+		</cfif>
+
+		<!--- Address Id Validation --->
+		<cfif NOT len(trim(arguments.addressId))>
+			<cfset local.reponse["message"] &= "Address Id is required">
+		<cfelseif NOT isValid("integer", arguments.addressId)>
+			<cfset local.response["message"] &= "Address Id should be an integer">
+		</cfif>
+
+		<!--- Product Id Validation --->
+		<cfif NOT len(trim(arguments.productId))>
+			<cfset local.reponse["message"] &= "Product Id is required">
+		<cfelseif NOT isValid("integer", arguments.productId)>
+			<cfset local.response["message"] &= "Product Id should be an integer">
+		</cfif>
+
+		<!--- Quantity Validation --->
+		<cfif NOT len(trim(arguments.quantity))>
+			<cfset local.reponse["message"] &= "Quantity is required">
+		<cfelseif NOT isValid("integer", arguments.quantity)>
+			<cfset local.response["message"] &= "Quantity should be an integer">
+		<cfelseif arguments.quantity LT 1>
+			<cfset local.response["message"] &= "Quantity should be integer greater than 0">
+		</cfif>
+
+
+		<!--- Return if error message exists --->
+		<cfif structKeyExists(local.response, "message")>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Create Order Id --->
+		<cfset local.orderId = createUUID()>
+
+		<!--- Calculate Total price and Total tax --->
+		<cfset local.productDetails = getProducts(
+			productId = arguments.productId
+		)>
+		<cfset local.priceDetails["totalTax"] = val(local.productDetails.fldPrice) * val(local.productDetails.fldTax) * arguments.quantity / 100>
+		<cfset local.priceDetails["totalPrice"] = (val(local.productDetails.fldPrice) * arguments.quantity) + local.priceDetails["totalTax"]>
+
+		<!--- Insert into order table --->
+		<cfquery name="local.qryCreateOrder">
+			INSERT INTO
+				tblOrder (
+					fldOrder_Id,
+					fldUserId,
+					fldAddressId,
+					fldTotalPrice,
+					fldTotalTax
+				)
+			VALUES (
+				<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
+				<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
+				<cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "varchar">,
+				<cfqueryparam value = "#trim(local.priceDetails.totalPrice)#" cfsqltype = "decimal">,
+				<cfqueryparam value = "#trim(local.priceDetails.totalTax)#" cfsqltype = "decimal">
+			)
+		</cfquery>
+
+		<!--- Insert into order items table --->
+		<cfquery name="local.qryCreateOrderItems">
+			INSERT INTO
+				tblOrderItems (
+					fldOrderId,
+					fldProductId,
+					fldQuantity,
+					fldUnitPrice,
+					fldUnitTax
+				)
+			VALUES (
+					<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
+					<cfqueryparam value = "#trim(arguments.quantity)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(local.productDetails.fldPrice)#" cfsqltype = "decimal">,
+					<cfqueryparam value = "#trim(local.productDetails.fldTax)#" cfsqltype = "decimal">
+				)
+		</cfquery>
+
+		<!--- Set success status --->
+		<cfset local.reponse["success"] = true>
+
+		<cfreturn local.response>
+	</cffunction>
+
 	<cffunction name="encryptUrlParam" access="public" returnType="string">
 		<cfargument name="urlParam" type="string" required=true>
 

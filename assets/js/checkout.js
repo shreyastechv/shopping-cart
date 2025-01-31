@@ -1,4 +1,4 @@
-function handleCheckout() {
+function handleCheckout(productId) {
 	event.preventDefault();
 
 	// Remove error msgs and red borders from inputs
@@ -51,7 +51,11 @@ function handleCheckout() {
 			const resposeJSON = JSON.parse(respose);
 
 			if (typeof resposeJSON.success !== "undefined") {
-				createOrder(addressId);
+				if (productId.trim().length) {
+					buyNow(addressId, productId);
+				} else {
+					createOrder(addressId);
+				}
 			} else {
 				cardNumber.addClass("border-danger");
 				cvv.addClass("border-danger");
@@ -68,6 +72,25 @@ function createOrder(addressId) {
 		data: {
 			method: "createOrder",
 			addressId: addressId
+		},
+		success: function () {
+			setTimeout(() => {
+				$("#orderSuccess div[name='loading']").addClass("d-none");
+				$("#orderSuccess div[name='success']").removeClass("d-none")
+			}, 1000);
+		}
+	})
+}
+
+function buyNow(addressId, productId) {
+	$.ajax({
+		type: "POST",
+		url: "./components/shoppingCart.cfc",
+		data: {
+			method: "buyNow",
+			addressId: addressId,
+			productId: productId,
+			quantity: 1
 		},
 		success: function () {
 			setTimeout(() => {

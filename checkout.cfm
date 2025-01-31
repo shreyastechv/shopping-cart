@@ -3,12 +3,26 @@
 	<cflocation url="/login.cfm" addToken="no">
 </cfif>
 
+<!--- Set default value for productId --->
+<cfparam name="form.productId" default="">
+
 <!--- Get Data --->
 <cfset variables.addresses = application.shoppingCart.getAddress()>
 
 <!--- Variables to store total price and total actual price --->
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>
+
+<!--- Variable to store products (different for buy now and cart checkout) --->
+<cfif structKeyExists(form, "productId") AND len(trim(form.productId))>
+	<!--- Product details when this page was opened by clicking buy now from product page --->
+	<cfset variables.products[form.productId] = {
+		"quantity" = 1
+	}>
+<cfelse>
+	<!--- Product details when this page was opened by clicking clicking checkout from cart page --->
+	<cfset variables.products = session.cart>
+</cfif>
 
 <cfoutput>
 	<!--- Main Content --->
@@ -74,7 +88,7 @@
 							</h2>
 							<div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="##orderSummary">
 								<div class="accordion-body">
-									<cfloop collection="#session.cart#" item="local.productId">
+									<cfloop collection="#variables.products#" item="local.productId">
 										<!--- Get Product Details --->
 										<cfset local.qryProductInfo = application.shoppingCart.getProducts(productId = local.productId)>
 
@@ -107,12 +121,12 @@
 														<p class="mb-1">Tax: <span class="fw-bold"><span name="tax">#local.qryProductInfo.fldTax#</span> %</span></p>
 														<div class="d-flex align-items-center">
 															<button class="btn btn-outline-primary btn-sm me-2" name="decBtn" onclick="editCartItem('#local.randomId#', #local.productId#, 'decrement')"
-															<cfif session.cart[local.productId].quantity EQ 1>
+															<cfif variables.products[local.productId].quantity EQ 1>
 																disabled
 															</cfif>
 															>-</button>
 
-															<input type="text" name="quantity" class="form-control text-center w-25" value="#session.cart[local.productId].quantity#" onchange="handleQuantityChange('#local.randomId#')" readonly>
+															<input type="text" name="quantity" class="form-control text-center w-25" value="#variables.products[local.productId].quantity#" onchange="handleQuantityChange('#local.randomId#')" readonly>
 															<button class="btn btn-outline-primary btn-sm ms-2" name="incBtn" onclick="editCartItem('#local.randomId#', #local.productId#, 'increment')">+</button>
 														</div>
 														<button class="btn btn-danger btn-sm mt-3" onclick="editCartItem('#local.randomid#', #local.productId#, 'delete')">Remove</button>
@@ -172,7 +186,7 @@
 									</div>
 								</div>
 								<div class="d-flex justify-content-end p-3">
-									<button type="submit" class="btn btn-success" onclick="handleCheckout()">
+									<button type="submit" class="btn btn-success" onclick="handleCheckout('#form.productId#')">
 										Continue
 									</button>
 								</div>
