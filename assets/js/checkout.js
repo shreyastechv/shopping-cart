@@ -50,7 +50,7 @@ function handleCheckout(productId) {
 		success: function (respose) {
 			const resposeJSON = JSON.parse(respose);
 
-			if (typeof resposeJSON.success !== "undefined") {
+			if (resposeJSON.success) {
 				if (productId.trim().length) {
 					buyNow(addressId, productId);
 				} else {

@@ -19,9 +19,12 @@
 	<cfset variables.products[form.productId] = {
 		"quantity" = 1
 	}>
-<cfelse>
+<cfelseif structKeyExists(session, "cart") AND structCount(session.cart)>
 	<!--- Product details when this page was opened by clicking clicking checkout from cart page --->
 	<cfset variables.products = session.cart>
+<cfelse>
+	<!--- If this page was opened by user and cart is empty --->
+	<cflocation  url="/cart.cfm" addToken="no">
 </cfif>
 
 <cfoutput>

@@ -1107,6 +1107,8 @@
 	</cffunction>
 
 	<cffunction name="getAddress" access="public" returnType="array">
+		<cfargument name="addressId" type="string" required=false>
+
 		<cfset local.addresses = []>
 
 		<cfquery name="local.qryGetAddress">
@@ -1123,8 +1125,12 @@
 			FROM
 				tblAddress
 			WHERE
-				fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-				AND fldActive = 1
+				fldActive = 1
+				<cfif structKeyExists(arguments, "addressId") AND len(trim(arguments.addressId))>
+					AND fldAddress_Id = <cfqueryparam value = "#arguments.addressId#" cfsqltype = "integer">
+				<cfelse>
+					AND fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+				</cfif>
 		</cfquery>
 
 		<cfloop query="local.qryGetAddress">
@@ -1259,8 +1265,8 @@
 		<cfargument name="cvv" type="string" required=true>
 
 		<cfset local.response = {}>
-		<cfset local.reponse["success"] = false>
-		<cfset local.reponse["message"] = "">
+		<cfset local.response["success"] = false>
+		<cfset local.response["message"] = "">
 		<cfset local.validCardNumber = "1234567890123456">
 		<cfset local.validCvv = "123">
 
@@ -1277,23 +1283,30 @@
 		<cfargument name="addressId" type="string" required=true>
 
 		<cfset local.response = {}>
-		<cfset local.reponse["success"] = false>
-		<cfset local.reponse["message"] = "">
+		<cfset local.response["success"] = false>
+		<cfset local.response["message"] = "">
 
 		<!--- Check whether user is logged in --->
 		<cfif NOT structKeyExists(session, "userId")>
-			<cfset local.reponse["message"] &= "User not logged in">
+			<cfset local.response["message"] &= "User not logged in. ">
+		</cfif>
+
+		<!--- Check whether cart is empty or not --->
+		<cfif (NOT structKeyExists(session, "cart")) OR (structCount(session.cart) EQ 0)>
+			<cfset local.response["message"] &= "Cart is empty. ">
 		</cfif>
 
 		<!--- Address Id Validation --->
 		<cfif NOT len(trim(arguments.addressId))>
-			<cfset local.reponse["message"] &= "Address Id is required">
+			<cfset local.response["message"] &= "Address Id is required. ">
 		<cfelseif NOT isValid("integer", arguments.addressId)>
-			<cfset local.response["message"] &= "Address Id should be an integer">
+			<cfset local.response["message"] &= "Address Id should be an integer. ">
 		</cfif>
 
-		<!--- Return if error message exists --->
-		<cfif structKeyExists(local.response, "message")>
+		<cfdump var = "#local.response#">
+
+		<!--- Return message if validation fails --->
+		<cfif structKeyExists(local.response, "message") AND len(trim(local.response.message))>
 			<cfreturn local.response>
 		</cfif>
 
@@ -1364,8 +1377,16 @@
 		<!--- Empty cart structure in session --->
 		<cfset structClear(session.cart)>
 
+		<!--- Send email to user --->
+		<cfset sendOrderMail(
+			fullName = session.firstName & " " & session.lastName,
+			email = session.email,
+			addressId = arguments.addressId,
+			orderId = local.orderId
+		)>
+
 		<!--- Set success status --->
-		<cfset local.reponse["success"] = true>
+		<cfset local.response["success"] = true>
 
 		<cfreturn local.response>
 	</cffunction>
@@ -1376,31 +1397,31 @@
 		<cfargument name="quantity" type="integer" required=true>
 
 		<cfset local.response = {}>
-		<cfset local.reponse["success"] = false>
-		<cfset local.reponse["message"] = "">
+		<cfset local.response["success"] = false>
+		<cfset local.response["message"] = "">
 
 		<!--- Check whether user is logged in --->
 		<cfif NOT structKeyExists(session, "userId")>
-			<cfset local.reponse["message"] &= "User not logged in">
+			<cfset local.response["message"] &= "User not logged in">
 		</cfif>
 
 		<!--- Address Id Validation --->
 		<cfif NOT len(trim(arguments.addressId))>
-			<cfset local.reponse["message"] &= "Address Id is required">
+			<cfset local.response["message"] &= "Address Id is required">
 		<cfelseif NOT isValid("integer", arguments.addressId)>
 			<cfset local.response["message"] &= "Address Id should be an integer">
 		</cfif>
 
 		<!--- Product Id Validation --->
 		<cfif NOT len(trim(arguments.productId))>
-			<cfset local.reponse["message"] &= "Product Id is required">
+			<cfset local.response["message"] &= "Product Id is required">
 		<cfelseif NOT isValid("integer", arguments.productId)>
 			<cfset local.response["message"] &= "Product Id should be an integer">
 		</cfif>
 
 		<!--- Quantity Validation --->
 		<cfif NOT len(trim(arguments.quantity))>
-			<cfset local.reponse["message"] &= "Quantity is required">
+			<cfset local.response["message"] &= "Quantity is required">
 		<cfelseif NOT isValid("integer", arguments.quantity)>
 			<cfset local.response["message"] &= "Quantity should be an integer">
 		<cfelseif arguments.quantity LT 1>
@@ -1461,10 +1482,45 @@
 				)
 		</cfquery>
 
+		<!--- Send email to user --->
+		<cfset sendOrderMail(
+			fullName = session.firstName & " " & session.lastName,
+			email = session.email,
+			addressId = arguments.addressId,
+			orderId = local.orderId
+		)>
+
 		<!--- Set success status --->
-		<cfset local.reponse["success"] = true>
+		<cfset local.response["success"] = true>
 
 		<cfreturn local.response>
+	</cffunction>
+
+	<cffunction name="sendOrderMail" access="private" returnType="void">
+		<cfargument name="fullName" type="string" required=true>
+		<cfargument name="email" type="string" required=true>
+		<cfargument name="addressId" type="integer" required=true>
+		<cfargument name="orderId" type="string" required=true>
+
+		<!--- Fetch address details --->
+		<cfset local.address = getAddress(
+			addressId = arguments.addressId
+		)>
+
+		<cfmail to="#arguments.email#" from="no-reply@shoppingcart.local" subject="Your order has been successfully placed">
+            Hi #arguments.fullName#,
+
+			Your order was placed successfully.
+
+			Delivery Address:
+			#local.address[1].fldFirstName# #local.address[1].fldLastName#,
+			#local.address[1].fldAddressLine1#,
+			#local.address[1].fldAddressLine2#,
+			#local.address[1].fldCity#, #local.address[1].fldState# - #local.address[1].fldPincode#,
+			#local.address[1].fldPhone#
+
+			Order Id: #arguments.orderId#
+        </cfmail>
 	</cffunction>
 
 	<cffunction name="encryptUrlParam" access="public" returnType="string">
