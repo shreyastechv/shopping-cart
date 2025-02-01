@@ -99,8 +99,9 @@
 										<cfset variables.encryptedProductId = application.shoppingCart.encryptUrlParam(local.productId)>
 
 										<!--- Calculate price and actual price --->
-										<cfset local.actualPrice = local.qryProductInfo.fldPrice>
-										<cfset local.price = local.qryProductInfo.fldPrice * (100 + local.qryProductInfo.fldTax) / 100>
+										<cfset local.quantity = session.cart[local.productId].quantity>
+										<cfset local.actualPrice = local.qryProductInfo.fldPrice * local.quantity>
+										<cfset local.price = local.qryProductInfo.fldPrice * (1 + (local.qryProductInfo.fldTax / 100)) * local.quantity>
 
 										<!--- Sum up total price and total actual price --->
 										<cfset variables.totalPrice += local.price>
