@@ -15,13 +15,26 @@
 
 <!--- Variable to store products (different for buy now and cart checkout) --->
 <cfif structKeyExists(form, "productId") AND len(trim(form.productId))>
+	<!--- Get product price details since this is not in cart --->
+	<cfset variables.productDetails = application.shoppingCart.getProducts(
+		productId = form.productId
+	)>
+
 	<!--- Product details when this page was opened by clicking buy now from product page --->
 	<cfset variables.products[form.productId] = {
-		"quantity" = 1
+		"quantity" = 1,
+		"unitPrice" = variables.productDetails.fldPrice,
+		"unitTax" = variables.productDetails.fldTax
 	}>
+
+	<!--- Session variable to store checkout products --->
+	<cfset session.checkout = duplicate(variables.products)>
 <cfelseif structKeyExists(session, "cart") AND structCount(session.cart)>
 	<!--- Product details when this page was opened by clicking clicking checkout from cart page --->
 	<cfset variables.products = session.cart>
+
+	<!--- Session variable to store checkout products --->
+	<cfset session.checkout = duplicate(session.cart)>
 <cfelse>
 	<!--- If this page was opened by user and cart is empty --->
 	<cflocation  url="/cart.cfm" addToken="no">

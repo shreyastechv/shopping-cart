@@ -1311,6 +1311,94 @@
 		<cfreturn local.response>
 	</cffunction>
 
+	<cffunction name="modifyCheckout" access="remote" returnType="struct" returnFormat="json">
+		<cfargument name="productId" type="string" required=true default="">
+		<cfargument name="action" type="string" required=true default="">
+
+		<cfset local.response = {}>
+		<cfset local.response["success"] = false>
+		<cfset local.response["message"] = "">
+		<cfset local.response["data"] = {}>
+
+		<!--- Validate productId --->
+		<cfif NOT len(trim(arguments.productId))>
+			<cfset local.response["message"] &= "Product ID should not be empty. ">
+		<cfelseif NOT isValid("integer", arguments.productId)>
+			<cfset local.response["message"] &= "Product ID should be an integer. ">
+		</cfif>
+
+		<!--- Validate Action --->
+		<cfif NOT len(trim(arguments.action))>
+			<cfset local.response["message"] &= "Action should not be empty. ">
+		<cfelseif NOT arrayContainsNoCase(["increment", "decrement", "delete"], arguments.action)>
+			<cfset local.response["message"] &= "Specified action is not valid. ">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
+		<cfif arguments.action EQ "increment">
+
+			<!--- Delete productId key from struct in session variable --->
+			<cfset session.checkout[arguments.productId].quantity += 1>
+
+			<!--- Set response message --->
+			<cfset local.response["message"] = "Product Quantity Incremented">
+
+		<cfelseif arguments.action EQ "decrement" AND session.checkout[arguments.productId].quantity GT 1>
+
+			<!--- Delete productId key from struct in session variable --->
+			<cfset session.checkout[arguments.productId].quantity -= 1>
+
+			<!--- Set response message --->
+			<cfset local.response["message"] = "Product Quantity Decremented">
+
+		<cfelse>
+
+			<!--- Delete productId key from struct in session variable --->
+			<cfset structDelete(session.checkout, arguments.productId)>
+
+			<!--- Set response message --->
+			<cfset local.response["message"] = "Product Deleted">
+
+		</cfif>
+
+		<!--- Do the math --->
+		<cfif structKeyExists(session.checkout, arguments.productId)>
+			<cfset local.unitPrice = session.checkout[arguments.productId].unitPrice>
+			<cfset local.unitTax = session.checkout[arguments.productId].unitTax>
+			<cfset local.quantity = session.checkout[arguments.productId].quantity>
+			<cfset local.actualPrice = local.unitPrice * local.quantity>
+			<cfset local.price = local.actualPrice + (local.unitTax * local.quantity)>
+			<cfset local.priceDetails = session.checkout.reduce(function(result,key,value){
+				result.totalActualPrice += value.unitPrice * value.quantity;
+				result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
+				result.totalTax += value.unitPrice * value.unitTax * value.quantity;
+				return result;
+			},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
+			<cfset local.totalPrice = local.priceDetails.totalPrice>
+			<cfset local.totalActualPrice = local.priceDetails.totalActualPrice>
+			<cfset local.totalTax = local.priceDetails.totalTax>
+
+			<!--- Package data into struct --->
+			<cfset local.response["data"] = {
+				"price" = local.price,
+				"actualPrice" = local.actualPrice,
+				"totalPrice" = local.totalPrice,
+				"totalActualPrice" = local.totalActualPrice,
+				"totalTax" = local.totalTax,
+				"quantity" = session.checkout[arguments.productId].quantity
+			}>
+		</cfif>
+
+		<cfset local.response["success"] = true>
+
+		<cfreturn local.response>
+	</cffunction>
+
 	<cffunction name="createOrder" access="remote" returnType="struct">
 		<cfargument name="addressId" type="string" required=true>
 
@@ -1402,10 +1490,13 @@
 				tblCart
 			WHERE
 				fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+				AND fldProductId IN (#structKeyList(session.checkout)#)
 		</cfquery>
 
 		<!--- Empty cart structure in session --->
-		<cfset structClear(session.cart)>
+		<cfset structEach(session.checkout, function(key) {
+			structDelete(session.cart, key);
+		})>
 
 		<!--- Send email to user --->
 		<cfset sendOrderMail(
@@ -1414,6 +1505,9 @@
 			addressId = arguments.addressId,
 			orderId = local.orderId
 		)>
+
+		<!--- Clear session variable --->
+		<cfset structDelete(session, "checkout")>
 
 		<!--- Set success status --->
 		<cfset local.response["success"] = true>
@@ -1519,6 +1613,9 @@
 			addressId = arguments.addressId,
 			orderId = local.orderId
 		)>
+
+		<!--- Clear session variable --->
+		<cfset structDelete(session, "checkout")>
 
 		<!--- Set success status --->
 		<cfset local.response["success"] = true>
