@@ -8,14 +8,14 @@ function handleQuantityChange(containerId) {
 	}
 }
 
-function createAlert(containerId) {
+function createAlert(containerId, message) {
 	// Prevent more than one divs from being created
 	if ($(`#${containerId} div[name="maxQuantityAlert"]`).length > 0) return;
 
 	// Create div
 	const alertDiv = `
 		<div name="maxQuantityAlert" class="alert alert-warning alert-dismissible fade show m-2" role="alert">
-			Maximum allowed quantity for this item is reached.
+			${message}
 			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
 	`;
@@ -29,7 +29,7 @@ function editCartItem(containerId, productId, action) {
 
 	// Create alert if quantity is maxed out
 	if (action == "increment" && quantity == 5) {
-		createAlert(containerId);
+		createAlert(containerId, "Maximum allowed quantity for this item is reached.");
 		return;
 	}
 
@@ -42,53 +42,24 @@ function editCartItem(containerId, productId, action) {
 			productId: productId,
 			action: action
 		},
-		success: function() {
-			if (action == "increment") {
-				const oldPrice = parseFloat($(`#${containerId} span[name="price"]`).text());
-				const newPrice = oldPrice * ((quantity+1)/quantity);
+		success: function(response) {
+			const responseJSON = JSON.parse(response);
+			const data = responseJSON.data;
 
-				const oldActualPrice = parseFloat($(`#${containerId} span[name="actualPrice"]`).text());
-				const newActualPrice = oldActualPrice * ((quantity+1)/quantity);
-
-				const oldTotalPrice = parseFloat($("#totalPrice").text());
-				const newTotalPrice = oldTotalPrice + (oldPrice/quantity);
-
-				const oldTotalActualPrice = parseFloat($("#totalActualPrice").text());
-				const newTotalActualPrice = oldTotalActualPrice + (oldActualPrice/quantity);
-
-				const newTotalTax = newTotalPrice - newTotalActualPrice;
-
-				$(`#${containerId} span[name="price"]`).text(newPrice.toFixed(2));
-				$(`#${containerId} span[name="actualPrice"]`).text(newActualPrice.toFixed(2));
-				$("#totalPrice").text(newTotalPrice.toFixed(2));
-				$("#totalActualPrice").text(newTotalActualPrice.toFixed(2));
-				$("#totalTax").text(newTotalTax.toFixed(2));
-				$(`#${containerId} input[name="quantity"]`).val(quantity+1).change();
-			}
-			else if (action == "decrement") {
-				const oldPrice = parseFloat($(`#${containerId} span[name="price"]`).text());
-				const newPrice = oldPrice * ((quantity-1)/quantity);
-
-				const oldActualPrice = parseFloat($(`#${containerId} span[name="actualPrice"]`).text());
-				const newActualPrice = oldActualPrice * ((quantity-1)/quantity);
-
-				const oldTotalPrice = parseFloat($("#totalPrice").text());
-				const newTotalPrice = oldTotalPrice - (oldPrice/quantity);
-
-				const oldTotalActualPrice = parseFloat($("#totalActualPrice").text());
-				const newTotalActualPrice = oldTotalActualPrice - (oldActualPrice/quantity);
-
-				const newTotalTax = newTotalPrice - newTotalActualPrice;
-
-				$(`#${containerId} span[name="price"]`).text(newPrice.toFixed(2));
-				$(`#${containerId} span[name="actualPrice"]`).text(newActualPrice.toFixed(2));
-				$("#totalPrice").text(newTotalPrice.toFixed(2));
-				$("#totalActualPrice").text(newTotalActualPrice.toFixed(2));
-				$("#totalTax").text(newTotalTax.toFixed(2));
-				$(`#${containerId} input[name="quantity"]`).val(quantity-1).change();
-			}
-			else if (action == "delete") {
-				$(`#${containerId}`).remove();
+			if (responseJSON.success) {
+				if (["increment", "decrement"].includes(action)) {
+					$(`#${containerId} span[name="price"]`).text(data.price.toFixed(2));
+					$(`#${containerId} span[name="actualPrice"]`).text(data.actualPrice.toFixed(2));
+					$("#totalPrice").text(data.totalPrice.toFixed(2));
+					$("#totalActualPrice").text(data.totalActualPrice.toFixed(2));
+					$("#totalTax").text(data.totalTax.toFixed(2));
+					$(`#${containerId} input[name="quantity"]`).val(data.quantity).change();
+				}
+				else if (action == "delete") {
+					$(`#${containerId}`).remove();
+				}
+			} else {
+				createAlert(containerId, "Sorry. Unable to proceed. Try again.");
 			}
 		}
 	});

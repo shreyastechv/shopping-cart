@@ -1027,7 +1027,9 @@
 		<cfargument name="action" type="string" required=true default="">
 
 		<cfset local.response = {}>
+		<cfset local.response["success"] = false>
 		<cfset local.response["message"] = "">
+		<cfset local.response["data"] = {}>
 
 		<!--- Validate productId --->
 		<cfif NOT len(trim(arguments.productId))>
@@ -1102,6 +1104,36 @@
 			<cfset local.response["message"] = "Product Deleted">
 
 		</cfif>
+
+		<!--- Do the math --->
+		<cfif structKeyExists(session.cart, arguments.productId)>
+			<cfset local.unitPrice = session.cart[arguments.productId].unitPrice>
+			<cfset local.unitTax = session.cart[arguments.productId].unitTax>
+			<cfset local.quantity = session.cart[arguments.productId].quantity>
+			<cfset local.actualPrice = local.unitPrice * local.quantity>
+			<cfset local.price = local.actualPrice + (local.unitTax * local.quantity)>
+			<cfset local.priceDetails = session.cart.reduce(function(result,key,value){
+				result.totalActualPrice += value.unitPrice * value.quantity;
+				result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
+				result.totalTax += value.unitPrice * value.unitTax * value.quantity;
+				return result;
+			},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
+			<cfset local.totalPrice = local.priceDetails.totalPrice>
+			<cfset local.totalActualPrice = local.priceDetails.totalActualPrice>
+			<cfset local.totalTax = local.priceDetails.totalTax>
+
+			<!--- Package data into struct --->
+			<cfset local.response["data"] = {
+				"price" = local.price,
+				"actualPrice" = local.actualPrice,
+				"totalPrice" = local.totalPrice,
+				"totalActualPrice" = local.totalActualPrice,
+				"totalTax" = local.totalTax,
+				"quantity" = session.cart[arguments.productId].quantity
+			}>
+		</cfif>
+
+		<cfset local.response["success"] = true>
 
 		<cfreturn local.response>
 	</cffunction>
