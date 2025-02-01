@@ -3,12 +3,29 @@
 	<cflocation url="/login.cfm" addToken="no">
 </cfif>
 
+<!--- Set default value for productId --->
+<cfparam name="form.productId" default="">
+
 <!--- Get Data --->
 <cfset variables.addresses = application.shoppingCart.getAddress()>
 
 <!--- Variables to store total price and total actual price --->
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>
+
+<!--- Variable to store products (different for buy now and cart checkout) --->
+<cfif structKeyExists(form, "productId") AND len(trim(form.productId))>
+	<!--- Product details when this page was opened by clicking buy now from product page --->
+	<cfset variables.products[form.productId] = {
+		"quantity" = 1
+	}>
+<cfelseif structKeyExists(session, "cart") AND structCount(session.cart)>
+	<!--- Product details when this page was opened by clicking clicking checkout from cart page --->
+	<cfset variables.products = session.cart>
+<cfelse>
+	<!--- If this page was opened by user and cart is empty --->
+	<cflocation  url="/cart.cfm" addToken="no">
+</cfif>
 
 <cfoutput>
 	<!--- Main Content --->
@@ -74,7 +91,7 @@
 							</h2>
 							<div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="##orderSummary">
 								<div class="accordion-body">
-									<cfloop collection="#session.cart#" item="local.productId">
+									<cfloop collection="#variables.products#" item="local.productId">
 										<!--- Get Product Details --->
 										<cfset local.qryProductInfo = application.shoppingCart.getProducts(productId = local.productId)>
 
@@ -107,12 +124,12 @@
 														<p class="mb-1">Tax: <span class="fw-bold"><span name="tax">#local.qryProductInfo.fldTax#</span> %</span></p>
 														<div class="d-flex align-items-center">
 															<button class="btn btn-outline-primary btn-sm me-2" name="decBtn" onclick="editCartItem('#local.randomId#', #local.productId#, 'decrement')"
-															<cfif session.cart[local.productId].quantity EQ 1>
+															<cfif variables.products[local.productId].quantity EQ 1>
 																disabled
 															</cfif>
 															>-</button>
 
-															<input type="text" name="quantity" class="form-control text-center w-25" value="#session.cart[local.productId].quantity#" onchange="handleQuantityChange('#local.randomId#')" readonly>
+															<input type="text" name="quantity" class="form-control text-center w-25" value="#variables.products[local.productId].quantity#" onchange="handleQuantityChange('#local.randomId#')" readonly>
 															<button class="btn btn-outline-primary btn-sm ms-2" name="incBtn" onclick="editCartItem('#local.randomId#', #local.productId#, 'increment')">+</button>
 														</div>
 														<button class="btn btn-danger btn-sm mt-3" onclick="editCartItem('#local.randomid#', #local.productId#, 'delete')">Remove</button>
@@ -172,7 +189,7 @@
 									</div>
 								</div>
 								<div class="d-flex justify-content-end p-3">
-									<button type="submit" class="btn btn-success" onclick="handleCheckout()">
+									<button type="submit" class="btn btn-success" onclick="handleCheckout('#form.productId#')">
 										Continue
 									</button>
 								</div>
@@ -215,12 +232,30 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-body d-flex flex-column align-items-center justify-content-center p-4 gap-3">
-					<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
-					<div class="text-success fs-5">
-						Order Placed Successfully
-						<i class="fa-regular fa-circle-check"></i>
+					<div name="loading" class="text-info d-flex justify-content-center gap-2">
+						<div class="spinner-border" role="status">
+							<span class="visually-hidden">Please wait...</span>
+						</div>
+						<div class="fs-5">
+							Please wait...
+						</div>
 					</div>
-					<a class="btn btn-primary" href="/">Continue</a>
+					<div name="success" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
+						<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
+						<div class="text-success fs-5">
+							Order Placed Successfully
+							<i class="fa-regular fa-circle-check"></i>
+						</div>
+						<a class="btn btn-primary" href="/">Continue</a>
+					<div name="error" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
+						<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
+						<div class="text-danger fs-5">
+							Sorry! There was an error.
+							<i class="fa-regular fa-circle-check"></i>
+						</div>
+						<a class="btn btn-primary" href="/">Go to Home</a>
+					</div>
+					</div>
 				</div>
 			</div>
 		</div>

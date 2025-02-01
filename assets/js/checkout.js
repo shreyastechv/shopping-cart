@@ -1,4 +1,4 @@
-function handleCheckout() {
+function handleCheckout(productId) {
 	event.preventDefault();
 
 	// Remove error msgs and red borders from inputs
@@ -11,7 +11,7 @@ function handleCheckout() {
 	const formattedCardNumber = cardNumber.val().trim().replaceAll("-", "");
 	const cvv = $("#cvv");
 	const cvvError = $("#cvvError");
-  const addressId = $('input[name="addressId"]:checked').val();
+	const addressId = $('input[name="addressId"]:checked').val();
 
 	if (formattedCardNumber.length == 0) {
 		cardNumber.addClass("border-danger");
@@ -35,6 +35,9 @@ function handleCheckout() {
 
 	if (!valid) return;
 
+	// Show modal
+	$("#orderSuccess").modal("show");
+
 	// Validate card nummber and cvv
 	$.ajax({
 		type: "POST",
@@ -44,12 +47,15 @@ function handleCheckout() {
 			cardNumber: formattedCardNumber,
 			cvv: cvv.val().trim()
 		},
-		success: function (respose) {
-			const resposeJSON = JSON.parse(respose);
+		success: function (response) {
+			const resposeJSON = JSON.parse(response);
 
-			if (typeof resposeJSON.success !== "undefined") {
-				$("#orderSuccess").modal("show");
-        createOrder(addressId);
+			if (resposeJSON.success) {
+				if (productId.trim().length) {
+					buyNow(addressId, productId);
+				} else {
+					createOrder(addressId);
+				}
 			} else {
 				cardNumber.addClass("border-danger");
 				cvv.addClass("border-danger");
@@ -65,8 +71,36 @@ function createOrder(addressId) {
 		url: "./components/shoppingCart.cfc",
 		data: {
 			method: "createOrder",
-      addressId: addressId
+			addressId: addressId
 		},
-		success: function () {}
+		success: function () {
+			setTimeout(() => {
+				$("#orderSuccess div[name='loading']").addClass("d-none");
+				$("#orderSuccess div[name='success']").removeClass("d-none")
+			}, 1000);
+		}
+	})
+}
+
+function buyNow(addressId, productId) {
+	$.ajax({
+		type: "POST",
+		url: "./components/shoppingCart.cfc",
+		data: {
+			method: "buyNow",
+			addressId: addressId,
+			productId: productId,
+			quantity: 1
+		},
+		success: function () {
+			setTimeout(() => {
+				$("#orderSuccess div[name='loading']").addClass("d-none");
+				$("#orderSuccess div[name='success']").removeClass("d-none")
+			}, 1000);
+		},
+		error: function() {
+			$("#orderSuccess div[name='loading']").addClass("d-none");
+			$("#orderSuccess div[name='error']").removeClass("d-none")
+		}
 	})
 }
