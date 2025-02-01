@@ -1313,8 +1313,8 @@
 
 		<!--- Calculate Total price and Total tax --->
 		<cfset local.priceDetails = session.cart.reduce(function(result,key,value){
-			result.totalPrice += value.unitPrice * ( 1 + value.unitTax);
-			result.totalTax += value.unitPrice * value.unitTax;
+			result.totalPrice += value.unitPrice * ( 1 + value.unitTax) * value.quantity;
+			result.totalTax += value.unitPrice * value.unitTax * value.quantity;
 			return result;
 		},{totalPrice = 0, totalTax = 0})>
 
