@@ -52,7 +52,7 @@ function handleCheckout(productId) {
 
 			if (resposeJSON.success) {
 				if (productId.trim().length) {
-					buyNow(addressId, productId);
+					buyNow(addressId);
 				} else {
 					createOrder(addressId);
 				}
@@ -82,14 +82,13 @@ function createOrder(addressId) {
 	})
 }
 
-function buyNow(addressId, productId) {
+function buyNow(addressId) {
 	$.ajax({
 		type: "POST",
 		url: "./components/shoppingCart.cfc",
 		data: {
 			method: "buyNow",
 			addressId: addressId,
-			productId: productId,
 			quantity: 1
 		},
 		success: function () {

@@ -1469,15 +1469,15 @@
 				)
 			VALUES
 			<cfset local.index = 1>
-			<cfloop collection="#session.cart#" item="local.productId">
+			<cfloop collection="#session.checkout#" item="local.productId">
 				(
 					<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-					<cfqueryparam value = "#trim(session.cart[local.productId].quantity)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(session.cart[local.productId].unitPrice)#" cfsqltype = "decimal">,
-					<cfqueryparam value = "#trim(session.cart[local.productId].unitTax)#" cfsqltype = "decimal">
+					<cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">,
+					<cfqueryparam value = "#trim(session.checkout[local.productId].quantity)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(session.checkout[local.productId].unitPrice)#" cfsqltype = "decimal">,
+					<cfqueryparam value = "#trim(session.checkout[local.productId].unitTax)#" cfsqltype = "decimal">
 				)
-				<cfif local.index LT structCount(session.cart)>
+				<cfif local.index LT structCount(session.checkout)>
 					,
 				</cfif>
 				<cfset local.index += 1>
@@ -1517,7 +1517,6 @@
 
 	<cffunction name="buyNow" access="remote" returnType="struct">
 		<cfargument name="addressId" type="string" required=true>
-		<cfargument name="productId" type="string" required=true>
 		<cfargument name="quantity" type="integer" required=true>
 
 		<cfset local.response = {}>
@@ -1529,18 +1528,16 @@
 			<cfset local.response["message"] &= "User not logged in">
 		</cfif>
 
+		<!--- Check whether session variable is empty or not --->
+		<cfif (NOT structKeyExists(session, "checkout")) OR (structCount(session.checkout) EQ 0)>
+			<cfset local.response["message"] &= "Checkout section is empty. ">
+		</cfif>
+
 		<!--- Address Id Validation --->
 		<cfif NOT len(trim(arguments.addressId))>
 			<cfset local.response["message"] &= "Address Id is required">
 		<cfelseif NOT isValid("integer", arguments.addressId)>
 			<cfset local.response["message"] &= "Address Id should be an integer">
-		</cfif>
-
-		<!--- Product Id Validation --->
-		<cfif NOT len(trim(arguments.productId))>
-			<cfset local.response["message"] &= "Product Id is required">
-		<cfelseif NOT isValid("integer", arguments.productId)>
-			<cfset local.response["message"] &= "Product Id should be an integer">
 		</cfif>
 
 		<!--- Quantity Validation --->
@@ -1597,13 +1594,21 @@
 					fldUnitPrice,
 					fldUnitTax
 				)
-			VALUES (
+			VALUES
+			<cfset local.index = 1>
+			<cfloop collection="#session.checkout#" item="local.productId">
+				(
 					<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-					<cfqueryparam value = "#trim(arguments.quantity)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(local.productDetails.fldPrice)#" cfsqltype = "decimal">,
-					<cfqueryparam value = "#trim(local.productDetails.fldTax)#" cfsqltype = "decimal">
+					<cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">,
+					<cfqueryparam value = "#trim(session.checkout[local.productId].quantity)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(session.checkout[local.productId].unitPrice)#" cfsqltype = "decimal">,
+					<cfqueryparam value = "#trim(session.checkout[local.productId].unitTax)#" cfsqltype = "decimal">
 				)
+				<cfif local.index LT structCount(session.checkout)>
+					,
+				</cfif>
+				<cfset local.index += 1>
+			</cfloop>
 		</cfquery>
 
 		<!--- Send email to user --->
