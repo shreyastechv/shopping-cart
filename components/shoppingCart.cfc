@@ -1498,36 +1498,14 @@
 			structDelete(session.cart, key);
 		})>
 
-		<!--- Send email to user --->
-		<cfset sendOrderMail(
-			fullName = session.firstName & " " & session.lastName,
-			email = session.email,
-			addressId = arguments.addressId,
-			orderId = local.orderId
-		)>
-
-		<!--- Clear session variable --->
-		<cfset structDelete(session, "checkout")>
-
-		<!--- Set success status --->
-		<cfset local.response["success"] = true>
-
-		<cfreturn local.response>
-	</cffunction>
-
-	<cffunction name="sendOrderMail" access="private" returnType="void">
-		<cfargument name="fullName" type="string" required=true>
-		<cfargument name="email" type="string" required=true>
-		<cfargument name="addressId" type="integer" required=true>
-		<cfargument name="orderId" type="string" required=true>
-
 		<!--- Fetch address details --->
 		<cfset local.address = getAddress(
 			addressId = arguments.addressId
 		)>
 
-		<cfmail to="#arguments.email#" from="no-reply@shoppingcart.local" subject="Your order has been successfully placed">
-            Hi #arguments.fullName#,
+		<!--- Send email to user --->
+		<cfmail to="#session.email#" from="no-reply@shoppingcart.local" subject="Your order has been successfully placed">
+			Hi #session.firstName# #session.lastName#,
 
 			Your order was placed successfully.
 
@@ -1538,8 +1516,16 @@
 			#local.address[1].city#, #local.address[1].state# - #local.address[1].pincode#,
 			#local.address[1].phone#
 
-			Order Id: #arguments.orderId#
+			Order Id: #local.orderId#
         </cfmail>
+
+		<!--- Clear session variable --->
+		<cfset structDelete(session, "checkout")>
+
+		<!--- Set success status --->
+		<cfset local.response["success"] = true>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="encryptUrlParam" access="public" returnType="string">

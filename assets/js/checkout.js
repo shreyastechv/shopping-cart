@@ -72,11 +72,13 @@ function createOrder(addressId) {
 		success: function () {
 			setTimeout(() => {
 				$("#orderSuccess div[name='loading']").addClass("d-none");
+				$("#orderSuccess div[name='error']").addClass("d-none");
 				$("#orderSuccess div[name='success']").removeClass("d-none")
 			}, 1000);
 		},
 		error: function() {
 			$("#orderSuccess div[name='loading']").addClass("d-none");
+			$("#orderSuccess div[name='success']").addClass("d-none");
 			$("#orderSuccess div[name='error']").removeClass("d-none")
 		}
 	})
