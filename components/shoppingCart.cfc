@@ -1290,7 +1290,30 @@
 		<cfset local.validCardNumber = "1234567890123456">
 		<cfset local.validCvv = "123">
 
+		<!--- Trim and remove dashes from card number --->
+		<cfset arguments.cardNumber = replace(trim(arguments.cardNumber), "-", "", "all")>
+
+		<!--- Validate card number --->
+		<cfif NOT len(arguments.cardNumber)>
+			<cfset local.response["message"] &= "Card number is required. ">
+		<cfelseif (len(arguments.cardNumber) NEQ 16) OR (NOT isValid("numeric", arguments.cardNumber))>
+			<cfset local.response["message"] &= "Not a valid card number. ">
+		</cfif>
+
+		<!--- Validate CVV --->
+		<cfif NOT len(trim(arguments.cvv))>
+			<cfset local.response["message"] &= "CVV number is required. ">
+		<cfelseif (len(trim(arguments.cvv)) NEQ 3) OR (NOT isValid("numeric", arguments.cvv))>
+			<cfset local.response["message"] &= "CVV is not valid. ">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
 		<cfif (arguments.cardNumber EQ local.validCardNumber) AND (arguments.cvv EQ local.validcvv)>
+			<cfset local.response["message"] = "Validation successful">
 			<cfset local.response["success"] = true>
 		<cfelse>
 			<cfset local.response["message"] = "Wrong Card number or CVV">
