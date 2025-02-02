@@ -1411,9 +1411,9 @@
 			<cfset local.response["message"] &= "User not logged in. ">
 		</cfif>
 
-		<!--- Check whether cart is empty or not --->
-		<cfif (NOT structKeyExists(session, "cart")) OR (structCount(session.cart) EQ 0)>
-			<cfset local.response["message"] &= "Cart is empty. ">
+		<!--- Check whether session variable is empty or not --->
+		<cfif (NOT structKeyExists(session, "checkout")) OR (structCount(session.checkout) EQ 0)>
+			<cfset local.response["message"] &= "Checkout section is empty. ">
 		</cfif>
 
 		<!--- Address Id Validation --->
@@ -1484,7 +1484,7 @@
 			</cfloop>
 		</cfquery>
 
-		<!--- Delete from cart table --->
+		<!--- Delete ordered products from cart table --->
 		<cfquery name="local.qryDeleteCart">
 			DELETE FROM
 				tblCart
@@ -1497,109 +1497,6 @@
 		<cfset structEach(session.checkout, function(key) {
 			structDelete(session.cart, key);
 		})>
-
-		<!--- Send email to user --->
-		<cfset sendOrderMail(
-			fullName = session.firstName & " " & session.lastName,
-			email = session.email,
-			addressId = arguments.addressId,
-			orderId = local.orderId
-		)>
-
-		<!--- Clear session variable --->
-		<cfset structDelete(session, "checkout")>
-
-		<!--- Set success status --->
-		<cfset local.response["success"] = true>
-
-		<cfreturn local.response>
-	</cffunction>
-
-	<cffunction name="buyNow" access="remote" returnType="struct">
-		<cfargument name="addressId" type="string" required=true>
-
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
-
-		<!--- Check whether user is logged in --->
-		<cfif NOT structKeyExists(session, "userId")>
-			<cfset local.response["message"] &= "User not logged in">
-		</cfif>
-
-		<!--- Check whether session variable is empty or not --->
-		<cfif (NOT structKeyExists(session, "checkout")) OR (structCount(session.checkout) EQ 0)>
-			<cfset local.response["message"] &= "Checkout section is empty. ">
-		</cfif>
-
-		<!--- Address Id Validation --->
-		<cfif NOT len(trim(arguments.addressId))>
-			<cfset local.response["message"] &= "Address Id is required">
-		<cfelseif NOT isValid("integer", arguments.addressId)>
-			<cfset local.response["message"] &= "Address Id should be an integer">
-		</cfif>
-
-
-		<!--- Return if error message exists --->
-		<cfif structKeyExists(local.response, "message")>
-			<cfreturn local.response>
-		</cfif>
-
-		<!--- Create Order Id --->
-		<cfset local.orderId = createUUID()>
-
-		<!--- Calculate Total price and Total tax --->
-		<cfset local.productDetails = getProducts(
-			productId = arguments.productId
-		)>
-		<cfset local.priceDetails["totalTax"] = val(local.productDetails.fldPrice) * val(local.productDetails.fldTax) * session.checkout[local.productId].quantity / 100>
-		<cfset local.priceDetails["totalPrice"] = (val(local.productDetails.fldPrice) * session.checkout[local.productId].quantity) + local.priceDetails["totalTax"]>
-
-		<!--- Insert into order table --->
-		<cfquery name="local.qryCreateOrder">
-			INSERT INTO
-				tblOrder (
-					fldOrder_Id,
-					fldUserId,
-					fldAddressId,
-					fldTotalPrice,
-					fldTotalTax
-				)
-			VALUES (
-				<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-				<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-				<cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "varchar">,
-				<cfqueryparam value = "#trim(local.priceDetails.totalPrice)#" cfsqltype = "decimal">,
-				<cfqueryparam value = "#trim(local.priceDetails.totalTax)#" cfsqltype = "decimal">
-			)
-		</cfquery>
-
-		<!--- Insert into order items table --->
-		<cfquery name="local.qryCreateOrderItems">
-			INSERT INTO
-				tblOrderItems (
-					fldOrderId,
-					fldProductId,
-					fldQuantity,
-					fldUnitPrice,
-					fldUnitTax
-				)
-			VALUES
-			<cfset local.index = 1>
-			<cfloop collection="#session.checkout#" item="local.productId">
-				(
-					<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">,
-					<cfqueryparam value = "#trim(session.checkout[local.productId].quantity)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(session.checkout[local.productId].unitPrice)#" cfsqltype = "decimal">,
-					<cfqueryparam value = "#trim(session.checkout[local.productId].unitTax)#" cfsqltype = "decimal">
-				)
-				<cfif local.index LT structCount(session.checkout)>
-					,
-				</cfif>
-				<cfset local.index += 1>
-			</cfloop>
-		</cfquery>
 
 		<!--- Send email to user --->
 		<cfset sendOrderMail(
