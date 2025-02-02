@@ -32,7 +32,7 @@
 		</cfloop>
 
 		<body>
-			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2">
+			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2 py-1">
 				<a class="d-flex align-items-center text-decoration-none" href="/">
 					<img class="p-2 me-2" src="assets/images/shopping-cart-logo.png" height="45" alt="Logo Image">
 					<div class="text-white fw-semibold">SHOPPING CART</div>
@@ -49,13 +49,13 @@
 				</cfif>
 				<nav class="d-flex align-items-center justify-content-between gap-4">
 					<!--- Profile Button --->
-					<button type="button" class="btn btn-outline-light btn-sm position-relative" onclick="location.href='/profile.cfm'">
+					<button type="button" class="btn btn-outline-light" onclick="location.href='/profile.cfm'">
 						<i class="fa-regular fa-circle-user"></i>
 						Profile
 					</button>
 
 					<!--- Cart Button --->
-					<button type="button" class="btn btn-outline-light btn-sm position-relative" onclick="location.href='/cart.cfm'">
+					<button type="button" class="btn btn-outline-light position-relative" onclick="location.href='/cart.cfm'">
 						<i class="fa-solid fa-cart-shopping"></i>
 						Cart
 						<cfif structKeyExists(session, "cart")>
