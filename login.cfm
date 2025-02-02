@@ -16,8 +16,9 @@
 
 			<!--- Add product to cart only if properly decrypted --->
 			<cfif variables.productId NEQ -1>
-				<cfset application.shoppingCart.addToCart(
-					productId = variables.productId
+				<cfset application.shoppingCart.modifyCart(
+					productId = variables.productId,
+					action = "increment"
 				)>
 			</cfif>
 		</cfif>

@@ -963,65 +963,6 @@
 		<cfreturn local.cartItems>
 	</cffunction>
 
-	<cffunction name="addToCart" access="remote" returnType="void">
-		<cfargument name="productId" type="string" required=true>
-
-		<!--- Check whether the item is present in cart --->
-		<cfquery name="local.qryCheckCart">
-			SELECT
-				fldCart_Id
-			FROM
-				tblCart
-			WHERE
-				fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
-				AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-		</cfquery>
-
-		<cfif local.qryCheckCart.recordCount>
-			<!--- Update cart in case it already have the product --->
-			<cfquery name="local.qryEditCart">
-				UPDATE
-					tblCart
-				SET
-					fldQuantity = fldQuantity + 1
-				WHERE
-					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
-					AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-			</cfquery>
-
-			<!--- Increment quantity of product in session variable --->
-			<cfset session.cart[arguments.productId].quantity += 1>
-		<cfelse>
-			<!--- Get Product Into --->
-			<cfset local.productInfo = getProducts(
-				productId = arguments.productId
-			)>
-
-			<!--- Add product to cart in case it do not have it already --->
-			<cfquery name="local.qryAddToCart" result="local.resultAddToCart">
-				INSERT INTO
-					tblCart (
-						fldUserId,
-						fldProductId,
-						fldQuantity
-					)
-				VALUES (
-					<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-					<cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">,
-					1
-				)
-			</cfquery>
-
-			<!--- Add product to session variable --->
-			<cfset session.cart[arguments.productId] = {
-				"cartId" = local.resultAddToCart.GENERATED_KEY,
-				"quantity" = 1,
-				"price" = local.productInfo.fldPrice,
-				"tax" = local.productInfo.fldTax
-			}>
-		</cfif>
-	</cffunction>
-
 	<cffunction name="modifyCart" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
@@ -1050,24 +991,71 @@
 			<cfreturn local.response>
 		</cfif>
 
+		<!--- Check whether the item is present in cart --->
+		<cfquery name="local.qryCheckCart">
+			SELECT
+				fldCart_Id
+			FROM
+				tblCart
+			WHERE
+				fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+				AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+		</cfquery>
+
 		<!--- Continue with code execution if validation succeeds --->
 		<cfif arguments.action EQ "increment">
 
-			<!--- Increment product quantity in cart --->
-			<cfquery name="local.qryIncrItem">
-				UPDATE
-					tblCart
-				SET
-					fldQuantity = fldQuantity + 1
-				WHERE
-					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
-			</cfquery>
+			<cfif local.qryCheckCart.recordCount>
+				<!--- Update cart in case it already have the product --->
+				<cfquery name="local.qryEditCart">
+					UPDATE
+						tblCart
+					SET
+						fldQuantity = fldQuantity + 1
+					WHERE
+						fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+						AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+				</cfquery>
 
-			<!--- Increment quantity of product in session variable --->
-			<cfset session.cart[arguments.productId].quantity += 1>
+				<!--- Increment quantity of product in session variable --->
+				<cfset session.cart[arguments.productId].quantity += 1>
 
-			<!--- Set response message --->
-			<cfset local.response["message"] = "Product Quantity Incremented">
+				<!--- Set response message --->
+				<cfset local.response["message"] = "Product Quantity Incremented">
+
+			<cfelse>
+				<!--- Get Product Into --->
+				<cfset local.productInfo = getProducts(
+					productId = arguments.productId
+				)>
+
+				<!--- Add product to cart in case it do not have it already --->
+				<cfquery name="local.qryAddToCart" result="local.resultAddToCart">
+					INSERT INTO
+						tblCart (
+							fldUserId,
+							fldProductId,
+							fldQuantity
+						)
+					VALUES (
+						<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
+						<cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">,
+						1
+					)
+				</cfquery>
+
+				<!--- Add product to session variable --->
+				<cfset session.cart[arguments.productId] = {
+					"cartId" = local.resultAddToCart.GENERATED_KEY,
+					"quantity" = 1,
+					"unitPrice" = local.productInfo.fldPrice,
+					"unitTax" = local.productInfo.fldTax
+				}>
+
+				<!--- Set response message --->
+				<cfset local.response["message"] = "Product Added">
+
+			</cfif>
 
 		<cfelseif arguments.action EQ "decrement" AND session.cart[arguments.productId].quantity GT 1>
 
