@@ -89,7 +89,6 @@ function buyNow(addressId) {
 		data: {
 			method: "buyNow",
 			addressId: addressId,
-			quantity: 1
 		},
 		success: function () {
 			setTimeout(() => {

@@ -1517,7 +1517,6 @@
 
 	<cffunction name="buyNow" access="remote" returnType="struct">
 		<cfargument name="addressId" type="string" required=true>
-		<cfargument name="quantity" type="integer" required=true>
 
 		<cfset local.response = {}>
 		<cfset local.response["success"] = false>
@@ -1540,15 +1539,6 @@
 			<cfset local.response["message"] &= "Address Id should be an integer">
 		</cfif>
 
-		<!--- Quantity Validation --->
-		<cfif NOT len(trim(arguments.quantity))>
-			<cfset local.response["message"] &= "Quantity is required">
-		<cfelseif NOT isValid("integer", arguments.quantity)>
-			<cfset local.response["message"] &= "Quantity should be an integer">
-		<cfelseif arguments.quantity LT 1>
-			<cfset local.response["message"] &= "Quantity should be integer greater than 0">
-		</cfif>
-
 
 		<!--- Return if error message exists --->
 		<cfif structKeyExists(local.response, "message")>
@@ -1562,8 +1552,8 @@
 		<cfset local.productDetails = getProducts(
 			productId = arguments.productId
 		)>
-		<cfset local.priceDetails["totalTax"] = val(local.productDetails.fldPrice) * val(local.productDetails.fldTax) * arguments.quantity / 100>
-		<cfset local.priceDetails["totalPrice"] = (val(local.productDetails.fldPrice) * arguments.quantity) + local.priceDetails["totalTax"]>
+		<cfset local.priceDetails["totalTax"] = val(local.productDetails.fldPrice) * val(local.productDetails.fldTax) * session.checkout[local.productId].quantity / 100>
+		<cfset local.priceDetails["totalPrice"] = (val(local.productDetails.fldPrice) * session.checkout[local.productId].quantity) + local.priceDetails["totalTax"]>
 
 		<!--- Insert into order table --->
 		<cfquery name="local.qryCreateOrder">
