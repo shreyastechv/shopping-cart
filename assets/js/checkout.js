@@ -138,14 +138,15 @@ function editCartItem(containerId, productId, action) {
 				if (["increment", "decrement"].includes(action)) {
 					$(`#${containerId} span[name="price"]`).text(data.price.toFixed(2));
 					$(`#${containerId} span[name="actualPrice"]`).text(data.actualPrice.toFixed(2));
-					$("#totalPrice").text(data.totalPrice.toFixed(2));
-					$("#totalActualPrice").text(data.totalActualPrice.toFixed(2));
-					$("#totalTax").text(data.totalTax.toFixed(2));
 					$(`#${containerId} input[name="quantity"]`).val(data.quantity).change();
 				}
 				else if (action == "delete") {
 					$(`#${containerId}`).remove();
 				}
+
+				$("#totalPrice").text(data.totalPrice.toFixed(2));
+				$("#totalActualPrice").text(data.totalActualPrice.toFixed(2));
+				$("#totalTax").text(data.totalTax.toFixed(2));
 			} else {
 				createAlert(containerId, "Sorry. Unable to proceed. Try again.");
 			}

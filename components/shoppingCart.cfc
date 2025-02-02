@@ -1100,26 +1100,32 @@
 			<cfset local.quantity = session.cart[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitTax * local.quantity)>
-			<cfset local.priceDetails = session.cart.reduce(function(result,key,value){
-				result.totalActualPrice += value.unitPrice * value.quantity;
-				result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
-				result.totalTax += value.unitPrice * value.unitTax * value.quantity;
-				return result;
-			},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
-			<cfset local.totalPrice = local.priceDetails.totalPrice>
-			<cfset local.totalActualPrice = local.priceDetails.totalActualPrice>
-			<cfset local.totalTax = local.priceDetails.totalTax>
 
 			<!--- Package data into struct --->
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"totalPrice" = local.totalPrice,
-				"totalActualPrice" = local.totalActualPrice,
-				"totalTax" = local.totalTax,
 				"quantity" = session.cart[arguments.productId].quantity
 			}>
 		</cfif>
+
+		<!--- Do the math on total price and tax in cart --->
+		<cfset local.priceDetails = session.cart.reduce(function(result,key,value){
+			result.totalActualPrice += value.unitPrice * value.quantity;
+			result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
+			result.totalTax += value.unitPrice * value.unitTax * value.quantity;
+			return result;
+		},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
+		<cfset local.totalPrice = local.priceDetails.totalPrice>
+		<cfset local.totalActualPrice = local.priceDetails.totalActualPrice>
+		<cfset local.totalTax = local.priceDetails.totalTax>
+
+		<!--- Append total price and tax to data struct --->
+		<cfset structAppend(local.response["data"], {
+			"totalPrice" = local.totalPrice,
+			"totalActualPrice" = local.totalActualPrice,
+			"totalTax" = local.totalTax
+		})>
 
 		<cfset local.response["success"] = true>
 
@@ -1384,26 +1390,32 @@
 			<cfset local.quantity = session.checkout[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitTax * local.quantity)>
-			<cfset local.priceDetails = session.checkout.reduce(function(result,key,value){
-				result.totalActualPrice += value.unitPrice * value.quantity;
-				result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
-				result.totalTax += value.unitPrice * value.unitTax * value.quantity;
-				return result;
-			},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
-			<cfset local.totalPrice = local.priceDetails.totalPrice>
-			<cfset local.totalActualPrice = local.priceDetails.totalActualPrice>
-			<cfset local.totalTax = local.priceDetails.totalTax>
 
 			<!--- Package data into struct --->
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"totalPrice" = local.totalPrice,
-				"totalActualPrice" = local.totalActualPrice,
-				"totalTax" = local.totalTax,
 				"quantity" = session.checkout[arguments.productId].quantity
 			}>
 		</cfif>
+
+		<!--- Do the math on total price and tax --->
+		<cfset local.priceDetails = session.checkout.reduce(function(result,key,value){
+			result.totalActualPrice += value.unitPrice * value.quantity;
+			result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
+			result.totalTax += value.unitPrice * value.unitTax * value.quantity;
+			return result;
+		},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
+		<cfset local.totalPrice = local.priceDetails.totalPrice>
+		<cfset local.totalActualPrice = local.priceDetails.totalActualPrice>
+		<cfset local.totalTax = local.priceDetails.totalTax>
+
+		<!--- Append total price and tax data into struct --->
+		<cfset structAppend(local.response["data"], {
+			"totalPrice" = local.totalPrice,
+			"totalActualPrice" = local.totalActualPrice,
+			"totalTax" = local.totalTax
+		})>
 
 		<cfset local.response["success"] = true>
 
