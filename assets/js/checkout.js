@@ -1,4 +1,4 @@
-function handleCheckout(productId) {
+function handleCheckout() {
 	event.preventDefault();
 
 	// Remove error msgs and red borders from inputs

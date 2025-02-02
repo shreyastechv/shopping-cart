@@ -3,9 +3,6 @@
 	<cflocation url="/login.cfm" addToken="no">
 </cfif>
 
-<!--- Set default value for productId --->
-<cfparam name="form.productId" default="">
-
 <!--- Get Data --->
 <cfset variables.addresses = application.shoppingCart.getAddress()>
 
@@ -203,7 +200,7 @@
 									</div>
 								</div>
 								<div class="d-flex justify-content-end p-3">
-									<button type="submit" class="btn btn-success" onclick="handleCheckout('#form.productId#')">
+									<button type="submit" class="btn btn-success" onclick="handleCheckout()">
 										Continue
 									</button>
 								</div>
