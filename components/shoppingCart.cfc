@@ -1579,17 +1579,28 @@
 				ord.fldOrderDate,
 				ord.fldTotalPrice,
 				ord.fldTotalTax,
-				GROUP_CONCAT(itm.fldQuantity SEPARATOR ',') AS quantity,
-				GROUP_CONCAT(itm.fldUnitPrice SEPARATOR ',') AS unitPrice,
-				GROUP_CONCAT(itm.fldUnitTax SEPARATOR ',') AS unitTax
+				GROUP_CONCAT(itm.fldQuantity SEPARATOR ',') AS quantities,
+				GROUP_CONCAT(itm.fldUnitPrice SEPARATOR ',') AS unitPrices,
+				GROUP_CONCAT(itm.fldUnitTax SEPARATOR ',') AS unitTaxes,
+				GROUP_CONCAT(prod.fldProductName SEPARATOR ',') AS productNames,
+				GROUP_CONCAT(img.fldImageFileName SEPARATOR ',') AS productImages,
+				GROUP_CONCAT(brnd.fldBrandName SEPARATOR ',') AS brandNames
 			FROM
 				tblOrder ord
 				INNER JOIN tblOrderItems itm ON ord.fldOrder_Id = itm.fldOrderId
+				INNER JOIN tblProduct prod ON itm.fldProductId = prod.fldProduct_Id
+				INNER JOIN tblProductImages img ON prod.fldProduct_Id = img.fldProductId
+					AND img.fldActive = 1
+					AND img.fldDefaultImage = 1
+				INNER JOIN tblBrands brnd ON prod.fldBrandId = brnd.fldBrand_Id
 			WHERE
 				ord.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
 				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
 			GROUP BY
-				ord.fldOrder_Id
+				ord.fldOrder_Id,
+				prod.fldProduct_Id,
+				img.fldProductImage_Id,
+				brnd.fldBrand_Id
 		</cfquery>
 
 		<cfloop query="local.qryGetOrders">
@@ -1598,9 +1609,12 @@
 				"orderDate" = local.qryGetOrders.fldOrderDate,
 				"totalPrice" = local.qryGetOrders.fldTotalPrice,
 				"totalTax" = local.qryGetOrders.fldTotalTax,
-				"quantity" = local.qryGetOrders.quantity,
-				"unitPrice" = local.qryGetOrders.unitPrice,
-				"unitTax" = local.qryGetOrders.unitTax
+				"quantities" = local.qryGetOrders.quantities,
+				"unitPrices" = local.qryGetOrders.unitPrices,
+				"unitTaxes" = local.qryGetOrders.unitTaxes,
+				"productNames" = local.qryGetOrders.productNames,
+				"productImages" = local.qryGetOrders.productImages,
+				"brandNames" = local.qryGetOrders.brandNames
 			})>
 		</cfloop>
 
