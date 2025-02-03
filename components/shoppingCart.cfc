@@ -1103,7 +1103,7 @@
 			<cfset local.unitTax = session.cart[arguments.productId].unitTax>
 			<cfset local.quantity = session.cart[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
-			<cfset local.price = local.actualPrice + (local.unitTax * local.quantity)>
+			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
 			<!--- Package data into struct --->
 			<cfset local.response["data"] = {
@@ -1117,7 +1117,7 @@
 		<cfset local.priceDetails = session.cart.reduce(function(result,key,value){
 			result.totalActualPrice += value.unitPrice * value.quantity;
 			result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
-			result.totalTax += value.unitPrice * value.unitTax * value.quantity;
+			result.totalTax += value.unitPrice * value.unitTax / 100 * value.quantity;
 			return result;
 		},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
 		<cfset local.totalPrice = local.priceDetails.totalPrice>
@@ -1393,7 +1393,7 @@
 			<cfset local.unitTax = session.checkout[arguments.productId].unitTax>
 			<cfset local.quantity = session.checkout[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
-			<cfset local.price = local.actualPrice + (local.unitTax * local.quantity)>
+			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
 			<!--- Package data into struct --->
 			<cfset local.response["data"] = {
@@ -1407,7 +1407,7 @@
 		<cfset local.priceDetails = session.checkout.reduce(function(result,key,value){
 			result.totalActualPrice += value.unitPrice * value.quantity;
 			result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
-			result.totalTax += value.unitPrice * value.unitTax * value.quantity;
+			result.totalTax += value.unitPrice * value.unitTax / 100 * value.quantity;
 			return result;
 		},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
 		<cfset local.totalPrice = local.priceDetails.totalPrice>
