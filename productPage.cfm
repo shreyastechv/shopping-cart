@@ -16,8 +16,9 @@
 <!--- Handle Add to Cart --->
 <cfif structKeyExists(form, "addToCart")>
 	<cfif structKeyExists(session, "userId")>
-		<cfset application.shoppingCart.addToCart(
-			productId = application.shoppingCart.decryptUrlParam(url.productId)
+		<cfset application.shoppingCart.modifyCart(
+			productId = application.shoppingCart.decryptUrlParam(url.productId),
+			action = "increment"
 		)>
 		<cflocation url="#cgi.HTTP_URL#" addToken="no">
 	<cfelse>

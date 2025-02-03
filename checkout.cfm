@@ -3,9 +3,6 @@
 	<cflocation url="/login.cfm" addToken="no">
 </cfif>
 
-<!--- Set default value for productId --->
-<cfparam name="form.productId" default="">
-
 <!--- Get Data --->
 <cfset variables.addresses = application.shoppingCart.getAddress()>
 
@@ -15,13 +12,26 @@
 
 <!--- Variable to store products (different for buy now and cart checkout) --->
 <cfif structKeyExists(form, "productId") AND len(trim(form.productId))>
+	<!--- Get product price details since this is not in cart --->
+	<cfset variables.productDetails = application.shoppingCart.getProducts(
+		productId = form.productId
+	)>
+
 	<!--- Product details when this page was opened by clicking buy now from product page --->
 	<cfset variables.products[form.productId] = {
-		"quantity" = 1
+		"quantity" = 1,
+		"unitPrice" = variables.productDetails.fldPrice,
+		"unitTax" = variables.productDetails.fldTax
 	}>
+
+	<!--- Session variable to store checkout products --->
+	<cfset session.checkout = duplicate(variables.products)>
 <cfelseif structKeyExists(session, "cart") AND structCount(session.cart)>
 	<!--- Product details when this page was opened by clicking clicking checkout from cart page --->
 	<cfset variables.products = session.cart>
+
+	<!--- Session variable to store checkout products --->
+	<cfset session.checkout = duplicate(session.cart)>
 <cfelse>
 	<!--- If this page was opened by user and cart is empty --->
 	<cflocation  url="/cart.cfm" addToken="no">
@@ -91,53 +101,7 @@
 							</h2>
 							<div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="##orderSummary">
 								<div class="accordion-body">
-									<cfloop collection="#variables.products#" item="local.productId">
-										<!--- Get Product Details --->
-										<cfset local.qryProductInfo = application.shoppingCart.getProducts(productId = local.productId)>
-
-										<!--- Encrypt Product ID since it is passed to URL param --->
-										<cfset variables.encryptedProductId = application.shoppingCart.encryptUrlParam(local.productId)>
-
-										<!--- Calculate price and actual price --->
-										<cfset local.actualPrice = local.qryProductInfo.fldPrice>
-										<cfset local.price = local.qryProductInfo.fldPrice * (100 + local.qryProductInfo.fldTax) / 100>
-
-										<!--- Sum up total price and total actual price --->
-										<cfset variables.totalPrice += local.price>
-										<cfset variables.totalActualPrice += local.actualPrice>
-
-										<!--- Generate random id for the mian container div --->
-										<cfset local.randomId = replace(rand(), ".", "", "all")>
-
-										<div class="card mb-3 shadow" id="#local.randomId#">
-											<div class="row g-0">
-												<div class="col-md-4 p-3">
-													<a href="/productPage.cfm?productId=#variables.encryptedProductId#">
-														<img src="#application.productImageDirectory&local.qryProductInfo.fldProductImage#" class="img-fluid rounded-start" alt="Product">
-													</a>
-												</div>
-												<div class="col-md-8">
-													<div class="card-body">
-														<h5 class="card-title">#local.qryProductInfo.fldProductName#</h5>
-														<p class="mb-1">Price: <span class="fw-bold">Rs. <span name="price">#local.price#</span></span></p>
-														<p class="mb-1">Actual Price: <span class="fw-bold">Rs. <span name="actualPrice">#local.actualPrice#</span></span></p>
-														<p class="mb-1">Tax: <span class="fw-bold"><span name="tax">#local.qryProductInfo.fldTax#</span> %</span></p>
-														<div class="d-flex align-items-center">
-															<button class="btn btn-outline-primary btn-sm me-2" name="decBtn" onclick="editCartItem('#local.randomId#', #local.productId#, 'decrement')"
-															<cfif variables.products[local.productId].quantity EQ 1>
-																disabled
-															</cfif>
-															>-</button>
-
-															<input type="text" name="quantity" class="form-control text-center w-25" value="#variables.products[local.productId].quantity#" onchange="handleQuantityChange('#local.randomId#')" readonly>
-															<button class="btn btn-outline-primary btn-sm ms-2" name="incBtn" onclick="editCartItem('#local.randomId#', #local.productId#, 'increment')">+</button>
-														</div>
-														<button class="btn btn-danger btn-sm mt-3" onclick="editCartItem('#local.randomid#', #local.productId#, 'delete')">Remove</button>
-													</div>
-												</div>
-											</div>
-										</div>
-									</cfloop>
+									<cf_cartproductlist products="#variables.products#">
 								</div>
 								<div class="d-flex justify-content-end p-3">
 									<button type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseThree"
@@ -189,7 +153,7 @@
 									</div>
 								</div>
 								<div class="d-flex justify-content-end p-3">
-									<button type="submit" class="btn btn-success" onclick="handleCheckout('#form.productId#')">
+									<button type="submit" class="btn btn-success" onclick="handleCheckout()">
 										Continue
 									</button>
 								</div>
