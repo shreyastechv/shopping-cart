@@ -1597,10 +1597,7 @@
 				ord.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
 				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
 			GROUP BY
-				ord.fldOrder_Id,
-				prod.fldProduct_Id,
-				img.fldProductImage_Id,
-				brnd.fldBrand_Id
+				ord.fldOrder_Id
 		</cfquery>
 
 		<cfloop query="local.qryGetOrders">
