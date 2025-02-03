@@ -51,22 +51,25 @@
 					</form>
 				</cfif>
 				<nav class="d-flex align-items-center justify-content-between gap-4">
-					<!--- Profile Button --->
-					<button type="button" class="btn btn-outline-light" onclick="location.href='/profile.cfm'">
-						<i class="fa-regular fa-circle-user"></i>
-						Profile
-					</button>
+					<!--- Hide profile button and cart button from admins --->
+					<cfif NOT structKeyExists(session, "roleId") OR session.roleId EQ 2>
+						<!--- Profile Button --->
+						<button type="button" class="btn btn-outline-light" onclick="location.href='/profile.cfm'">
+							<i class="fa-regular fa-circle-user"></i>
+							Profile
+						</button>
 
-					<!--- Cart Button --->
-					<button type="button" class="btn btn-outline-light position-relative" onclick="location.href='/cart.cfm'">
-						<i class="fa-solid fa-cart-shopping"></i>
-						Cart
-						<cfif structKeyExists(session, "cart")>
-							<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light">
-								#structCount(session.cart)#
-							<span class="visually-hidden">products in cart</span></span>
-						</cfif>
-					</button>
+						<!--- Cart Button --->
+						<button type="button" class="btn btn-outline-light position-relative" onclick="location.href='/cart.cfm'">
+							<i class="fa-solid fa-cart-shopping"></i>
+							Cart
+							<cfif structKeyExists(session, "cart")>
+								<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light">
+									#structCount(session.cart)#
+								<span class="visually-hidden">products in cart</span></span>
+							</cfif>
+						</button>
+					</cfif>
 
 					<cfif structKeyExists(session, "userId")>
 						<button class="btn text-white text-decoration-none" onclick="logOut()">
