@@ -142,10 +142,12 @@
 
 		<!--- Handle page restrictions --->
 		<cfif arrayFindNoCase(local.initialPages, arguments.targetPage)>
-			<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-				<cflocation url="/adminDashboard.cfm" addToken="false">
-			<cfelse>
-				<cflocation url="/" addToken="false">
+			<cfif structKeyExists(session, "roleId")>
+				<cfif session.roleId EQ 1>
+					<cflocation url="/adminDashboard.cfm" addToken="false">
+				<cfelse>
+					<cflocation url="/" addToken="false">
+				</cfif>
 			</cfif>
 		<cfelseif arrayFindNoCase(local.adminPages, arguments.targetPage)>
 			<cfif (NOT structKeyExists(session, "roleId")) OR (session.roleId NEQ 1)>
