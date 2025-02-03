@@ -146,18 +146,7 @@
 					<div class="card-body">
 						<h4 class="card-title">Price Details</h4>
 						<hr>
-						<p class="d-flex justify-content-between">
-							<span>Total Price:</span>
-							<span class="fw-bold">Rs. <span id="totalPrice">#variables.totalPrice#</span></span>
-						</p>
-						<p class="d-flex justify-content-between">
-							<span>Total Tax:</span>
-							<span class="fw-bold">Rs. <span id="totalTax">#variables.totalTax#</span></span>
-						</p>
-						<p class="d-flex justify-content-between">
-							<span>Actual Price:</span>
-							<span class="fw-bold">Rs. <span id="totalActualPrice">#variables.totalActualPrice#</span></span>
-						</p>
+						<cf_totalprice totalPrice=#variables.totalPrice# totalActualPrice="#variables.totalActualPrice#" totalTax="#variables.totalTax#">
 					</div>
 				</div>
 			</div>
