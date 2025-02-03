@@ -44,7 +44,7 @@
 
 		<div class="row w-100 my-2">
 			<div class="col-md-8">
-				<form method="post" id="checkoutForm">
+				<form method="post" id="checkoutForm" onsubmit="handleCheckout()">
 					<div class="accordion accordion-flush border rounded-2 shadow-sm" id="orderSummary">
 						<!-- Address Section -->
 						<div class="accordion-item">
@@ -133,8 +133,7 @@
 												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-').slice(0, this.maxLength);"
 												maxlength="19"
 												placeholder="XXXX XXXX XXXX XXXX"
-												autocomplete="cc-number"
-												required>
+												autocomplete="cc-number">
 											<div id="cardNumberError" class="form-text text-danger cardError"></div>
 										</div>
 										<div class="col-sm-4 mb-3">
@@ -146,14 +145,13 @@
 												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-').slice(0, this.maxLength);"
 												maxlength="3"
 												placeholder="XXX"
-												autocomplete="cc-csc"
-												required>
+												autocomplete="cc-csc">
 											<div id="cvvError" class="form-text text-danger cardError"></div>
 										</div>
 									</div>
 								</div>
 								<div class="d-flex justify-content-end p-3">
-									<button type="submit" class="btn btn-success" onclick="handleCheckout()">
+									<button type="submit" class="btn btn-success">
 										Continue
 									</button>
 								</div>
