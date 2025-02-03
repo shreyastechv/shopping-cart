@@ -57,26 +57,7 @@
 								<div class="accordion-body">
 									<div class="list-group">
 										<cfif arrayLen(variables.addresses)>
-											<cfloop array="#variables.addresses#" item="local.address">
-												<div class="d-flex justify-content-between list-group-item shadow-sm mb-3">
-													<div>
-														<p class="fw-semibold mb-1">
-															#local.address.fullName# -
-															#local.address.phone#
-														</p>
-														<p class="mb-1">#local.address.addressLine1#</p>
-														<p class="mb-0">#local.address.addressLine2#</p>
-														<div class="mb-0">
-															#local.address.city#,
-															#local.address.state# -
-															<span class="fw-semibold">#local.address.pincode#</span>
-														</div>
-													</div>
-													<div class="d-flex align-items-center px-4">
-														<input type="radio" name="addressId" value="#local.address.addressId#" checked>
-													</div>
-												</div>
-											</cfloop>
+											<cf_addresslist addresses="#variables.addresses#" currentPage="checkout">
 										<cfelse>
 											<div class="text-secondary">No Address Saved</div>
 										</cfif>
