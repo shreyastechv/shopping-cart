@@ -12,6 +12,9 @@
 			<script src="/assets/js/header.js"></script>
 		</head>
 
+		<!--- Url Params --->
+		<cfparam name="url.search" default="">
+
 		<!--- Variables --->
 		<cfset variables.qryCategories = application.shoppingCart.getCategories()>
 		<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories()>
@@ -43,7 +46,7 @@
 					</a>
 				<cfelse>
 					<form class="d-flex p-1 w-50" method="get" action="/products.cfm">
-						<input class="form-control me-2" type="search" name="search" placeholder="Search" onblur="this.value = this.value.trim()">
+						<input class="form-control me-2" type="search" name="search" value="#url.search#" placeholder="Search" onblur="this.value = this.value.trim()">
 						<button class="btn btn-outline-light" type="submit">Search</button>
 					</form>
 				</cfif>
