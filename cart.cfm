@@ -1,8 +1,3 @@
-<!--- Redirect to login page if user is not logged in --->
-<cfif NOT structKeyExists(session, "userId")>
-	<cflocation url="/login.cfm?redirect=cart.cfm" addToken="no">
-</cfif>
-
 <!--- Variables to store total price and total actual price --->
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>

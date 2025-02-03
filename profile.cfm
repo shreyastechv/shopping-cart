@@ -1,8 +1,3 @@
-<!--- Redirect to login page if user is not logged in --->
-<cfif NOT structKeyExists(session, "userId")>
-	<cflocation url="/login.cfm?redirect=profile.cfm" addToken="no">
-</cfif>
-
 <!--- Add address if form is submitted --->
 <cfif structKeyExists(form, "addressFormSubmit")>
 	<cfset application.shoppingCart.addAddress(
