@@ -44,7 +44,7 @@
 					<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="##addressFormModal">
 						Add New Address
 					</button>
-                    <button class="btn btn-outline-secondary ms-2">View Previous Orders</button>
+                    <a href="/orders.cfm" class="btn btn-outline-secondary ms-2">View Previous Orders</a>
                 </div>
             </div>
         </div>

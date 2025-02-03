@@ -1555,6 +1555,49 @@
 		<cfreturn local.response>
 	</cffunction>
 
+	<cffunction name="getOrders" access="remote" returnType="struct">
+		<cfargument name="searchTerm" type="string" required=false default="">
+
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+		<cfset local.response["data"] = []>
+
+		<!--- Validate login --->
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfset local.response["message"] = "User not authenticated">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
+		<cfquery name="local.qryGetOrders">
+			SELECT
+				fldOrder_Id,
+				fldOrderDate,
+				fldTotalPrice,
+				fldTotalTax
+			FROM
+				tblOrder
+			WHERE
+				fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
+				AND fldOrder_Id LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+		</cfquery>
+
+		<cfloop query="local.qryGetOrders">
+			<cfset arrayAppend(local.response["data"], {
+				"orderId" = local.qryGetOrders.fldOrder_Id,
+				"orderDate" = local.qryGetOrders.fldOrderDate,
+				"totalPrice" = local.qryGetOrders.fldTotalPrice,
+				"totalTax" = local.qryGetOrders.fldTotalTax
+			})>
+		</cfloop>
+
+		<cfreturn local.response>
+	</cffunction>
+
 	<cffunction name="encryptUrlParam" access="public" returnType="string">
 		<cfargument name="urlParam" type="string" required=true>
 

@@ -41,6 +41,11 @@
 				"cssPath": "",
 				"scriptPath": "assets/js/checkout.js"
 			},
+			"/orders.cfm": {
+				"pageTitle": "Orders",
+				"cssPath": "",
+				"scriptPath": "assets/js/orders.js"
+			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"cssPath": "",
