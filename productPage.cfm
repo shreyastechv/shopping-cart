@@ -13,16 +13,24 @@
 <cfset variables.qryProductInfo = application.shoppingCart.getProducts(productId = variables.productId)>
 <cfset variables.qryProductImages = application.shoppingCart.getProductImages(productId = variables.productId)>
 
-<!--- Handle Add to Cart --->
-<cfif structKeyExists(form, "addToCart")>
+<!--- Handle Add to Cart and Buy Now --->
+<cfif structKeyExists(form, "addToCart") OR structKeyExists(form, "buyNow")>
 	<cfif structKeyExists(session, "userId")>
 		<cfset application.shoppingCart.modifyCart(
-			productId = application.shoppingCart.decryptUrlParam(url.productId),
+			productId = variables.productId,
 			action = "increment"
 		)>
-		<cflocation url="#cgi.HTTP_URL#" addToken="no">
+		<cfif structKeyExists(form, "buyNow")>
+			<cflocation url="/checkout.cfm?productId=#urlEncodedFormat(url.productId)#" addToken="no">
+		<cfelse>
+			<cflocation url="#cgi.HTTP_URL#" addToken="no">
+		</cfif>
 	<cfelse>
-		<cflocation url="/login.cfm?productId=#url.productId#" addToken="no">
+		<cfif structKeyExists(form, "buyNow")>
+			<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=checkout.cfm" addToken="no">
+		<cfelse>
+			<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=cart.cfm" addToken="no">
+		</cfif>
 	</cfif>
 </cfif>
 
@@ -71,11 +79,8 @@
 							<button type="submit" name="addToCart" class="btn btn-primary btn-lg mr-3">Add to Cart</button>
 						</cfif>
 
-						<!--- Variable to pass to checkout page on clicking buy now --->
-						<input type="hidden" name="productId" value="#variables.productId#">
-
 						<!--- Buy now button redirects to checkout page using formaction --->
-						<button type="submit" formaction="/checkout.cfm" class="btn btn-danger btn-lg">Buy Now</button>
+						<button type="submit" name="buyNow" class="btn btn-danger btn-lg">Buy Now</button>
 					</form>
 				</div>
 			</div>

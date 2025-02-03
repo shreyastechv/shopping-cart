@@ -1,3 +1,6 @@
+<!--- Url Params --->
+<cfparam name="url.productId" default="">
+
 <!--- Get Data --->
 <cfset variables.addresses = application.shoppingCart.getAddress()>
 
@@ -5,15 +8,17 @@
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>
 
-<!--- Variable to store products (different for buy now and cart checkout) --->
-<cfif structKeyExists(form, "productId") AND len(trim(form.productId))>
+<!--- Decrypt product id --->
+<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
+
+<cfif variables.productId NEQ -1>
 	<!--- Get product price details since this is not in cart --->
 	<cfset variables.productDetails = application.shoppingCart.getProducts(
-		productId = form.productId
+		productId = variables.productId
 	)>
 
 	<!--- Product details when this page was opened by clicking buy now from product page --->
-	<cfset variables.products[form.productId] = {
+	<cfset variables.products[variables.productId] = {
 		"quantity" = 1,
 		"unitPrice" = variables.productDetails.fldPrice,
 		"unitTax" = variables.productDetails.fldTax

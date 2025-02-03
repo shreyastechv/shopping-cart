@@ -24,7 +24,7 @@
 		</cfif>
 
 		<!--- Redirect user/admin to url.redirect --->
-		<cflocation url="#url.redirect#" addToken="false">
+		<cflocation url="#url.redirect#?productId=#urlEncodedFormat(url.productId)#" addToken="false">
 	</cfif>
 </cfif>
 
