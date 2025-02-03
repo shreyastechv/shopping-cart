@@ -1555,7 +1555,7 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="getOrders" access="remote" returnType="struct">
+	<cffunction name="getOrders" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="searchTerm" type="string" required=false default="">
 
 		<cfset local.response = {}>
@@ -1575,15 +1575,21 @@
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetOrders">
 			SELECT
-				fldOrder_Id,
-				fldOrderDate,
-				fldTotalPrice,
-				fldTotalTax
+				ord.fldOrder_Id,
+				ord.fldOrderDate,
+				ord.fldTotalPrice,
+				ord.fldTotalTax,
+				GROUP_CONCAT(itm.fldQuantity SEPARATOR ',') AS quantity,
+				GROUP_CONCAT(itm.fldUnitPrice SEPARATOR ',') AS unitPrice,
+				GROUP_CONCAT(itm.fldUnitTax SEPARATOR ',') AS unitTax
 			FROM
-				tblOrder
+				tblOrder ord
+				INNER JOIN tblOrderItems itm ON ord.fldOrder_Id = itm.fldOrderId
 			WHERE
-				fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
-				AND fldOrder_Id LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+				ord.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
+				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+			GROUP BY
+				ord.fldOrder_Id
 		</cfquery>
 
 		<cfloop query="local.qryGetOrders">
@@ -1591,7 +1597,10 @@
 				"orderId" = local.qryGetOrders.fldOrder_Id,
 				"orderDate" = local.qryGetOrders.fldOrderDate,
 				"totalPrice" = local.qryGetOrders.fldTotalPrice,
-				"totalTax" = local.qryGetOrders.fldTotalTax
+				"totalTax" = local.qryGetOrders.fldTotalTax,
+				"quantity" = local.qryGetOrders.quantity,
+				"unitPrice" = local.qryGetOrders.unitPrice,
+				"unitTax" = local.qryGetOrders.unitTax
 			})>
 		</cfloop>
 
