@@ -125,13 +125,13 @@
 
 		<!--- Set page title and script tag path dynamically --->
 		<cfif StructKeyExists(application.pageDetailsMapping, arguments.targetPage)>
-			<cfset application.pageTitle = application.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
-			<cfset application.scriptPath = application.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
-			<cfset application.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
+			<cfset request.pageTitle = application.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
+			<cfset request.scriptPath = application.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
+			<cfset request.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
 		<cfelse>
-			<cfset application.pageTitle = "Title">
-			<cfset application.scriptPath = "">
-			<cfset application.cssPath = "">
+			<cfset request.pageTitle = "Title">
+			<cfset request.scriptPath = "">
+			<cfset request.cssPath = "">
 		</cfif>
 
 		<!--- Define page types --->
