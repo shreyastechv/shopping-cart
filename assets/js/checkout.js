@@ -35,9 +35,6 @@ function handleCheckout() {
 
 	if (!valid) return;
 
-	// Show modal
-	$("#orderSuccess").modal("show");
-
 	// Validate card nummber and cvv
 	$.ajax({
 		type: "POST",
@@ -62,6 +59,9 @@ function handleCheckout() {
 }
 
 function createOrder(addressId) {
+	// Open modal
+	$("#orderSuccess").modal("show");
+
 	$.ajax({
 		type: "POST",
 		url: "./components/shoppingCart.cfc",
