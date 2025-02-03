@@ -540,8 +540,10 @@
 				i.fldImageFileName AS fldProductImage
 			FROM
 				tblProduct p
-				LEFT JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
-				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
+				INNER JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
+				INNER JOIN tblSubCategory s ON p.fldSubCategoryId = s.fldSubCategory_Id
+				INNER JOIN tblCategory c ON s.fldCategoryId = c.fldCategory_Id
+				INNER JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
 					AND i.fldActive = 1
 					AND i.fldDefaultImage = 1
 			WHERE
@@ -560,6 +562,8 @@
 				<cfif len(trim(arguments.searchTerm))>
 					AND (p.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
 						OR p.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+						OR c.fldCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+						OR s.fldSubCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
 						OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
 				</cfif>
 
