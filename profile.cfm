@@ -1,18 +1,3 @@
-<!--- Add address if form is submitted --->
-<cfif structKeyExists(form, "addressFormSubmit")>
-	<cfset application.shoppingCart.addAddress(
-		firstName = form.firstname,
-		lastName = form.lastName,
-		addressLine1 = form.address,
-		addressLine2 = form.landmark,
-		city = form.city,
-		state = form.state,
-		pincode = form.pincode,
-		phone = form.phone
-	)>
-	<cflocation url="profile.cfm" addToken="no">
-</cfif>
-
 <!--- Get Data --->
 <cfset variables.addresses = application.shoppingCart.getAddress()>
 
@@ -21,7 +6,7 @@
         <div class="card shadow-sm">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
+                    <div class="d-flex justify-content-between align-items-center gap-2">
                         <h4 class="fw-semibold mb-1">#session.firstName & " " & session.lastName#</h4>
                         <p class="text-muted mb-0">#session.email#</p>
                     </div>
@@ -36,12 +21,10 @@
 
                 <h5 class="mt-4">Saved Addresses</h5>
 				<cf_addresslist addresses="#variables.addresses#" currentPage="profile">
+				<cf_addaddressbtn>
             </div>
         </div>
     </div>
-
-	<!-- Address Modal -->
-	<cf_addressmodal>
 
 	<!--- Profile Modal --->
 	<div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">

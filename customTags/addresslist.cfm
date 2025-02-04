@@ -38,10 +38,4 @@
 			<div class="text-secondary">No Address Saved</div>
 		</cfif>
 	</div>
-
-	<div class="mt-3">
-		<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="##addressFormModal">
-			Add New Address
-		</button>
-	</div>
 </cfoutput>

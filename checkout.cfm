@@ -11,21 +11,6 @@
 <!--- Decrypt product id --->
 <cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
 
-<!--- Add address if form is submitted --->
-<cfif structKeyExists(form, "addressFormSubmit")>
-	<cfset application.shoppingCart.addAddress(
-		firstName = form.firstname,
-		lastName = form.lastName,
-		addressLine1 = form.address,
-		addressLine2 = form.landmark,
-		city = form.city,
-		state = form.state,
-		pincode = form.pincode,
-		phone = form.phone
-	)>
-	<cflocation url="#cgi.HTTP_URL#" addToken="no">
-</cfif>
-
 
 <cfif variables.productId NEQ -1>
 	<!--- Get product price details since this is not in cart --->
@@ -73,7 +58,8 @@
 								<div class="accordion-body">
 									<cf_addresslist addresses="#variables.addresses#" currentPage="checkout">
 								</div>
-								<div class="d-flex justify-content-end p-3">
+								<div class="d-flex justify-content-between p-3 pt-0">
+									<cf_addaddressbtn>
 									<button type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseTwo"
 										aria-expanded="false" aria-controls="flush-collapseTwo"class="btn btn-success">
 										Next
@@ -202,7 +188,4 @@
 			</div>
 		</div>
 	</div>
-
-	<!--- Address Modal --->
-	<cf_addressmodal>
 </cfoutput>
