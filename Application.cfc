@@ -14,7 +14,7 @@
 			"/index.cfm": {
 				"pageTitle": "Home Page",
 				"cssPath": "assets/css/index.css",
-				"scriptPath": "assets/js/index.js"
+				"scriptPath": ""
 			},
 			"/profile.cfm": {
 				"pageTitle": "User Profile",
