@@ -15,7 +15,7 @@
 ).data[1]>
 
 <!--- Set header and content-type so that pdf gets downloaded correctly --->
-<cfheader name="Content-Disposition" value="attachment;filename=invoice.pdf">
+<cfheader name="Content-Disposition" value="inline;filename=invoice.pdf">
 <cfcontent type="application/pdf">
 
 <!--- Create pdf --->
