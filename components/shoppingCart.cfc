@@ -1555,8 +1555,9 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="getOrders" access="remote" returnType="struct" returnFormat="json">
+	<cffunction name="getOrders" access="public" returnType="struct">
 		<cfargument name="searchTerm" type="string" required=false default="">
+		<cfargument name="orderId" type="string" required=false default="">
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
@@ -1605,6 +1606,9 @@
 			WHERE
 				ord.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
 				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+				<cfif len(trim(arguments.orderId))>
+					AND ord.fldOrder_Id = <cfqueryparam value = "#arguments.orderId#" cfsqltype = "varchar">
+				</cfif>
 			GROUP BY
 				ord.fldOrder_Id
 			ORDER BY
