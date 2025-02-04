@@ -13,9 +13,9 @@
 						<div class="mb-0"><strong>Order ID:</strong> #local.order.orderId#</div>
 						<div class="mb-0"><strong>Order Date:</strong> #dateTimeFormat(local.order.orderDate, "mmm d YYYY h:n tt")#</div>
 						<div class="mb-0"><strong>Total Price:</strong> Rs. #local.order.totalPrice#</div>
-						<button class="btn btn-sm btn-success" onclick="downloadInvoice('#local.order.orderId#')">
+						<a class="btn btn-sm btn-success" href="http://shoppingcart.local/download.cfm?orderId=#local.order.orderId#">
 							<i class="fa-solid fa-file-arrow-down pe-none"></i>
-						</button>
+						</a>
 					</div>
 					<div class="table-responsive">
 						<table class="table table-striped table-bordered">
