@@ -9,7 +9,7 @@
 		<div id="ordersContainer">
 			<cfloop array="#variables.orders.data#" item="local.order">
 				<div class="card order-card shadow p-3 mb-4" data-order-id="#local.order.orderId#">
-					<div class="d-flex flex-lg-row flex-column align-items-center justify-content-between mb-2 px-1">
+					<div class="d-flex flex-lg-row flex-column align-items-center justify-content-between mb-2">
 						<div class="mb-0"><strong>Order ID:</strong> #local.order.orderId#</div>
 						<div class="mb-0"><strong>Order Date:</strong> #dateTimeFormat(local.order.orderDate, "mmm d YYYY h:n tt")#</div>
 						<div class="mb-0"><strong>Total Price:</strong> Rs. #local.order.totalPrice#</div>
@@ -49,13 +49,13 @@
 						</table>
 					</div>
 					<div class="d-flex flex-md-row flex-column justify-content-between">
-						<p>
+						<div>
 							<strong>Delivery Address:</strong>
 							#local.order.addressLine1#,
 							#local.order.addressLine2#,
 							#local.order.city#, #local.order.state# - #local.order.pincode#
-						</p>
-						<p><strong>Contact:</strong> #local.order.firstName# #local.order.lastName# - #local.order.phone#</p>
+						</div>
+						<div><strong>Contact:</strong> #local.order.firstName# #local.order.lastName# - #local.order.phone#</div>
 					</div>
 				</div>
 			</cfloop>
