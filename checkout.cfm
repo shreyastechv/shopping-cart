@@ -3,6 +3,7 @@
 
 <!--- Get Data --->
 <cfset variables.addresses = application.shoppingCart.getAddress()>
+<cfset variables.addressEmpty = arrayLen(variables.addresses) EQ 0 ? "disabled" : "">
 
 <!--- Variables to store total price and total actual price --->
 <cfset variables.totalPrice = 0>
@@ -61,7 +62,7 @@
 								<div class="d-flex justify-content-between p-3 pt-0">
 									<cf_addaddressbtn>
 									<button type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseTwo"
-										aria-expanded="false" aria-controls="flush-collapseTwo"class="btn btn-success">
+										aria-expanded="false" aria-controls="flush-collapseTwo"class="btn btn-success" #variables.addressEmpty#>
 										Next
 									</button>
 								</div>
@@ -72,12 +73,12 @@
 						<div class="accordion-item">
 							<h2 class="accordion-header">
 								<button class="accordion-button collapsed text-uppercase fw-semibold" type="button" data-bs-toggle="collapse"
-									data-bs-target="##flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+									data-bs-target="##flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" #variables.addressEmpty#>
 									Product Details
 								</button>
 							</h2>
 							<div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="##orderSummary">
-								<div class="accordion-body">
+								<div class="accordion-body" id="accordionBody">
 									<cf_cartproductlist products="#session.checkout#">
 								</div>
 								<div class="d-flex justify-content-end p-3">

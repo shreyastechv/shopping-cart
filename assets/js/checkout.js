@@ -142,6 +142,10 @@ function editCartItem(containerId, productId, action) {
 				}
 				else if (action == "delete") {
 					$(`#${containerId}`).remove();
+					if ($("#accordionBody").children().length === 0) {
+						$("#accordionBody").parent().find("button").prop("disabled", true);
+						$("#accordionBody").parent().parent().siblings(".accordion-item").find("button").prop("disabled", true);
+					}
 				}
 
 				// Update total price and tax
