@@ -1297,8 +1297,8 @@
 		<cfset local.response = {}>
 		<cfset local.response["success"] = false>
 		<cfset local.response["message"] = "">
-		<cfset local.validCardNumber = "1234567890123456">
-		<cfset local.validCvv = "123">
+		<cfset local.validCardNumber = "1111111111111111">
+		<cfset local.validCvv = "111">
 
 		<!--- Trim and remove dashes from card number --->
 		<cfset arguments.cardNumber = replace(trim(arguments.cardNumber), "-", "", "all")>
