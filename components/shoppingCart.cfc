@@ -1179,7 +1179,7 @@
 		<cfreturn local.addresses>
 	</cffunction>
 
-	<cffunction name="addAddress" access="public" returnType="void">
+	<cffunction name="addAddress" access="remote" returnType="void">
 		<cfargument name="firstName" type="string" required=true>
 		<cfargument name="lastName" type="string" required=true>
 		<cfargument name="addressLine1" type="string" required=true>
