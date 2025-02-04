@@ -14,7 +14,7 @@
 			"/index.cfm": {
 				"pageTitle": "Home Page",
 				"cssPath": "assets/css/index.css",
-				"scriptPath": "assets/js/index.js"
+				"scriptPath": ""
 			},
 			"/profile.cfm": {
 				"pageTitle": "User Profile",
@@ -40,11 +40,6 @@
 				"pageTitle": "Order Summary",
 				"cssPath": "",
 				"scriptPath": "assets/js/checkout.js"
-			},
-			"/orders.cfm": {
-				"pageTitle": "Orders",
-				"cssPath": "",
-				"scriptPath": "assets/js/orders.js"
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
@@ -142,7 +137,7 @@
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
 		<cfset local.normalUserPages = ["/index.cfm", "/products.cfm", "/productPage.cfm"]>
-		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm", "/orders.cfm"]>
+		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm"]>
 		<cfset local.adminPages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
 
 		<!--- Handle page restrictions --->

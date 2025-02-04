@@ -178,7 +178,7 @@
 							Order Placed Successfully
 							<i class="fa-regular fa-circle-check"></i>
 						</div>
-						<a class="btn btn-primary" href="/">Continue</a>
+						<a class="btn btn-primary" href="/orders.cfm">Go to Orders</a>
 					<div name="error" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
 						<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
 						<div class="text-danger fs-5">

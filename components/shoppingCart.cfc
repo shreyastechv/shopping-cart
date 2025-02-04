@@ -1297,8 +1297,8 @@
 		<cfset local.response = {}>
 		<cfset local.response["success"] = false>
 		<cfset local.response["message"] = "">
-		<cfset local.validCardNumber = "1234567890123456">
-		<cfset local.validCvv = "123">
+		<cfset local.validCardNumber = "1111111111111111">
+		<cfset local.validCvv = "111">
 
 		<!--- Trim and remove dashes from card number --->
 		<cfset arguments.cardNumber = replace(trim(arguments.cardNumber), "-", "", "all")>
@@ -1607,6 +1607,8 @@
 				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
 			GROUP BY
 				ord.fldOrder_Id
+			ORDER BY
+				ord.fldOrderDate DESC
 		</cfquery>
 
 		<cfloop query="local.qryGetOrders">
@@ -1633,6 +1635,10 @@
 		</cfloop>
 
 		<cfreturn local.response>
+	</cffunction>
+
+	<cffunction name="downloadInvoice" access="remote" returnType="void">
+		<cfargument name="orderId" type="string" required=true>
 	</cffunction>
 
 	<cffunction name="encryptUrlParam" access="public" returnType="string">
