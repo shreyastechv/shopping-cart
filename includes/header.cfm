@@ -12,6 +12,9 @@
 			<script src="/assets/js/header.js"></script>
 		</head>
 
+		<!--- Url Params --->
+		<cfparam name="url.search" default="">
+
 		<!--- Variables --->
 		<cfset variables.qryCategories = application.shoppingCart.getCategories()>
 		<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories()>
@@ -43,27 +46,30 @@
 					</a>
 				<cfelse>
 					<form class="d-flex p-1 w-50" method="get" action="/products.cfm">
-						<input class="form-control me-2" type="search" name="search" placeholder="Search" onblur="this.value = this.value.trim()">
+						<input class="form-control me-2" type="search" name="search" value="#url.search#" placeholder="Search" onblur="this.value = this.value.trim()">
 						<button class="btn btn-outline-light" type="submit">Search</button>
 					</form>
 				</cfif>
 				<nav class="d-flex align-items-center justify-content-between gap-4">
-					<!--- Profile Button --->
-					<button type="button" class="btn btn-outline-light" onclick="location.href='/profile.cfm'">
-						<i class="fa-regular fa-circle-user"></i>
-						Profile
-					</button>
+					<!--- Hide profile button and cart button from admins --->
+					<cfif NOT structKeyExists(session, "roleId") OR session.roleId EQ 2>
+						<!--- Profile Button --->
+						<button type="button" class="btn btn-outline-light" onclick="location.href='/profile.cfm'">
+							<i class="fa-regular fa-circle-user"></i>
+							Profile
+						</button>
 
-					<!--- Cart Button --->
-					<button type="button" class="btn btn-outline-light position-relative" onclick="location.href='/cart.cfm'">
-						<i class="fa-solid fa-cart-shopping"></i>
-						Cart
-						<cfif structKeyExists(session, "cart")>
-							<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light">
-								#structCount(session.cart)#
-							<span class="visually-hidden">products in cart</span></span>
-						</cfif>
-					</button>
+						<!--- Cart Button --->
+						<button type="button" class="btn btn-outline-light position-relative" onclick="location.href='/cart.cfm'">
+							<i class="fa-solid fa-cart-shopping"></i>
+							Cart
+							<cfif structKeyExists(session, "cart")>
+								<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light">
+									#structCount(session.cart)#
+								<span class="visually-hidden">products in cart</span></span>
+							</cfif>
+						</button>
+					</cfif>
 
 					<cfif structKeyExists(session, "userId")>
 						<button class="btn text-white text-decoration-none" onclick="logOut()">

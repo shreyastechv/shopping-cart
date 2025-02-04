@@ -41,6 +41,11 @@
 				"cssPath": "",
 				"scriptPath": "assets/js/checkout.js"
 			},
+			"/orders.cfm": {
+				"pageTitle": "Orders",
+				"cssPath": "",
+				"scriptPath": "assets/js/orders.js"
+			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"cssPath": "",
@@ -125,17 +130,19 @@
 
 		<!--- Set page title and script tag path dynamically --->
 		<cfif StructKeyExists(application.pageDetailsMapping, arguments.targetPage)>
-			<cfset application.pageTitle = application.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
-			<cfset application.scriptPath = application.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
-			<cfset application.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
+			<cfset request.pageTitle = application.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
+			<cfset request.scriptPath = application.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
+			<cfset request.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
 		<cfelse>
-			<cfset application.pageTitle = "Title">
-			<cfset application.scriptPath = "">
-			<cfset application.cssPath = "">
+			<cfset request.pageTitle = "Title">
+			<cfset request.scriptPath = "">
+			<cfset request.cssPath = "">
 		</cfif>
 
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
+		<cfset local.normalUserPages = ["/index.cfm", "/products.cfm", "/productPage.cfm"]>
+		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm", "/orders.cfm"]>
 		<cfset local.adminPages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
 
 		<!--- Handle page restrictions --->
@@ -150,6 +157,18 @@
 		<cfelseif arrayFindNoCase(local.adminPages, arguments.targetPage)>
 			<cfif (NOT structKeyExists(session, "roleId")) OR (session.roleId NEQ 1)>
 				<cflocation url="/" addToken="false">
+			</cfif>
+		<cfelseif arrayFindNoCase(local.normalUserPages, arguments.targetPage)>
+			<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
+				<cflocation url="/adminDashboard.cfm" addToken="false">
+			</cfif>
+		<cfelseif arrayFindNoCase(local.loginUserPages, arguments.targetPage)>
+			<cfif structKeyExists(session, "roleId")>
+				<cfif session.roleId EQ 1>
+					<cflocation url="/adminDashboard.cfm" addToken="false">
+				</cfif>
+			<cfelse>
+				<cflocation url="/login.cfm?redirect=#arguments.targetPage#" addToken="false">
 			</cfif>
 		</cfif>
 

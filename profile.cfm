@@ -1,8 +1,3 @@
-<!--- Redirect to login page if user is not logged in --->
-<cfif NOT structKeyExists(session, "userId")>
-	<cflocation url="/login.cfm?redirect=profile.cfm" addToken="no">
-</cfif>
-
 <!--- Add address if form is submitted --->
 <cfif structKeyExists(form, "addressFormSubmit")>
 	<cfset application.shoppingCart.addAddress(
@@ -39,31 +34,7 @@
                 <h5 class="mt-4">Saved Addresses</h5>
                 <div class="list-group">
 					<cfif arrayLen(variables.addresses)>
-						<cfloop array="#variables.addresses#" item="local.address">
-							<!--- Generate random id for the mian container div --->
-							<cfset local.randomId = replace(rand(), ".", "", "all")>
-
-							<div class="d-flex justify-content-between list-group-item shadow-sm mb-3" id="#local.randomId#">
-								<div>
-									<p class="fw-semibold mb-1">
-										#local.address.fullName# -
-										#local.address.phone#
-									</p>
-									<p class="mb-1">#local.address.addressLine1#</p>
-									<p class="mb-0">#local.address.addressLine2#</p>
-									<div class="mb-0">
-										#local.address.city#,
-										#local.address.state# -
-										<span class="fw-semibold">#local.address.pincode#</span>
-									</div>
-								</div>
-								<div class="d-flex align-items-center px-4">
-									<button class="btn btn-danger" onclick="deleteAddress('#local.randomId#', #local.address.addressId#)">
-										<i class="fa-solid fa-trash"></i>
-									</button>
-								</div>
-							</div>
-						</cfloop>
+						<cf_addresslist addresses="#variables.addresses#" currentPage="profile">
 					<cfelse>
 						<div class="text-secondary">No Address Saved</div>
 					</cfif>
@@ -73,7 +44,7 @@
 					<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="##addressFormModal">
 						Add New Address
 					</button>
-                    <button class="btn btn-outline-secondary ms-2">View Previous Orders</button>
+                    <a href="/orders.cfm" class="btn btn-outline-secondary ms-2">View Previous Orders</a>
                 </div>
             </div>
         </div>

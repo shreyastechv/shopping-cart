@@ -540,8 +540,10 @@
 				i.fldImageFileName AS fldProductImage
 			FROM
 				tblProduct p
-				LEFT JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
-				LEFT JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
+				INNER JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
+				INNER JOIN tblSubCategory s ON p.fldSubCategoryId = s.fldSubCategory_Id
+				INNER JOIN tblCategory c ON s.fldCategoryId = c.fldCategory_Id
+				INNER JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
 					AND i.fldActive = 1
 					AND i.fldDefaultImage = 1
 			WHERE
@@ -560,6 +562,8 @@
 				<cfif len(trim(arguments.searchTerm))>
 					AND (p.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
 						OR p.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+						OR c.fldCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+						OR s.fldSubCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
 						OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
 				</cfif>
 
@@ -1099,7 +1103,7 @@
 			<cfset local.unitTax = session.cart[arguments.productId].unitTax>
 			<cfset local.quantity = session.cart[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
-			<cfset local.price = local.actualPrice + (local.unitTax * local.quantity)>
+			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
 			<!--- Package data into struct --->
 			<cfset local.response["data"] = {
@@ -1113,7 +1117,7 @@
 		<cfset local.priceDetails = session.cart.reduce(function(result,key,value){
 			result.totalActualPrice += value.unitPrice * value.quantity;
 			result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
-			result.totalTax += value.unitPrice * value.unitTax * value.quantity;
+			result.totalTax += value.unitPrice * value.unitTax / 100 * value.quantity;
 			return result;
 		},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
 		<cfset local.totalPrice = local.priceDetails.totalPrice>
@@ -1389,7 +1393,7 @@
 			<cfset local.unitTax = session.checkout[arguments.productId].unitTax>
 			<cfset local.quantity = session.checkout[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
-			<cfset local.price = local.actualPrice + (local.unitTax * local.quantity)>
+			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
 			<!--- Package data into struct --->
 			<cfset local.response["data"] = {
@@ -1403,7 +1407,7 @@
 		<cfset local.priceDetails = session.checkout.reduce(function(result,key,value){
 			result.totalActualPrice += value.unitPrice * value.quantity;
 			result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
-			result.totalTax += value.unitPrice * value.unitTax * value.quantity;
+			result.totalTax += value.unitPrice * value.unitTax / 100 * value.quantity;
 			return result;
 		},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
 		<cfset local.totalPrice = local.priceDetails.totalPrice>
@@ -1547,6 +1551,86 @@
 
 		<!--- Set success status --->
 		<cfset local.response["success"] = true>
+
+		<cfreturn local.response>
+	</cffunction>
+
+	<cffunction name="getOrders" access="remote" returnType="struct" returnFormat="json">
+		<cfargument name="searchTerm" type="string" required=false default="">
+
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+		<cfset local.response["data"] = []>
+
+		<!--- Validate login --->
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfset local.response["message"] = "User not authenticated">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
+		<cfquery name="local.qryGetOrders">
+			SELECT
+				ord.fldOrder_Id,
+				ord.fldOrderDate,
+				ord.fldTotalPrice,
+				ord.fldTotalTax,
+				addr.fldAddressLine1,
+				addr.fldAddressLine2,
+				addr.fldCity,
+				addr.fldState,
+				addr.fldPincode,
+				addr.fldFirstName,
+				addr.fldLastName,
+				addr.fldPhone,
+				GROUP_CONCAT(itm.fldQuantity SEPARATOR ',') AS quantities,
+				GROUP_CONCAT(itm.fldUnitPrice SEPARATOR ',') AS unitPrices,
+				GROUP_CONCAT(itm.fldUnitTax SEPARATOR ',') AS unitTaxes,
+				GROUP_CONCAT(prod.fldProductName SEPARATOR ',') AS productNames,
+				GROUP_CONCAT(img.fldImageFileName SEPARATOR ',') AS productImages,
+				GROUP_CONCAT(brnd.fldBrandName SEPARATOR ',') AS brandNames
+			FROM
+				tblOrder ord
+				INNER JOIN tblAddress addr ON ord.fldAddressId = addr.fldAddress_Id
+				INNER JOIN tblOrderItems itm ON ord.fldOrder_Id = itm.fldOrderId
+				INNER JOIN tblProduct prod ON itm.fldProductId = prod.fldProduct_Id
+				INNER JOIN tblProductImages img ON prod.fldProduct_Id = img.fldProductId
+					AND img.fldActive = 1
+					AND img.fldDefaultImage = 1
+				INNER JOIN tblBrands brnd ON prod.fldBrandId = brnd.fldBrand_Id
+			WHERE
+				ord.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
+				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+			GROUP BY
+				ord.fldOrder_Id
+		</cfquery>
+
+		<cfloop query="local.qryGetOrders">
+			<cfset arrayAppend(local.response["data"], {
+				"orderId" = local.qryGetOrders.fldOrder_Id,
+				"orderDate" = local.qryGetOrders.fldOrderDate,
+				"totalPrice" = local.qryGetOrders.fldTotalPrice,
+				"totalTax" = local.qryGetOrders.fldTotalTax,
+				"addressLine1" = local.qryGetOrders.fldAddressLine1,
+				"addressLine2" = local.qryGetOrders.fldAddressLine2,
+				"city" = local.qryGetOrders.fldCity,
+				"state" = local.qryGetOrders.fldState,
+				"pincode" = local.qryGetOrders.fldPincode,
+				"firstName" = local.qryGetOrders.fldFirstName,
+				"lastName" = local.qryGetOrders.fldLastName,
+				"phone" = local.qryGetOrders.fldPhone,
+				"quantities" = local.qryGetOrders.quantities,
+				"unitPrices" = local.qryGetOrders.unitPrices,
+				"unitTaxes" = local.qryGetOrders.unitTaxes,
+				"productNames" = local.qryGetOrders.productNames,
+				"productImages" = local.qryGetOrders.productImages,
+				"brandNames" = local.qryGetOrders.brandNames
+			})>
+		</cfloop>
 
 		<cfreturn local.response>
 	</cffunction>

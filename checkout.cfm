@@ -1,7 +1,5 @@
-<!--- Redirect to login page if user is not logged in --->
-<cfif NOT structKeyExists(session, "userId")>
-	<cflocation url="/login.cfm" addToken="no">
-</cfif>
+<!--- Url Params --->
+<cfparam name="url.productId" default="">
 
 <!--- Get Data --->
 <cfset variables.addresses = application.shoppingCart.getAddress()>
@@ -10,15 +8,17 @@
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>
 
-<!--- Variable to store products (different for buy now and cart checkout) --->
-<cfif structKeyExists(form, "productId") AND len(trim(form.productId))>
+<!--- Decrypt product id --->
+<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
+
+<cfif variables.productId NEQ -1>
 	<!--- Get product price details since this is not in cart --->
 	<cfset variables.productDetails = application.shoppingCart.getProducts(
-		productId = form.productId
+		productId = variables.productId
 	)>
 
 	<!--- Product details when this page was opened by clicking buy now from product page --->
-	<cfset variables.products[form.productId] = {
+	<cfset variables.products[variables.productId] = {
 		"quantity" = 1,
 		"unitPrice" = variables.productDetails.fldPrice,
 		"unitTax" = variables.productDetails.fldTax
@@ -44,7 +44,7 @@
 
 		<div class="row w-100 my-2">
 			<div class="col-md-8">
-				<form method="post" id="checkoutForm">
+				<form method="post" id="checkoutForm" onsubmit="handleCheckout()">
 					<div class="accordion accordion-flush border rounded-2 shadow-sm" id="orderSummary">
 						<!-- Address Section -->
 						<div class="accordion-item">
@@ -57,26 +57,7 @@
 								<div class="accordion-body">
 									<div class="list-group">
 										<cfif arrayLen(variables.addresses)>
-											<cfloop array="#variables.addresses#" item="local.address">
-												<div class="d-flex justify-content-between list-group-item shadow-sm mb-3">
-													<div>
-														<p class="fw-semibold mb-1">
-															#local.address.fullName# -
-															#local.address.phone#
-														</p>
-														<p class="mb-1">#local.address.addressLine1#</p>
-														<p class="mb-0">#local.address.addressLine2#</p>
-														<div class="mb-0">
-															#local.address.city#,
-															#local.address.state# -
-															<span class="fw-semibold">#local.address.pincode#</span>
-														</div>
-													</div>
-													<div class="d-flex align-items-center px-4">
-														<input type="radio" name="addressId" value="#local.address.addressId#" checked>
-													</div>
-												</div>
-											</cfloop>
+											<cf_addresslist addresses="#variables.addresses#" currentPage="checkout">
 										<cfelse>
 											<div class="text-secondary">No Address Saved</div>
 										</cfif>
@@ -101,7 +82,7 @@
 							</h2>
 							<div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="##orderSummary">
 								<div class="accordion-body">
-									<cf_cartproductlist products="#variables.products#">
+									<cf_cartproductlist products="#session.checkout#">
 								</div>
 								<div class="d-flex justify-content-end p-3">
 									<button type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseThree"
@@ -133,8 +114,7 @@
 												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-').slice(0, this.maxLength);"
 												maxlength="19"
 												placeholder="XXXX XXXX XXXX XXXX"
-												autocomplete="cc-number"
-												required>
+												autocomplete="cc-number">
 											<div id="cardNumberError" class="form-text text-danger cardError"></div>
 										</div>
 										<div class="col-sm-4 mb-3">
@@ -146,14 +126,13 @@
 												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-').slice(0, this.maxLength);"
 												maxlength="3"
 												placeholder="XXX"
-												autocomplete="cc-csc"
-												required>
+												autocomplete="cc-csc">
 											<div id="cvvError" class="form-text text-danger cardError"></div>
 										</div>
 									</div>
 								</div>
 								<div class="d-flex justify-content-end p-3">
-									<button type="submit" class="btn btn-success" onclick="handleCheckout()">
+									<button type="submit" class="btn btn-success">
 										Continue
 									</button>
 								</div>
@@ -172,18 +151,7 @@
 					<div class="card-body">
 						<h4 class="card-title">Price Details</h4>
 						<hr>
-						<p class="d-flex justify-content-between">
-							<span>Total Price:</span>
-							<span class="fw-bold">Rs. <span id="totalPrice">#variables.totalPrice#</span></span>
-						</p>
-						<p class="d-flex justify-content-between">
-							<span>Total Tax:</span>
-							<span class="fw-bold">Rs. <span id="totalTax">#variables.totalTax#</span></span>
-						</p>
-						<p class="d-flex justify-content-between">
-							<span>Actual Price:</span>
-							<span class="fw-bold">Rs. <span id="totalActualPrice">#variables.totalActualPrice#</span></span>
-						</p>
+						<cf_totalprice totalPrice=#variables.totalPrice# totalActualPrice="#variables.totalActualPrice#" totalTax="#variables.totalTax#">
 					</div>
 				</div>
 			</div>

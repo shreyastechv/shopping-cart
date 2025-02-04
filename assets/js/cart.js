@@ -44,22 +44,22 @@ function editCartItem(containerId, productId, action) {
 		},
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
-			const data = responseJSON.data;
+			const { price, actualPrice, quantity, totalPrice, totalActualPrice, totalTax } = responseJSON.data;
 
 			if (responseJSON.success) {
 				if (["increment", "decrement"].includes(action)) {
-					$(`#${containerId} span[name="price"]`).text(data.price.toFixed(2));
-					$(`#${containerId} span[name="actualPrice"]`).text(data.actualPrice.toFixed(2));
-					$(`#${containerId} input[name="quantity"]`).val(data.quantity).change();
+					$(`#${containerId} span[name="price"]`).text(price.toFixed(2));
+					$(`#${containerId} span[name="actualPrice"]`).text(actualPrice.toFixed(2));
+					$(`#${containerId} input[name="quantity"]`).val(quantity).change();
 				}
 				else if (action == "delete") {
 					$(`#${containerId}`).remove();
 				}
 
 				// Update total price and tax
-				$("#totalPrice").text(data.totalPrice.toFixed(2));
-				$("#totalActualPrice").text(data.totalActualPrice.toFixed(2));
-				$("#totalTax").text(data.totalTax.toFixed(2));
+				$("#totalPrice").text(totalPrice.toFixed(2));
+				$("#totalActualPrice").text(totalActualPrice.toFixed(2));
+				$("#totalTax").text(totalTax.toFixed(2));
 
 				// If total price is 0 (cart empty) then reload
 				if (data.totalPrice == 0) location.reload();
