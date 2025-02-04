@@ -142,7 +142,7 @@
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
 		<cfset local.normalUserPages = ["/index.cfm", "/products.cfm", "/productPage.cfm"]>
-		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm"]>
+		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm", "/orders.cfm"]>
 		<cfset local.adminPages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
 
 		<!--- Handle page restrictions --->
