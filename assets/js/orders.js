@@ -7,3 +7,14 @@ $(document).ready(function() {
 		});
 	});
 });
+
+function downloadInvoice(orderId) {
+	$.ajax({
+		type: "POST",
+		url: "./components/shoppingCart.cfc",
+		data: {
+			method: "downloadInvoice",
+			orderId: orderId
+		}
+	});
+}

@@ -1637,6 +1637,10 @@
 		<cfreturn local.response>
 	</cffunction>
 
+	<cffunction name="downloadInvoice" access="remote" returnType="void">
+		<cfargument name="orderId" type="string" required=true>
+	</cffunction>
+
 	<cffunction name="encryptUrlParam" access="public" returnType="string">
 		<cfargument name="urlParam" type="string" required=true>
 
