@@ -1579,6 +1579,14 @@
 				ord.fldOrderDate,
 				ord.fldTotalPrice,
 				ord.fldTotalTax,
+				addr.fldAddressLine1,
+				addr.fldAddressLine2,
+				addr.fldCity,
+				addr.fldState,
+				addr.fldPincode,
+				addr.fldFirstName,
+				addr.fldLastName,
+				addr.fldPhone,
 				GROUP_CONCAT(itm.fldQuantity SEPARATOR ',') AS quantities,
 				GROUP_CONCAT(itm.fldUnitPrice SEPARATOR ',') AS unitPrices,
 				GROUP_CONCAT(itm.fldUnitTax SEPARATOR ',') AS unitTaxes,
@@ -1587,6 +1595,7 @@
 				GROUP_CONCAT(brnd.fldBrandName SEPARATOR ',') AS brandNames
 			FROM
 				tblOrder ord
+				INNER JOIN tblAddress addr ON ord.fldAddressId = addr.fldAddress_Id
 				INNER JOIN tblOrderItems itm ON ord.fldOrder_Id = itm.fldOrderId
 				INNER JOIN tblProduct prod ON itm.fldProductId = prod.fldProduct_Id
 				INNER JOIN tblProductImages img ON prod.fldProduct_Id = img.fldProductId
@@ -1606,6 +1615,14 @@
 				"orderDate" = local.qryGetOrders.fldOrderDate,
 				"totalPrice" = local.qryGetOrders.fldTotalPrice,
 				"totalTax" = local.qryGetOrders.fldTotalTax,
+				"addressLine1" = local.qryGetOrders.fldAddressLine1,
+				"addressLine2" = local.qryGetOrders.fldAddressLine2,
+				"city" = local.qryGetOrders.fldCity,
+				"state" = local.qryGetOrders.fldState,
+				"pincode" = local.qryGetOrders.fldPincode,
+				"firstName" = local.qryGetOrders.fldFirstName,
+				"lastName" = local.qryGetOrders.fldLastName,
+				"phone" = local.qryGetOrders.fldPhone,
 				"quantities" = local.qryGetOrders.quantities,
 				"unitPrices" = local.qryGetOrders.unitPrices,
 				"unitTaxes" = local.qryGetOrders.unitTaxes,

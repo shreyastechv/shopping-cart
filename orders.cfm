@@ -45,8 +45,13 @@
 						</table>
 					</div>
 					<div class="d-flex flex-md-row flex-column justify-content-between">
-						<p><strong>Delivery Address:</strong> 123 Main Street, City, Country</p>
-						<p><strong>Contact:</strong> John Doe, +1234567890</p>
+						<p>
+							<strong>Delivery Address:</strong>
+							#local.order.addressLine1#,
+							#local.order.addressLine2#,
+							#local.order.city#, #local.order.state# - #local.order.pincode#
+						</p>
+						<p><strong>Contact:</strong> #local.order.firstName# #local.order.lastName#, #local.order.phone#</p>
 					</div>
 					<button class="btn btn-primary">Download Invoice</button>
 				</div>
