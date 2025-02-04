@@ -21,17 +21,14 @@
 <!--- Create pdf --->
 <cfdocument format="pdf" overwrite="true">
 	<cfoutput>
-		<div class="card order-card shadow p-3 mb-4">
-			<div class="d-flex flex-lg-row flex-column align-items-center justify-content-between mb-2 px-1">
-				<div class="mb-0"><strong>Order ID:</strong> #variables.order.orderId#</div>
-				<div class="mb-0"><strong>Order Date:</strong> #dateTimeFormat(variables.order.orderDate, "mmm d YYYY h:n tt")#</div>
-				<div class="mb-0"><strong>Total Price:</strong> Rs. #variables.order.totalPrice#</div>
-				<button class="btn btn-sm btn-success" onclick="downloadInvoice('#variables.order.orderId#')">
-					<i class="fa-solid fa-file-arrow-down pe-none"></i>
-				</button>
+		<div>
+			<div>
+				<div><strong>Order ID:</strong> #variables.order.orderId#</div>
+				<div><strong>Order Date:</strong> #dateTimeFormat(variables.order.orderDate, "mmm d YYYY h:n tt")#</div>
+				<div><strong>Total Price:</strong> Rs. #variables.order.totalPrice#</div>
 			</div>
-			<div class="table-responsive">
-				<table class="table table-striped table-bordered">
+			<div>
+				<table>
 					<tbody>
 						<cfloop list="#variables.order.productNames#" item="variables.item" index="variables.i">
 							<cfset variables.unitPrice = listGetAt(variables.order.unitPrices, variables.i)>
@@ -43,25 +40,25 @@
 							<cfset variables.productImage = listGetAt(variables.order.productImages, variables.i)>
 
 							<tr>
-								<td rowspan="3" class="text-center align-middle border-top border-bottom border-dark-subtle">
+								<td rowspan="3">
 									<img src="#application.productImageDirectory&variables.productImage#" class="img-fluid rounded" width="100" alt="Product">
 								</td>
-								<td class="border-0 border-top border-dark-subtle"><strong>Product:</strong> #variables.productName#</td>
-								<td class="border-0 border-top border-end border-dark-subtle"><strong>Price:</strong> Rs. #variables.unitPrice#</td>
+								<td><strong>Product:</strong> #variables.productName#</td>
+								<td><strong>Price:</strong> Rs. #variables.unitPrice#</td>
 							</tr>
 							<tr>
 								<td><strong>Brand:</strong> #variables.brandName#</td>
-								<td class="border-end border-dark-subtle"><strong>Tax:</strong> Rs. #variables.unitTax#</td>
+								<td><strong>Tax:</strong> Rs. #variables.unitTax#</td>
 							</tr>
-							<tr class="border-0 border-bottom border-dark-subtle">
-								<td class="border-0"><strong>Quantity:</strong> #variables.quantity#</td>
-								<td class="border-0 border-end border-dark-subtle"><strong>Total:</strong> Rs. #variables.price#</td>
+							<tr>
+								<td><strong>Quantity:</strong> #variables.quantity#</td>
+								<td><strong>Total:</strong> Rs. #variables.price#</td>
 							</tr>
 						</cfloop>
 					</tbody>
 				</table>
 			</div>
-			<div class="d-flex flex-md-row flex-column justify-content-between">
+			<div>
 				<p>
 					<strong>Delivery Address:</strong>
 					#variables.order.addressLine1#,
