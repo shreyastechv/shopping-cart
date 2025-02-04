@@ -13,15 +13,24 @@
 <cfset variables.qryProductInfo = application.shoppingCart.getProducts(productId = variables.productId)>
 <cfset variables.qryProductImages = application.shoppingCart.getProductImages(productId = variables.productId)>
 
-<!--- Handle Add to Cart --->
-<cfif structKeyExists(form, "addToCart")>
+<!--- Handle Add to Cart and Buy Now --->
+<cfif structKeyExists(form, "addToCart") OR structKeyExists(form, "buyNow")>
 	<cfif structKeyExists(session, "userId")>
-		<cfset application.shoppingCart.addToCart(
-			productId = application.shoppingCart.decryptUrlParam(url.productId)
+		<cfset application.shoppingCart.modifyCart(
+			productId = variables.productId,
+			action = "increment"
 		)>
-		<cflocation url="/productPage.cfm?productId=#url.productId#" addToken="no">
+		<cfif structKeyExists(form, "buyNow")>
+			<cflocation url="/checkout.cfm?productId=#urlEncodedFormat(url.productId)#" addToken="no">
+		<cfelse>
+			<cflocation url="#cgi.HTTP_URL#" addToken="no">
+		</cfif>
 	<cfelse>
-		<cflocation url="/login.cfm?productId=#url.productId#" addToken="no">
+		<cfif structKeyExists(form, "buyNow")>
+			<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=checkout.cfm" addToken="no">
+		<cfelse>
+			<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=cart.cfm" addToken="no">
+		</cfif>
 	</cfif>
 </cfif>
 
@@ -30,7 +39,7 @@
 		<div class="row d-flex justify-content-center">
 			<!-- Product Image -->
 			<div class="col-md-4" data-bs-theme="dark">
-				<div id="productImages" class="carousel slide">
+				<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 h-100 shadow">
 					<div class="carousel-inner">
 						<cfloop array="#variables.qryProductImages#" item="local.imageItem">
 							<div class="carousel-item #(local.imageItem.defaultImage EQ 1 ? "active" : "")#">
@@ -62,7 +71,15 @@
 				<!-- Action Buttons -->
 				<div class="mt-4">
 					<form method="post">
-						<button type="submit" name="addToCart" class="btn btn-primary btn-lg mr-3">Add to Cart</button>
+						<cfif structKeyExists(session, "cart") AND structKeyExists(session.cart, variables.productId)>
+							<!--- Show go to cart button if product is present in cart --->
+							<a class="btn btn-warning btn-lg" href="cart.cfm">Go to Cart</a>
+						<cfelse>
+							<!--- Show add to cart button if product not in cart --->
+							<button type="submit" name="addToCart" class="btn btn-primary btn-lg mr-3">Add to Cart</button>
+						</cfif>
+
+						<!--- Buy now button redirects to checkout page using formaction --->
 						<button type="submit" name="buyNow" class="btn btn-danger btn-lg">Buy Now</button>
 					</form>
 				</div>

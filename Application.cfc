@@ -14,7 +14,12 @@
 			"/index.cfm": {
 				"pageTitle": "Home Page",
 				"cssPath": "assets/css/index.css",
-				"scriptPath": "assets/js/index.js"
+				"scriptPath": ""
+			},
+			"/profile.cfm": {
+				"pageTitle": "User Profile",
+				"cssPath": "",
+				"scriptPath": "assets/js/profile.js"
 			},
 			"/products.cfm": {
 				"pageTitle": "Product Listing",
@@ -25,6 +30,16 @@
 				"pageTitle": "Product Page",
 				"cssPath": "",
 				"scriptPath": ""
+			},
+			"/cart.cfm": {
+				"pageTitle": "Cart Page",
+				"cssPath": "",
+				"scriptPath": "assets/js/cart.js"
+			},
+			"/checkout.cfm": {
+				"pageTitle": "Order Summary",
+				"cssPath": "",
+				"scriptPath": "assets/js/checkout.js"
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
@@ -97,7 +112,7 @@
 
 	<cffunction name="onSessionStart" returnType="void">
 		<!--- Variable for storing cart information --->
-		<cfset session.cart = []>
+		<cfset session.cart = {}>
 	</cffunction>
 
 	<cffunction name="onRequestStart" returnType="boolean">
@@ -108,22 +123,47 @@
 			<cfset onApplicationStart()>
 		</cfif>
 
+		<!--- Set page title and script tag path dynamically --->
+		<cfif StructKeyExists(application.pageDetailsMapping, arguments.targetPage)>
+			<cfset request.pageTitle = application.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
+			<cfset request.scriptPath = application.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
+			<cfset request.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
+		<cfelse>
+			<cfset request.pageTitle = "Title">
+			<cfset request.scriptPath = "">
+			<cfset request.cssPath = "">
+		</cfif>
+
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
-		<cfset local.privatePages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
+		<cfset local.normalUserPages = ["/index.cfm", "/products.cfm", "/productPage.cfm"]>
+		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm"]>
+		<cfset local.adminPages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
 
 		<!--- Handle page restrictions --->
 		<cfif arrayFindNoCase(local.initialPages, arguments.targetPage)>
-			<cfif structKeyExists(session, "roleId") AND session.roleId>
+			<cfif structKeyExists(session, "roleId")>
 				<cfif session.roleId EQ 1>
 					<cflocation url="/adminDashboard.cfm" addToken="false">
 				<cfelse>
 					<cflocation url="/" addToken="false">
 				</cfif>
 			</cfif>
-		<cfelseif arrayFindNoCase(local.privatePages, arguments.targetPage)>
+		<cfelseif arrayFindNoCase(local.adminPages, arguments.targetPage)>
 			<cfif (NOT structKeyExists(session, "roleId")) OR (session.roleId NEQ 1)>
 				<cflocation url="/" addToken="false">
+			</cfif>
+		<cfelseif arrayFindNoCase(local.normalUserPages, arguments.targetPage)>
+			<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
+				<cflocation url="/adminDashboard.cfm" addToken="false">
+			</cfif>
+		<cfelseif arrayFindNoCase(local.loginUserPages, arguments.targetPage)>
+			<cfif structKeyExists(session, "roleId")>
+				<cfif session.roleId EQ 1>
+					<cflocation url="/adminDashboard.cfm" addToken="false">
+				</cfif>
+			<cfelse>
+				<cflocation url="/login.cfm?redirect=#arguments.targetPage#" addToken="false">
 			</cfif>
 		</cfif>
 
