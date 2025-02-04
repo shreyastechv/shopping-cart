@@ -1607,6 +1607,8 @@
 				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
 			GROUP BY
 				ord.fldOrder_Id
+			ORDER BY
+				ord.fldOrderDate DESC
 		</cfquery>
 
 		<cfloop query="local.qryGetOrders">
