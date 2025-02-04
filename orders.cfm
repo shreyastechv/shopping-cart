@@ -28,19 +28,19 @@
 									<cfset local.productImage = listGetAt(local.order.productImages, local.i)>
 
 									<tr>
-										<td rowspan="3" class="text-center align-middle border-top border-bottom border-secondary">
+										<td rowspan="3" class="text-center align-middle border-top border-bottom border-dark-subtle">
 											<img src="#application.productImageDirectory&local.productImage#" class="img-fluid rounded" width="100" alt="Product">
 										</td>
-										<td class="border-0 border-top border-secondary"><strong>Product:</strong> #local.productName#</td>
-										<td class="border-0 border-top border-end border-secondary"><strong>Price:</strong> Rs. #local.unitPrice#</td>
+										<td class="border-0 border-top border-dark-subtle"><strong>Product:</strong> #local.productName#</td>
+										<td class="border-0 border-top border-end border-dark-subtle"><strong>Price:</strong> Rs. #local.unitPrice#</td>
 									</tr>
 									<tr>
 										<td><strong>Brand:</strong> #local.brandName#</td>
-										<td class="border-end border-secondary"><strong>Tax:</strong> Rs. #local.unitTax#</td>
+										<td class="border-end border-dark-subtle"><strong>Tax:</strong> Rs. #local.unitTax#</td>
 									</tr>
-									<tr class="border-0 border-bottom border-secondary">
+									<tr class="border-0 border-bottom border-dark-subtle">
 										<td class="border-0"><strong>Quantity:</strong> #local.quantity#</td>
-										<td class="border-0 border-end border-secondary"><strong>Total:</strong> Rs. #local.price#</td>
+										<td class="border-0 border-end border-dark-subtle"><strong>Total:</strong> Rs. #local.price#</td>
 									</tr>
 								</cfloop>
 							</tbody>
