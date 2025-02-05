@@ -1179,7 +1179,7 @@
 		<cfreturn local.addresses>
 	</cffunction>
 
-	<cffunction name="addAddress" access="remote" returnType="void">
+	<cffunction name="addAddress" access="remote" returnType="struct">
 		<cfargument name="firstName" type="string" required=true>
 		<cfargument name="lastName" type="string" required=true>
 		<cfargument name="addressLine1" type="string" required=true>
@@ -1189,6 +1189,71 @@
 		<cfargument name="pincode" type="string" required=true>
 		<cfargument name="phone" type="string" required=true>
 
+		<cfset local.response = {}>
+		<cfset local.response["message"] = "">
+
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfset local.response["message"] &= "Cannot proceed without loggin in">
+		</cfif>
+
+		<!--- Firstname Validation --->
+		<cfif len(arguments.firstName) EQ 0>
+			<cfset local.response["message"] &= "Enter first name. ">
+		<cfelseif isValid("regex", arguments.firstName, "/\d/")>
+			<cfset local.response["message"] &= "First name should not contain any digits. ">
+		</cfif>
+
+		<!--- Lastname Validation --->
+		<cfif len(arguments.lastname) EQ 0>
+			<cfset local.response["message"] &= "Enter last name. ">
+		<cfelseif isValid("regex", arguments.lastName, "/\d/")>
+			<cfset local.response["message"] &= "Last name should not contain any digits. ">
+		</cfif>
+
+		<!--- Address Line 1 Validation --->
+		<cfif len(arguments.addressLine1) EQ 0>
+			<cfset local.response["message"] &= "Enter address line 1. ">
+		</cfif>
+
+		<!--- Address Line 2 Validation --->
+		<cfif len(arguments.addressLine2) EQ 0>
+			<cfset local.response["message"] &= "Enter address line 2. ">
+		</cfif>
+
+		<!--- City Validation --->
+		<cfif len(arguments.city) EQ 0>
+			<cfset local.response["message"] &= "Enter city. ">
+		<cfelseif isValid("regex", arguments.city, "/\d/")>
+			<cfset local.response["message"] &= "City should not contain any digits. ">
+		</cfif>
+
+		<!--- State Validation --->
+		<cfif len(arguments.state) EQ 0>
+			<cfset local.response["message"] &= "Enter state. ">
+		<cfelseif isValid("regex", arguments.state, "/\d/")>
+			<cfset local.response["message"] &= "State should not contain any digits. ">
+		</cfif>
+
+		<!--- Pincode Validation --->
+		<cfif len(arguments.pincode) EQ 0>
+			<cfset local.response["message"] &= "Enter pincode. ">
+		<cfelseif NOT isValid("regex", trim(arguments.pincode), "^\d{6}$")>
+			<cfset local.response["message"] &= "Pincode should be 6 digits long. ">
+		</cfif>
+
+		<!--- Phone Number Validation --->
+		<cfif len(arguments.phone) EQ 0>
+			<cfset local.response["message"] &= "Enter an phone number. ">
+		<cfelseif NOT isValid("regex", trim(arguments.phone), "^\d{10}$")>
+			<cfset local.response["message"] &= "Phone number should be 10 digits long. ">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="qryAddAddress">
 			INSERT INTO
 				tblAddress (
@@ -1214,6 +1279,8 @@
 				<cfqueryparam value = "#trim(arguments.phone)#" cfsqltype = "varchar">
 			)
 		</cfquery>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="deleteAddress" access="remote" returnType="void">
