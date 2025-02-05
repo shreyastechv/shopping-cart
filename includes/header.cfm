@@ -13,7 +13,9 @@
 			<link rel="icon" href="favicon.ico">
 			<link href="#application.cssDirectory#bootstrap.min.css" rel="stylesheet">
 			<link href="#application.cssDirectory#header.css" rel="stylesheet">
-			<link href="#application.cssDirectory&request.cssPath#" rel="stylesheet">
+			<cfif len(trim(request.cssPath))>
+				<link href="#application.cssDirectory&request.cssPath#" rel="stylesheet">
+			</cfif>
 			<script src="#application.scriptDirectory#header.js"></script>
 		</head>
 
