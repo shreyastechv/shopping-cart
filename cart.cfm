@@ -28,7 +28,7 @@
 			</div>
 		<cfelse>
 			<div class="d-flex flex-column align-items-center justify-content-center">
-				<img src="/assets/images/empty-cart.svg" width="300" alt="Shopping Cart Empty">
+				<img src="#application.imageDirectory#empty-cart.svg" width="300" alt="Shopping Cart Empty">
 				<div class="fs-5 mb-3">Shopping Cart is Empty</div>
 				<a class="btn btn-primary" href="/">Shop Now</a>
 			</div>
