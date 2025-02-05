@@ -19,7 +19,7 @@
 		<cfset caller.totalActualPrice += local.actualPrice>
 
 		<!--- Generate random id for the mian container div --->
-		<cfset local.randomId = replace(rand(), ".", "", "all")>
+		<cfset local.randomId = createUUID()>
 
 		<div class="card mb-3 shadow" id="#local.randomId#">
 			<div class="row g-0">

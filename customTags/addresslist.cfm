@@ -7,7 +7,7 @@
 		<cfif arrayLen(attributes.addresses)>
 			<cfloop array="#attributes.addresses#" item="address">
 				<!--- Generate random id for the mian container div --->
-				<cfset local.randomId = replace(rand(), ".", "", "all")>
+				<cfset local.randomId = createUUID()>
 
 				<div class="d-flex justify-content-between list-group-item shadow-sm mb-3" id="#local.randomId#">
 					<div>
