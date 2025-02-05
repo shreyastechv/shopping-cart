@@ -121,11 +121,6 @@ function editCartItem(containerId, productId, action) {
 		return;
 	}
 
-	// Confirm before deleting product
-	if (action == "delete" && !confirm("Delete Product?")) {
-		return;
-	}
-
 	//Go on with execution if no alert is generated
 	$.ajax({
 		type: "POST",
