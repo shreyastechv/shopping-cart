@@ -137,9 +137,11 @@
 			<cfif NOT len(trim(url.search))>
 				<cfif variables.qryProducts.recordCount>
 					<!--- View More Button --->
-					<div>
-						<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore(#variables.subCategoryId#)">View More</button>
-					</div>
+					<cfif variables.qryProducts.recordCount GTE form.limit>
+						<div>
+							<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore(#variables.subCategoryId#)">View More</button>
+						</div>
+					</cfif>
 				<cfelse>
 					<div class="fs-4 fw-semibold text-center mx-3 mt-4">No Products Found</div>
 				</cfif>
