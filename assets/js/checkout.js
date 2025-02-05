@@ -144,7 +144,7 @@ function editCartItem(containerId, productId, action) {
 					$(`#${containerId}`).remove();
 					if ($("#accordionBody").children().length === 0) {
 						$("#accordionBody").parent().find("button").prop("disabled", true);
-						$("#accordionBody").parent().parent().siblings(".accordion-item").find("button").prop("disabled", true);
+						$("#accordionBody").parent().parent().next(".accordion-item").find("button").prop("disabled", true);
 					}
 				}
 
