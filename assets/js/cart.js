@@ -62,7 +62,7 @@ function editCartItem(containerId, productId, action) {
 				$("#totalTax").text(totalTax.toFixed(2));
 
 				// If total price is 0 (cart empty) then reload
-				if (data.totalPrice == 0) location.reload();
+				if (totalPrice == 0) location.reload();
 			} else {
 				createAlert(containerId, "Sorry. Unable to proceed. Try again.");
 			}
