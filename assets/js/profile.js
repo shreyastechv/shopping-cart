@@ -27,7 +27,13 @@ function deleteAddress(containerId, addressId) {
 			addressId: addressId
 		},
 		success: function () {
-			$(`#${containerId}`).remove();
+			if ($(`#${containerId}`).parent().children().length === 1) {
+				// Reload page in case there is no address left
+				location.reload();
+			} else {
+				// Delete address container if there are other addressess left
+				$(`#${containerId}`).remove();
+			}
 		}
 	});
 }
