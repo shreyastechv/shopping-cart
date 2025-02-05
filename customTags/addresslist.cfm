@@ -25,17 +25,19 @@
 					</div>
 					<div class="d-flex align-items-center px-4">
 						<cfif attributes.currentPage EQ "profile">
+							<!--- Delete button on profile page --->
 							<button class="btn btn-danger" onclick="deleteAddress('#local.randomId#', #address.addressId#)">
 								<i class="fa-solid fa-trash"></i>
 							</button>
 						<cfelseif attributes.currentPage EQ "checkout">
+							<!--- Radio button on checkout page --->
 							<input type="radio" name="addressId" value="#address.addressId#" checked>
 						</cfif>
 					</div>
 				</div>
 		</cfloop>
 		<cfelse>
-			<div class="text-secondary">No Address Saved</div>
+			<div class="text-secondary px-2 py-3">No Address Saved</div>
 		</cfif>
 	</div>
 </cfoutput>
