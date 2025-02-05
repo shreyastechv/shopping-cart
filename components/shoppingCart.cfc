@@ -1426,6 +1426,23 @@
 		<cfreturn local.response>
 	</cffunction>
 
+	<cffunction name="orderIdIsUnique" access="private" returnType="boolean">
+		<cfargument name="orderId" type="string" required=true>
+		<cfset local.result = false>
+
+		<cfquery name="local.qryCheckOrderId">
+			SELECT
+				fldOrder_Id
+			FROM
+				tblOrder
+			WHERE
+				fldOrder_Id  = <cfqueryparam value = "#trim(arguments.orderId)#" cfsqltype = "varchar">
+		</cfquery>
+
+		<cfset local.result = (local.qryCheckOrderId.recordCount EQ 0)>
+		<cfreturn local.result>
+	</cffunction>
+
 	<cffunction name="createOrder" access="remote" returnType="struct">
 		<cfargument name="addressId" type="string" required=true>
 
@@ -1457,6 +1474,9 @@
 
 		<!--- Create Order Id --->
 		<cfset local.orderId = createUUID()>
+		<cfloop condition="NOT orderIdIsUnique(orderId = local.orderId)">
+			<cfset local.orderId = createUUID()>
+		</cfloop>
 
 		<!--- Calculate Total price and Total tax --->
 		<cfset local.priceDetails = session.cart.reduce(function(result,key,value){
