@@ -14,62 +14,62 @@
 			"/index.cfm": {
 				"pageTitle": "Home Page",
 				"cssPath": "assets/css/index.css",
-				"scriptPath": ""
+				"scriptPath": []
 			},
 			"/profile.cfm": {
 				"pageTitle": "User Profile",
 				"cssPath": "",
-				"scriptPath": "assets/js/profile.js"
+				"scriptPath": [ "assets/js/profile.js", "assets/js/addAddressBtn.js" ]
 			},
 			"/products.cfm": {
 				"pageTitle": "Product Listing",
 				"cssPath": "",
-				"scriptPath": "assets/js/products.js"
+				"scriptPath": [ "assets/js/products.js" ]
 			},
 			"/productPage.cfm": {
 				"pageTitle": "Product Page",
 				"cssPath": "",
-				"scriptPath": ""
+				"scriptPath": []
 			},
 			"/cart.cfm": {
 				"pageTitle": "Cart Page",
 				"cssPath": "",
-				"scriptPath": "assets/js/cart.js"
+				"scriptPath": [ "assets/js/cart.js" ]
 			},
 			"/checkout.cfm": {
 				"pageTitle": "Order Summary",
 				"cssPath": "",
-				"scriptPath": "assets/js/checkout.js"
+				"scriptPath": [ "assets/js/checkout.js", "assets/js/addAddressBtn.js" ]
 			},
 			"/orders.cfm": {
 				"pageTitle": "Orders",
 				"cssPath": "",
-				"scriptPath": "assets/js/orders.js"
+				"scriptPath": [ "assets/js/orders.js" ]
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"cssPath": "",
-				"scriptPath": "assets/js/login.js"
+				"scriptPath": [ "assets/js/login.js" ]
 			},
 			"/signup.cfm": {
 				"pageTitle": "Sign Up",
 				"cssPath": "",
-				"scriptPath": "assets/js/signup.js"
+				"scriptPath": [ "assets/js/signup.js" ]
 			},
 			"/adminDashboard.cfm": {
 				"pageTitle": "Admin Dashboard",
 				"cssPath": "",
-				"scriptPath": "assets/js/adminDashboard.js"
+				"scriptPath": [ "assets/js/adminDashboard.js" ]
 			},
 			"/subCategory.cfm": {
 				"pageTitle": "Sub Category",
 				"cssPath": "",
-				"scriptPath": "assets/js/subCategory.js"
+				"scriptPath": [ "assets/js/subCategory.js" ]
 			},
 			"/productEdit.cfm": {
 				"pageTitle": "Product Edit",
 				"cssPath": "",
-				"scriptPath": "assets/js/productEdit.js"
+				"scriptPath": [ "assets/js/productEdit.js" ]
 			}
 		}>
 
@@ -136,7 +136,7 @@
 		<cfelse>
 			<cfset request.pageTitle = "Title">
 			<cfset request.scriptPath = "">
-			<cfset request.cssPath = "">
+			<cfset request.cssPath = []>
 		</cfif>
 
 		<!--- Define page types --->
