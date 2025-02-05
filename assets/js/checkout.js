@@ -142,6 +142,10 @@ function editCartItem(containerId, productId, action) {
 				}
 				else if (action == "delete") {
 					$(`#${containerId}`).remove();
+					if ($("#accordionBody").children().length === 0) {
+						$("#accordionBody").parent().find("button").prop("disabled", true);
+						$("#accordionBody").parent().parent().siblings(".accordion-item").find("button").prop("disabled", true);
+					}
 				}
 
 				// Update total price and tax
@@ -151,6 +155,21 @@ function editCartItem(containerId, productId, action) {
 			} else {
 				createAlert(containerId, "Sorry. Unable to proceed. Try again.");
 			}
+		}
+	});
+}
+
+// Below is profile.js code which needs to be made common
+function deleteAddress(containerId, addressId) {
+	$.ajax({
+		type: "POST",
+		url: "./components/shoppingCart.cfc",
+		data: {
+			method: "deleteAddress",
+			addressId: addressId
+		},
+		success: function () {
+			$(`#${containerId}`).remove();
 		}
 	});
 }
