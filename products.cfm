@@ -98,10 +98,10 @@
 							<i class="fa-solid fa-filter"></i>
 							Filter
 						</button>
-						<ul class="dropdown-menu p-2">
-							<div class="text-center">Price Filter</div>
-							<form id="filterForm" name="filterForm" method="post">
-								<li class="d-flex flex-column justify-content-start">
+						<ul class="dropdown-menu p-3 shadow">
+							<div class="text-center fw-semibold">Price Filter</div>
+							<form method="post">
+								<li class="d-flex flex-column justify-content-start p-1">
 									<div>
 										<input type="radio" name="filterRange" value="0-100"> 0 - 100
 									</div>
@@ -118,12 +118,12 @@
 										<input type="radio" name="filterRange" value="2001-5000"> 2001 - 5000
 									</div>
 								</li>
-								<li class="d-flex m-1">
-									<input type="number" class="form-control" id="min" name="min" min="0" placeholder="Min">
-									<input type="number" class="form-control" id="max" name="max" placeholder="Max">
+								<li class="d-flex gap-2">
+									<input type="number" class="form-control mb-2" id="min" name="min" min="0" placeholder="Min">
+									<input type="number" class="form-control mb-2" id="max" name="max" placeholder="Max">
 								<li>
-								<li>
-									<button class="btn btn-success" type="submit" id="filterBtn">Apply</button>
+								<li class="d-flex">
+									<button class="btn btn-success w-100" type="submit" id="filterBtn">Apply</button>
 								</li>
 							</form>
 						</ul>

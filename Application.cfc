@@ -26,7 +26,7 @@
 			},
 			"/products.cfm": {
 				"pageTitle": "Product Listing",
-				"cssPath": "",
+				"cssPath": "products.css",
 				"scriptPath": ["products.js"]
 			},
 			"/productPage.cfm": {
