@@ -108,7 +108,7 @@
 												class="form-control cardInput"
 												id="cardNumber"
 												inputmode="numeric"
-												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-').slice(0, this.maxLength);"
+												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-');"
 												maxlength="19"
 												placeholder="XXXX XXXX XXXX XXXX"
 												autocomplete="cc-number">
@@ -120,7 +120,7 @@
 												class="form-control cardInput"
 												id="cvv"
 												inputmode="numeric"
-												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-').slice(0, this.maxLength);"
+												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-');"
 												maxlength="3"
 												placeholder="XXX"
 												autocomplete="cc-csc">
