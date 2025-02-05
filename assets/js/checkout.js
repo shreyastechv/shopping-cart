@@ -163,18 +163,3 @@ function editCartItem(containerId, productId, action) {
 		}
 	});
 }
-
-// Below is profile.js code which needs to be made common
-function deleteAddress(containerId, addressId) {
-	$.ajax({
-		type: "POST",
-		url: "./components/shoppingCart.cfc",
-		data: {
-			method: "deleteAddress",
-			addressId: addressId
-		},
-		success: function () {
-			$(`#${containerId}`).remove();
-		}
-	});
-}
