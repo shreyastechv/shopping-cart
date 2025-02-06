@@ -28,31 +28,33 @@
 				<div><strong>Total Price:</strong> Rs. #variables.order.totalPrice#</div>
 			</div>
 			<div>
-				<table>
+				<table border="1" cellpadding="4" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Product</th>
+							<th>Brand</th>
+							<th>Unit Price</th>
+							<th>Unit Tax</th>
+							<th>Quantity</th>
+							<th>Total Price</th>
+						</tr>
+					</thead>
 					<tbody>
 						<cfloop list="#variables.order.productNames#" item="variables.item" index="variables.i">
 							<cfset variables.unitPrice = listGetAt(variables.order.unitPrices, variables.i)>
 							<cfset variables.unitTax = listGetAt(variables.order.unitTaxes, variables.i)>
-							<cfset variables.price = variables.unitPrice + variables.unitTax>
 							<cfset variables.quantity = listGetAt(variables.order.quantities, variables.i)>
+							<cfset variables.price = (variables.unitPrice + variables.unitTax) * variables.quantity>
 							<cfset variables.productName = listGetAt(variables.order.productNames, variables.i)>
 							<cfset variables.brandName = listGetAt(variables.order.brandNames, variables.i)>
-							<cfset variables.productImage = listGetAt(variables.order.productImages, variables.i)>
 
 							<tr>
-								<td rowspan="3">
-									<img src="#application.productImageDirectory&variables.productImage#" class="img-fluid rounded" width="100" alt="Product">
-								</td>
-								<td><strong>Product:</strong> #variables.productName#</td>
-								<td><strong>Price:</strong> Rs. #variables.unitPrice#</td>
-							</tr>
-							<tr>
-								<td><strong>Brand:</strong> #variables.brandName#</td>
-								<td><strong>Tax:</strong> Rs. #variables.unitTax#</td>
-							</tr>
-							<tr>
-								<td><strong>Quantity:</strong> #variables.quantity#</td>
-								<td><strong>Total:</strong> Rs. #variables.price#</td>
+								<td>#variables.productName#</td>
+								<td>#variables.brandName#</td>
+								<td>#variables.unitPrice#</td>
+								<td>#variables.unitTax#</td>
+								<td>#variables.quantity#</td>
+								<td>#variables.price#</td>
 							</tr>
 						</cfloop>
 					</tbody>
