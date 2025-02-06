@@ -283,6 +283,11 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
+		<!--- Login Check --->
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfset local.response["message"] &= "User not logged in">
+		</cfif>
+
 		<!--- Category Id Validation --->
 		<cfif len(arguments.categoryId) EQ 0>
 			<cfset local.response["message"] &= "Category Id should not be empty. ">
@@ -296,42 +301,10 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryDeleteProducts">
-			UPDATE
-				tblProduct
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldSubCategoryId IN (
-					SELECT
-						fldSubCategory_Id
-					FROM
-						tblSubCategory
-					WHERE
-						fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
-				);
-		</cfquery>
-
-		<cfquery name="qryDeleteSubCategory">
-			UPDATE
-				tblSubCategory
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
-		</cfquery>
-
-		<cfquery name="qryDeleteCategory">
-			UPDATE
-				tblCategory
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldCategory_Id = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
-		</cfquery>
+		<cfstoredproc procedure="spDeleteCategory">
+			<cfprocparam cfsqltype="integer" variable="userId" value="#arguments.categoryId#">
+			<cfprocparam cfsqltype="integer" variable="contactId" value="#session.userId#">
+		</cfstoredproc>
 	</cffunction>
 
 	<cffunction name="getSubCategories" access="remote" returnType="query" returnFormat="json">
