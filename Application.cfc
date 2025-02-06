@@ -118,11 +118,6 @@
 		</cfif>
 	</cffunction> --->
 
-	<cffunction name="onSessionStart" returnType="void">
-		<!--- Variable for storing cart information --->
-		<cfset session.cart = {}>
-	</cffunction>
-
 	<cffunction name="onRequestStart" returnType="boolean">
 		<cfargument name="targetPage" type="string" required=true>
 
