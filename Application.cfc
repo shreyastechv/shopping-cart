@@ -133,7 +133,6 @@
 
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
-		<cfset local.normalUserPages = ["/index.cfm", "/products.cfm", "/productPage.cfm"]>
 		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm", "/orders.cfm"]>
 		<cfset local.adminPages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
 
@@ -147,19 +146,13 @@
 				</cfif>
 			</cfif>
 		<cfelseif arrayFindNoCase(local.adminPages, arguments.targetPage)>
-			<cfif (NOT structKeyExists(session, "roleId")) OR (session.roleId NEQ 1)>
-				<cflocation url="/" addToken="false">
-			</cfif>
-		<cfelseif arrayFindNoCase(local.normalUserPages, arguments.targetPage)>
 			<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-				<cflocation url="/adminDashboard.cfm" addToken="false">
+				<cfreturn true>
+			<cfelse>
+				<cflocation url="/login.cfm?redirect=#arguments.targetPage#" addToken="false">
 			</cfif>
 		<cfelseif arrayFindNoCase(local.loginUserPages, arguments.targetPage)>
-			<cfif structKeyExists(session, "roleId")>
-				<cfif session.roleId EQ 1>
-					<cflocation url="/adminDashboard.cfm" addToken="false">
-				</cfif>
-			<cfelse>
+			<cfif NOT structKeyExists(session, "roleId")>
 				<cflocation url="/login.cfm?redirect=#arguments.targetPage#" addToken="false">
 			</cfif>
 		</cfif>
