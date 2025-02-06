@@ -5,11 +5,9 @@
 <cfoutput>
 	<div class="list-group">
 		<cfif arrayLen(attributes.addresses)>
-			<cfloop array="#attributes.addresses#" item="address">
-				<!--- Generate random id for the mian container div --->
-				<cfset local.randomId = createUUID()>
+			<cfloop array="#attributes.addresses#" item="address" index="i">
 
-				<div class="d-flex justify-content-between list-group-item shadow-sm mb-3" id="#local.randomId#">
+				<div class="d-flex justify-content-between list-group-item shadow-sm mb-3" id="addressContainer_#i#">
 					<div>
 						<p class="fw-semibold mb-1">
 							#address.fullName# -
@@ -26,7 +24,7 @@
 					<div class="d-flex align-items-center px-4">
 						<cfif attributes.currentPage EQ "profile">
 							<!--- Delete button on profile page --->
-							<button class="btn btn-danger" onclick="deleteAddress('#local.randomId#', #address.addressId#)">
+							<button class="btn btn-danger" onclick="deleteAddress('addressContainer_#i#', #address.addressId#)">
 								<i class="fa-solid fa-trash"></i>
 							</button>
 						<cfelseif attributes.currentPage EQ "checkout">
