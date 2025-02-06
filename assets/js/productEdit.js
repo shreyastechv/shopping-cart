@@ -193,7 +193,9 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 			</div>
 			<div>
 				<button value="${prodId}" class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage()">
-					<img class="pe-none" src="${productImageDirectory}${imageFile}" alt="Product Image" width="50">
+					<div class="d-flex justify-content-center">
+						<img class="pe-none" src="${productImageDirectory}${imageFile}" alt="Product Image" width="50">
+					</div>
 				</button>
 				<button class="btn btn-lg" value="${prodId}" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal()">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>
@@ -232,7 +234,9 @@ function createCarousel(productId) {
 				`;
 				const carouselItem = `
 					<div class="carousel-item ${isActive}">
-						<img src="${productImageDirectory}${responseJSON[i].imageFileName}" class="d-block w-100" alt="Product Image">
+						<div class="d-flex justify-content-center">
+							<img src="${productImageDirectory}${responseJSON[i].imageFileName}" class="d-block h-100" alt="Product Image">
+						</div>
 						${bottomDiv}
 					</div>
 				`;

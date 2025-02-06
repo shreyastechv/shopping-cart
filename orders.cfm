@@ -21,6 +21,10 @@
 						<table class="table table-striped table-bordered">
 							<tbody>
 								<cfloop list="#local.order.productNames#" item="local.item" index="local.i">
+									<cfset local.productId = listGetAt(local.order.productIds, local.i)>
+									<cfset local.encryptedProductId = application.shoppingCart.encryptUrlParam(
+										urlParam = local.productId
+									)>
 									<cfset local.unitPrice = listGetAt(local.order.unitPrices, local.i)>
 									<cfset local.unitTax = listGetAt(local.order.unitTaxes, local.i)>
 									<cfset local.price = local.unitPrice + local.unitTax>
@@ -31,7 +35,9 @@
 
 									<tr>
 										<td rowspan="3" class="text-center align-middle border-top border-bottom border-dark-subtle">
-											<img src="#application.productImageDirectory&local.productImage#" class="img-fluid rounded" width="100" alt="Product">
+											<a href="/productPage.cfm?productId=#local.encryptedProductId#">
+												<img src="#application.productImageDirectory&local.productImage#" class="img-fluid rounded" width="100" alt="Product">
+											</a>
 										</td>
 										<td class="border-0 border-top border-dark-subtle"><strong>Product:</strong> #local.productName#</td>
 										<td class="border-0 border-top border-end border-dark-subtle"><strong>Price:</strong> Rs. #local.unitPrice#</td>
