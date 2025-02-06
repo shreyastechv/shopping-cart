@@ -131,17 +131,6 @@
 			<cfset onApplicationStart()>
 		</cfif>
 
-		<!--- Set page title and script tag path dynamically --->
-		<cfif StructKeyExists(application.pageDetailsMapping, arguments.targetPage)>
-			<cfset request.pageTitle = application.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
-			<cfset request.scriptPath = application.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
-			<cfset request.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
-		<cfelse>
-			<cfset request.pageTitle = "Title">
-			<cfset request.scriptPath = []>
-			<cfset request.cssPath = "">
-		</cfif>
-
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
 		<cfset local.normalUserPages = ["/index.cfm", "/products.cfm", "/productPage.cfm"]>
@@ -188,7 +177,7 @@
 			<cfset request.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
 		<cfelse>
 			<cfset request.pageTitle = "Title">
-			<cfset request.scriptPath = "">
+			<cfset request.scriptPath = []>
 			<cfset request.cssPath = "">
 		</cfif>
 
