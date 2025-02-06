@@ -19,7 +19,7 @@
 <cfcontent type="application/pdf">
 
 <!--- Create pdf --->
-<cfdocument format="pdf" overwrite="true">
+<cfdocument format="pdf">
 	<cfoutput>
 		<div>
 			<div>
