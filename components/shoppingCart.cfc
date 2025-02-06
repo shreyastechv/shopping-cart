@@ -195,16 +195,18 @@
 				tblCategory c
 			WHERE
 				c.fldActive = 1
-				-- Below code is to make sure to return only no-empty categories
-				AND EXISTS (
-					SELECT
-						1
-					FROM
-						tblSubCategory sc
-					WHERE
-						sc.fldCategoryId = c.fldCategory_Id
-						AND sc.fldActive = 1
-				)
+				-- Make sure to return only no-empty categories for non-admin users
+				<cfif NOT structKeyExists(session, "roleId") OR session.roleId EQ 2>
+					AND EXISTS (
+						SELECT
+							1
+						FROM
+							tblSubCategory sc
+						WHERE
+							sc.fldCategoryId = c.fldCategory_Id
+							AND sc.fldActive = 1
+					)
+				</cfif>
 		</cfquery>
 
 		<cfreturn local.qryGetCategories>
