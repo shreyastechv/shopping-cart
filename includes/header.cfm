@@ -96,33 +96,32 @@
 
 			<!--- Category - SubCategory Dropdown --->
 			<div class="border-bottom border-success-subtle shadow-sm">
-				<cfif NOT arrayContainsNoCase(["/login.cfm", "/signup.cfm"], cgi.SCRIPT_NAME)>
-					<nav class="navbar navbar-expand-lg bg-body-tertiary">
-						<div class="container-fluid">
-							<ul class="navbar-nav w-100 d-flex justify-content-evenly">
-								<cfloop query="variables.qryCategories">
-									<!--- Encrypt Category ID URL param --->
-									<cfset variables.encryptedCategoryId = application.shoppingCart.encryptUrlParam(variables.qryCategories.fldCategory_Id)>
+				<nav class="navbar navbar-expand-lg bg-body-tertiary">
+					<div class="container-fluid">
+						<ul class="navbar-nav w-100 d-flex justify-content-evenly">
+							<cfloop query="variables.qryCategories">
+								<!--- Encrypt Category ID URL param --->
+								<cfset variables.encryptedCategoryId = application.shoppingCart.encryptUrlParam(variables.qryCategories.fldCategory_Id)>
 
-									<li class="nav-item dropdown">
-										<a class="nav-link" href="/products.cfm?categoryId=#variables.encryptedCategoryId#">
-											#variables.qryCategories.fldCategoryName#
-										</a>
-										<cfif variables.qrySubCategories.recordCount>
-											<ul class="dropdown-menu">
-												<cfloop array="#variables.catToSubcatMapping[variables.qryCategories.fldCategory_Id]#" item="local.subCategory">
-													<!--- Encrypt SubCategory ID URL param --->
-													<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(local.subCategory.subCategoryId)>
+								<li class="nav-item dropdown">
+									<a class="nav-link" href="/products.cfm?categoryId=#variables.encryptedCategoryId#">
+										#variables.qryCategories.fldCategoryName#
+									</a>
+									<cfif variables.qrySubCategories.recordCount>
+										<ul class="dropdown-menu">
+											<cfloop array="#variables.catToSubcatMapping[variables.qryCategories.fldCategory_Id]#" item="local.subCategory">
+												<!--- Encrypt SubCategory ID URL param --->
+												<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(local.subCategory.subCategoryId)>
 
-													<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#">#local.subCategory.subCategoryName#</a></li>
-												</cfloop>
-											</ul>
-										</cfif>
-									</li>
-								</cfloop>
-							</ul>
-						</div>
-					</nav>
-				</cfif>
+												<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#">#local.subCategory.subCategoryName#</a></li>
+											</cfloop>
+										</ul>
+									</cfif>
+								</li>
+							</cfloop>
+						</ul>
+					</div>
+				</nav>
 			</div>
+		<!--- Body tag is not closed since this is header file --->
 	</cfoutput>
