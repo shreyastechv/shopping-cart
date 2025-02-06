@@ -20,7 +20,7 @@
 						<div class="card-body">
 							<h4 class="card-title">Price Details</h4>
 							<hr>
-							<cf_totalprice totalPrice=#variables.totalPrice# totalActualPrice="#variables.totalActualPrice#" totalTax="#variables.totalTax#">
+							<cf_totalprice totalPrice="#variables.totalPrice#" totalActualPrice="#variables.totalActualPrice#" totalTax="#variables.totalTax#">
 							<button class="btn btn-success w-100" onclick="location.href='checkout.cfm'">Checkout</button>
 						</div>
 					</div>
