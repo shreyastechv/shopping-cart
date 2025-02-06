@@ -108,7 +108,7 @@
 												class="form-control cardInput"
 												id="cardNumber"
 												inputmode="numeric"
-												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-').slice(0, this.maxLength);"
+												oninput="this.value = this.value.replace(/^-/g, '').replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-');"
 												maxlength="19"
 												placeholder="XXXX XXXX XXXX XXXX"
 												autocomplete="cc-number">
@@ -120,7 +120,7 @@
 												class="form-control cardInput"
 												id="cvv"
 												inputmode="numeric"
-												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-').slice(0, this.maxLength);"
+												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-');"
 												maxlength="3"
 												placeholder="XXX"
 												autocomplete="cc-csc">
@@ -170,14 +170,14 @@
 						</div>
 					</div>
 					<div name="success" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
-						<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
+						<img src="#application.imageDirectory#order-success.jpg" width="200px" alt="Order Success Image">
 						<div class="text-success fs-5">
 							Order Placed Successfully
 							<i class="fa-regular fa-circle-check"></i>
 						</div>
 						<a class="btn btn-primary" href="/orders.cfm">Go to Orders</a>
 					<div name="error" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
-						<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
+						<img src="#application.imageDirectory#order-success.jpg" width="200px" alt="Order Success Image">
 						<div class="text-danger fs-5">
 							Sorry! There was an error.
 							<i class="fa-regular fa-circle-check"></i>

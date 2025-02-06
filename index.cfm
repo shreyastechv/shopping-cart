@@ -6,7 +6,7 @@
 <cfoutput>
 	<!--- Main Content --->
 	<div class="d-flex align-items-center">
-		<img class="w-100" src="assets/images/homepage-slider-1.jpg" alt="Slider Image 1">
+		<img class="w-100" src="#application.imageDirectory#homepage-slider-1.jpg" alt="Slider Image 1">
 	</div>
 
 	<!--- Random Products --->

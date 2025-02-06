@@ -6,6 +6,9 @@
 	<cfset this.customTagPaths = expandPath("/customTags")>
 
 	<cffunction name="onApplicationStart" returnType="boolean">
+		<cfset application.cssDirectory = "/assets/css/">
+		<cfset application.scriptDirectory = "/assets/js/">
+		<cfset application.imageDirectory = "/assets/images/">
 		<cfset application.productImageDirectory = "/assets/images/productImages/">
 		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
 
@@ -13,63 +16,63 @@
 		<cfset application.pageDetailsMapping = {
 			"/index.cfm": {
 				"pageTitle": "Home Page",
-				"cssPath": "assets/css/index.css",
-				"scriptPath": ""
+				"cssPath": "index.css",
+				"scriptPath": []
 			},
 			"/profile.cfm": {
 				"pageTitle": "User Profile",
 				"cssPath": "",
-				"scriptPath": "assets/js/profile.js"
+				"scriptPath": ["profile.js", "addAddressBtn.js"]
 			},
 			"/products.cfm": {
 				"pageTitle": "Product Listing",
-				"cssPath": "",
-				"scriptPath": "assets/js/products.js"
+				"cssPath": "products.css",
+				"scriptPath": ["products.js"]
 			},
 			"/productPage.cfm": {
 				"pageTitle": "Product Page",
 				"cssPath": "",
-				"scriptPath": ""
+				"scriptPath": []
 			},
 			"/cart.cfm": {
 				"pageTitle": "Cart Page",
 				"cssPath": "",
-				"scriptPath": "assets/js/cart.js"
+				"scriptPath": ["cart.js"]
 			},
 			"/checkout.cfm": {
 				"pageTitle": "Order Summary",
 				"cssPath": "",
-				"scriptPath": "assets/js/checkout.js"
+				"scriptPath": ["checkout.js", "addAddressBtn.js"]
 			},
 			"/orders.cfm": {
 				"pageTitle": "Orders",
 				"cssPath": "",
-				"scriptPath": "assets/js/orders.js"
+				"scriptPath": ["orders.js"]
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"cssPath": "",
-				"scriptPath": "assets/js/login.js"
+				"scriptPath": ["login.js"]
 			},
 			"/signup.cfm": {
 				"pageTitle": "Sign Up",
 				"cssPath": "",
-				"scriptPath": "assets/js/signup.js"
+				"scriptPath": ["signup.js"]
 			},
 			"/adminDashboard.cfm": {
 				"pageTitle": "Admin Dashboard",
 				"cssPath": "",
-				"scriptPath": "assets/js/adminDashboard.js"
+				"scriptPath": ["adminDashboard.js"]
 			},
 			"/subCategory.cfm": {
 				"pageTitle": "Sub Category",
 				"cssPath": "",
-				"scriptPath": "assets/js/subCategory.js"
+				"scriptPath": ["subCategory.js"]
 			},
 			"/productEdit.cfm": {
 				"pageTitle": "Product Edit",
 				"cssPath": "",
-				"scriptPath": "assets/js/productEdit.js"
+				"scriptPath": ["productEdit.js"]
 			}
 		}>
 
@@ -135,7 +138,7 @@
 			<cfset request.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
 		<cfelse>
 			<cfset request.pageTitle = "Title">
-			<cfset request.scriptPath = "">
+			<cfset request.scriptPath = []>
 			<cfset request.cssPath = "">
 		</cfif>
 

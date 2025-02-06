@@ -1,3 +1,8 @@
+<!--- Variables used in this page --->
+<cfparam name="application.cssDirectory" type="string" default="">
+<cfparam name="application.scriptDirectory" type="string" default="">
+<cfparam name="url.search" default="">
+
 <!DOCTYPE html>
 <html lang="en">
 	<cfoutput>
@@ -6,14 +11,13 @@
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title>#request.pageTitle# - Shopping Cart</title>
 			<link rel="icon" href="favicon.ico">
-			<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-			<link href="/assets/css/header.css" rel="stylesheet">
-			<link href="#request.cssPath#" rel="stylesheet">
-			<script src="/assets/js/header.js"></script>
+			<link href="#application.cssDirectory#bootstrap.min.css" rel="stylesheet">
+			<link href="#application.cssDirectory#header.css" rel="stylesheet">
+			<cfif len(trim(request.cssPath))>
+				<link href="#application.cssDirectory&request.cssPath#" rel="stylesheet">
+			</cfif>
+			<script src="#application.scriptDirectory#header.js"></script>
 		</head>
-
-		<!--- Url Params --->
-		<cfparam name="url.search" default="">
 
 		<!--- Variables --->
 		<cfset variables.qryCategories = application.shoppingCart.getCategories()>
@@ -37,7 +41,7 @@
 		<body>
 			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2 py-1">
 				<a class="d-flex align-items-center text-decoration-none" href="/">
-					<img class="p-2 me-2" src="assets/images/shopping-cart-logo.png" height="45" alt="Logo Image">
+					<img class="p-2 me-2" src="#application.imageDirectory#shopping-cart-logo.png" height="45" alt="Logo Image">
 					<div class="text-white fw-semibold">SHOPPING CART</div>
 				</a>
 				<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>

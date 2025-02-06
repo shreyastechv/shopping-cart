@@ -80,5 +80,3 @@
 		</div>
 	</div>
 </div>
-
-<script src="/assets/js/addAddressBtn.js"></script>

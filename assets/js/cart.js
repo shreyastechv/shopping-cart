@@ -33,6 +33,11 @@ function editCartItem(containerId, productId, action) {
 		return;
 	}
 
+	// Confirm before deleting product
+	if (action == "delete" && !confirm("Delete Product?")) {
+		return;
+	}
+
 	//Go on with execution if no alert is generated
 	$.ajax({
 		type: "POST",
@@ -62,7 +67,7 @@ function editCartItem(containerId, productId, action) {
 				$("#totalTax").text(totalTax.toFixed(2));
 
 				// If total price is 0 (cart empty) then reload
-				if (data.totalPrice == 0) location.reload();
+				if (totalPrice == 0) location.reload();
 			} else {
 				createAlert(containerId, "Sorry. Unable to proceed. Try again.");
 			}
