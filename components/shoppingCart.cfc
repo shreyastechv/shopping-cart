@@ -970,19 +970,19 @@
 			<cfreturn local.response>
 		</cfif>
 
-		<!--- Check whether the item is present in cart --->
-		<cfquery name="local.qryCheckCart">
-			SELECT
-				fldCart_Id
-			FROM
-				tblCart
-			WHERE
-				fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
-				AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-		</cfquery>
-
 		<!--- Continue with code execution if validation succeeds --->
 		<cfif arguments.action EQ "increment">
+
+			<!--- Check whether the item is present in cart --->
+			<cfquery name="local.qryCheckCart">
+				SELECT
+					fldCart_Id
+				FROM
+					tblCart
+				WHERE
+					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+					AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+			</cfquery>
 
 			<cfif local.qryCheckCart.recordCount>
 				<!--- Update cart in case it already have the product --->
