@@ -195,16 +195,18 @@
 				tblCategory c
 			WHERE
 				c.fldActive = 1
-				-- Below code is to make sure to return only no-empty categories
-				AND EXISTS (
-					SELECT
-						1
-					FROM
-						tblSubCategory sc
-					WHERE
-						sc.fldCategoryId = c.fldCategory_Id
-						AND sc.fldActive = 1
-				)
+				-- Make sure to return only no-empty categories for non-admin users
+				<cfif NOT structKeyExists(session, "roleId") OR session.roleId EQ 2>
+					AND EXISTS (
+						SELECT
+							1
+						FROM
+							tblSubCategory sc
+						WHERE
+							sc.fldCategoryId = c.fldCategory_Id
+							AND sc.fldActive = 1
+					)
+				</cfif>
 		</cfquery>
 
 		<cfreturn local.qryGetCategories>
@@ -283,6 +285,11 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
+		<!--- Login Check --->
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfset local.response["message"] &= "User not logged in">
+		</cfif>
+
 		<!--- Category Id Validation --->
 		<cfif len(arguments.categoryId) EQ 0>
 			<cfset local.response["message"] &= "Category Id should not be empty. ">
@@ -296,42 +303,10 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryDeleteProducts">
-			UPDATE
-				tblProduct
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldSubCategoryId IN (
-					SELECT
-						fldSubCategory_Id
-					FROM
-						tblSubCategory
-					WHERE
-						fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
-				);
-		</cfquery>
-
-		<cfquery name="qryDeleteSubCategory">
-			UPDATE
-				tblSubCategory
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
-		</cfquery>
-
-		<cfquery name="qryDeleteCategory">
-			UPDATE
-				tblCategory
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldCategory_Id = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
-		</cfquery>
+		<cfstoredproc procedure="spDeleteCategory">
+			<cfprocparam cfsqltype="integer" variable="userId" value="#arguments.categoryId#">
+			<cfprocparam cfsqltype="integer" variable="contactId" value="#session.userId#">
+		</cfstoredproc>
 	</cffunction>
 
 	<cffunction name="getSubCategories" access="remote" returnType="query" returnFormat="json">
@@ -995,19 +970,19 @@
 			<cfreturn local.response>
 		</cfif>
 
-		<!--- Check whether the item is present in cart --->
-		<cfquery name="local.qryCheckCart">
-			SELECT
-				fldCart_Id
-			FROM
-				tblCart
-			WHERE
-				fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
-				AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-		</cfquery>
-
 		<!--- Continue with code execution if validation succeeds --->
 		<cfif arguments.action EQ "increment">
+
+			<!--- Check whether the item is present in cart --->
+			<cfquery name="local.qryCheckCart">
+				SELECT
+					fldCart_Id
+				FROM
+					tblCart
+				WHERE
+					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+					AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+			</cfquery>
 
 			<cfif local.qryCheckCart.recordCount>
 				<!--- Update cart in case it already have the product --->
@@ -1675,6 +1650,7 @@
 				addr.fldFirstName,
 				addr.fldLastName,
 				addr.fldPhone,
+				GROUP_CONCAT(itm.fldProductId SEPARATOR ',') AS productIds,
 				GROUP_CONCAT(itm.fldQuantity SEPARATOR ',') AS quantities,
 				GROUP_CONCAT(itm.fldUnitPrice SEPARATOR ',') AS unitPrices,
 				GROUP_CONCAT(itm.fldUnitTax SEPARATOR ',') AS unitTaxes,
@@ -1716,6 +1692,7 @@
 				"firstName" = local.qryGetOrders.fldFirstName,
 				"lastName" = local.qryGetOrders.fldLastName,
 				"phone" = local.qryGetOrders.fldPhone,
+				"productIds" = local.qryGetOrders.productIds,
 				"quantities" = local.qryGetOrders.quantities,
 				"unitPrices" = local.qryGetOrders.unitPrices,
 				"unitTaxes" = local.qryGetOrders.unitTaxes,

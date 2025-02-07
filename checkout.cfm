@@ -148,7 +148,7 @@
 					<div class="card-body">
 						<h4 class="card-title">Price Details</h4>
 						<hr>
-						<cf_totalprice totalPrice=#variables.totalPrice# totalActualPrice="#variables.totalActualPrice#" totalTax="#variables.totalTax#">
+						<cf_totalprice totalPrice="#variables.totalPrice#" totalActualPrice="#variables.totalActualPrice#" totalTax="#variables.totalTax#">
 					</div>
 				</div>
 			</div>

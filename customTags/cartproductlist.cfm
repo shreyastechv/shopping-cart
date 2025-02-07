@@ -18,10 +18,7 @@
 		<cfset caller.totalPrice += local.price>
 		<cfset caller.totalActualPrice += local.actualPrice>
 
-		<!--- Generate random id for the mian container div --->
-		<cfset local.randomId = createUUID()>
-
-		<div class="card mb-3 shadow" id="#local.randomId#">
+		<div class="card mb-3 shadow" id="productContainer_#productId#">
 			<div class="row g-0">
 				<div class="col-md-4 p-3">
 					<a href="/productPage.cfm?productId=#variables.encryptedProductId#">
@@ -35,16 +32,16 @@
 						<p class="mb-1">Actual Price: <span class="fw-bold">Rs. <span name="actualPrice">#local.actualPrice#</span></span></p>
 						<p class="mb-1">Tax: <span class="fw-bold"><span name="tax">#local.qryProductInfo.fldTax#</span> %</span></p>
 						<div class="d-flex align-items-center">
-							<button type="button" class="btn btn-outline-primary btn-sm me-2" name="decBtn" onclick="editCartItem('#local.randomId#', #productId#, 'decrement')"
+							<button type="button" class="btn btn-outline-primary btn-sm me-2" name="decBtn" onclick="editCartItem('productContainer_#productId#', #productId#, 'decrement')"
 							<cfif attributes.products[productId].quantity EQ 1>
 								disabled
 							</cfif>
 							>-</button>
 
-							<input type="text" name="quantity" class="form-control text-center w-25" value="#attributes.products[productId].quantity#" onchange="handleQuantityChange('#local.randomId#')" readonly>
-							<button type="button" class="btn btn-outline-primary btn-sm ms-2" name="incBtn" onclick="editCartItem('#local.randomId#', #productId#, 'increment')">+</button>
+							<input type="text" name="quantity" class="form-control text-center w-25" value="#attributes.products[productId].quantity#" onchange="handleQuantityChange('productContainer_#productId#')" readonly>
+							<button type="button" class="btn btn-outline-primary btn-sm ms-2" name="incBtn" onclick="editCartItem('productContainer_#productId#', #productId#, 'increment')">+</button>
 						</div>
-						<button type="button" class="btn btn-danger btn-sm mt-3" onclick="editCartItem('#local.randomid#', #productId#, 'delete')">Remove</button>
+						<button type="button" class="btn btn-danger btn-sm mt-3" onclick="editCartItem('productContainer_#productId#', #productId#, 'delete')">Remove</button>
 					</div>
 				</div>
 			</div>
