@@ -43,7 +43,7 @@
 						<div id="emailError" class="error text-danger ps-2"></div>
 					</div>
 					<div class="mb-3">
-						<input type="text" class="form-control input" id="phone" name="phone" placeholder="Phone" autocomplete="tel">
+						<input type="text" class="form-control input" id="phone" name="phone" maxlength="10" placeholder="Phone" autocomplete="tel">
 						<div id="phoneError" class="error text-danger ps-2"></div>
 					</div>
 					<div class="mb-3">
