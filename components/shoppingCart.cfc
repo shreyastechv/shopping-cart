@@ -1579,7 +1579,7 @@
 				tblCart
 			WHERE
 				fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-				AND fldProductId IN (#structKeyList(session.checkout)#)
+				AND fldProductId IN (<cfqueryparam value = "#structKeyList(session.checkout)#" cfsqltype = "varchar" list = "yes">)
 		</cfquery>
 
 		<!--- Empty cart structure in session --->
