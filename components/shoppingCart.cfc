@@ -466,6 +466,7 @@
 	<cffunction name="getProducts" access="remote" returnType="query" returnFormat="json">
 		<cfargument name="subCategoryId" type="string" required=false default="">
 		<cfargument name="productId" type="string" required=false default="">
+		<cfargument name="productIdList" type="string" required=false default="">
 		<cfargument name="random" type="string" required=false default="0">
 		<cfargument name="limit" type="string" required="false" default="">
 		<cfargument name="offset" type="string" required="false" default=0>
@@ -527,6 +528,8 @@
 					AND p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
 				<cfelseif len(trim(arguments.productId)) AND arguments.productId NEQ 0>
 					AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+				<cfelseif len(trim(arguments.productIdList))>
+					AND fldProductId IN (<cfqueryparam value = "#arguments.productIdList#" cfsqltype = "varchar" list = "yes">)
 				</cfif>
 
 				<cfif len(trim(arguments.max))>
