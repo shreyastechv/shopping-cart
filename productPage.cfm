@@ -13,24 +13,33 @@
 <cfset variables.qryProductInfo = application.shoppingCart.getProducts(productId = variables.productId)>
 <cfset variables.qryProductImages = application.shoppingCart.getProductImages(productId = variables.productId)>
 
-<!--- Handle Add to Cart and Buy Now --->
-<cfif structKeyExists(form, "addToCart") OR structKeyExists(form, "buyNow")>
+<!--- Handle add to cart button --->
+<cfif structKeyExists(form, "addToCart")>
 	<cfif structKeyExists(session, "userId")>
 		<cfset application.shoppingCart.modifyCart(
 			productId = variables.productId,
 			action = "increment"
 		)>
-		<cfif structKeyExists(form, "buyNow")>
-			<cflocation url="/checkout.cfm?productId=#urlEncodedFormat(url.productId)#" addToken="no">
-		<cfelse>
-			<cflocation url="#cgi.HTTP_URL#" addToken="no">
-		</cfif>
+		<!--- Go to cart page if user is logged in --->
+		<cflocation url="/cart.cfm" addToken="no">
 	<cfelse>
-		<cfif structKeyExists(form, "buyNow")>
-			<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=checkout.cfm" addToken="no">
-		<cfelse>
-			<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=cart.cfm" addToken="no">
-		</cfif>
+		<!--- Go to login page if user is not logged in --->
+		<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=cart.cfm" addToken="no">
+	</cfif>
+</cfif>
+
+<!--- Handle buy now button --->
+<cfif structKeyExists(form, "buyNow")>
+	<cfif structKeyExists(session, "userId")>
+		<cfset application.shoppingCart.modifyCart(
+			productId = variables.productId,
+			action = "increment"
+		)>
+		<!--- Go to checkout page if user is logged in --->
+		<cflocation url="/checkout.cfm?productId=#urlEncodedFormat(url.productId)#" addToken="no">
+	<cfelse>
+		<!--- Go to login page if user is not logged in --->
+		<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=checkout.cfm" addToken="no">
 	</cfif>
 </cfif>
 
