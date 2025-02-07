@@ -69,17 +69,29 @@ function createOrder(addressId) {
 			method: "createOrder",
 			addressId: addressId
 		},
-		success: function () {
-			setTimeout(() => {
-				$("#orderSuccess div[name='loading']").addClass("d-none");
-				$("#orderSuccess div[name='error']").addClass("d-none");
-				$("#orderSuccess div[name='success']").removeClass("d-none")
-			}, 1000);
+		success: function (response) {
+			const responseJSON = JSON.parse(response);
+
+			if (responseJSON.success === true) {
+				setTimeout(() => {
+					$("#orderSuccess div[name='loading']").addClass("d-none");
+					$("#orderSuccess div[name='error']").addClass("d-none");
+					$("#orderSuccess div[name='success']").removeClass("d-none")
+				}, 1000);
+			} else {
+				setTimeout(() => {
+					$("#orderSuccess div[name='loading']").addClass("d-none");
+					$("#orderSuccess div[name='success']").addClass("d-none");
+					$("#orderSuccess div[name='error']").removeClass("d-none")
+				}, 1000);
+			}
 		},
 		error: function() {
-			$("#orderSuccess div[name='loading']").addClass("d-none");
-			$("#orderSuccess div[name='success']").addClass("d-none");
-			$("#orderSuccess div[name='error']").removeClass("d-none")
+			setTimeout(() => {
+				$("#orderSuccess div[name='loading']").addClass("d-none");
+				$("#orderSuccess div[name='success']").addClass("d-none");
+				$("#orderSuccess div[name='error']").removeClass("d-none")
+			}, 1000);
 		}
 	})
 }

@@ -1485,7 +1485,7 @@
 		<cfreturn local.result>
 	</cffunction>
 
-	<cffunction name="createOrder" access="remote" returnType="struct">
+	<cffunction name="createOrder" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="addressId" type="string" required=true>
 
 		<cfset local.response = {}>
@@ -1527,92 +1527,99 @@
 			return result;
 		},{totalPrice = 0, totalTax = 0})>
 
-		<!--- Insert into order table --->
-		<cfquery name="local.qryCreateOrder">
-			INSERT INTO
-				tblOrder (
-					fldOrder_Id,
-					fldUserId,
-					fldAddressId,
-					fldTotalPrice,
-					fldTotalTax
-				)
-			VALUES (
-				<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-				<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-				<cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "varchar">,
-				<cfqueryparam value = "#trim(local.priceDetails.totalPrice)#" cfsqltype = "decimal">,
-				<cfqueryparam value = "#trim(local.priceDetails.totalTax)#" cfsqltype = "decimal">
-			)
-		</cfquery>
-
-		<!--- Insert into order items table --->
-		<cfquery name="local.qryCreateOrderItems">
-			INSERT INTO
-				tblOrderItems (
-					fldOrderId,
-					fldProductId,
-					fldQuantity,
-					fldUnitPrice,
-					fldUnitTax
-				)
-			VALUES
-			<cfset local.index = 1>
-			<cfloop collection="#session.checkout#" item="local.productId">
-				(
+		<cftry>
+			<!--- Insert into order table --->
+			<cfquery name="local.qryCreateOrder">
+				INSERT INTO
+					tblOrder (
+						fldOrder_Id,
+						fldUserId,
+						fldAddressId,
+						fldTotalPrice,
+						fldTotalTax
+					)
+				VALUES (
 					<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">,
-					<cfqueryparam value = "#trim(session.checkout[local.productId].quantity)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(session.checkout[local.productId].unitPrice)#" cfsqltype = "decimal">,
-					<cfqueryparam value = "#trim(session.checkout[local.productId].unitTax)#" cfsqltype = "decimal">
+					<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
+					<cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(local.priceDetails.totalPrice)#" cfsqltype = "decimal">,
+					<cfqueryparam value = "#trim(local.priceDetails.totalTax)#" cfsqltype = "decimal">
 				)
-				<cfif local.index LT structCount(session.checkout)>
-					,
-				</cfif>
-				<cfset local.index += 1>
-			</cfloop>
-		</cfquery>
+			</cfquery>
 
-		<!--- Delete ordered products from cart table --->
-		<cfquery name="local.qryDeleteCart">
-			DELETE FROM
-				tblCart
-			WHERE
-				fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-				AND fldProductId IN (<cfqueryparam value = "#structKeyList(session.checkout)#" cfsqltype = "varchar" list = "yes">)
-		</cfquery>
+			<!--- Insert into order items table --->
+			<cfquery name="local.qryCreateOrderItems">
+				INSERT INTO
+					tblOrderItems (
+						fldOrderId,
+						fldProductId,
+						fldQuantity,
+						fldUnitPrice,
+						fldUnitTax
+					)
+				VALUES
+				<cfset local.index = 1>
+				<cfloop collection="#session.checkout#" item="local.productId">
+					(
+						<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
+						<cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">,
+						<cfqueryparam value = "#trim(session.checkout[local.productId].quantity)#" cfsqltype = "varchar">,
+						<cfqueryparam value = "#trim(session.checkout[local.productId].unitPrice)#" cfsqltype = "decimal">,
+						<cfqueryparam value = "#trim(session.checkout[local.productId].unitTax)#" cfsqltype = "decimal">
+					)
+					<cfif local.index LT structCount(session.checkout)>
+						,
+					</cfif>
+					<cfset local.index += 1>
+				</cfloop>
+			</cfquery>
 
-		<!--- Empty cart structure in session --->
-		<cfset structEach(session.checkout, function(key) {
-			structDelete(session.cart, key);
-		})>
+			<!--- Delete ordered products from cart table --->
+			<cfquery name="local.qryDeleteCart">
+				DELETE FROM
+					tblCart
+				WHERE
+					fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+					AND fldProductId IN (<cfqueryparam value = "#structKeyList(session.checkout)#" cfsqltype = "varchar" list = "yes">)
+			</cfquery>
 
-		<!--- Fetch address details --->
-		<cfset local.address = getAddress(
-			addressId = arguments.addressId
-		)>
+			<!--- Empty cart structure in session --->
+			<cfset structEach(session.checkout, function(key) {
+				structDelete(session.cart, key);
+			})>
 
-		<!--- Send email to user --->
-		<cfmail to="#session.email#" from="no-reply@shoppingcart.local" subject="Your order has been successfully placed">
-			Hi #session.firstName# #session.lastName#,
+			<!--- Fetch address details --->
+			<cfset local.address = getAddress(
+				addressId = arguments.addressId
+			)>
 
-			Your order was placed successfully.
+			<!--- Send email to user --->
+			<cfmail to="#session.email#" from="no-reply@shoppingcart.local" subject="Your order has been successfully placed">
+				Hi #session.firstName# #session.lastName#,
 
-			Delivery Address:
-			#local.address[1].fullName#,
-			#local.address[1].addressLine1#,
-			#local.address[1].addressLine2#,
-			#local.address[1].city#, #local.address[1].state# - #local.address[1].pincode#,
-			#local.address[1].phone#
+				Your order was placed successfully.
 
-			Order Id: #local.orderId#
-        </cfmail>
+				Delivery Address:
+				#local.address[1].fullName#,
+				#local.address[1].addressLine1#,
+				#local.address[1].addressLine2#,
+				#local.address[1].city#, #local.address[1].state# - #local.address[1].pincode#,
+				#local.address[1].phone#
 
-		<!--- Clear session variable --->
-		<cfset structDelete(session, "checkout")>
+				Order Id: #local.orderId#
+			</cfmail>
 
-		<!--- Set success status --->
-		<cfset local.response["success"] = true>
+			<!--- Clear session variable --->
+			<cfset structDelete(session, "checkout")>
+
+			<!--- Set success status --->
+			<cfset local.response["success"] = true>
+
+			<cfcatch type="any">
+				<cfset local.response["success"] = false>
+				<cfreturn local.response>
+			</cfcatch>
+		</cftry>
 
 		<cfreturn local.response>
 	</cffunction>
