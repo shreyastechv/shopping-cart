@@ -107,7 +107,7 @@
 									<a class="nav-link" href="/products.cfm?categoryId=#variables.encryptedCategoryId#">
 										#variables.qryCategories.fldCategoryName#
 									</a>
-									<cfif variables.qrySubCategories.recordCount>
+									<cfif structKeyExists(variables.catToSubcatMapping, variables.qryCategories.fldCategory_Id)>
 										<ul class="dropdown-menu">
 											<cfloop array="#variables.catToSubcatMapping[variables.qryCategories.fldCategory_Id]#" item="variables.subCategory">
 												<!--- Encrypt SubCategory ID URL param --->

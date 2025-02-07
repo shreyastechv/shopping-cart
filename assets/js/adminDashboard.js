@@ -3,10 +3,10 @@ function createCategoryItem(categoryId, categoryName) {
 		<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 			<div id="categoryName-${categoryId}" class="fs-5">${categoryName}</div>
 			<div>
-				<button class="btn btn-lg" value="${categoryId}" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="showEditCategoryModal()">
+				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="showEditCategoryModal(${categoryId})">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>
 				</button>
-				<button class="btn btn-lg" value="${categoryId}" onclick="deleteCategory()">
+				<button class="btn btn-lg" onclick="deleteCategory(${categoryId})">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
 				<a class="btn btn-lg" href="/subCategory.cfm?categoryId=${categoryId}">
@@ -87,7 +87,7 @@ function showAddCategoryModal() {
 	clearCategoryModal();
 	$("#categoryModalLabel").text("ADD CATEGORY");
 	$("#categoryModalBtn").text("Add Category");
-	$("#categoryId").val("");
+	$("#categoryId").val("-1");
 	$("#categoryName").val("");
 	$("#categoryName").attr("data-sc-prevCategoryName", "");
 }

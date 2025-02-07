@@ -6,10 +6,10 @@ function createSubCategoryItem(subCategoryId, subCategoryName) {
 		<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 			<div id="subCategoryName-${subCategoryId}" class="fs-5">${subCategoryName}</div>
 			<div>
-				<button class="btn btn-lg" value="${subCategoryId}" data-bs-toggle="modal" data-bs-target="#subCategoryModal" onclick="showEditSubCategoryModal()">
+				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#subCategoryModal" onclick="showEditSubCategoryModal(${subCategoryId})">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>
 				</button>
-				<button class="btn btn-lg" value="${subCategoryId}" onclick="deleteSubCategory()">
+				<button class="btn btn-lg" onclick="deleteSubCategory(${subCategoryId})">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
 				<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=${subCategoryId}&subCategoryName=${subCategoryName}&categoryId=${urlCategoryId}&categoryName=${urlCategoryName}">
@@ -110,12 +110,12 @@ function showAddSubCategoryModal() {
 	clearSubCategoryModal();
 	$("#subCategoryModalLabel").text("ADD SUBCATEGORY");
 	$("#subCategoryModalBtn").text("Add SubCategory");
-	$("#subCategoryId").val("");
+	$("#subCategoryId").val("-1");
 	$("#subCategoryName").attr("data-sc-prevSubCategoryName", "");
 	$("#subCategoryForm")[0].reset();
 }
 
-function showEditSubCategoryModal(categoryId) {
+function showEditSubCategoryModal(subCategoryId) {
 	const subCategoryName = $("#subCategoryName-" + subCategoryId).text();
 	clearSubCategoryModal();
 	$("#subCategoryModalLabel").text("EDIT SUBCATEGORY");

@@ -132,7 +132,8 @@ function processproductForm() {
 function showAddProductModal() {
 	$("#productForm")[0].reset();
 	$(".error").text("");
-	$("#productId").val("");
+	console.log("hi")
+	$("#productId").val("-1");
 	// $("#categorySelect").val(urlcategoryId).change();
 	$("#subCategoryModalBtn").text("Add Product");
 }
@@ -192,15 +193,15 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 				<div id="price-${prodId}" class="text-success">Rs.${price}</div>
 			</div>
 			<div>
-				<button value="${prodId}" class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage()">
+				<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(${prodId})">
 					<div class="d-flex justify-content-center">
 						<img class="pe-none" src="${productImageDirectory}${imageFile}" alt="Product Image" width="50">
 					</div>
 				</button>
-				<button class="btn btn-lg" value="${prodId}" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal()">
+				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal(${prodId})">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>
 				</button>
-				<button class="btn btn-lg" value="${prodId}" onclick="deleteProduct()">
+				<button class="btn btn-lg" onclick="deleteProduct(${prodId})">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
 			</div>
@@ -228,12 +229,12 @@ function createCarousel(productId) {
 					</div>
 				`: `
 					<div class="d-flex justify-content-center pt-3 gap-5">
-						<button class="btn btn-success" value="${responseJSON[i].imageId}" onclick="setDefaultImage()">Set as Default</button>
-						<button class="btn btn-danger" value="${responseJSON[i].imageId}" onclick="deleteImage()">Delete</button>
+						<button class="btn btn-success" onclick="setDefaultImage(${responseJSON[i].imageId})">Set as Default</button>
+						<button class="btn btn-danger" onclick="deleteImage(${responseJSON[i].imageId})">Delete</button>
 					</div>
 				`;
 				const carouselItem = `
-					<div class="carousel-item ${isActive}">
+					<div class="carousel-item ${isActive}" id="imageContainer_${responseJSON[i].imageId}">
 						<div class="d-flex justify-content-center">
 							<img src="${productImageDirectory}${responseJSON[i].imageFileName}" class="d-block h-100" alt="Product Image">
 						</div>
@@ -252,9 +253,7 @@ function editDefaultImage(productId) {
 	$("#productImageModal").modal("show");
 }
 
-function setDefaultImage() {
-	const btnElement = event.target;
-	const imageId = btnElement.value;
+function setDefaultImage(imageId) {
 	$.ajax({
 		type: "POST",
 		url: "./components/shoppingCart.cfc",
@@ -263,16 +262,14 @@ function setDefaultImage() {
 			imageId: imageId
 		},
 		success: function() {
-			// const productId = $("#carouselContainer").attr("data-sc-productId");
-			// createCarousel(productId);
 			window.location.reload();
 		}
 	});
 }
 
-function deleteImage() {
-	const btnElement = event.target;
-	const imageId = btnElement.value;
+function deleteImage(imageId) {
+	console.log(imageId);
+	
 	$.ajax({
 		type: "POST",
 		url: "./components/shoppingCart.cfc",
@@ -283,7 +280,7 @@ function deleteImage() {
 		success: function() {
 			const carousel = new bootstrap.Carousel($('#productImageCarousel'));
 			carousel.next();
-			$(btnElement).parent().parent().remove();
+			$(`imageContainer_${imageId}`).parent().parent().remove();
 		}
 	});
 }
