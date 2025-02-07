@@ -7,6 +7,15 @@
 		<input type="text" id="searchOrders" class="form-control mb-3 shadow" placeholder="Search orders using order id...">
 
 		<div id="ordersContainer">
+			<!--- Show message if order list in empty --->
+			<cfif NOT arrayLen(variables.orders.data)>
+				<div class="d-flex flex-column align-items-center justify-content-center">
+					<img src="#application.imageDirectory#empty-cart.svg" width="300" alt="Shopping Cart Empty">
+					<div class="fs-5 mb-3">Order List is Empty</div>
+				</div>
+			</cfif>
+
+			<!--- Show orders data if there are previous orders --->
 			<cfloop array="#variables.orders.data#" item="variables.order">
 				<div class="card order-card shadow p-3 mb-4" data-order-id="#variables.order.orderId#">
 					<div class="d-flex flex-lg-row flex-column align-items-center justify-content-between mb-2">
