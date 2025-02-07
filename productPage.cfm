@@ -71,15 +71,10 @@
 				<!-- Action Buttons -->
 				<div class="mt-4">
 					<form method="post">
-						<cfif structKeyExists(session, "cart") AND structKeyExists(session.cart, variables.productId)>
-							<!--- Show go to cart button if product is present in cart --->
-							<a class="btn btn-warning btn-lg" href="cart.cfm">Go to Cart</a>
-						<cfelse>
-							<!--- Show add to cart button if product not in cart --->
-							<button type="submit" name="addToCart" class="btn btn-primary btn-lg mr-3">Add to Cart</button>
-						</cfif>
+						<!--- Add to cart button --->
+						<button type="submit" name="addToCart" class="btn btn-primary btn-lg mr-3">Add to Cart</button>
 
-						<!--- Buy now button redirects to checkout page using formaction --->
+						<!---Buy now button --->
 						<button type="submit" name="buyNow" class="btn btn-danger btn-lg">Buy Now</button>
 					</form>
 				</div>
