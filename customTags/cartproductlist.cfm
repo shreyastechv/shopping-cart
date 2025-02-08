@@ -8,6 +8,7 @@
 	<cfloop query="#variables.qryProductInfo#">
 		<!--- Encrypt Product ID since it is passed to URL param --->
 		<cfset variables.encryptedProductId = application.shoppingCart.encryptUrlParam(variables.qryProductInfo.fldProduct_Id)>
+		<cfset variables.encodedProductId = urlEncodedFormat(variables.encryptedProductId)>
 
 		<!--- Calculate price and actual price --->
 		<cfset variables.quantity = attributes.products[variables.qryProductInfo.fldProduct_Id].quantity>
@@ -21,7 +22,7 @@
 		<div class="card mb-3 shadow" id="productContainer_#variables.qryProductInfo.fldProduct_Id#">
 			<div class="row g-0">
 				<div class="col-md-4 p-3">
-					<a href="/productPage.cfm?productId=#variables.encryptedProductId#">
+					<a href="/productPage.cfm?productId=#variables.encodedProductId#">
 						<img src="#application.productImageDirectory&variables.qryProductInfo.fldProductImage#" class="img-fluid rounded-start" alt="Product">
 					</a>
 				</div>

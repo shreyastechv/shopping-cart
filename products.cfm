@@ -57,6 +57,7 @@
 			<cfloop query="variables.qrySubCategories">
 				<!--- Encrypt SubCategory ID since it is passed to URL param --->
 				<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
+				<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
 
 				<!--- Gather products --->
 				<cfset variables.qryProducts = application.shoppingCart.getProducts(
@@ -67,7 +68,7 @@
 
 				<!--- Show subcategory if it has products --->
 				<cfif variables.qryProducts.recordCount>
-					<a href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
+					<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
 					<cf_productlist qryProducts="#variables.qryProducts#">
 				</cfif>
 			</cfloop>

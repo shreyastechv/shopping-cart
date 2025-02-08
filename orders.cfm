@@ -34,6 +34,7 @@
 									<cfset variables.encryptedProductId = application.shoppingCart.encryptUrlParam(
 										urlParam = variables.productId
 									)>
+									<cfset variables.encodedProductId = urlEncodedFormat(variables.encryptedProductId)>
 									<cfset variables.unitPrice = listGetAt(variables.order.unitPrices, variables.i)>
 									<cfset variables.unitTax = listGetAt(variables.order.unitTaxes, variables.i)>
 									<cfset variables.price = variables.unitPrice + variables.unitTax>
@@ -44,7 +45,7 @@
 
 									<tr>
 										<td rowspan="3" class="text-center align-middle border-top border-bottom border-dark-subtle">
-											<a href="/productPage.cfm?productId=#variables.encryptedProductId#">
+											<a href="/productPage.cfm?productId=#variables.encodedProductId#">
 												<img src="#application.productImageDirectory&variables.productImage#" class="img-fluid rounded" width="100" alt="Product">
 											</a>
 										</td>

@@ -15,6 +15,7 @@
 				<cfloop query="variables.qryCategories">
 					<!--- Encrypt Category ID since it is passed to URL param --->
 					<cfset variables.encryptedCategoryId = application.shoppingCart.encryptUrlParam(variables.qryCategories.fldCategory_Id)>
+					<cfset variables.encodedCategoryId = urlEncodedFormat(variables.encryptedCategoryId)>
 
 					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 						<div id="categoryName-#variables.qryCategories.fldCategory_Id#" class="fs-5">#variables.qryCategories.fldCategoryName#</div>
@@ -25,7 +26,7 @@
 							<button class="btn btn-lg" onclick="deleteCategory(#variables.qryCategories.fldCategory_Id#)">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
-							<a class="btn btn-lg" href="/subCategory.cfm?categoryId=#variables.encryptedCategoryId#">
+							<a class="btn btn-lg" href="/subCategory.cfm?categoryId=#variables.encodedCategoryId#">
 								<i class="fa-solid fa-chevron-right"></i>
 							</a>
 						</div>

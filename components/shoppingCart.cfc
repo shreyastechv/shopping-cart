@@ -1729,9 +1729,8 @@
 		<cfargument name="urlParam" type="string" required=true>
 
 		<cfset local.encryptedParam = encrypt(arguments.urlParam, application.secretKey, "AES", "Base64")>
-		<cfset local.encodedParam = urlEncodedFormat(local.encryptedParam)>
 
-		<cfreturn local.encodedParam>
+		<cfreturn local.encryptedParam>
 	</cffunction>
 
 	<cffunction name="decryptUrlParam" access="public" returnType="string">

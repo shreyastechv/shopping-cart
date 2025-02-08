@@ -102,9 +102,10 @@
 							<cfloop query="variables.qryCategories">
 								<!--- Encrypt Category ID URL param --->
 								<cfset variables.encryptedCategoryId = application.shoppingCart.encryptUrlParam(variables.qryCategories.fldCategory_Id)>
+								<cfset variables.encodedCategoryId  = urlEncodedFormat(variables.encryptedCategoryId)>
 
 								<li class="nav-item dropdown">
-									<a class="nav-link" href="/products.cfm?categoryId=#variables.encryptedCategoryId#">
+									<a class="nav-link" href="/products.cfm?categoryId=#variables.encodedCategoryId#">
 										#variables.qryCategories.fldCategoryName#
 									</a>
 									<cfif structKeyExists(variables.catToSubcatMapping, variables.qryCategories.fldCategory_Id)>
@@ -112,8 +113,9 @@
 											<cfloop array="#variables.catToSubcatMapping[variables.qryCategories.fldCategory_Id]#" item="variables.subCategory">
 												<!--- Encrypt SubCategory ID URL param --->
 												<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.subCategory.subCategoryId)>
+												<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
 
-												<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#">#variables.subCategory.subCategoryName#</a></li>
+												<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#">#variables.subCategory.subCategoryName#</a></li>
 											</cfloop>
 										</ul>
 									</cfif>
