@@ -132,7 +132,6 @@ function processproductForm() {
 function showAddProductModal() {
 	$("#productForm")[0].reset();
 	$(".error").text("");
-	console.log("hi")
 	$("#productId").val("-1");
 	// $("#categorySelect").val(urlcategoryId).change();
 	$("#subCategoryModalBtn").text("Add Product");
@@ -268,8 +267,6 @@ function setDefaultImage(imageId) {
 }
 
 function deleteImage(imageId) {
-	console.log(imageId);
-	
 	$.ajax({
 		type: "POST",
 		url: "./components/shoppingCart.cfc",

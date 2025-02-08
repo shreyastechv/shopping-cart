@@ -35,8 +35,6 @@ function viewMore(subCategoryId) {
 		},
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
-			console.log(responseJSON);
-			
 
 			// Loop over product data to get info we need
 			responseJSON.DATA.forEach(product => {
