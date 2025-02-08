@@ -107,13 +107,13 @@
 									<a class="nav-link" href="/products.cfm?categoryId=#variables.encryptedCategoryId#">
 										#variables.qryCategories.fldCategoryName#
 									</a>
-									<cfif variables.qrySubCategories.recordCount>
+									<cfif structKeyExists(variables.catToSubcatMapping, variables.qryCategories.fldCategory_Id)>
 										<ul class="dropdown-menu">
-											<cfloop array="#variables.catToSubcatMapping[variables.qryCategories.fldCategory_Id]#" item="local.subCategory">
+											<cfloop array="#variables.catToSubcatMapping[variables.qryCategories.fldCategory_Id]#" item="variables.subCategory">
 												<!--- Encrypt SubCategory ID URL param --->
-												<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(local.subCategory.subCategoryId)>
+												<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.subCategory.subCategoryId)>
 
-												<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#">#local.subCategory.subCategoryName#</a></li>
+												<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#">#variables.subCategory.subCategoryName#</a></li>
 											</cfloop>
 										</ul>
 									</cfif>

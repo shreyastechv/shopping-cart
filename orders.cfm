@@ -7,48 +7,57 @@
 		<input type="text" id="searchOrders" class="form-control mb-3 shadow" placeholder="Search orders using order id...">
 
 		<div id="ordersContainer">
-			<cfloop array="#variables.orders.data#" item="local.order">
-				<div class="card order-card shadow p-3 mb-4" data-order-id="#local.order.orderId#">
+			<!--- Show message if order list in empty --->
+			<cfif NOT arrayLen(variables.orders.data)>
+				<div class="d-flex flex-column align-items-center justify-content-center">
+					<img src="#application.imageDirectory#empty-cart.svg" width="300" alt="Shopping Cart Empty">
+					<div class="fs-5 mb-3">Order List is Empty</div>
+				</div>
+			</cfif>
+
+			<!--- Show orders data if there are previous orders --->
+			<cfloop array="#variables.orders.data#" item="variables.order">
+				<div class="card order-card shadow p-3 mb-4" data-order-id="#variables.order.orderId#">
 					<div class="d-flex flex-lg-row flex-column align-items-center justify-content-between mb-2">
-						<div class="mb-0"><strong>Order ID:</strong> #local.order.orderId#</div>
-						<div class="mb-0"><strong>Order Date:</strong> #dateTimeFormat(local.order.orderDate, "mmm d YYYY h:n tt")#</div>
-						<div class="mb-0"><strong>Total Price:</strong> Rs. #local.order.totalPrice#</div>
-						<a class="btn btn-sm btn-success" href="http://shoppingcart.local/download.cfm?orderId=#local.order.orderId#">
+						<div class="mb-0"><strong>Order ID:</strong> #variables.order.orderId#</div>
+						<div class="mb-0"><strong>Order Date:</strong> #dateTimeFormat(variables.order.orderDate, "mmm d YYYY h:n tt")#</div>
+						<div class="mb-0"><strong>Total Price:</strong> Rs. #variables.order.totalPrice#</div>
+						<a class="btn btn-sm btn-success" href="/download.cfm?orderId=#variables.order.orderId#">
 							<i class="fa-solid fa-file-arrow-down pe-none"></i>
 						</a>
 					</div>
 					<div class="table-responsive">
 						<table class="table table-striped table-bordered">
 							<tbody>
-								<cfloop list="#local.order.productNames#" item="local.item" index="local.i">
-									<cfset local.productId = listGetAt(local.order.productIds, local.i)>
-									<cfset local.encryptedProductId = application.shoppingCart.encryptUrlParam(
-										urlParam = local.productId
+								<cfloop list="#variables.order.productNames#" item="variables.item" index="variables.i">
+									<cfset variables.productId = listGetAt(variables.order.productIds, variables.i)>
+									<cfset variables.encryptedProductId = application.shoppingCart.encryptUrlParam(
+										urlParam = variables.productId
 									)>
-									<cfset local.unitPrice = listGetAt(local.order.unitPrices, local.i)>
-									<cfset local.unitTax = listGetAt(local.order.unitTaxes, local.i)>
-									<cfset local.price = local.unitPrice + local.unitTax>
-									<cfset local.quantity = listGetAt(local.order.quantities, local.i)>
-									<cfset local.productName = listGetAt(local.order.productNames, local.i)>
-									<cfset local.brandName = listGetAt(local.order.brandNames, local.i)>
-									<cfset local.productImage = listGetAt(local.order.productImages, local.i)>
+									<cfset variables.unitPrice = listGetAt(variables.order.unitPrices, variables.i)>
+									<cfset variables.unitTax = listGetAt(variables.order.unitTaxes, variables.i)>
+									<cfset variables.price = variables.unitPrice + variables.unitTax>
+									<cfset variables.quantity = listGetAt(variables.order.quantities, variables.i)>
+									<cfset variables.productName = listGetAt(variables.order.productNames, variables.i)>
+									<cfset variables.brandName = listGetAt(variables.order.brandNames, variables.i)>
+									<cfset variables.productImage = listGetAt(variables.order.productImages, variables.i)>
 
 									<tr>
 										<td rowspan="3" class="text-center align-middle border-top border-bottom border-dark-subtle">
-											<a href="/productPage.cfm?productId=#local.encryptedProductId#">
-												<img src="#application.productImageDirectory&local.productImage#" class="img-fluid rounded" width="100" alt="Product">
+											<a href="/productPage.cfm?productId=#variables.encryptedProductId#">
+												<img src="#application.productImageDirectory&variables.productImage#" class="img-fluid rounded" width="100" alt="Product">
 											</a>
 										</td>
-										<td class="border-0 border-top border-dark-subtle"><strong>Product:</strong> #local.productName#</td>
-										<td class="border-0 border-top border-end border-dark-subtle"><strong>Price:</strong> Rs. #local.unitPrice#</td>
+										<td class="border-0 border-top border-dark-subtle"><strong>Product:</strong> #variables.productName#</td>
+										<td class="border-0 border-top border-end border-dark-subtle"><strong>Price:</strong> Rs. #variables.unitPrice#</td>
 									</tr>
 									<tr>
-										<td><strong>Brand:</strong> #local.brandName#</td>
-										<td class="border-end border-dark-subtle"><strong>Tax:</strong> Rs. #local.unitTax#</td>
+										<td><strong>Brand:</strong> #variables.brandName#</td>
+										<td class="border-end border-dark-subtle"><strong>Tax:</strong> Rs. #variables.unitTax#</td>
 									</tr>
 									<tr class="border-0 border-bottom border-dark-subtle">
-										<td class="border-0"><strong>Quantity:</strong> #local.quantity#</td>
-										<td class="border-0 border-end border-dark-subtle"><strong>Total:</strong> Rs. #local.price#</td>
+										<td class="border-0"><strong>Quantity:</strong> #variables.quantity#</td>
+										<td class="border-0 border-end border-dark-subtle"><strong>Total:</strong> Rs. #variables.price#</td>
 									</tr>
 								</cfloop>
 							</tbody>
@@ -57,11 +66,11 @@
 					<div class="d-flex flex-md-row flex-column justify-content-between">
 						<div>
 							<strong>Delivery Address:</strong>
-							#local.order.addressLine1#,
-							#local.order.addressLine2#,
-							#local.order.city#, #local.order.state# - #local.order.pincode#
+							#variables.order.addressLine1#,
+							#variables.order.addressLine2#,
+							#variables.order.city#, #variables.order.state# - #variables.order.pincode#
 						</div>
-						<div><strong>Contact:</strong> #local.order.firstName# #local.order.lastName# - #local.order.phone#</div>
+						<div><strong>Contact:</strong> #variables.order.firstName# #variables.order.lastName# - #variables.order.phone#</div>
 					</div>
 				</div>
 			</cfloop>

@@ -15,8 +15,8 @@
 			</script>
 
 			<!--- Load individual page-specific scripts --->
-			<cfloop array="#request.scriptPath#" index="local.script">
-				<script src="#application.scriptDirectory&local.script#"></script>
+			<cfloop array="#request.scriptPath#" index="variables.script">
+				<script src="#application.scriptDirectory&variables.script#"></script>
 			</cfloop>
 		</cfoutput>
 	</body>

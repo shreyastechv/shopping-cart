@@ -1,6 +1,6 @@
 <!--- URL Params --->
 <cfparam name="url.productId" default="">
-<cfparam name="url.redirect" default ="/">
+<cfparam name="url.redirect" default ="">
 
 <!--- Login Logic --->
 <cfif structKeyExists(form, "loginBtn")>
@@ -31,6 +31,9 @@
 <!--- Main Content --->
 <cfoutput>
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
+		<cfif len(trim(url.redirect))>
+			<div>Login to get access to #listGetAt(listGetAt(url.redirect, 1, "/"), 1, ".")# page</div>
+		</cfif>
 		<div id="submitMsgSection" class="text-danger p-2">
 			<cfif isDefined("variables.loginResult.message")>
 				#variables.loginResult.message#
