@@ -13,7 +13,7 @@
 <!--- Form Variables --->
 <cfparam name="form.filterRange" default="">
 <cfparam name="form.min" default="0">
-<cfparam name="form.max" default="">
+<cfparam name="form.max" default="0">
 <cfparam name="form.sort" default="">
 <cfparam name="form.limit" default=6>
 
