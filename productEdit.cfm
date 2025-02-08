@@ -1,22 +1,49 @@
+<!--- Variables --->
+<cfparam name="variables.subCategoryId" default="">
+<cfparam name="variables.subCategoryName" default="Products">
+<cfparam name="variables.categoryId" default="0">
+<cfparam name="variables.categoryName" default="Sub categories">
+
 <cfoutput>
-	<!--- Check presence of url params --->
-	<cfif NOT structKeyExists(url, "subCategoryId")>
-		<cflocation url="#cgi.http_referer#" addToken="no">
-	</cfif>
-
-	<!--- URL params --->
-	<cfparam  name="url.subCategoryName" default="Products">
-	<cfparam  name="url.categoryId" default="0">
-	<cfparam  name="url.categoryName" default="Sub categories">
-
 	<!--- Decrypt URL Params --->
 	<cfset variables.subCategoryId = application.shoppingCart.decryptUrlParam(url.subCategoryId)>
 
+	<!--- Go to home page if decryption fails (function returns -1) --->
+	<cfif variables.subCategoryId EQ -1>
+		<cflocation url="/" addToken="no">
+	</cfif>
+
 	<!--- Get Data --->
 	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
-	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
+	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories()>
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(subCategoryId = variables.subCategoryId)>
 	<cfset variables.qryBrands = application.shoppingCart.getBrands()>
+
+	<!--- Get sub category name of the current products page --->
+	<cfloop query="variables.qrySubCategories">
+		<cfif variables.qrySubCategories.fldSubCategory_Id EQ variables.subCategoryId>
+			<cfset variables.subCategoryName = variables.qrySubCategories.fldSubCategoryName>
+		</cfif>
+	</cfloop>
+
+	<!--- Get category id of the current products page --->
+	<cfloop query="variables.qrySubCategories">
+		<cfif variables.qrySubCategories.fldSubCategory_Id EQ variables.subCategoryId>
+			<cfset variables.categoryId = variables.qrySubCategories.fldCategoryId>
+		</cfif>
+	</cfloop>
+
+	<!--- Get category name of the current products page --->
+	<cfloop query="variables.qryCategories">
+		<cfif variables.qryCategories.fldCategory_Id EQ variables.categoryId>
+			<cfset variables.categoryName = variables.qryCategories.fldCategoryName>
+		</cfif>
+	</cfloop>
+
+	<!--- Reduce the sub categories query to only ones with current page category id --->
+	<cfset variables.qrySubCategories = queryFilter(variables.qrySubCategories, function(row) {
+		return row.fldCategoryId EQ variables.categoryId;
+	})>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
@@ -27,7 +54,7 @@
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">
-						<h3 class="fw-semibold text-center mb-0 me-3">#url.subCategoryName#</h3>
+						<h3 class="fw-semibold text-center mb-0 me-3">#variables.subCategoryName#</h3>
 						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal(#variables.subCategoryId#)">
 							Add+
 						</button>
@@ -76,7 +103,7 @@
 					<option value="0">Category Select</option>
 					<cfloop query="variables.qryCategories">
 						<option
-							<cfif url.categoryId EQ variables.qryCategories.fldCategory_Id>
+							<cfif variables.categoryId EQ variables.qryCategories.fldCategory_Id>
 								selected
 							</cfif>
 							value="#variables.qryCategories.fldCategory_Id#"
