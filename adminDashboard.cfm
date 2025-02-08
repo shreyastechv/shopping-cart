@@ -25,7 +25,7 @@
 							<button class="btn btn-lg" onclick="deleteCategory(#variables.qryCategories.fldCategory_Id#)">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
-							<a class="btn btn-lg" href="/subCategory.cfm?categoryId=#variables.encryptedCategoryId#&categoryName=#variables.qryCategories.fldCategoryName#">
+							<a class="btn btn-lg" href="/subCategory.cfm?categoryId=#variables.encryptedCategoryId#">
 								<i class="fa-solid fa-chevron-right"></i>
 							</a>
 						</div>

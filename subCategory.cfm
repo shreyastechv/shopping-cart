@@ -1,6 +1,6 @@
 <cfoutput>
-	<!--- URL params --->
-	<cfparam name="url.categoryName" default="Sub Categories">
+	<!--- Variables used in the page --->
+	<cfparam name="variables.categoryName" default="Sub Categories">
 
 	<!--- Check presence of url params --->
 	<cfif NOT structKeyExists(url, "categoryId")>
@@ -14,6 +14,13 @@
 	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
 	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
 
+	<!--- Get Category Name --->
+	<cfloop query="variables.qryCategories">
+		<cfif variables.qryCategories.fldCategory_Id EQ variables.categoryId>
+			<cfset variables.categoryName = variables.qryCategories.fldCategoryName>
+		</cfif>
+	</cfloop>
+
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
@@ -23,7 +30,7 @@
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">
-						<h3 class="fw-semibold text-center mb-0 me-3">#url.categoryName#</h3>
+						<h3 class="fw-semibold text-center mb-0 me-3">#variables.categoryName#</h3>
 						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showAddSubCategoryModal()">
 							Add+
 						</button>
@@ -43,7 +50,7 @@
 							<button class="btn btn-lg" onclick="deleteSubCategory(#variables.qrySubCategories.fldSubCategory_Id#)">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
-							<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=#variables.encryptedSubCategoryId#&subCategoryName=#variables.qrySubCategories.fldSubCategoryName#&categoryId=#variables.categoryId#&categoryName=#url.categoryName#">
+							<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=#variables.encryptedSubCategoryId#&subCategoryName=#variables.qrySubCategories.fldSubCategoryName#&categoryId=#variables.categoryId#&categoryName=#variables.categoryName#">
 								<i class="fa-solid fa-chevron-right"></i>
 							</a>
 						</div>
