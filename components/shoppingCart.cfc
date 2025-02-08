@@ -186,7 +186,12 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="getCategories" access="public" returnType="query">
+	<cffunction name="getCategories" access="public" returnType="struct">
+		<!--- Create response struct --->
+		<cfset local.response = {
+			"data" = []
+		}>
+
 		<cfquery name="local.qryGetCategories">
 			SELECT
 				c.fldCategory_Id,
@@ -209,7 +214,17 @@
 				</cfif>
 		</cfquery>
 
-		<cfreturn local.qryGetCategories>
+		<!--- Fill up the array with category information --->
+		<cfloop query="local.qryGetCategories">
+			<cfset local.categoryStruct = {
+				"categoryId": local.qryGetCategories.fldCategory_Id,
+				"categoryName": local.qryGetCategories.fldCategoryName
+			}>
+
+			<cfset arrayAppend(local.response.data, categoryStruct)>
+		</cfloop>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="modifyCategory" access="remote" returnType="struct" returnFormat="json">

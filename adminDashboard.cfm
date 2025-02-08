@@ -1,6 +1,6 @@
 <cfoutput>
 	<!--- Get Data --->
-	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
+	<cfset variables.categories = application.shoppingCart.getCategories()>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
@@ -12,18 +12,18 @@
 						Add+
 					</button>
 				</div>
-				<cfloop query="variables.qryCategories">
+				<cfloop array="#variables.categories.data#" item="item">
 					<!--- Encrypt Category ID since it is passed to URL param --->
-					<cfset variables.encryptedCategoryId = application.shoppingCart.encryptUrlParam(variables.qryCategories.fldCategory_Id)>
+					<cfset variables.encryptedCategoryId = application.shoppingCart.encryptUrlParam(item.categoryId)>
 					<cfset variables.encodedCategoryId = urlEncodedFormat(variables.encryptedCategoryId)>
 
 					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-						<div id="categoryName-#variables.qryCategories.fldCategory_Id#" class="fs-5">#variables.qryCategories.fldCategoryName#</div>
+						<div id="categoryName-#item.categoryId#" class="fs-5">#item.categoryName#</div>
 						<div>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal(#variables.qryCategories.fldCategory_Id#)">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal('#item.categoryId#')">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" onclick="deleteCategory(#variables.qryCategories.fldCategory_Id#)">
+							<button class="btn btn-lg" onclick="deleteCategory('#item.categoryId#')">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
 							<a class="btn btn-lg" href="/subCategory.cfm?categoryId=#variables.encodedCategoryId#">

@@ -14,7 +14,7 @@
 	</cfif>
 
 	<!--- Get Data --->
-	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
+	<cfset variables.categories = application.shoppingCart.getCategories()>
 	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories()>
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(subCategoryId = variables.subCategoryId)>
 	<cfset variables.qryBrands = application.shoppingCart.getBrands()>
@@ -34,9 +34,9 @@
 	</cfloop>
 
 	<!--- Get category name of the current products page --->
-	<cfloop query="variables.qryCategories">
-		<cfif variables.qryCategories.fldCategory_Id EQ variables.categoryId>
-			<cfset variables.categoryName = variables.qryCategories.fldCategoryName>
+	<cfloop array="#variables.categories.data#" item="item">
+		<cfif item.categoryId EQ variables.categoryId>
+			<cfset variables.categoryName = item.categoryName>
 		</cfif>
 	</cfloop>
 
@@ -101,14 +101,14 @@
 				<label for="categorySelect" class="fw-semibold">Category Name</label>
 				<select id="categorySelect" class="form-select" aria-label="Category Select">
 					<option value="0">Category Select</option>
-					<cfloop query="variables.qryCategories">
+					<cfloop array="#variables.categories.data#" item="item">
 						<option
-							<cfif variables.categoryId EQ variables.qryCategories.fldCategory_Id>
+							<cfif variables.categoryId EQ item.categoryId>
 								selected
 							</cfif>
-							value="#variables.qryCategories.fldCategory_Id#"
+							value="#item.categoryId#"
 						>
-							#variables.qryCategories.fldCategoryName#
+							#item.categoryName#
 						</option>
 					</cfloop>
 				</select>

@@ -11,13 +11,13 @@
 	<cfset variables.categoryId = application.shoppingCart.decryptUrlParam(url.categoryId)>
 
 	<!--- Get Data --->
-	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
+	<cfset variables.categories = application.shoppingCart.getCategories()>
 	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
 
 	<!--- Get Category Name --->
-	<cfloop query="variables.qryCategories">
-		<cfif variables.qryCategories.fldCategory_Id EQ variables.categoryId>
-			<cfset variables.categoryName = variables.qryCategories.fldCategoryName>
+	<cfloop array="#variables.categories.data#" item="item">
+		<cfif item.categoryId EQ variables.categoryId>
+			<cfset variables.categoryName = item.categoryName>
 		</cfif>
 	</cfloop>
 
@@ -74,14 +74,14 @@
 				<input type="hidden" id="subCategoryId" name="subCategoryId" value="">
 				<select id="categorySelect" class="form-select" aria-label="Category Select">
 					<option value="0">Category Select</option>
-					<cfloop query="variables.qryCategories">
+					<cfloop array="#variables.categories.data#" item="item">
 						<option
-							<cfif variables.categoryId EQ variables.qryCategories.fldCategory_Id>
+							<cfif variables.categoryId EQ item.categoryId>
 								selected
 							</cfif>
-							value="#variables.qryCategories.fldCategory_Id#"
+							value="#item.categoryId#"
 						>
-							#variables.qryCategories.fldCategoryName#
+							#item.categoryName#
 						</option>
 					</cfloop>
 				</select>
