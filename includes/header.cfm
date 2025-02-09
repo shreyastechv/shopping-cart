@@ -44,16 +44,10 @@
 					<img class="p-2 me-2" src="#application.imageDirectory#shopping-cart-logo.png" height="45" alt="Logo Image">
 					<div class="text-white fw-semibold">SHOPPING CART</div>
 				</a>
-				<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-					<a class="text-white text-decoration-none fs-4" href="/adminDashboard.cfm">
-						ADMIN DASHBOARD
-					</a>
-				<cfelse>
-					<form class="d-flex p-1 w-50" method="get" action="/products.cfm">
-						<input class="form-control me-2" type="search" name="search" value="#url.search#" placeholder="Search" onblur="this.value = this.value.trim()">
-						<button class="btn btn-outline-light" type="submit">Search</button>
-					</form>
-				</cfif>
+				<form class="d-flex p-1 w-50" method="get" action="/products.cfm">
+					<input class="form-control me-2" type="search" name="search" value="#url.search#" placeholder="Search" onblur="this.value = this.value.trim()">
+					<button class="btn btn-outline-light" type="submit">Search</button>
+				</form>
 				<nav class="d-flex align-items-center justify-content-between gap-4">
 					<!--- Profile Button --->
 					<button type="button" class="btn btn-outline-light" onclick="location.href='/profile.cfm'">
