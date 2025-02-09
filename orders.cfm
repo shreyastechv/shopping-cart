@@ -31,10 +31,7 @@
 							<tbody>
 								<cfloop list="#variables.order.productNames#" item="variables.item" index="variables.i">
 									<cfset variables.productId = listGetAt(variables.order.productIds, variables.i)>
-									<cfset variables.encryptedProductId = application.shoppingCart.encryptText(
-										urlParam = variables.productId
-									)>
-									<cfset variables.encodedProductId = urlEncodedFormat(variables.encryptedProductId)>
+									<cfset variables.encodedProductId = urlEncodedFormat(variables.productId)>
 									<cfset variables.unitPrice = listGetAt(variables.order.unitPrices, variables.i)>
 									<cfset variables.unitTax = listGetAt(variables.order.unitTaxes, variables.i)>
 									<cfset variables.price = variables.unitPrice + variables.unitTax>

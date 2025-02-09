@@ -55,9 +55,8 @@
 		<cfif structKeyExists(variables, "subCategories")>
 			<!--- Category Listing --->
 			<cfloop array="#variables.subCategories.data#" item="item">
-				<!--- Encrypt SubCategory ID since it is passed to URL param --->
-				<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptText(item.subCategoryId)>
-				<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
+				<!--- Encode Sub Category ID since it is passed to URL param --->
+				<cfset variables.encodedSubCategoryId  = urlEncodedFormat(item.subCategoryId)>
 
 				<!--- Gather products --->
 				<cfset variables.products = application.shoppingCart.getProducts(

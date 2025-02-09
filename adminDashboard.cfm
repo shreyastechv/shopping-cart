@@ -13,9 +13,8 @@
 					</button>
 				</div>
 				<cfloop array="#variables.categories.data#" item="item">
-					<!--- Encrypt Category ID since it is passed to URL param --->
-					<cfset variables.encryptedCategoryId = application.shoppingCart.encryptText(item.categoryId)>
-					<cfset variables.encodedCategoryId = urlEncodedFormat(variables.encryptedCategoryId)>
+			<!--- Encode Category ID since it is passed to URL param --->
+					<cfset variables.encodedCategoryId = urlEncodedFormat(item.categoryId)>
 
 					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 						<div id="categoryName-#item.categoryId#" class="fs-5">#item.categoryName#</div>

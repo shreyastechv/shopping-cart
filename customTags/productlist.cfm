@@ -4,9 +4,8 @@
 
 	<div class="row px-3 py-1" id="products">
 		<cfloop array="#attributes.products#" item="item">
-			<!--- Encrypt Product ID since it is passed to URL param --->
-			<cfset variables.encryptedProductId = application.shoppingCart.encryptText(item.productId)>
-			<cfset variables.encodedProductId = urlEncodedFormat(variables.encryptedProductId)>
+			<!--- Encode Product ID since it is passed to URL param --->
+			<cfset variables.encodedProductId = urlEncodedFormat(item.productId)>
 
 			<div class="col-sm-2 mb-4">
 				<div class="card rounded-3 h-100 shadow" onclick="location.href='/productPage.cfm?productId=#variables.encodedProductId#'" role="button">

@@ -100,9 +100,8 @@
 					<div class="container-fluid">
 						<ul class="navbar-nav w-100 d-flex justify-content-evenly">
 							<cfloop array="#variables.categories.data#" item="item">
-								<!--- Encrypt Category ID URL param --->
-								<cfset variables.encryptedCategoryId = application.shoppingCart.encryptText(item.categoryId)>
-								<cfset variables.encodedCategoryId  = urlEncodedFormat(variables.encryptedCategoryId)>
+								<!--- Encode Category ID since it is passed to URL param --->
+								<cfset variables.encodedCategoryId  = urlEncodedFormat(item.categoryId)>
 
 								<li class="nav-item dropdown">
 									<a class="nav-link" href="/products.cfm?categoryId=#variables.encodedCategoryId#">
@@ -111,9 +110,8 @@
 									<cfif structKeyExists(variables.catToSubcatMapping, item.categoryId)>
 										<ul class="dropdown-menu">
 											<cfloop array="#variables.catToSubcatMapping[item.categoryId]#" item="variables.subCategory">
-												<!--- Encrypt SubCategory ID URL param --->
-												<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptText(variables.subCategory.subCategoryId)>
-												<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
+												<!--- Encode Sub Category ID since it is passed to URL param --->
+												<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.subCategoryId)>
 
 												<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#">#variables.subCategory.subCategoryName#</a></li>
 											</cfloop>
