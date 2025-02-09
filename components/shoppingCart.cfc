@@ -234,6 +234,9 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
+		<!--- Decrypt ids--->
+		<cfset local.categoryId = decryptUrlParam(urlParam = arguments.categoryId)>
+
 		<!--- Category Id Validation --->
 		<cfif len(arguments.categoryId) AND NOT isValid("integer", arguments.categoryId)>
 			<cfset local.response["message"] &= "Category Id should be an integer">
@@ -301,6 +304,9 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
+		<!--- Decrypt ids--->
+		<cfset local.categoryId = decryptUrlParam(urlParam = arguments.categoryId)>
+
 		<!--- Login Check --->
 		<cfif NOT structKeyExists(session, "userId")>
 			<cfset local.response["message"] &= "User not logged in">
@@ -331,6 +337,9 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 		<cfset local.response["data"] = []>
+
+		<!--- Decrypt ids--->
+		<cfset local.categoryId = decryptUrlParam(urlParam = arguments.categoryId)>
 
 		<!--- Category Id Validation --->
 		<cfif structKeyExists(arguments, "categoryId") AND isValid("integer", arguments.categoryId) EQ false>
@@ -378,6 +387,10 @@
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
+
+		<!--- Decrypt ids--->
+		<cfset local.subCategoryId = decryptUrlParam(urlParam = arguments.subCategoryId)>
+		<cfset local.categoryId = decryptUrlParam(urlParam = arguments.categoryId)>
 
 		<!--- SubCategory Id Validation --->
 		<cfif len(arguments.subCategoryId) AND NOT isValid("integer", arguments.subCategoryId)>
@@ -458,6 +471,9 @@
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 
+		<!--- Decrypt ids--->
+		<cfset local.subCategoryId = decryptUrlParam(urlParam = arguments.subCategoryId)>
+
 		<!--- SubCategory Id Validation --->
 		<cfif len(arguments.subCategoryId) EQ 0>
 			<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
@@ -507,6 +523,13 @@
  		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 		<cfset local.response["data"] = []>
+
+		<!--- Decrypt ids--->
+		<cfset local.subCategoryId = decryptUrlParam(urlParam = arguments.subCategoryId)>
+		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
+		<cfset local.productIdList = ListMap(arguments.productIdList, function(item) {
+			return decryptUrlParam(item);
+		})>
 
 		<!--- SubCategory Id Validation --->
 		<cfif len(trim(arguments.subCategoryId)) AND isValid("integer", arguments.subCategoryId) EQ false>
@@ -639,11 +662,11 @@
 	</cffunction>
 
 	<cffunction name="modifyProduct" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="productId" type="integer" required=true>
-		<cfargument name="categorySelect" type="integer" required=true>
-		<cfargument name="subCategorySelect" type="integer" required=true>
+		<cfargument name="productId" type="string" required=true default="">
+		<cfargument name="categorySelect" type="string" required=true default="">
+		<cfargument name="subCategorySelect" type="string" required=true default="">
 		<cfargument name="productName" type="string" required=true>
-		<cfargument name="brandSelect" type="integer" required=true>
+		<cfargument name="brandSelect" type="string" required=true default="">
 		<cfargument name="productDesc" type="string" required=true>
 		<cfargument name="productPrice" type="float" required=true>
 		<cfargument name="productTax" type="float" required=true>
@@ -651,6 +674,12 @@
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
+
+		<!--- Decrypt ids--->
+		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
+		<cfset local.categorySelect = decryptUrlParam(urlParam = arguments.categorySelect)>
+		<cfset local.subCategorySelect = decryptUrlParam(urlParam = arguments.subCategorySelect)>
+		<cfset local.brandSelect = decryptUrlParam(urlParam = arguments.brandSelect)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) AND NOT isValid("integer", arguments.productId)>
@@ -814,10 +843,13 @@
 	</cffunction>
 
 	<cffunction name="deleteProduct" access="remote" returnType="void">
-		<cfargument name="productId" type="integer" required=true>
+		<cfargument name="productId" type="string" required=true default="">
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
+
+		<!--- Decrypt ids--->
+		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
@@ -856,11 +888,14 @@
 	</cffunction>
 
 	<cffunction name="getProductImages" access="remote" returnType="array" returnFormat="json">
-		<cfargument name="productId" type="integer" required=true>
+		<cfargument name="productId" type="integer" required=true default="">
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 		<cfset local.imageArray = []>
+
+		<!--- Decrypt ids--->
+		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
@@ -900,10 +935,13 @@
 	</cffunction>
 
 	<cffunction name="setDefaultImage" access="remote" returnType="void">
-		<cfargument name="imageId" type="integer" required=true>
+		<cfargument name="imageId" type="string" required=true default="">
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
+
+		<!--- Decrypt ids--->
+		<cfset local.imageId = decryptUrlParam(urlParam = arguments.imageId)>
 
 		<!--- Image Id Validation --->
 		<cfif len(arguments.imageId) EQ 0>
@@ -947,10 +985,13 @@
 	</cffunction>
 
 	<cffunction name="deleteImage" access="remote" returnType="struct">
-		<cfargument name="imageId" type="integer" required=true>
+		<cfargument name="imageId" type="string" required=true defaul="">
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
+
+		<!--- Decrypt ids--->
+		<cfset local.imageId = decryptUrlParam(urlParam = arguments.imageId)>
 
 		<!--- Image Id Validation --->
 		<cfif len(arguments.imageId) EQ 0>
@@ -1015,13 +1056,16 @@
 	</cffunction>
 
 	<cffunction name="modifyCart" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="productId" type="integer" required=true default="">
+		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
 		<cfset local.response = {}>
 		<cfset local.response["success"] = false>
 		<cfset local.response["message"] = "">
 		<cfset local.response["data"] = {}>
+
+		<!--- Decrypt ids--->
+		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
 
 		<!--- Validate productId --->
 		<cfif NOT len(trim(arguments.productId))>
@@ -1188,6 +1232,9 @@
 
 		<cfset local.addresses = []>
 
+		<!--- Decrypt ids--->
+		<cfset local.addressId = decryptUrlParam(urlParam = arguments.addressId)>
+
 		<cfquery name="local.qryGetAddress">
 			SELECT
 				fldAddress_Id,
@@ -1333,6 +1380,9 @@
 	<cffunction name="deleteAddress" access="remote" returnType="void">
 		<cfargument name="addressId" type="string" required=true default="">
 
+		<!--- Decrypt ids--->
+		<cfset local.addressId = decryptUrlParam(urlParam = arguments.addressId)>
+
 		<cfquery name="local.qryDeleteAddress">
 			UPDATE
 				tblAddress
@@ -1455,6 +1505,9 @@
 		<cfset local.response["message"] = "">
 		<cfset local.response["data"] = {}>
 
+		<!--- Decrypt ids--->
+		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
+
 		<!--- Validate productId --->
 		<cfif NOT len(trim(arguments.productId))>
 			<cfset local.response["message"] &= "Product ID should not be empty. ">
@@ -1563,6 +1616,9 @@
 		<cfset local.response = {}>
 		<cfset local.response["success"] = false>
 		<cfset local.response["message"] = "">
+
+		<!--- Decrypt ids--->
+		<cfset local.addressId = decryptUrlParam(urlParam = arguments.addressId)>
 
 		<!--- Check whether user is logged in --->
 		<cfif NOT structKeyExists(session, "userId")>
