@@ -17,7 +17,7 @@
 	<cfset variables.categories = application.shoppingCart.getCategories()>
 	<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(subCategoryId = variables.subCategoryId)>
-	<cfset variables.qryBrands = application.shoppingCart.getBrands()>
+	<cfset variables.brands = application.shoppingCart.getBrands()>
 
 	<!--- Get sub category name of the current products page --->
 	<cfloop array="#variables.subCategories.data#" item="item">
@@ -140,8 +140,8 @@
 				<label for="brandSelect" class="fw-semibold">Product Brand</label>
 				<select id="brandSelect" class="form-select" aria-label="SubCategory Select">
 					<option value="0">Brand Name</option>
-					<cfloop query="variables.qryBrands">
-						<option value="#variables.qryBrands.fldBrand_Id#">#variables.qryBrands.fldBrandName# </option>
+					<cfloop array="#variables.brands.data#" item="item">
+						<option value="#item.brandId#">#item.brandName#</option>
 					</cfloop>
 				</select>
 				<div id="brandSelectError" class="text-danger error"></div>

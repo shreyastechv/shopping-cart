@@ -594,7 +594,11 @@
 		<cfreturn local.qryGetProducts>
 	</cffunction>
 
-	<cffunction name="getBrands" access="public" returnType="query">
+	<cffunction name="getBrands" access="public" returnType="struct">
+		<cfset local.response = {
+			"data" = []
+		}>
+
 		<cfquery name="local.qryGetBrands">
 			SELECT
 				fldBrand_Id,
@@ -603,7 +607,17 @@
 				tblBrands
 		</cfquery>
 
-		<cfreturn local.qryGetBrands>
+		<!--- Fill up the array with brand information --->
+		<cfloop query="local.qryGetBrands">
+			<cfset local.brandStruct = {
+				"brandId": local.qryGetBrands.fldBrand_Id,
+				"brandName": local.qryGetBrands.fldBrandName
+			}>
+
+			<cfset arrayAppend(local.response.data, local.brandStruct)>
+		</cfloop>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="modifyProduct" access="remote" returnType="struct" returnFormat="json">
