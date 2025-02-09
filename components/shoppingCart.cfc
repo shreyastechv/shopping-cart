@@ -1892,23 +1892,21 @@
 	</cffunction>
 
 	<cffunction name="encrypt" access="private" returnType="string">
-		<cfargument name="urlParam" type="string" required=true>
+		<cfargument name="plainText" type="string" required=true>
 
-		<cfset local.encryptedParam = encrypt(arguments.urlParam, application.secretKey, "AES", "Base64")>
+		<cfset local.encryptedText = encrypt(arguments.plainText, application.secretKey, "AES", "Base64")>
 
-		<cfreturn local.encryptedParam>
+		<cfreturn local.encryptedText>
 	</cffunction>
 
 	<cffunction name="decrypt" access="private" returnType="string">
-		<cfargument name="urlParam" type="string" required=true>
+		<cfargument name="encryptedText" type="string" required=true>
 
 		<!--- Handle exception in case decryption failes --->
 		<cftry>
-			<!--- URL Decode not needed since it is handled by cfml page --->
-			<!--- <cfset local.decodedParam = urlDecode(arguments.urlParam)> --->
-			<cfset local.decryptedParam = decrypt(arguments.urlParam, application.secretKey, "AES", "Base64")>
+			<cfset local.decryptedText = decrypt(arguments.encryptedText, application.secretKey, "AES", "Base64")>
 
-			<cfreturn local.decryptedParam>
+			<cfreturn local.decryptedText>
 
 			<cfcatch type="any">
 				<!--- Return -1 if decryption fails --->
