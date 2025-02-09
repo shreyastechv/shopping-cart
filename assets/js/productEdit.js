@@ -147,18 +147,15 @@ function showEditProductModal(productId) {
 		},
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
-			const objProductData = {};
-			for(let i=0; i<responseJSON.COLUMNS.length; i++) {
-				objProductData[responseJSON.COLUMNS[i]] =responseJSON.DATA[0][i]
-			}
+			const objProductData = responseJSON.data[0];
 
 			$("#categorySelect").val(urlcategoryId).change();
 			// $("#subCategorySelect").val(urlSubCategoryId).change();
-			$("#productName").val(objProductData['FLDPRODUCTNAME']);
-			$("#brandSelect").val(objProductData['FLDBRANDID']).change();
-			$("#productDesc").val(objProductData['FLDDESCRIPTION']);
-			$("#productPrice").val(objProductData['FLDPRICE']);
-			$("#productTax").val(objProductData['FLDTAX']);
+			$("#productName").val(objProductData.productName);
+			$("#brandSelect").val(objProductData.brandId).change();
+			$("#productDesc").val(objProductData.description);
+			$("#productPrice").val(objProductData.price);
+			$("#productTax").val(objProductData.tax);
 			$("#productImage").val("");
 			$("#subCategoryModalBtn").text("Edit Product");
 		}

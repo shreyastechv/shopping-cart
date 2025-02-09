@@ -1,4 +1,4 @@
-<cfset variables.qryRandomProducts = application.shoppingCart.getProducts(
+<cfset variables.randomProducts = application.shoppingCart.getProducts(
 	random = 1,
 	limit = 12
 )>
@@ -11,5 +11,5 @@
 
 	<!--- Random Products --->
 	<div class="h2 px-2 pt-3 pb-1">Random Products</div>
-	<cf_productlist qryProducts="#variables.qryRandomProducts#">
+	<cf_productlist products="#variables.randomProducts.data#">
 </cfoutput>

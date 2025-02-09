@@ -492,7 +492,7 @@
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="getProducts" access="remote" returnType="query" returnFormat="json">
+	<cffunction name="getProducts" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="subCategoryId" type="integer" required=false default="-1">
 		<cfargument name="productId" type="integer" required=false default="-1">
 		<cfargument name="productIdList" type="string" required=false default="">
@@ -506,6 +506,7 @@
 
  		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
+		<cfset local.response["data"] = []>
 
 		<!--- SubCategory Id Validation --->
 		<cfif len(trim(arguments.subCategoryId)) AND isValid("integer", arguments.subCategoryId) EQ false>
@@ -591,7 +592,24 @@
 			</cfif>
 		</cfquery>
 
-		<cfreturn local.qryGetProducts>
+		<!--- Loop through the query results and populate the array --->
+		<cfloop query="local.qryGetProducts">
+			<cfset local.productStruct = {
+				"productId": local.qryGetProducts.fldProduct_Id,
+				"productName": local.qryGetProducts.fldProductName,
+				"brandId": local.qryGetProducts.fldBrandId,
+				"brandName": local.qryGetProducts.fldBrandName,
+				"description": local.qryGetProducts.fldDescription,
+				"price": local.qryGetProducts.fldPrice,
+				"tax": local.qryGetProducts.fldTax,
+				"productImage": local.qryGetProducts.fldProductImage
+			}>
+
+			<!--- Append each product struct to the response array --->
+			<cfset arrayAppend(local.response.data, local.productStruct)>
+		</cfloop>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="getBrands" access="public" returnType="struct">
@@ -1081,8 +1099,8 @@
 				<cfset session.cart[arguments.productId] = {
 					"cartId" = local.resultAddToCart.GENERATED_KEY,
 					"quantity" = 1,
-					"unitPrice" = local.productInfo.fldPrice,
-					"unitTax" = local.productInfo.fldTax
+					"unitPrice" = local.productInfo[1].price,
+					"unitTax" = local.productInfo[1].tax
 				}>
 
 				<!--- Set response message --->

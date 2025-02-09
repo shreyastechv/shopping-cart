@@ -22,8 +22,8 @@
 	<!--- Product details when this page was opened by clicking buy now from product page --->
 	<cfset variables.products[variables.productId] = {
 		"quantity" = 1,
-		"unitPrice" = variables.productDetails.fldPrice,
-		"unitTax" = variables.productDetails.fldTax
+		"unitPrice" = variables.productDetails[0].price,
+		"unitTax" = variables.productDetails[0].tax
 	}>
 
 	<!--- Session variable to store checkout products --->

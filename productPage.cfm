@@ -10,7 +10,7 @@
 </cfif>
 
 <!--- Get Data if productId is given --->
-<cfset variables.qryProductInfo = application.shoppingCart.getProducts(productId = variables.productId)>
+<cfset variables.productInfo = application.shoppingCart.getProducts(productId = variables.productId)>
 <cfset variables.qryProductImages = application.shoppingCart.getProductImages(productId = variables.productId)>
 
 <!--- Handle add to cart button --->
@@ -71,11 +71,11 @@
 
 			<!-- Product Details -->
 			<div class="col-md-6">
-				<h1 class="display-4">#variables.qryProductInfo.fldProductName#</h1>
-				<p class="lead">#variables.qryProductInfo.fldBrandName#</p>
-				<p class="h4 text-success">Rs. #variables.qryProductInfo.fldPrice#</p>
-				<p class="h6 text-secondary">Tax: #variables.qryProductInfo.fldTax#%</p>
-				<p class="mt-4">#variables.qryProductInfo.fldDescription#</p>
+				<h1 class="display-4">#variables.productInfo.data[1].productName#</h1>
+				<p class="lead">#variables.productInfo.data[1].brandName#</p>
+				<p class="h4 text-success">Rs. #variables.productInfo.data[1].price#</p>
+				<p class="h6 text-secondary">Tax: #variables.productInfo.data[1].tax#%</p>
+				<p class="mt-4">#variables.productInfo.data[1].description#</p>
 
 				<!-- Action Buttons -->
 				<div class="mt-4">

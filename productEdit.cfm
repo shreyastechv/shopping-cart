@@ -16,7 +16,7 @@
 	<!--- Get Data --->
 	<cfset variables.categories = application.shoppingCart.getCategories()>
 	<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
-	<cfset variables.qryProducts = application.shoppingCart.getProducts(subCategoryId = variables.subCategoryId)>
+	<cfset variables.products = application.shoppingCart.getProducts(subCategoryId = variables.subCategoryId)>
 	<cfset variables.brands = application.shoppingCart.getBrands()>
 
 	<!--- Get sub category name of the current products page --->
@@ -61,21 +61,21 @@
 					</div>
 					<div></div>
 				</div>
-				<cfloop query="variables.qryProducts">
-					<div id="productContainer-#variables.qryProducts.fldProduct_Id#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
+				<cfloop array="#variables.products.data#" item="item">
+					<div id="productContainer-#item.productId#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 						<div class="d-flex flex-column fs-5">
-							<div id="productName-#variables.qryProducts.fldProduct_Id#" class="fw-bold">#variables.qryProducts.fldProductName#</div>
-							<div id="brandName-#variables.qryProducts.fldProduct_Id#" class="fw-semibold">#variables.qryProducts.fldBrandName#</div>
-							<div id="price-#variables.qryProducts.fldProduct_Id#" class="text-success">Rs.#variables.qryProducts.fldPrice#</div>
+							<div id="productName-#item.productId#" class="fw-bold">#item.productName#</div>
+							<div id="brandName-#item.productId#" class="fw-semibold">#item.brandName#</div>
+							<div id="price-#item.productId#" class="text-success">Rs.#item.price#</div>
 						</div>
 						<div>
-							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#variables.qryProducts.fldProduct_Id#)">
-								<img class="pe-none" src="#application.productImageDirectory&variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
+							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#item.productId#)">
+								<img class="pe-none" src="#application.productImageDirectory&item.productImage#" alt="Product Image" width="50">
 							</button>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal(#variables.qryProducts.fldProduct_Id#,#variables.subCategoryId#)">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#item.productId#',#variables.subCategoryId#)">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" onclick="deleteProduct(#variables.qryProducts.fldProduct_Id#)">
+							<button class="btn btn-lg" onclick="deleteProduct('#item.productId#')">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
 						</div>
