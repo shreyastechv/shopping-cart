@@ -99,21 +99,21 @@
 				<nav class="navbar navbar-expand-lg bg-body-tertiary">
 					<div class="container-fluid">
 						<ul class="navbar-nav w-100 d-flex justify-content-evenly">
-							<cfloop array="#variables.categories.data#" item="item">
+							<cfloop array="#variables.categories.data#" item="categoryItem">
 								<!--- Encode Category ID since it is passed to URL param --->
-								<cfset variables.encodedCategoryId  = urlEncodedFormat(item.categoryId)>
+								<cfset variables.encodedCategoryId  = urlEncodedFormat(categoryItem.categoryId)>
 
 								<li class="nav-item dropdown">
 									<a class="nav-link" href="/products.cfm?categoryId=#variables.encodedCategoryId#">
-										#item.categoryName#
+										#categoryItem.categoryName#
 									</a>
-									<cfif structKeyExists(variables.catToSubcatMapping, item.categoryId)>
+									<cfif structKeyExists(variables.catToSubcatMapping, categoryItem.categoryId)>
 										<ul class="dropdown-menu">
-											<cfloop array="#variables.catToSubcatMapping[item.categoryId]#" item="variables.subCategory">
+											<cfloop array="#variables.catToSubcatMapping[categoryItem.categoryId]#" item="subCategoryItem">
 												<!--- Encode Sub Category ID since it is passed to URL param --->
-												<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.subCategoryId)>
+												<cfset variables.encodedSubCategoryId  = urlEncodedFormat(subCategoryItem.subCategoryId)>
 
-												<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#">#variables.subCategory.subCategoryName#</a></li>
+												<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#">#subCategoryItem.subCategoryName#</a></li>
 											</cfloop>
 										</ul>
 									</cfif>

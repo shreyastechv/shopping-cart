@@ -235,7 +235,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.categoryId = decryptText(urlParam = arguments.categoryId)>
+		<cfset local.categoryId = decryptText(arguments.categoryId)>
 
 		<!--- Category Id Validation --->
 		<cfif NOT len(trim(arguments.categoryId))>
@@ -308,7 +308,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.categoryId = decryptText(urlParam = arguments.categoryId)>
+		<cfset local.categoryId = decryptText(arguments.categoryId)>
 
 		<!--- Login Check --->
 		<cfif NOT structKeyExists(session, "userId")>
@@ -336,14 +336,14 @@
 	</cffunction>
 
 	<cffunction name="getSubCategories" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="categoryId" type="string" required=false>
+		<cfargument name="categoryId" type="string" required=false default="">
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
 		<cfset local.response["data"] = []>
 
 		<!--- Decrypt ids--->
-		<cfset local.categoryId = decryptText(urlParam = arguments.categoryId)>
+		<cfset local.categoryId = decryptText(arguments.categoryId)>
 
 		<!--- Category Id Validation --->
 		<cfif (len(trim(arguments.categoryId)) NEQ 0) AND (local.categoryId EQ -1)>
@@ -394,8 +394,8 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.subCategoryId = decryptText(urlParam = arguments.subCategoryId)>
-		<cfset local.categoryId = decryptText(urlParam = arguments.categoryId)>
+		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
+		<cfset local.categoryId = decryptText(arguments.categoryId)>
 
 		<!--- Sub Category Id Validation --->
 		<cfif NOT len(trim(arguments.subCategoryId))>
@@ -481,7 +481,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.subCategoryId = decryptText(urlParam = arguments.subCategoryId)>
+		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
 
 		<!--- Sub Category Id Validation --->
 		<cfif NOT len(trim(arguments.subCategoryId))>
@@ -535,8 +535,8 @@
 		<cfset local.response["data"] = []>
 
 		<!--- Decrypt ids--->
-		<cfset local.subCategoryId = decryptText(urlParam = arguments.subCategoryId)>
-		<cfset local.productId = decryptText(urlParam = arguments.productId)>
+		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
+		<cfset local.productId = decryptText(arguments.productId)>
 		<cfset local.productIdList = ListMap(arguments.productIdList, function(item) {
 			return decryptText(item);
 		})>
@@ -688,10 +688,10 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.productId = decryptText(urlParam = arguments.productId)>
-		<cfset local.categorySelect = decryptText(urlParam = arguments.categorySelect)>
-		<cfset local.subCategorySelect = decryptText(urlParam = arguments.subCategorySelect)>
-		<cfset local.brandSelect = decryptText(urlParam = arguments.brandSelect)>
+		<cfset local.productId = decryptText(arguments.productId)>
+		<cfset local.categorySelect = decryptText(arguments.categorySelect)>
+		<cfset local.subCategorySelect = decryptText(arguments.subCategorySelect)>
+		<cfset local.brandSelect = decryptText(arguments.brandSelect)>
 
 		<!--- Product Id Validation --->
 		<cfif (len(trim(arguments.productId)) NEQ 0) AND (local.productId EQ -1)>
@@ -859,7 +859,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.productId = decryptText(urlParam = arguments.productId)>
+		<cfset local.productId = decryptText(arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
@@ -898,15 +898,15 @@
 
 	</cffunction>
 
-	<cffunction name="getProductImages" access="remote" returnType="array" returnFormat="json">
-		<cfargument name="productId" type="integer" required=true default="">
+	<cffunction name="getProductImages" access="remote" returnType="struct" returnFormat="json">
+		<cfargument name="productId" type="string" required=true default="">
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
-		<cfset local.imageArray = []>
+		<cfset local.response["data"] = []>
 
 		<!--- Decrypt ids--->
-		<cfset local.productId = decryptText(urlParam = arguments.productId)>
+		<cfset local.productId = decryptText(arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
@@ -940,10 +940,10 @@
 				"imageFileName" = local.qryGetImages.fldImageFileName,
 				"defaultImage" = local.qryGetImages.fldDefaultImage
 			}>
-			<cfset arrayAppend(local.imageArray, local.imageStruct)>
+			<cfset arrayAppend(local.response.data, local.imageStruct)>
 		</cfloop>
 
-		<cfreturn local.imageArray>
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="setDefaultImage" access="remote" returnType="void">
@@ -953,7 +953,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.imageId = decryptText(urlParam = arguments.imageId)>
+		<cfset local.imageId = decryptText(arguments.imageId)>
 
 		<!--- Image Id Validation --->
 		<cfif len(arguments.imageId) EQ 0>
@@ -1004,7 +1004,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.imageId = decryptText(urlParam = arguments.imageId)>
+		<cfset local.imageId = decryptText(arguments.imageId)>
 
 		<!--- Image Id Validation --->
 		<cfif len(arguments.imageId) EQ 0>
@@ -1058,7 +1058,7 @@
 		</cfquery>
 
 		<cfloop query="local.qryGetCart">
-			<cfset local.cartItems[local.qryGetCart.fldProductId] = {
+			<cfset local.cartItems[encryptText(local.qryGetCart.fldProductId)] = {
 				"cartId" = encryptText(local.qryGetCart.fldCart_Id),
 				"quantity" = local.qryGetCart.fldQuantity,
 				"unitPrice" = local.qryGetCart.fldPrice,
@@ -1079,7 +1079,7 @@
 		<cfset local.response["data"] = {}>
 
 		<!--- Decrypt ids--->
-		<cfset local.productId = decryptText(urlParam = arguments.productId)>
+		<cfset local.productId = decryptText(arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
@@ -1128,7 +1128,7 @@
 				</cfquery>
 
 				<!--- Increment quantity of product in session variable --->
-				<cfset session.cart[local.productId].quantity += 1>
+				<cfset session.cart[encryptText(local.productId)].quantity += 1>
 
 				<!--- Set response message --->
 				<cfset local.response["message"] = "Product Quantity Incremented">
@@ -1155,10 +1155,10 @@
 				</cfquery>
 
 				<!--- Add product to session variable --->
-				<cfset session.cart[local.productId] = {
-					"cartId" = local.resultAddToCart.GENERATED_KEY,
+				<cfset session.cart[encryptText(local.productId)] = {
+					"cartId" = encryptText(local.resultAddToCart.GENERATED_KEY),
 					"quantity" = 1,
-					"unitPrice" = local.productInfo[1].price,
+					"unitPrice" = encryptText(local.productInfo[1].price),
 					"unitTax" = local.productInfo[1].tax
 				}>
 
@@ -1167,7 +1167,7 @@
 
 			</cfif>
 
-		<cfelseif arguments.action EQ "decrement" AND session.cart[local.productId].quantity GT 1>
+		<cfelseif arguments.action EQ "decrement" AND session.cart[encryptText(local.productId)].quantity GT 1>
 
 			<!--- Decrement product quantity in cart --->
 			<cfquery name="local.qryDecrItem">
@@ -1180,7 +1180,7 @@
 			</cfquery>
 
 			<!--- Decrement quantity of product in session variable --->
-			<cfset session.cart[local.productId].quantity -= 1>
+			<cfset session.cart[encryptText(local.productId)].quantity -= 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Decremented">
@@ -1196,7 +1196,7 @@
 			</cfquery>
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset structDelete(session.cart, local.productId)>
+			<cfset structDelete(session.cart, encryptText(local.productId))>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
@@ -1204,10 +1204,10 @@
 		</cfif>
 
 		<!--- Do the math --->
-		<cfif structKeyExists(session.cart, local.productId)>
-			<cfset local.unitPrice = session.cart[local.productId].unitPrice>
-			<cfset local.unitTax = session.cart[local.productId].unitTax>
-			<cfset local.quantity = session.cart[local.productId].quantity>
+		<cfif structKeyExists(session.cart, encryptText(local.productId))>
+			<cfset local.unitPrice = session.cart[encryptText(local.productId)].unitPrice>
+			<cfset local.unitTax = session.cart[encryptText(local.productId)].unitTax>
+			<cfset local.quantity = session.cart[encryptText(local.productId)].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
@@ -1215,7 +1215,7 @@
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"quantity" = session.cart[local.productId].quantity
+				"quantity" = session.cart[encryptText(local.productId)].quantity
 			}>
 		</cfif>
 
@@ -1242,15 +1242,16 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="getAddress" access="public" returnType="array">
+	<cffunction name="getAddress" access="public" returnType="struct">
 		<cfargument name="addressId" type="string" required=false default="">
 
 		<cfset local.response = {
+			"message" = "",
 			"data" = []
 		}>
 
 		<!--- Decrypt ids--->
-		<cfset local.addressId = decryptText(urlParam = arguments.addressId)>
+		<cfset local.addressId = decryptText(arguments.addressId)>
 
 		<!--- Address Id Validation --->
 		<cfif (len(arguments.addressId) NEQ 0) AND (local.addressId EQ -1)>
@@ -1279,7 +1280,7 @@
 				tblAddress
 			WHERE
 				fldActive = 1
-				<cfif structKeyExists(arguments, "addressId") AND len(trim(local.addressId))>
+				<cfif structKeyExists(local, "addressId") AND trim(local.addressId) NEQ -1>
 					AND fldAddress_Id = <cfqueryparam value = "#local.addressId#" cfsqltype = "integer">
 				<cfelse>
 					AND fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
@@ -1414,7 +1415,7 @@
 		}>
 
 		<!--- Decrypt ids--->
-		<cfset local.addressId = decryptText(urlParam = arguments.addressId)>
+		<cfset local.addressId = decryptText(encryptText = arguments.addressId)>
 
 		<!--- Address Id Validation --->
 		<cfif (len(arguments.addressId) NEQ 0) AND (local.addressId EQ -1)>
@@ -1555,7 +1556,7 @@
 		<cfset local.response["data"] = {}>
 
 		<!--- Decrypt ids--->
-		<cfset local.productId = decryptText(urlParam = arguments.productId)>
+		<cfset local.productId = decryptText(arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
@@ -1668,7 +1669,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.addressId = decryptText(urlParam = arguments.addressId)>
+		<cfset local.addressId = decryptText(arguments.addressId)>
 
 		<!--- Check whether user is logged in --->
 		<cfif NOT structKeyExists(session, "userId")>
@@ -1901,7 +1902,7 @@
 		<cfreturn local.encryptedText>
 	</cffunction>
 
-	<cffunction name="decrypt" access="private" returnType="string">
+	<cffunction name="decryptText" access="private" returnType="string">
 		<cfargument name="encryptedText" type="string" required=true>
 
 		<!--- Handle exception in case decryption failes --->

@@ -47,7 +47,7 @@
 			<div class="col-md-4" data-bs-theme="dark">
 				<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 h-100 shadow">
 					<div class="carousel-inner">
-						<cfloop array="#variables.qryProductImages#" item="variables.imageItem">
+						<cfloop array="#variables.qryProductImages.data#" item="variables.imageItem">
 							<div class="carousel-item #(variables.imageItem.defaultImage EQ 1 ? "active" : "")#">
 								<div class="d-flex justify-content-center">
 									<img src="#application.productImageDirectory&variables.imageItem.imageFileName#" class="img-fluid" alt="Product Image">

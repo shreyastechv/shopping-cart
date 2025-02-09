@@ -5,7 +5,7 @@
 <cfset variables.productInfo = application.shoppingCart.getProducts(productIdList = structKeyList(attributes.products))>
 
 <cfoutput>
-	<cfloop array="#variables.productInfo.data#" item="item">
+	<cfloop array="#variables.productInfo.data#" item="item" index="i">
 		<!--- Encode Product ID since it is passed to URL param --->
 		<cfset variables.encodedProductId = urlEncodedFormat(item.productId)>
 
@@ -18,7 +18,7 @@
 		<cfset caller.totalPrice += variables.price>
 		<cfset caller.totalActualPrice += variables.actualPrice>
 
-		<div class="card mb-3 shadow" id="productContainer_#item.productId#">
+		<div class="card mb-3 shadow" id="productContainer_#i#">
 			<div class="row g-0">
 				<div class="col-md-4 p-3">
 					<a href="/productPage.cfm?productId=#variables.encodedProductId#">
@@ -32,16 +32,16 @@
 						<p class="mb-1">Actual Price: <span class="fw-bold">Rs. <span name="actualPrice">#variables.actualPrice#</span></span></p>
 						<p class="mb-1">Tax: <span class="fw-bold"><span name="tax">#item.tax#</span> %</span></p>
 						<div class="d-flex align-items-center">
-							<button type="button" class="btn btn-outline-primary btn-sm me-2" name="decBtn" onclick="editCartItem('productContainer_#item.productId#', '#item.productId#', 'decrement')"
+							<button type="button" class="btn btn-outline-primary btn-sm me-2" name="decBtn" onclick="editCartItem('productContainer_#i#', '#item.productId#', 'decrement')"
 							<cfif attributes.products[item.productId].quantity EQ 1>
 								disabled
 							</cfif>
 							>-</button>
 
 							<input type="text" name="quantity" class="form-control text-center w-25" value="#attributes.products[item.productId].quantity#" onchange="handleQuantityChange('productContainer_#item.productId#')" readonly>
-							<button type="button" class="btn btn-outline-primary btn-sm ms-2" name="incBtn" onclick="editCartItem('productContainer_#item.productId#', '#item.productId#', 'increment')">+</button>
+							<button type="button" class="btn btn-outline-primary btn-sm ms-2" name="incBtn" onclick="editCartItem('productContainer_#i#', '#item.productId#', 'increment')">+</button>
 						</div>
-						<button type="button" class="btn btn-danger btn-sm mt-3" onclick="editCartItem('productContainer_#item.productId#', '#item.productId#', 'delete')">Remove</button>
+						<button type="button" class="btn btn-danger btn-sm mt-3" onclick="editCartItem('productContainer_#i#', '#item.productId#', 'delete')">Remove</button>
 					</div>
 				</div>
 			</div>

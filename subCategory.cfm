@@ -34,9 +34,8 @@
 					<div></div>
 				</div>
 				<cfloop array="#variables.subCategories.data#" item="item">
-					<!--- Encrypt SubCategory ID since it is passed to URL param --->
-					<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptText(item.subCategoryId)>
-					<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
+					<!--- Encode SubCategory ID since it is passed to URL param --->
+					<cfset variables.encodedSubCategoryId  = urlEncodedFormat(item.subCategoryId)>
 
 					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 						<div id="subCategoryName-#item.subCategoryId#" class="fs-5">#item.subCategoryName#</div>

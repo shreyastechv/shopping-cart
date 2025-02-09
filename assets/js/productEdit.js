@@ -215,22 +215,22 @@ function createCarousel(productId) {
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
 			$("#carouselContainer").empty();
-			for(let i=0; i<responseJSON.length; i++) {
+			for(let i=0; i<responseJSON.data.length; i++) {
 				const isActive = i === 0 ? "active" : ""; // Set active for the first item
-				const bottomDiv = responseJSON[i].defaultImage === 1 ? `
+				const bottomDiv = responseJSON.data[i].defaultImage === 1 ? `
 					<div class="text-center p-2">
 						Default Image
 					</div>
 				`: `
 					<div class="d-flex justify-content-center pt-3 gap-5">
-						<button class="btn btn-success" onclick="setDefaultImage(${responseJSON[i].imageId})">Set as Default</button>
-						<button class="btn btn-danger" onclick="deleteImage(${responseJSON[i].imageId})">Delete</button>
+						<button class="btn btn-success" onclick="setDefaultImage(${responseJSON.data[i].imageId})">Set as Default</button>
+						<button class="btn btn-danger" onclick="deleteImage(${responseJSON.data[i].imageId})">Delete</button>
 					</div>
 				`;
 				const carouselItem = `
-					<div class="carousel-item ${isActive}" id="imageContainer_${responseJSON[i].imageId}">
+					<div class="carousel-item ${isActive}" id="imageContainer_${responseJSON.data[i].imageId}">
 						<div class="d-flex justify-content-center">
-							<img src="${productImageDirectory}${responseJSON[i].imageFileName}" class="d-block h-100" alt="Product Image">
+							<img src="${productImageDirectory}${responseJSON.data[i].imageFileName}" class="d-block h-100" alt="Product Image">
 						</div>
 						${bottomDiv}
 					</div>
