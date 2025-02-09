@@ -270,7 +270,7 @@
 			<cfset local.response["message"] = "Category already exists!">
 		<cfelse>
 			<!--- Category Id == -1 means we used add category button --->
-			<cfif trim(arguments.categoryId) EQ -1>
+			<cfif trim(local.categoryId) EQ -1>
 				<cfquery name="local.qryAddCategory" result="local.resultAddCategory">
 					INSERT INTO
 						tblCategory (
@@ -292,7 +292,7 @@
 						fldCategoryName = <cfqueryparam value = "#trim(arguments.categoryName)#" cfsqltype = "varchar">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldCategory_Id = <cfqueryparam value = "#trim(arguments.categoryId)#" cfsqltype = "integer">
+						fldCategory_Id = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "Category Updated">
 			</cfif>
@@ -330,7 +330,7 @@
 
 		<!--- Continue with code execution if validation succeeds --->
 		<cfstoredproc procedure="spDeleteCategory">
-			<cfprocparam cfsqltype="integer" variable="userId" value="#arguments.categoryId#">
+			<cfprocparam cfsqltype="integer" variable="userId" value="#local.categoryId#">
 			<cfprocparam cfsqltype="integer" variable="contactId" value="#session.userId#">
 		</cfstoredproc>
 	</cffunction>
@@ -366,8 +366,8 @@
 				tblSubCategory sc
 			WHERE
 				sc.fldActive = 1
-				<cfif structKeyExists(arguments, "categoryId") AND len(trim(arguments.categoryId))>
-					AND sc.fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
+				<cfif structKeyExists(local, "categoryId") AND len(trim(local.categoryId))>
+					AND sc.fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
 				</cfif>
 		</cfquery>
 
@@ -431,8 +431,8 @@
 				tblSubCategory
 			WHERE
 				fldSubCategoryName = <cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">
-				AND fldCategoryId = <cfqueryparam value = "#trim(arguments.categoryId)#" cfsqltype = "integer">
-				AND fldSubCategory_Id != <cfqueryparam value = "#val(trim(arguments.subCategoryId))#" cfsqltype = "integer">
+				AND fldCategoryId = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">
+				AND fldSubCategory_Id != <cfqueryparam value = "#val(trim(local.subCategoryId))#" cfsqltype = "integer">
 				AND fldActive = 1
 		</cfquery>
 
@@ -440,7 +440,7 @@
 			<cfset local.response["message"] = "SubCategory already exists!">
 		<cfelse>
 			<!--- sub category id equals -1 means we used add sub category button --->
-			<cfif trim(arguments.subCategoryId) EQ -1>
+			<cfif trim(local.subCategoryId) EQ -1>
 				<cfquery name="local.qryAddSubCategory" result="local.resultAddSubCategory">
 					INSERT INTO
 						tblSubCategory (
@@ -450,7 +450,7 @@
 						)
 					VALUES (
 						<cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(arguments.categoryId)#" cfsqltype = "integer">,
+						<cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">,
 						<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					)
 				</cfquery>
@@ -462,10 +462,10 @@
 						tblSubCategory
 					SET
 						fldSubCategoryName = <cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">,
-						fldCategoryId = <cfqueryparam value = "#trim(arguments.categoryId)#" cfsqltype = "integer">,
+						fldCategoryId = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldSubCategory_Id = <cfqueryparam value = "#trim(arguments.subCategoryId)#" cfsqltype = "integer">
+						fldSubCategory_Id = <cfqueryparam value = "#trim(local.subCategoryId)#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "SubCategory Updated">
 			</cfif>
@@ -504,7 +504,7 @@
 				fldActive = 0,
 				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 			WHERE
-				fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
+				fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
 		</cfquery>
 
 		<cfquery name="qryDeleteSubCategory">
@@ -514,7 +514,7 @@
 				fldActive = 0,
 				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 			WHERE
-				fldSubCategory_Id = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
+				fldSubCategory_Id = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
 		</cfquery>
 	</cffunction>
 
@@ -589,12 +589,12 @@
 					AND i.fldDefaultImage = 1
 			WHERE
 				p.fldActive = 1
-				<cfif len(trim(arguments.subCategoryId)) AND arguments.subCategoryId NEQ -1>
-					AND p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
-				<cfelseif len(trim(arguments.productId)) AND arguments.productId NEQ -1>
-					AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
-				<cfelseif len(trim(arguments.productIdList))>
-					AND fldProductId IN (<cfqueryparam value = "#arguments.productIdList#" cfsqltype = "varchar" list = "yes">)
+				<cfif len(trim(local.subCategoryId)) AND local.subCategoryId NEQ -1>
+					AND p.fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
+				<cfelseif len(trim(local.productId)) AND local.productId NEQ -1>
+					AND p.fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+				<cfelseif len(trim(local.productIdList))>
+					AND fldProductId IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 				</cfif>
 
 				<!--- 0 is the default value of arguments.max hence it should not be used --->
@@ -754,8 +754,8 @@
 				tblProduct
 			WHERE
 				fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "varchar">
-				AND fldSubCategoryId = <cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "integer">
-				AND fldProduct_Id != <cfqueryparam value = "#val(trim(arguments.productId))#" cfsqltype = "integer">
+				AND fldSubCategoryId = <cfqueryparam value = "#trim(local.subCategorySelect)#" cfsqltype = "integer">
+				AND fldProduct_Id != <cfqueryparam value = "#val(trim(local.productId))#" cfsqltype = "integer">
 				AND fldActive = 1
 		</cfquery>
 
@@ -773,7 +773,7 @@
 				allowedextensions=".png,.jpg,.jpeg"
 			>
 
-			<cfif trim(arguments.productId) EQ -1>
+			<cfif trim(local.productId) EQ -1>
 				<cfquery name="local.qryAddProduct" result="local.resultAddProduct">
 					INSERT INTO
 						tblProduct (
@@ -787,8 +787,8 @@
 						)
 					VALUES (
 						<cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(arguments.brandSelect)#" cfsqltype = "integer">,
+						<cfqueryparam value = "#trim(local.subCategorySelect)#" cfsqltype = "varchar">,
+						<cfqueryparam value = "#trim(local.brandSelect)#" cfsqltype = "integer">,
 						<cfqueryparam value = "#trim(arguments.productDesc)#" cfsqltype = "varchar">,
 						<cfqueryparam value = "#val(arguments.productPrice)#" cfsqltype = "decimal" scale = "2">,
 						<cfqueryparam value = "#val(arguments.productTax)#" cfsqltype = "decimal" scale = "2">,
@@ -804,14 +804,14 @@
 						tblProduct
 					SET
 						fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "varchar">,
-						fldSubCategoryId = <cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "integer">,
-						fldBrandId = <cfqueryparam value = "#trim(arguments.brandSelect)#" cfsqltype = "integer">,
+						fldSubCategoryId = <cfqueryparam value = "#trim(local.subCategorySelect)#" cfsqltype = "integer">,
+						fldBrandId = <cfqueryparam value = "#trim(local.brandSelect)#" cfsqltype = "integer">,
 						fldDescription = <cfqueryparam value = "#trim(arguments.productDesc)#" cfsqltype = "varchar">,
 						fldPrice = <cfqueryparam value = "#trim(arguments.productPrice)#" cfsqltype = "decimal">,
 						fldTax = <cfqueryparam value = "#trim(arguments.productTax)#" cfsqltype = "decimal">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldProduct_Id = <cfqueryparam value = "#val(trim(arguments.productId))#" cfsqltype = "integer">
+						fldProduct_Id = <cfqueryparam value = "#val(trim(local.productId))#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "Product Updated">
 			</cfif>
@@ -830,13 +830,13 @@
 						<cfloop array="#local.uploadedImages#" item="local.image" index="local.i">
 							(
 								-- Product id equals -1 means we clicked on add product
-								<cfif trim(arguments.productId) EQ -1>
+								<cfif trim(local.productId) EQ -1>
 									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "integer">,
 								<cfelse>
-									<cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">,
+									<cfqueryparam value = "#local.productId#" cfsqltype = "integer">,
 								</cfif>
 								<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "varchar">,
-								<cfif local.i EQ 1 AND len(trim(arguments.productId)) EQ 0>
+								<cfif local.i EQ 1 AND len(trim(local.productId)) EQ 0>
 									1,
 								<cfelse>
 									0,
@@ -882,7 +882,7 @@
 				fldActive = 0,
 				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 			WHERE
-				fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+				fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
 		</cfquery>
 
 		<cfquery name="qryDeleteProductImages">
@@ -893,7 +893,7 @@
 				fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
 				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
 			WHERE
-				fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+				fldProductId = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
 		</cfquery>
 
 	</cffunction>
@@ -930,7 +930,7 @@
 			FROM
 				tblProductImages
 			WHERE
-				fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+				fldProductId = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
 				AND fldActive = 1
 		</cfquery>
 
@@ -978,7 +978,7 @@
 				FROM
 					tblProductImages
 				WHERE
-					fldProductImage_Id = <cfqueryparam value="#trim(arguments.imageId)#" cfsqltype="integer">
+					fldProductImage_Id = <cfqueryparam value="#trim(local.imageId)#" cfsqltype="integer">
 			) AS subquery
 			ON p.fldProductId = subquery.fldProductId
 			SET
@@ -993,7 +993,7 @@
 			SET
 				fldDefaultImage = 1
 			WHERE
-				fldProductImage_Id = <cfqueryparam value = "#trim(arguments.imageId)#" cfsqltype = "integer">
+				fldProductImage_Id = <cfqueryparam value = "#trim(local.imageId)#" cfsqltype = "integer">
 		</cfquery>
 	</cffunction>
 
@@ -1026,7 +1026,7 @@
 			SET
 				fldActive = 0
 			WHERE
-				fldProductImage_Id = <cfqueryparam value = "#trim(arguments.imageId)#" cfsqltype = "integer">
+				fldProductImage_Id = <cfqueryparam value = "#trim(local.imageId)#" cfsqltype = "integer">
 		</cfquery>
 
 		<!--- Set success message --->
@@ -1111,7 +1111,7 @@
 				FROM
 					tblCart
 				WHERE
-					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+					fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
 					AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
 			</cfquery>
 
@@ -1123,12 +1123,12 @@
 					SET
 						fldQuantity = fldQuantity + 1
 					WHERE
-						fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+						fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
 						AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
 				</cfquery>
 
 				<!--- Increment quantity of product in session variable --->
-				<cfset session.cart[arguments.productId].quantity += 1>
+				<cfset session.cart[local.productId].quantity += 1>
 
 				<!--- Set response message --->
 				<cfset local.response["message"] = "Product Quantity Incremented">
@@ -1136,7 +1136,7 @@
 			<cfelse>
 				<!--- Get Product Into --->
 				<cfset local.productInfo = getProducts(
-					productId = arguments.productId
+					productId = local.productId
 				)>
 
 				<!--- Add product to cart in case it do not have it already --->
@@ -1149,13 +1149,13 @@
 						)
 					VALUES (
 						<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-						<cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">,
+						<cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">,
 						1
 					)
 				</cfquery>
 
 				<!--- Add product to session variable --->
-				<cfset session.cart[arguments.productId] = {
+				<cfset session.cart[local.productId] = {
 					"cartId" = local.resultAddToCart.GENERATED_KEY,
 					"quantity" = 1,
 					"unitPrice" = local.productInfo[1].price,
@@ -1167,7 +1167,7 @@
 
 			</cfif>
 
-		<cfelseif arguments.action EQ "decrement" AND session.cart[arguments.productId].quantity GT 1>
+		<cfelseif arguments.action EQ "decrement" AND session.cart[local.productId].quantity GT 1>
 
 			<!--- Decrement product quantity in cart --->
 			<cfquery name="local.qryDecrItem">
@@ -1176,11 +1176,11 @@
 				SET
 					fldQuantity = fldQuantity - 1
 				WHERE
-					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+					fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
 			</cfquery>
 
 			<!--- Decrement quantity of product in session variable --->
-			<cfset session.cart[arguments.productId].quantity -= 1>
+			<cfset session.cart[local.productId].quantity -= 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Decremented">
@@ -1192,11 +1192,11 @@
 				DELETE FROM
 					tblCart
 				WHERE
-					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
+					fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
 			</cfquery>
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset structDelete(session.cart, arguments.productId)>
+			<cfset structDelete(session.cart, local.productId)>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
@@ -1204,10 +1204,10 @@
 		</cfif>
 
 		<!--- Do the math --->
-		<cfif structKeyExists(session.cart, arguments.productId)>
-			<cfset local.unitPrice = session.cart[arguments.productId].unitPrice>
-			<cfset local.unitTax = session.cart[arguments.productId].unitTax>
-			<cfset local.quantity = session.cart[arguments.productId].quantity>
+		<cfif structKeyExists(session.cart, local.productId)>
+			<cfset local.unitPrice = session.cart[local.productId].unitPrice>
+			<cfset local.unitTax = session.cart[local.productId].unitTax>
+			<cfset local.quantity = session.cart[local.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
@@ -1215,7 +1215,7 @@
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"quantity" = session.cart[arguments.productId].quantity
+				"quantity" = session.cart[local.productId].quantity
 			}>
 		</cfif>
 
@@ -1279,8 +1279,8 @@
 				tblAddress
 			WHERE
 				fldActive = 1
-				<cfif structKeyExists(arguments, "addressId") AND len(trim(arguments.addressId))>
-					AND fldAddress_Id = <cfqueryparam value = "#arguments.addressId#" cfsqltype = "integer">
+				<cfif structKeyExists(arguments, "addressId") AND len(trim(local.addressId))>
+					AND fldAddress_Id = <cfqueryparam value = "#local.addressId#" cfsqltype = "integer">
 				<cfelse>
 					AND fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 				</cfif>
@@ -1435,7 +1435,7 @@
 				fldActive = 0,
 				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
 			WHERE
-				fldAddress_Id = <cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "integer">
+				fldAddress_Id = <cfqueryparam value = "#trim(local.addressId)#" cfsqltype = "integer">
 		</cfquery>
 
 		<cfset local.response["message"] = "Address deleted succcessfully.">
@@ -1581,15 +1581,15 @@
 		<cfif arguments.action EQ "increment">
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset session.checkout[arguments.productId].quantity += 1>
+			<cfset session.checkout[local.productId].quantity += 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Incremented">
 
-		<cfelseif arguments.action EQ "decrement" AND session.checkout[arguments.productId].quantity GT 1>
+		<cfelseif arguments.action EQ "decrement" AND session.checkout[local.productId].quantity GT 1>
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset session.checkout[arguments.productId].quantity -= 1>
+			<cfset session.checkout[local.productId].quantity -= 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Decremented">
@@ -1597,7 +1597,7 @@
 		<cfelse>
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset structDelete(session.checkout, arguments.productId)>
+			<cfset structDelete(session.checkout, local.productId)>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
@@ -1605,10 +1605,10 @@
 		</cfif>
 
 		<!--- Do the math --->
-		<cfif structKeyExists(session.checkout, arguments.productId)>
-			<cfset local.unitPrice = session.checkout[arguments.productId].unitPrice>
-			<cfset local.unitTax = session.checkout[arguments.productId].unitTax>
-			<cfset local.quantity = session.checkout[arguments.productId].quantity>
+		<cfif structKeyExists(session.checkout, local.productId)>
+			<cfset local.unitPrice = session.checkout[local.productId].unitPrice>
+			<cfset local.unitTax = session.checkout[local.productId].unitTax>
+			<cfset local.quantity = session.checkout[local.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
@@ -1616,7 +1616,7 @@
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"quantity" = session.checkout[arguments.productId].quantity
+				"quantity" = session.checkout[local.productId].quantity
 			}>
 		</cfif>
 
@@ -1720,7 +1720,7 @@
 				VALUES (
 					<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
 					<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-					<cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "varchar">,
+					<cfqueryparam value = "#trim(local.addressId)#" cfsqltype = "varchar">,
 					<cfqueryparam value = "#trim(local.priceDetails.totalPrice)#" cfsqltype = "decimal">,
 					<cfqueryparam value = "#trim(local.priceDetails.totalTax)#" cfsqltype = "decimal">
 				)
@@ -1769,7 +1769,7 @@
 
 			<!--- Fetch address details --->
 			<cfset local.address = getAddress(
-				addressId = arguments.addressId
+				addressId = local.addressId
 			)>
 
 			<!--- Send email to user --->
