@@ -537,7 +537,7 @@
 		<!--- Decrypt ids--->
 		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
 		<cfset local.productId = decryptText(arguments.productId)>
-		<cfset local.productIdList = ListMap(arguments.productIdList, function(item) {
+		<cfset local.productIdList = listMap(arguments.productIdList, function(item) {
 			return decryptText(item);
 		})>
 
@@ -1136,7 +1136,7 @@
 			<cfelse>
 				<!--- Get Product Into --->
 				<cfset local.productInfo = getProducts(
-					productId = local.productId
+					productId = arguments.productId
 				)>
 
 				<!--- Add product to cart in case it do not have it already --->
@@ -1158,8 +1158,8 @@
 				<cfset session.cart[encryptText(local.productId)] = {
 					"cartId" = encryptText(local.resultAddToCart.GENERATED_KEY),
 					"quantity" = 1,
-					"unitPrice" = encryptText(local.productInfo[1].price),
-					"unitTax" = local.productInfo[1].tax
+					"unitPrice" = local.productInfo.data[1].price,
+					"unitTax" = local.productInfo.data[1].tax
 				}>
 
 				<!--- Set response message --->
@@ -1407,15 +1407,16 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="deleteAddress" access="remote" returnType="void">
+	<cffunction name="deleteAddress" access="remote" returnType="struct">
 		<cfargument name="addressId" type="string" required=true default="">
 
 		<cfset local.response = {
+			"message" = "",
 			"data" = []
 		}>
 
 		<!--- Decrypt ids--->
-		<cfset local.addressId = decryptText(encryptText = arguments.addressId)>
+		<cfset local.addressId = decryptText(arguments.addressId)>
 
 		<!--- Address Id Validation --->
 		<cfif (len(arguments.addressId) NEQ 0) AND (local.addressId EQ -1)>
@@ -1582,15 +1583,15 @@
 		<cfif arguments.action EQ "increment">
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset session.checkout[local.productId].quantity += 1>
+			<cfset session.checkout[encryptText(local.productId)].quantity += 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Incremented">
 
-		<cfelseif arguments.action EQ "decrement" AND session.checkout[local.productId].quantity GT 1>
+		<cfelseif arguments.action EQ "decrement" AND session.checkout[encryptText(local.productId)].quantity GT 1>
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset session.checkout[local.productId].quantity -= 1>
+			<cfset session.checkout[encryptText(local.productId)].quantity -= 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Decremented">
@@ -1598,7 +1599,7 @@
 		<cfelse>
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset structDelete(session.checkout, local.productId)>
+			<cfset structDelete(session.checkout, encryptText(local.productId))>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
@@ -1606,10 +1607,10 @@
 		</cfif>
 
 		<!--- Do the math --->
-		<cfif structKeyExists(session.checkout, local.productId)>
-			<cfset local.unitPrice = session.checkout[local.productId].unitPrice>
-			<cfset local.unitTax = session.checkout[local.productId].unitTax>
-			<cfset local.quantity = session.checkout[local.productId].quantity>
+		<cfif structKeyExists(session.checkout, encryptText(local.productId))>
+			<cfset local.unitPrice = session.checkout[encryptText(local.productId)].unitPrice>
+			<cfset local.unitTax = session.checkout[encryptText(local.productId)].unitTax>
+			<cfset local.quantity = session.checkout[encryptText(local.productId)].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
@@ -1617,7 +1618,7 @@
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"quantity" = session.checkout[local.productId].quantity
+				"quantity" = session.checkout[encryptText(local.productId)].quantity
 			}>
 		</cfif>
 
@@ -1739,13 +1740,13 @@
 					)
 				VALUES
 				<cfset local.index = 1>
-				<cfloop collection="#session.checkout#" item="local.productId">
+				<cfloop collection="#session.checkout#" item="item">
 					(
 						<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">,
-						<cfqueryparam value = "#trim(session.checkout[local.productId].quantity)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(session.checkout[local.productId].unitPrice)#" cfsqltype = "decimal">,
-						<cfqueryparam value = "#trim(session.checkout[local.productId].unitTax)#" cfsqltype = "decimal">
+						<cfqueryparam value = "#decryptText(trim(item))#" cfsqltype = "integer">,
+						<cfqueryparam value = "#trim(session.checkout[item].quantity)#" cfsqltype = "varchar">,
+						<cfqueryparam value = "#trim(session.checkout[item].unitPrice)#" cfsqltype = "decimal">,
+						<cfqueryparam value = "#trim(session.checkout[item].unitTax)#" cfsqltype = "decimal">
 					)
 					<cfif local.index LT structCount(session.checkout)>
 						,
@@ -1754,13 +1755,18 @@
 				</cfloop>
 			</cfquery>
 
+			<!--- Create a list of decrypted product ids --->
+			<cfset local.productIdList = listMap(structKeyList(session.checkout), function(item) {
+				return decryptText(item);
+			})>
+
 			<!--- Delete ordered products from cart table --->
 			<cfquery name="local.qryDeleteCart">
 				DELETE FROM
 					tblCart
 				WHERE
 					fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-					AND fldProductId IN (<cfqueryparam value = "#structKeyList(session.checkout)#" cfsqltype = "varchar" list = "yes">)
+					AND fldProductId IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 			</cfquery>
 
 			<!--- Empty cart structure in session --->
@@ -1770,7 +1776,7 @@
 
 			<!--- Fetch address details --->
 			<cfset local.address = getAddress(
-				addressId = local.addressId
+				addressId = arguments.addressId
 			)>
 
 			<!--- Send email to user --->
@@ -1779,12 +1785,12 @@
 
 				Your order was placed successfully.
 
-				Delivery address.data.data:
-				#local.address.data.data[1].fullName#,
-				#local.address.data.data[1].addressLine1#,
-				#local.address.data.data[1].addressLine2#,
-				#local.address.data.data[1].city#, #local.address.data[1].state# - #local.address.data[1].pincode#,
-				#local.address.data.data[1].phone#
+				Delivery Address:
+				#local.address.data[1].fullName#,
+				#local.address.data[1].addressLine1#,
+				#local.address.data[1].addressLine2#,
+				#local.address.data[1].city#, #local.address.data[1].state# - #local.address.data[1].pincode#,
+				#local.address.data[1].phone#
 
 				Order Id: #local.orderId#
 			</cfmail>
@@ -1879,7 +1885,7 @@
 				"firstName" = local.qryGetOrders.fldFirstName,
 				"lastName" = local.qryGetOrders.fldLastName,
 				"phone" = local.qryGetOrders.fldPhone,
-				"productIds" = ListMap(local.qryGetOrders.productIds, function(item) {
+				"productIds" = listMap(local.qryGetOrders.productIds, function(item) {
 					return encryptText(item);
 				}),
 				"quantities" = local.qryGetOrders.quantities,

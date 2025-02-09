@@ -24,7 +24,7 @@
 					<div class="d-flex align-items-center px-4">
 						<cfif attributes.currentPage EQ "profile">
 							<!--- Delete button on profile page --->
-							<button class="btn btn-danger" onclick="deleteAddress('addressContainer_#i#', #address.addressId#)">
+							<button class="btn btn-danger" onclick="deleteAddress('addressContainer_#i#', '#address.addressId#')">
 								<i class="fa-solid fa-trash"></i>
 							</button>
 						<cfelseif attributes.currentPage EQ "checkout">
