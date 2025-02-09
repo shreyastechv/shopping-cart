@@ -217,7 +217,7 @@
 		<!--- Fill up the array with category information --->
 		<cfloop query="local.qryGetCategories">
 			<cfset local.categoryStruct = {
-				"categoryId": local.qryGetCategories.fldCategory_Id,
+				"categoryId": encryptText(local.qryGetCategories.fldCategory_Id),
 				"categoryName": local.qryGetCategories.fldCategoryName
 			}>
 
@@ -282,7 +282,7 @@
 						<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					)
 				</cfquery>
-				<cfset local.response["categoryId"] = local.resultAddCategory.GENERATED_KEY>
+				<cfset local.response["categoryId"] = encryptText(local.resultAddCategory.GENERATED_KEY)>
 				<cfset local.response["message"] = "Category Added">
 			<cfelse>
 				<cfquery name="qryEditCategory">
@@ -374,9 +374,9 @@
 		<!--- Fill up the array with sub category information --->
 		<cfloop query="local.qryGetSubCategories">
 			<cfset local.subCategoryStruct = {
-				"subCategoryId": local.qryGetSubCategories.fldSubCategory_Id,
+				"subCategoryId": encryptText(local.qryGetSubCategories.fldSubCategory_Id),
 				"subCategoryName": local.qryGetSubCategories.fldSubCategoryName,
-				"categoryId": local.qryGetSubCategories.fldCategoryId
+				"categoryId": encryptText(local.qryGetSubCategories.fldCategoryId)
 			}>
 
 			<cfset arrayAppend(local.response.data, local.subCategoryStruct)>
@@ -454,7 +454,7 @@
 						<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					)
 				</cfquery>
-				<cfset local.response["subCategoryId"] = local.resultAddSubCategory.GENERATED_KEY>
+				<cfset local.response["subCategoryId"] = encryptText(local.resultAddSubCategory.GENERATED_KEY)>
 				<cfset local.response["message"] = "SubCategory Added">
 			<cfelse>
 				<cfquery name="qryEditSubCategory">
@@ -630,9 +630,9 @@
 		<!--- Loop through the query results and populate the array --->
 		<cfloop query="local.qryGetProducts">
 			<cfset local.productStruct = {
-				"productId": local.qryGetProducts.fldProduct_Id,
+				"productId": encryptText(local.qryGetProducts.fldProduct_Id),
 				"productName": local.qryGetProducts.fldProductName,
-				"brandId": local.qryGetProducts.fldBrandId,
+				"brandId": encryptText(local.qryGetProducts.fldBrandId),
 				"brandName": local.qryGetProducts.fldBrandName,
 				"description": local.qryGetProducts.fldDescription,
 				"price": local.qryGetProducts.fldPrice,
@@ -663,7 +663,7 @@
 		<!--- Fill up the array with brand information --->
 		<cfloop query="local.qryGetBrands">
 			<cfset local.brandStruct = {
-				"brandId": local.qryGetBrands.fldBrand_Id,
+				"brandId": encryptText(local.qryGetBrands.fldBrand_Id),
 				"brandName": local.qryGetBrands.fldBrandName
 			}>
 
@@ -795,7 +795,7 @@
 						<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					)
 				</cfquery>
-				<cfset local.response["productId"] = local.resultAddProduct.GENERATED_KEY>
+				<cfset local.response["productId"] = encryptText(local.resultAddProduct.GENERATED_KEY)>
 				<cfset local.response["defaultImageFile"] = local.uploadedImages[1].serverFile>
 				<cfset local.response["message"] = "Product Added">
 			<cfelse>
@@ -936,7 +936,7 @@
 
 		<cfloop query="local.qryGetImages">
 			<cfset local.imageStruct = {
-				"imageId" = local.qryGetImages.fldProductImage_Id,
+				"imageId" = encryptText(local.qryGetImages.fldProductImage_Id),
 				"imageFileName" = local.qryGetImages.fldImageFileName,
 				"defaultImage" = local.qryGetImages.fldDefaultImage
 			}>
@@ -1059,7 +1059,7 @@
 
 		<cfloop query="local.qryGetCart">
 			<cfset local.cartItems[local.qryGetCart.fldProductId] = {
-				"cartId" = local.qryGetCart.fldCart_Id,
+				"cartId" = encryptText(local.qryGetCart.fldCart_Id),
 				"quantity" = local.qryGetCart.fldQuantity,
 				"unitPrice" = local.qryGetCart.fldPrice,
 				"unitTax" = local.qryGetCart.fldTax
@@ -1288,7 +1288,7 @@
 
 		<cfloop query="local.qryGetAddress">
 			<cfset arrayAppend(local.response.data, {
-				"addressId" = local.qryGetAddress.fldAddress_Id,
+				"addressId" = encryptText(local.qryGetAddress.fldAddress_Id),
 				"fullName" = local.qryGetAddress.fldFirstName & " " & local.qryGetAddress.fldLastName,
 				"addressLine1" = local.qryGetAddress.fldAddressLine1,
 				"addressLine2" = local.qryGetAddress.fldAddressLine2,
@@ -1878,7 +1878,9 @@
 				"firstName" = local.qryGetOrders.fldFirstName,
 				"lastName" = local.qryGetOrders.fldLastName,
 				"phone" = local.qryGetOrders.fldPhone,
-				"productIds" = local.qryGetOrders.productIds,
+				"productIds" = ListMap(local.qryGetOrders.productIds, function(item) {
+					return encryptText(item);
+				}),
 				"quantities" = local.qryGetOrders.quantities,
 				"unitPrices" = local.qryGetOrders.unitPrices,
 				"unitTaxes" = local.qryGetOrders.unitTaxes,
