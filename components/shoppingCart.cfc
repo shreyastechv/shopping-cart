@@ -238,9 +238,7 @@
 		<cfset local.categoryId = decryptText(arguments.categoryId)>
 
 		<!--- Category Id Validation --->
-		<cfif NOT len(trim(arguments.categoryId))>
-			<cfset local.response["message"] &= "Category Id is required. ">
-		<cfelseif local.categoryId EQ -1>
+		<cfif len(trim(arguments.categoryId)) AND local.categoryId EQ -1>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
@@ -269,8 +267,19 @@
 		<cfif local.qryCheckCategory.recordCount>
 			<cfset local.response["message"] = "Category already exists!">
 		<cfelse>
-			<!--- Category Id == -1 means we used add category button --->
-			<cfif trim(local.categoryId) EQ -1>
+			<!--- Category Id not empty means we used edit button --->
+			<cfif len(trim(arguments.categoryId))>
+				<cfquery name="qryEditCategory">
+					UPDATE
+						tblCategory
+					SET
+						fldCategoryName = <cfqueryparam value = "#trim(arguments.categoryName)#" cfsqltype = "varchar">,
+						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+					WHERE
+						fldCategory_Id = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">
+				</cfquery>
+				<cfset local.response["message"] = "Category Updated">
+			<cfelse>
 				<cfquery name="local.qryAddCategory" result="local.resultAddCategory">
 					INSERT INTO
 						tblCategory (
@@ -284,17 +293,6 @@
 				</cfquery>
 				<cfset local.response["categoryId"] = encryptText(local.resultAddCategory.GENERATED_KEY)>
 				<cfset local.response["message"] = "Category Added">
-			<cfelse>
-				<cfquery name="qryEditCategory">
-					UPDATE
-						tblCategory
-					SET
-						fldCategoryName = <cfqueryparam value = "#trim(arguments.categoryName)#" cfsqltype = "varchar">,
-						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-					WHERE
-						fldCategory_Id = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">
-				</cfquery>
-				<cfset local.response["message"] = "Category Updated">
 			</cfif>
 		</cfif>
 
@@ -398,9 +396,7 @@
 		<cfset local.categoryId = decryptText(arguments.categoryId)>
 
 		<!--- Sub Category Id Validation --->
-		<cfif NOT len(trim(arguments.subCategoryId))>
-			<cfset local.response["message"] &= "Sub Category Id is required. ">
-		<cfelseif local.subCategoryId EQ -1>
+		<cfif len(trim(arguments.subCategoryId)) AND local.subCategoryId EQ -1>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
@@ -439,8 +435,20 @@
 		<cfif local.qryCheckSubCategory.recordCount>
 			<cfset local.response["message"] = "SubCategory already exists!">
 		<cfelse>
-			<!--- sub category id equals -1 means we used add sub category button --->
-			<cfif trim(local.subCategoryId) EQ -1>
+			<!--- sub category id has length means we used edit button --->
+			<cfif len(trim(arguments.subCategoryId))>
+				<cfquery name="qryEditSubCategory">
+					UPDATE
+						tblSubCategory
+					SET
+						fldSubCategoryName = <cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">,
+						fldCategoryId = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">,
+						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+					WHERE
+						fldSubCategory_Id = <cfqueryparam value = "#trim(local.subCategoryId)#" cfsqltype = "integer">
+				</cfquery>
+				<cfset local.response["message"] = "SubCategory Updated">
+			<cfelse>
 				<cfquery name="local.qryAddSubCategory" result="local.resultAddSubCategory">
 					INSERT INTO
 						tblSubCategory (
@@ -456,18 +464,6 @@
 				</cfquery>
 				<cfset local.response["subCategoryId"] = encryptText(local.resultAddSubCategory.GENERATED_KEY)>
 				<cfset local.response["message"] = "SubCategory Added">
-			<cfelse>
-				<cfquery name="qryEditSubCategory">
-					UPDATE
-						tblSubCategory
-					SET
-						fldSubCategoryName = <cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">,
-						fldCategoryId = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">,
-						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-					WHERE
-						fldSubCategory_Id = <cfqueryparam value = "#trim(local.subCategoryId)#" cfsqltype = "integer">
-				</cfquery>
-				<cfset local.response["message"] = "SubCategory Updated">
 			</cfif>
 		</cfif>
 
@@ -593,8 +589,6 @@
 					AND p.fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
 				<cfelseif len(trim(local.productId)) AND local.productId NEQ -1>
 					AND p.fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
-				<cfelseif len(trim(local.productIdList))>
-					AND fldProductId IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 				</cfif>
 
 				<!--- 0 is the default value of arguments.max hence it should not be used --->
@@ -611,20 +605,6 @@
 						OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
 				</cfif>
 
-			<cfif arguments.random EQ 1>
-				ORDER BY
-					RAND()
-			<cfelseif len(trim(arguments.sort))>
-				ORDER BY
-					p.fldPrice #arguments.sort#
-			</cfif>
-
-			<cfif len(trim(arguments.limit))>
-				LIMIT <cfqueryparam value = "#val(arguments.limit)#" cfsqltype = "integer">
-				<cfif len(trim(arguments.offset))>
-					OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
-				</cfif>
-			</cfif>
 		</cfquery>
 
 		<!--- Loop through the query results and populate the array --->
@@ -694,7 +674,7 @@
 		<cfset local.brandSelect = decryptText(arguments.brandSelect)>
 
 		<!--- Product Id Validation --->
-		<cfif (len(trim(arguments.productId)) NEQ 0) AND (local.productId EQ -1)>
+		<cfif len(trim(arguments.productId)) AND (local.productId EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
@@ -773,7 +753,24 @@
 				allowedextensions=".png,.jpg,.jpeg"
 			>
 
-			<cfif trim(local.productId) EQ -1>
+			<!--- Sub category id has length means we used edit button --->
+			<cfif len(trim(arguments.productId))>
+				<cfquery name="qryEditProduct">
+					UPDATE
+						tblProduct
+					SET
+						fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "varchar">,
+						fldSubCategoryId = <cfqueryparam value = "#trim(local.subCategorySelect)#" cfsqltype = "integer">,
+						fldBrandId = <cfqueryparam value = "#trim(local.brandSelect)#" cfsqltype = "integer">,
+						fldDescription = <cfqueryparam value = "#trim(arguments.productDesc)#" cfsqltype = "varchar">,
+						fldPrice = <cfqueryparam value = "#trim(arguments.productPrice)#" cfsqltype = "decimal">,
+						fldTax = <cfqueryparam value = "#trim(arguments.productTax)#" cfsqltype = "decimal">,
+						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+					WHERE
+						fldProduct_Id = <cfqueryparam value = "#val(trim(local.productId))#" cfsqltype = "integer">
+				</cfquery>
+				<cfset local.response["message"] = "Product Updated">
+			<cfelse>
 				<cfquery name="local.qryAddProduct" result="local.resultAddProduct">
 					INSERT INTO
 						tblProduct (
@@ -798,22 +795,6 @@
 				<cfset local.response["productId"] = encryptText(local.resultAddProduct.GENERATED_KEY)>
 				<cfset local.response["defaultImageFile"] = local.uploadedImages[1].serverFile>
 				<cfset local.response["message"] = "Product Added">
-			<cfelse>
-				<cfquery name="qryEditProduct">
-					UPDATE
-						tblProduct
-					SET
-						fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "varchar">,
-						fldSubCategoryId = <cfqueryparam value = "#trim(local.subCategorySelect)#" cfsqltype = "integer">,
-						fldBrandId = <cfqueryparam value = "#trim(local.brandSelect)#" cfsqltype = "integer">,
-						fldDescription = <cfqueryparam value = "#trim(arguments.productDesc)#" cfsqltype = "varchar">,
-						fldPrice = <cfqueryparam value = "#trim(arguments.productPrice)#" cfsqltype = "decimal">,
-						fldTax = <cfqueryparam value = "#trim(arguments.productTax)#" cfsqltype = "decimal">,
-						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-					WHERE
-						fldProduct_Id = <cfqueryparam value = "#val(trim(local.productId))#" cfsqltype = "integer">
-				</cfquery>
-				<cfset local.response["message"] = "Product Updated">
 			</cfif>
 
 			<!--- Store images in DB --->
@@ -829,14 +810,14 @@
 					VALUES
 						<cfloop array="#local.uploadedImages#" item="local.image" index="local.i">
 							(
-								-- Product id equals -1 means we clicked on add product
-								<cfif trim(local.productId) EQ -1>
-									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "integer">,
-								<cfelse>
+								-- Product id is not empty means we clicked on edit button
+								<cfif len(trim(arguments.productId))>
 									<cfqueryparam value = "#local.productId#" cfsqltype = "integer">,
+								<cfelse>
+									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "integer">,
 								</cfif>
 								<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "varchar">,
-								<cfif local.i EQ 1 AND len(trim(local.productId)) EQ 0>
+								<cfif local.i EQ 1 AND len(trim(arguments.productId)) EQ 0>
 									1,
 								<cfelse>
 									0,

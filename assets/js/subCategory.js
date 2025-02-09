@@ -1,18 +1,18 @@
 const urlCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('categoryId');
-const urlCategoryName = new URLSearchParams(document.URL.split('?')[1]).get('categoryName');
 
 function createSubCategoryItem(subCategoryId, subCategoryName) {
+	const containerId = "subCategoryContainer_" + Math.floor(Math.random() * 1e9);;
 	const subCategoryItem = `
-		<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-			<div id="subCategoryName-${subCategoryId}" class="fs-5">${subCategoryName}</div>
+		<div class="d-flex justify-content-between align-items-center border rounded-2 px-2" id="${containerId}">
+			<div name="subCategoryName" class="fs-5">${subCategoryName}</div>
 			<div>
-				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#subCategoryModal" onclick="showEditSubCategoryModal(${subCategoryId})">
+				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#subCategoryModal" onclick="showEditSubCategoryModal('${containerId}', '${subCategoryId}')">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>
 				</button>
-				<button class="btn btn-lg" onclick="deleteSubCategory(${subCategoryId})">
+				<button class="btn btn-lg" onclick="deleteSubCategory('${containerId}', '${subCategoryId}')">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
-				<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=${subCategoryId}&subCategoryName=${subCategoryName}&categoryId=${urlCategoryId}&categoryName=${urlCategoryName}">
+				<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=${subCategoryId}">
 					<i class="fa-solid fa-chevron-right"></i>
 				</a>
 			</div>
@@ -86,12 +86,7 @@ function processSubCategoryForm() {
 				}
 			}
 			else if (responseJSON.message == "SubCategory Updated") {
-				if (categoryId === urlCategoryId) {
-					$("#subCategoryName-" + subCategoryId).text(subCategoryName);
-				}
-				else {
-					$("#subCategoryName-" + subCategoryId).parent().remove();
-				}
+				location.reload();
 			}
 			else {
 				$("#subCategoryModalMsg").removeClass("text-success");
@@ -110,13 +105,13 @@ function showAddSubCategoryModal() {
 	clearSubCategoryModal();
 	$("#subCategoryModalLabel").text("ADD SUBCATEGORY");
 	$("#subCategoryModalBtn").text("Add SubCategory");
-	$("#subCategoryId").val("-1");
+	$("#subCategoryId").val("");
 	$("#subCategoryName").attr("data-sc-prevSubCategoryName", "");
 	$("#subCategoryForm")[0].reset();
 }
 
-function showEditSubCategoryModal(subCategoryId) {
-	const subCategoryName = $("#subCategoryName-" + subCategoryId).text();
+function showEditSubCategoryModal(containerId, subCategoryId) {
+	const subCategoryName = $(`#${containerId} [name='subCategoryName']`).text();
 	clearSubCategoryModal();
 	$("#subCategoryModalLabel").text("EDIT SUBCATEGORY");
 	$("#subCategoryModalBtn").text("Edit SubCategory");
@@ -125,7 +120,7 @@ function showEditSubCategoryModal(subCategoryId) {
 	$("#subCategoryName").val(subCategoryName);
 }
 
-function deleteSubCategory(subCategoryId) {
+function deleteSubCategory(containerId, subCategoryId) {
 	const subCategoryName = $("#subCategoryName-" + subCategoryId).text();
 	if (confirm(`Delete subCategory - '${subCategoryName}'?`)) {
 		$.ajax({
@@ -136,7 +131,7 @@ function deleteSubCategory(subCategoryId) {
 				subCategoryId: subCategoryId
 			},
 			success: function() {
-				$("#subCategoryName-" + subCategoryId).parent().remove();
+				$(`#${containerId}`).remove();
 			}
 		});
 	}

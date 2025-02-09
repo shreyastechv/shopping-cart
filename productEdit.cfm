@@ -1,5 +1,7 @@
 <!--- Variables --->
 <cfparam name="url.subCategoryId" default="">
+<cfparam name="variables.categoryId" default="">
+<cfparam name="variables.subCategoryName" default="Products">
 
 <cfoutput>
 	<!--- Go to home page if sub category id is empty --->
@@ -55,12 +57,12 @@
 					</div>
 					<div></div>
 				</div>
-				<cfloop array="#variables.products.data#" item="item">
-					<div id="productContainer-#item.productId#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
+				<cfloop array="#variables.products.data#" item="item" index="i">
+					<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 						<div class="d-flex flex-column fs-5">
-							<div id="productName-#item.productId#" class="fw-bold">#item.productName#</div>
-							<div id="brandName-#item.productId#" class="fw-semibold">#item.brandName#</div>
-							<div id="price-#item.productId#" class="text-success">Rs.#item.price#</div>
+							<div name="productName" class="fw-bold">#item.productName#</div>
+							<div name="brandName" class="fw-semibold">#item.brandName#</div>
+							<div name="price" class="text-success">Rs.#item.price#</div>
 						</div>
 						<div>
 							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#item.productId#)">
@@ -69,7 +71,7 @@
 							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#item.productId#','#url.subCategoryId#')">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" onclick="deleteProduct('#item.productId#')">
+							<button class="btn btn-lg" onclick="deleteProduct('productContainer_#i#', '#item.productId#')">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
 						</div>

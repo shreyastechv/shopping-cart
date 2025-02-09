@@ -12,17 +12,17 @@
 						Add+
 					</button>
 				</div>
-				<cfloop array="#variables.categories.data#" item="item">
-			<!--- Encode Category ID since it is passed to URL param --->
+				<cfloop array="#variables.categories.data#" item="item" index="i">
+					<!--- Encode Category ID since it is passed to URL param --->
 					<cfset variables.encodedCategoryId = urlEncodedFormat(item.categoryId)>
 
-					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-						<div id="categoryName-#item.categoryId#" class="fs-5">#item.categoryName#</div>
+					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2" id="categoryContainer_#i#">
+						<div name="categoryName" class="fs-5">#item.categoryName#</div>
 						<div>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal('#item.categoryId#')">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal('categoryContainer_#i#', '#item.categoryId#')">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" onclick="deleteCategory('#item.categoryId#')">
+							<button class="btn btn-lg" onclick="deleteCategory('categoryContainer_#i#', '#item.categoryId#')">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
 							<a class="btn btn-lg" href="/subCategory.cfm?categoryId=#variables.encodedCategoryId#">
