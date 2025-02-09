@@ -7,8 +7,8 @@
 <cfparam name="url.search" default="">
 
 <!--- Decrypt URL Params --->
-<cfset variables.categoryId = application.shoppingCart.decryptUrlParam(url.categoryId)>
-<cfset variables.subCategoryId = application.shoppingCart.decryptUrlParam(url.subCategoryId)>
+<cfset variables.categoryId = application.shoppingCart.decrypt(url.categoryId)>
+<cfset variables.subCategoryId = application.shoppingCart.decrypt(url.subCategoryId)>
 
 <!--- Form Variables --->
 <cfparam name="form.filterRange" default="">
@@ -56,7 +56,7 @@
 			<!--- Category Listing --->
 			<cfloop array="#variables.subCategories.data#" item="item">
 				<!--- Encrypt SubCategory ID since it is passed to URL param --->
-				<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(item.subCategoryId)>
+				<cfset variables.encryptedSubCategoryId = application.shoppingCart.encrypt(item.subCategoryId)>
 				<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
 
 				<!--- Gather products --->

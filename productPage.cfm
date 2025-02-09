@@ -2,7 +2,7 @@
 <cfparam name="url.productId" default="">
 
 <!--- Decrypt URL Params --->
-<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
+<cfset variables.productId = application.shoppingCart.decrypt(url.productId)>
 
 <!--- Check URL params --->
 <cfif variables.productId EQ -1>

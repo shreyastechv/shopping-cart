@@ -10,7 +10,7 @@
 <cfset variables.totalActualPrice = 0>
 
 <!--- Decrypt product id --->
-<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
+<cfset variables.productId = application.shoppingCart.decrypt(url.productId)>
 
 
 <cfif variables.productId NEQ -1>

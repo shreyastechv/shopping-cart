@@ -6,7 +6,7 @@
 
 <cfoutput>
 	<!--- Decrypt URL Params --->
-	<cfset variables.subCategoryId = application.shoppingCart.decryptUrlParam(url.subCategoryId)>
+	<cfset variables.subCategoryId = application.shoppingCart.decrypt(url.subCategoryId)>
 
 	<!--- Go to home page if decryption fails (function returns -1) --->
 	<cfif variables.subCategoryId EQ -1>

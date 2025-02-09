@@ -101,7 +101,7 @@
 						<ul class="navbar-nav w-100 d-flex justify-content-evenly">
 							<cfloop array="#variables.categories.data#" item="item">
 								<!--- Encrypt Category ID URL param --->
-								<cfset variables.encryptedCategoryId = application.shoppingCart.encryptUrlParam(item.categoryId)>
+								<cfset variables.encryptedCategoryId = application.shoppingCart.encrypt(item.categoryId)>
 								<cfset variables.encodedCategoryId  = urlEncodedFormat(variables.encryptedCategoryId)>
 
 								<li class="nav-item dropdown">
@@ -112,7 +112,7 @@
 										<ul class="dropdown-menu">
 											<cfloop array="#variables.catToSubcatMapping[item.categoryId]#" item="variables.subCategory">
 												<!--- Encrypt SubCategory ID URL param --->
-												<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.subCategory.subCategoryId)>
+												<cfset variables.encryptedSubCategoryId = application.shoppingCart.encrypt(variables.subCategory.subCategoryId)>
 												<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
 
 												<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#">#variables.subCategory.subCategoryName#</a></li>

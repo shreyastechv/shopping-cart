@@ -235,7 +235,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.categoryId = decryptUrlParam(urlParam = arguments.categoryId)>
+		<cfset local.categoryId = decrypt(urlParam = arguments.categoryId)>
 
 		<!--- Category Id Validation --->
 		<cfif NOT len(trim(arguments.categoryId))>
@@ -308,7 +308,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.categoryId = decryptUrlParam(urlParam = arguments.categoryId)>
+		<cfset local.categoryId = decrypt(urlParam = arguments.categoryId)>
 
 		<!--- Login Check --->
 		<cfif NOT structKeyExists(session, "userId")>
@@ -343,7 +343,7 @@
 		<cfset local.response["data"] = []>
 
 		<!--- Decrypt ids--->
-		<cfset local.categoryId = decryptUrlParam(urlParam = arguments.categoryId)>
+		<cfset local.categoryId = decrypt(urlParam = arguments.categoryId)>
 
 		<!--- Category Id Validation --->
 		<cfif (len(trim(arguments.categoryId)) NEQ 0) AND (local.categoryId EQ -1)>
@@ -394,8 +394,8 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.subCategoryId = decryptUrlParam(urlParam = arguments.subCategoryId)>
-		<cfset local.categoryId = decryptUrlParam(urlParam = arguments.categoryId)>
+		<cfset local.subCategoryId = decrypt(urlParam = arguments.subCategoryId)>
+		<cfset local.categoryId = decrypt(urlParam = arguments.categoryId)>
 
 		<!--- Sub Category Id Validation --->
 		<cfif NOT len(trim(arguments.subCategoryId))>
@@ -481,7 +481,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.subCategoryId = decryptUrlParam(urlParam = arguments.subCategoryId)>
+		<cfset local.subCategoryId = decrypt(urlParam = arguments.subCategoryId)>
 
 		<!--- Sub Category Id Validation --->
 		<cfif NOT len(trim(arguments.subCategoryId))>
@@ -535,10 +535,10 @@
 		<cfset local.response["data"] = []>
 
 		<!--- Decrypt ids--->
-		<cfset local.subCategoryId = decryptUrlParam(urlParam = arguments.subCategoryId)>
-		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
+		<cfset local.subCategoryId = decrypt(urlParam = arguments.subCategoryId)>
+		<cfset local.productId = decrypt(urlParam = arguments.productId)>
 		<cfset local.productIdList = ListMap(arguments.productIdList, function(item) {
-			return decryptUrlParam(item);
+			return decrypt(item);
 		})>
 
 		<!--- Sub Category Id Validation --->
@@ -688,10 +688,10 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
-		<cfset local.categorySelect = decryptUrlParam(urlParam = arguments.categorySelect)>
-		<cfset local.subCategorySelect = decryptUrlParam(urlParam = arguments.subCategorySelect)>
-		<cfset local.brandSelect = decryptUrlParam(urlParam = arguments.brandSelect)>
+		<cfset local.productId = decrypt(urlParam = arguments.productId)>
+		<cfset local.categorySelect = decrypt(urlParam = arguments.categorySelect)>
+		<cfset local.subCategorySelect = decrypt(urlParam = arguments.subCategorySelect)>
+		<cfset local.brandSelect = decrypt(urlParam = arguments.brandSelect)>
 
 		<!--- Product Id Validation --->
 		<cfif (len(trim(arguments.productId)) NEQ 0) AND (local.productId EQ -1)>
@@ -859,7 +859,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
+		<cfset local.productId = decrypt(urlParam = arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
@@ -906,7 +906,7 @@
 		<cfset local.imageArray = []>
 
 		<!--- Decrypt ids--->
-		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
+		<cfset local.productId = decrypt(urlParam = arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
@@ -953,7 +953,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.imageId = decryptUrlParam(urlParam = arguments.imageId)>
+		<cfset local.imageId = decrypt(urlParam = arguments.imageId)>
 
 		<!--- Image Id Validation --->
 		<cfif len(arguments.imageId) EQ 0>
@@ -1004,7 +1004,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.imageId = decryptUrlParam(urlParam = arguments.imageId)>
+		<cfset local.imageId = decrypt(urlParam = arguments.imageId)>
 
 		<!--- Image Id Validation --->
 		<cfif len(arguments.imageId) EQ 0>
@@ -1079,7 +1079,7 @@
 		<cfset local.response["data"] = {}>
 
 		<!--- Decrypt ids--->
-		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
+		<cfset local.productId = decrypt(urlParam = arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
@@ -1250,7 +1250,7 @@
 		}>
 
 		<!--- Decrypt ids--->
-		<cfset local.addressId = decryptUrlParam(urlParam = arguments.addressId)>
+		<cfset local.addressId = decrypt(urlParam = arguments.addressId)>
 
 		<!--- Address Id Validation --->
 		<cfif (len(arguments.addressId) NEQ 0) AND (local.addressId EQ -1)>
@@ -1414,7 +1414,7 @@
 		}>
 
 		<!--- Decrypt ids--->
-		<cfset local.addressId = decryptUrlParam(urlParam = arguments.addressId)>
+		<cfset local.addressId = decrypt(urlParam = arguments.addressId)>
 
 		<!--- Address Id Validation --->
 		<cfif (len(arguments.addressId) NEQ 0) AND (local.addressId EQ -1)>
@@ -1555,7 +1555,7 @@
 		<cfset local.response["data"] = {}>
 
 		<!--- Decrypt ids--->
-		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
+		<cfset local.productId = decrypt(urlParam = arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
@@ -1668,7 +1668,7 @@
 		<cfset local.response["message"] = "">
 
 		<!--- Decrypt ids--->
-		<cfset local.addressId = decryptUrlParam(urlParam = arguments.addressId)>
+		<cfset local.addressId = decrypt(urlParam = arguments.addressId)>
 
 		<!--- Check whether user is logged in --->
 		<cfif NOT structKeyExists(session, "userId")>
@@ -1891,7 +1891,7 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="encryptUrlParam" access="private" returnType="string">
+	<cffunction name="encrypt" access="private" returnType="string">
 		<cfargument name="urlParam" type="string" required=true>
 
 		<cfset local.encryptedParam = encrypt(arguments.urlParam, application.secretKey, "AES", "Base64")>
@@ -1899,7 +1899,7 @@
 		<cfreturn local.encryptedParam>
 	</cffunction>
 
-	<cffunction name="decryptUrlParam" access="private" returnType="string">
+	<cffunction name="decrypt" access="private" returnType="string">
 		<cfargument name="urlParam" type="string" required=true>
 
 		<!--- Handle exception in case decryption failes --->
