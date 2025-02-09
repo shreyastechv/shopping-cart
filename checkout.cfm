@@ -9,18 +9,14 @@
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>
 
-<!--- Decrypt product id --->
-<cfset variables.productId = application.shoppingCart.decryptText(url.productId)>
-
-
-<cfif variables.productId NEQ -1>
+<cfif len(trim(url.productId)) NEQ 0>
 	<!--- Get product price details since this is not in cart --->
 	<cfset variables.productDetails = application.shoppingCart.getProducts(
-		productId = variables.productId
+		productId = url.productId
 	)>
 
 	<!--- Product details when this page was opened by clicking buy now from product page --->
-	<cfset variables.products[variables.productId] = {
+	<cfset variables.products[url.productId] = {
 		"quantity" = 1,
 		"unitPrice" = variables.productDetails[0].price,
 		"unitTax" = variables.productDetails[0].tax

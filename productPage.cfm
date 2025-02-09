@@ -1,23 +1,20 @@
 <!--- URL params --->
 <cfparam name="url.productId" default="">
 
-<!--- Decrypt URL Params --->
-<cfset variables.productId = application.shoppingCart.decryptText(url.productId)>
-
 <!--- Check URL params --->
-<cfif variables.productId EQ -1>
+<cfif len(trim(url.productId)) EQ 0>
 	<cflocation url="/" addToken="false">
 </cfif>
 
 <!--- Get Data if productId is given --->
-<cfset variables.productInfo = application.shoppingCart.getProducts(productId = variables.productId)>
-<cfset variables.qryProductImages = application.shoppingCart.getProductImages(productId = variables.productId)>
+<cfset variables.productInfo = application.shoppingCart.getProducts(productId = url.productId)>
+<cfset variables.qryProductImages = application.shoppingCart.getProductImages(productId = url.productId)>
 
 <!--- Handle add to cart button --->
 <cfif structKeyExists(form, "addToCart")>
 	<cfif structKeyExists(session, "userId")>
 		<cfset application.shoppingCart.modifyCart(
-			productId = variables.productId,
+			productId = url.productId,
 			action = "increment"
 		)>
 		<!--- Go to cart page if user is logged in --->
@@ -32,7 +29,7 @@
 <cfif structKeyExists(form, "buyNow")>
 	<cfif structKeyExists(session, "userId")>
 		<cfset application.shoppingCart.modifyCart(
-			productId = variables.productId,
+			productId = url.productId,
 			action = "increment"
 		)>
 		<!--- Go to checkout page if user is logged in --->

@@ -1,22 +1,18 @@
-<cfoutput>
-	<!--- Variables used in the page --->
-	<cfparam name="variables.categoryName" default="Sub Categories">
+<cfparam name="url.categoryId" default="">
 
+<cfoutput>
 	<!--- Check presence of url params --->
-	<cfif NOT structKeyExists(url, "categoryId")>
+	<cfif len(trim(url.categoryId)) EQ 0>
 		<cflocation url="/adminDashboard.cfm" addToken="no">
 	</cfif>
 
-	<!--- Decrypt URL Params --->
-	<cfset variables.categoryId = application.shoppingCart.decryptText(url.categoryId)>
-
 	<!--- Get Data --->
 	<cfset variables.categories = application.shoppingCart.getCategories()>
-	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
+	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
 
 	<!--- Get Category Name --->
 	<cfloop array="#variables.categories.data#" item="item">
-		<cfif item.categoryId EQ variables.categoryId>
+		<cfif item.categoryId EQ url.categoryId>
 			<cfset variables.categoryName = item.categoryName>
 		</cfif>
 	</cfloop>
@@ -76,7 +72,7 @@
 					<option value="0">Category Select</option>
 					<cfloop array="#variables.categories.data#" item="item">
 						<option
-							<cfif variables.categoryId EQ item.categoryId>
+							<cfif url.categoryId EQ item.categoryId>
 								selected
 							</cfif>
 							value="#item.categoryId#"

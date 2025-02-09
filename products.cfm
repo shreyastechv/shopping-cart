@@ -6,10 +6,6 @@
 <cfparam name="url.subCategoryId" default="">
 <cfparam name="url.search" default="">
 
-<!--- Decrypt URL Params --->
-<cfset variables.categoryId = application.shoppingCart.decryptText(url.categoryId)>
-<cfset variables.subCategoryId = application.shoppingCart.decryptText(url.subCategoryId)>
-
 <!--- Form Variables --->
 <cfparam name="form.filterRange" default="">
 <cfparam name="form.min" default="0">
@@ -27,13 +23,13 @@
 </cfif>
 
 <!--- Check URL Params --->
-<cfif variables.categoryId NEQ -1>
+<cfif len(trim(url.categoryId))>
 	<!--- Get Data if categoryId is given --->
-	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
-<cfelseif variables.subCategoryId NEQ -1>
+	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
+<cfelseif len(trim(url.subCategoryId))>
 	<!--- Get Data if subCategoryId is given --->
 	<cfset variables.products = application.shoppingCart.getProducts(
-		subCategoryId = variables.subCategoryId,
+		subCategoryId = url.subCategoryId,
 		limit = form.limit,
 		min = form.min,
 		max = (len(trim(form.max)) ? val(form.max) : ""),
@@ -139,7 +135,7 @@
 					<!--- View More Button --->
 					<cfif arrayLen(variables.products.data) GTE form.limit>
 						<div>
-							<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore(#variables.subCategoryId#)">View More</button>
+							<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore('#url.subCategoryId#')">View More</button>
 						</div>
 					</cfif>
 				<cfelse>

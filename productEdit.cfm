@@ -1,34 +1,28 @@
 <!--- Variables --->
-<cfparam name="variables.subCategoryId" default="">
-<cfparam name="variables.subCategoryName" default="Products">
-<cfparam name="variables.categoryId" default="0">
-<cfparam name="variables.categoryName" default="Sub categories">
+<cfparam name="url.subCategoryId" default="">
 
 <cfoutput>
-	<!--- Decrypt URL Params --->
-	<cfset variables.subCategoryId = application.shoppingCart.decryptText(url.subCategoryId)>
-
-	<!--- Go to home page if decryption fails (function returns -1) --->
-	<cfif variables.subCategoryId EQ -1>
+	<!--- Go to home page if sub category id is empty --->
+	<cfif len(trim(url.subCategoryId)) EQ 0>
 		<cflocation url="/" addToken="no">
 	</cfif>
 
 	<!--- Get Data --->
 	<cfset variables.categories = application.shoppingCart.getCategories()>
 	<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
-	<cfset variables.products = application.shoppingCart.getProducts(subCategoryId = variables.subCategoryId)>
+	<cfset variables.products = application.shoppingCart.getProducts(subCategoryId = url.subCategoryId)>
 	<cfset variables.brands = application.shoppingCart.getBrands()>
 
 	<!--- Get sub category name of the current products page --->
 	<cfloop array="#variables.subCategories.data#" item="item">
-		<cfif item.subCategoryId EQ variables.subCategoryId>
+		<cfif item.subCategoryId EQ url.subCategoryId>
 			<cfset variables.subCategoryName = item.subCategoryName>
 		</cfif>
 	</cfloop>
 
 	<!--- Get category id of the current products page --->
 	<cfloop array="#variables.subCategories.data#" item="item">
-		<cfif item.subCategoryId EQ variables.subCategoryId>
+		<cfif item.subCategoryId EQ url.subCategoryId>
 			<cfset variables.categoryId = item.categoryId>
 		</cfif>
 	</cfloop>
@@ -55,7 +49,7 @@
 					</a>
 					<div class="d-flex">
 						<h3 class="fw-semibold text-center mb-0 me-3">#variables.subCategoryName#</h3>
-						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal(#variables.subCategoryId#)">
+						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal('#url.subCategoryId#')">
 							Add+
 						</button>
 					</div>
@@ -72,7 +66,7 @@
 							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#item.productId#)">
 								<img class="pe-none" src="#application.productImageDirectory&item.productImage#" alt="Product Image" width="50">
 							</button>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#item.productId#',#variables.subCategoryId#)">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#item.productId#','#url.subCategoryId#')">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
 							<button class="btn btn-lg" onclick="deleteProduct('#item.productId#')">
@@ -120,7 +114,7 @@
 					<option value="0">SubCategory Select</option>
 					<cfloop array="#variables.subCategories.data#" item="item">
 						<option
-							<cfif variables.subCategoryId EQ item.subCategoryId>
+							<cfif url.subCategoryId EQ item.subCategoryId>
 								selected
 							</cfif>
 							value="#item.subCategoryId#"
