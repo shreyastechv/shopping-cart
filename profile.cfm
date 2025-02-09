@@ -20,7 +20,7 @@
                 </div>
 
                 <h5 class="mt-4">Saved Addresses</h5>
-				<cf_addresslist addresses="#variables.addresses#" currentPage="profile">
+				<cf_addresslist addresses="#variables.addresses.data#" currentPage="profile">
 				<cf_addaddressbtn>
             </div>
         </div>

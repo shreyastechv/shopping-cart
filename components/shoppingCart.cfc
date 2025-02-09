@@ -238,8 +238,11 @@
 		<cfset local.categoryId = decryptUrlParam(urlParam = arguments.categoryId)>
 
 		<!--- Category Id Validation --->
-		<cfif len(arguments.categoryId) AND NOT isValid("integer", arguments.categoryId)>
-			<cfset local.response["message"] &= "Category Id should be an integer">
+		<cfif NOT len(trim(arguments.categoryId))>
+			<cfset local.response["message"] &= "Category Id is required. ">
+		<cfelseif local.categoryId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
 
 		<!--- Category Name Validation --->
@@ -313,10 +316,11 @@
 		</cfif>
 
 		<!--- Category Id Validation --->
-		<cfif len(arguments.categoryId) EQ 0>
-			<cfset local.response["message"] &= "Category Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.categoryId)>
-			<cfset local.response["message"] &= "Category Id should be an integer">
+		<cfif NOT len(trim(arguments.categoryId))>
+			<cfset local.response["message"] &= "Category Id is required. ">
+		<cfelseif local.categoryId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -342,8 +346,9 @@
 		<cfset local.categoryId = decryptUrlParam(urlParam = arguments.categoryId)>
 
 		<!--- Category Id Validation --->
-		<cfif structKeyExists(arguments, "categoryId") AND isValid("integer", arguments.categoryId) EQ false>
-			<cfset local.response["message"] &= "Category Id should be an integer">
+		<cfif (len(trim(arguments.categoryId)) NEQ 0) AND (local.categoryId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -392,9 +397,12 @@
 		<cfset local.subCategoryId = decryptUrlParam(urlParam = arguments.subCategoryId)>
 		<cfset local.categoryId = decryptUrlParam(urlParam = arguments.categoryId)>
 
-		<!--- SubCategory Id Validation --->
-		<cfif len(arguments.subCategoryId) AND NOT isValid("integer", arguments.subCategoryId)>
-			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		<!--- Sub Category Id Validation --->
+		<cfif NOT len(trim(arguments.subCategoryId))>
+			<cfset local.response["message"] &= "Sub Category Id is required. ">
+		<cfelseif local.subCategoryId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
 
 		<!--- SubCategory Name Validation --->
@@ -403,10 +411,11 @@
 		</cfif>
 
 		<!--- Category Id Validation --->
-		<cfif len(arguments.categoryId) EQ 0>
-			<cfset local.response["message"] &= "Category Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.categoryId)>
-			<cfset local.response["message"] &= "Category Id should be an integer">
+		<cfif NOT len(trim(arguments.categoryId))>
+			<cfset local.response["message"] &= "Category Id is required. ">
+		<cfelseif local.categoryId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -474,11 +483,12 @@
 		<!--- Decrypt ids--->
 		<cfset local.subCategoryId = decryptUrlParam(urlParam = arguments.subCategoryId)>
 
-		<!--- SubCategory Id Validation --->
-		<cfif len(arguments.subCategoryId) EQ 0>
-			<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.subCategoryId)>
-			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		<!--- Sub Category Id Validation --->
+		<cfif NOT len(trim(arguments.subCategoryId))>
+			<cfset local.response["message"] &= "Sub Category Id is required. ">
+		<cfelseif local.subCategoryId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -531,14 +541,16 @@
 			return decryptUrlParam(item);
 		})>
 
-		<!--- SubCategory Id Validation --->
-		<cfif len(trim(arguments.subCategoryId)) AND isValid("integer", arguments.subCategoryId) EQ false>
-			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		<!--- Sub Category Id Validation --->
+		<cfif (len(trim(arguments.subCategoryId)) NEQ 0) AND (local.subCategoryId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
 
-		<!--- Product ID Validation --->
-		<cfif len(trim(arguments.productId)) AND isValid("integer", arguments.productId) EQ false>
-			<cfset local.response["message"] &= "Product Id should be an integer">
+		<!--- Product Id Validation --->
+		<cfif (len(trim(arguments.productId)) NEQ 0) AND (local.productId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
 		<!--- Orderby Validation --->
@@ -682,22 +694,21 @@
 		<cfset local.brandSelect = decryptUrlParam(urlParam = arguments.brandSelect)>
 
 		<!--- Product Id Validation --->
-		<cfif len(arguments.productId) AND NOT isValid("integer", arguments.productId)>
-			<cfset local.response["message"] &= "Product Id should be an integer">
+		<cfif (len(trim(arguments.productId)) NEQ 0) AND (local.productId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
 		<!--- Category Id Validation --->
-		<cfif len(arguments.categorySelect) EQ 0>
-			<cfset local.response["message"] &= "Category Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.categorySelect)>
-			<cfset local.response["message"] &= "Category Id should be an integer">
+		<cfif (len(trim(arguments.categorySelect)) NEQ 0) AND (local.categorySelect EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
 
-		<!--- SubCategory Id Validation --->
-		<cfif len(arguments.subCategorySelect) EQ 0>
-			<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.subCategorySelect)>
-			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		<!--- Sub Category Id Validation --->
+		<cfif (len(trim(arguments.subCategorySelect)) NEQ 0) AND (local.subCategorySelect EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
 
 		<!--- Product Description Validation --->
@@ -706,10 +717,9 @@
 		</cfif>
 
 		<!--- Brand Id Validation --->
-		<cfif len(arguments.brandSelect) EQ 0>
-			<cfset local.response["message"] &= "Brand Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.brandSelect)>
-			<cfset local.response["message"] &= "Brand Id should be an integer">
+		<cfif (len(trim(arguments.brandSelect)) NEQ 0) AND (local.brandSelect EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
 
 		<!--- Product Name Validation --->
@@ -854,8 +864,9 @@
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
 			<cfset local.response["message"] &= "Product Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.productId)>
-			<cfset local.response["message"] &= "Product Id should be an integer">
+		<cfelseif local.productId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -900,8 +911,9 @@
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
 			<cfset local.response["message"] &= "Product Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.productId)>
-			<cfset local.response["message"] &= "Product Id should be an integer">
+		<cfelseif local.productId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -946,8 +958,9 @@
 		<!--- Image Id Validation --->
 		<cfif len(arguments.imageId) EQ 0>
 			<cfset local.response["message"] &= "Image Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.imageId)>
-			<cfset local.response["message"] &= "Image Id should be an integer">
+		<cfelseif local.imageId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Image Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -996,8 +1009,9 @@
 		<!--- Image Id Validation --->
 		<cfif len(arguments.imageId) EQ 0>
 			<cfset local.response["message"] &= "Image Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.imageId)>
-			<cfset local.response["message"] &= "Image Id should be an integer">
+		<cfelseif local.imageId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Image Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -1067,11 +1081,12 @@
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
 
-		<!--- Validate productId --->
-		<cfif NOT len(trim(arguments.productId))>
-			<cfset local.response["message"] &= "Product ID should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.productId)>
-			<cfset local.response["message"] &= "Product ID should be an integer. ">
+		<!--- Product Id Validation --->
+		<cfif len(arguments.productId) EQ 0>
+			<cfset local.response["message"] &= "Product Id should not be empty. ">
+		<cfelseif local.productId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
 		<!--- Validate Action --->
@@ -1230,11 +1245,25 @@
 	<cffunction name="getAddress" access="public" returnType="array">
 		<cfargument name="addressId" type="string" required=false default="">
 
-		<cfset local.addresses = []>
+		<cfset local.response = {
+			"data" = []
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.addressId = decryptUrlParam(urlParam = arguments.addressId)>
 
+		<!--- Address Id Validation --->
+		<cfif (len(arguments.addressId) NEQ 0) AND (local.addressId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] = "Address Id is invalid.">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetAddress">
 			SELECT
 				fldAddress_Id,
@@ -1258,7 +1287,7 @@
 		</cfquery>
 
 		<cfloop query="local.qryGetAddress">
-			<cfset arrayAppend(local.addresses, {
+			<cfset arrayAppend(local.response.data, {
 				"addressId" = local.qryGetAddress.fldAddress_Id,
 				"fullName" = local.qryGetAddress.fldFirstName & " " & local.qryGetAddress.fldLastName,
 				"addressLine1" = local.qryGetAddress.fldAddressLine1,
@@ -1270,7 +1299,7 @@
 			})>
 		</cfloop>
 
-		<cfreturn local.addresses>
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="addAddress" access="remote" returnType="struct">
@@ -1380,9 +1409,25 @@
 	<cffunction name="deleteAddress" access="remote" returnType="void">
 		<cfargument name="addressId" type="string" required=true default="">
 
+		<cfset local.response = {
+			"data" = []
+		}>
+
 		<!--- Decrypt ids--->
 		<cfset local.addressId = decryptUrlParam(urlParam = arguments.addressId)>
 
+		<!--- Address Id Validation --->
+		<cfif (len(arguments.addressId) NEQ 0) AND (local.addressId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] = "Address Id is invalid.">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryDeleteAddress">
 			UPDATE
 				tblAddress
@@ -1392,6 +1437,10 @@
 			WHERE
 				fldAddress_Id = <cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "integer">
 		</cfquery>
+
+		<cfset local.response["message"] = "Address deleted succcessfully.">
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="editProfile" access="remote" returnType="struct" returnFormat="json">
@@ -1508,11 +1557,12 @@
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptUrlParam(urlParam = arguments.productId)>
 
-		<!--- Validate productId --->
-		<cfif NOT len(trim(arguments.productId))>
-			<cfset local.response["message"] &= "Product ID should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.productId)>
-			<cfset local.response["message"] &= "Product ID should be an integer. ">
+		<!--- Product Id Validation --->
+		<cfif len(arguments.productId) EQ 0>
+			<cfset local.response["message"] &= "Product Id should not be empty. ">
+		<cfelseif local.productId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
 		<!--- Validate Action --->
@@ -1633,8 +1683,9 @@
 		<!--- Address Id Validation --->
 		<cfif NOT len(trim(arguments.addressId))>
 			<cfset local.response["message"] &= "Address Id is required. ">
-		<cfelseif NOT isValid("integer", arguments.addressId)>
-			<cfset local.response["message"] &= "Address Id should be an integer. ">
+		<cfelseif local.addressId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] = "Address Id is invalid.">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -1727,12 +1778,12 @@
 
 				Your order was placed successfully.
 
-				Delivery Address:
-				#local.address[1].fullName#,
-				#local.address[1].addressLine1#,
-				#local.address[1].addressLine2#,
-				#local.address[1].city#, #local.address[1].state# - #local.address[1].pincode#,
-				#local.address[1].phone#
+				Delivery address.data.data:
+				#local.address.data.data[1].fullName#,
+				#local.address.data.data[1].addressLine1#,
+				#local.address.data.data[1].addressLine2#,
+				#local.address.data.data[1].city#, #local.address.data[1].state# - #local.address.data[1].pincode#,
+				#local.address.data.data[1].phone#
 
 				Order Id: #local.orderId#
 			</cfmail>

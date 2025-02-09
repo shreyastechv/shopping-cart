@@ -3,7 +3,7 @@
 
 <!--- Get Data --->
 <cfset variables.addresses = application.shoppingCart.getAddress()>
-<cfset variables.addressEmpty = arrayLen(variables.addresses) EQ 0 ? "disabled" : "">
+<cfset variables.addressEmpty = arrayLen(variables.addresses.data) EQ 0 ? "disabled" : "">
 
 <!--- Variables to store total price and total actual price --->
 <cfset variables.totalPrice = 0>
@@ -57,7 +57,7 @@
 							</h2>
 							<div id="flush-collapseOne" class="accordion-collapse collapse show" data-bs-parent="##orderSummary">
 								<div class="accordion-body">
-									<cf_addresslist addresses="#variables.addresses#" currentPage="checkout">
+									<cf_addresslist addresses="#variables.addresses.data#" currentPage="checkout">
 								</div>
 								<div class="d-flex justify-content-between p-3 pt-0">
 									<cf_addaddressbtn>
