@@ -228,7 +228,7 @@
 	</cffunction>
 
 	<cffunction name="modifyCategory" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="categoryId" type="integer" required=true>
+		<cfargument name="categoryId" type="string" required=true default="">
 		<cfargument name="categoryName" type="string" required=true>
 
 		<cfset local.response = {}>
@@ -296,7 +296,7 @@
 	</cffunction>
 
 	<cffunction name="deleteCategory" access="remote" returnType="void">
-		<cfargument name="categoryId" type="integer" required=true>
+		<cfargument name="categoryId" type="string" required=true default="">
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
@@ -372,9 +372,9 @@
 	</cffunction>
 
 	<cffunction name="modifySubCategory" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="subCategoryId" type="integer" required=true>
+		<cfargument name="subCategoryId" type="string" required=true default="">
 		<cfargument name="subCategoryName" type="string" required=true>
-		<cfargument name="categoryId" type="integer" required=true>
+		<cfargument name="categoryId" type="string" required=true default="">
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
@@ -453,7 +453,7 @@
 	</cffunction>
 
 	<cffunction name="deleteSubCategory" access="remote" returnType="void">
-		<cfargument name="subCategoryId" type="integer" required=true>
+		<cfargument name="subCategoryId" type="string" required=true default="">
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
@@ -493,8 +493,8 @@
 	</cffunction>
 
 	<cffunction name="getProducts" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="subCategoryId" type="integer" required=false default="-1">
-		<cfargument name="productId" type="integer" required=false default="-1">
+		<cfargument name="subCategoryId" type="string" required=false default="">
+		<cfargument name="productId" type="string" required=false default="">
 		<cfargument name="productIdList" type="string" required=false default="">
 		<cfargument name="random" type="integer" required=false default="0">
 		<cfargument name="limit" type="string" required="false" default="">
@@ -1184,7 +1184,7 @@
 	</cffunction>
 
 	<cffunction name="getAddress" access="public" returnType="array">
-		<cfargument name="addressId" type="integer" required=false>
+		<cfargument name="addressId" type="string" required=false default="">
 
 		<cfset local.addresses = []>
 
@@ -1331,7 +1331,7 @@
 	</cffunction>
 
 	<cffunction name="deleteAddress" access="remote" returnType="void">
-		<cfargument name="addressId" type="integer" required=true>
+		<cfargument name="addressId" type="string" required=true default="">
 
 		<cfquery name="local.qryDeleteAddress">
 			UPDATE
@@ -1447,7 +1447,7 @@
 	</cffunction>
 
 	<cffunction name="modifyCheckout" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="productId" type="integer" required=true default="">
+		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
 		<cfset local.response = {}>
@@ -1558,7 +1558,7 @@
 	</cffunction>
 
 	<cffunction name="createOrder" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="addressId" type="integer" required=true>
+		<cfargument name="addressId" type="string" required=true default="">
 
 		<cfset local.response = {}>
 		<cfset local.response["success"] = false>
