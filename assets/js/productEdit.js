@@ -19,12 +19,10 @@ $(document).ready(function() {
 				success: function(response) {
 					const responseJSON = JSON.parse(response);
 					$("#subCategorySelect").empty();
-					for(let i=0; i<responseJSON.DATA.length; i++) {
-						const subCategoryId = responseJSON.DATA[i][0];
-						const subCategoryName = responseJSON.DATA[i][1];
-						const optionTag = `<option value="${subCategoryId}">${subCategoryName}</option>`;
+					responseJSON.data.forEach(function(item) {
+						const optionTag = `<option value="${item.subCategoryId}">${item.subCategoryName}</option>`;
 						$("#subCategorySelect").append(optionTag);
-					}
+					});
 					// if (categoryId == urlcategoryId) {
 					// 	$("#subCategorySelect").val(urlSubCategoryId).change();
 					// }

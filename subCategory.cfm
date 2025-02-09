@@ -12,7 +12,7 @@
 
 	<!--- Get Data --->
 	<cfset variables.categories = application.shoppingCart.getCategories()>
-	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
+	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
 
 	<!--- Get Category Name --->
 	<cfloop array="#variables.categories.data#" item="item">
@@ -37,18 +37,18 @@
 					</div>
 					<div></div>
 				</div>
-				<cfloop query="variables.qrySubCategories">
+				<cfloop array="#variables.subCategories.data#" item="item">
 					<!--- Encrypt SubCategory ID since it is passed to URL param --->
-					<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
+					<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(item.subCategoryId)>
 					<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
 
 					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-						<div id="subCategoryName-#variables.qrySubCategories.fldSubCategory_Id#" class="fs-5">#variables.qrySubCategories.fldSubCategoryName#</div>
+						<div id="subCategoryName-#item.subCategoryId#" class="fs-5">#item.subCategoryName#</div>
 						<div>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showEditSubCategoryModal(#variables.qrySubCategories.fldSubCategory_Id#)">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showEditSubCategoryModal(#item.subCategoryId#)">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" onclick="deleteSubCategory(#variables.qrySubCategories.fldSubCategory_Id#)">
+							<button class="btn btn-lg" onclick="deleteSubCategory(#item.subCategoryId#)">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
 							<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=#variables.encodedSubCategoryId#">

@@ -21,20 +21,20 @@
 
 		<!--- Variables --->
 		<cfset variables.categories = application.shoppingCart.getCategories()>
-		<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories()>
+		<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
 		<cfset variables.catToSubcatMapping = {}>
 
 		<!--- Loop through sub categories --->
-		<cfloop query="variables.qrySubCategories">
+		<cfloop array="#variables.subCategories.data#" item="item">
 			<!--- If category id does not exist in mapping, create it --->
-			<cfif NOT structKeyExists(variables.catToSubcatMapping, variables.qrySubCategories.fldCategoryId)>
-				<cfset variables.catToSubcatMapping[variables.qrySubCategories.fldCategoryId] = []>
+			<cfif NOT structKeyExists(variables.catToSubcatMapping, item.categoryId)>
+				<cfset variables.catToSubcatMapping[item.categoryId] = []>
 			</cfif>
 
 			<!--- Map sub category info to category id --->
-			<cfset arrayAppend(variables.catToSubcatMapping[variables.qrySubCategories.fldCategoryId], {
-				"subCategoryId" = variables.qrySubCategories.fldSubCategory_Id,
-				"subCategoryName" = variables.qrySubCategories.fldSubCategoryName
+			<cfset arrayAppend(variables.catToSubcatMapping[item.categoryId], {
+				"subCategoryId" = item.subCategoryId,
+				"subCategoryName" = item.subCategoryName
 			})>
 		</cfloop>
 

@@ -15,21 +15,21 @@
 
 	<!--- Get Data --->
 	<cfset variables.categories = application.shoppingCart.getCategories()>
-	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories()>
+	<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(subCategoryId = variables.subCategoryId)>
 	<cfset variables.qryBrands = application.shoppingCart.getBrands()>
 
 	<!--- Get sub category name of the current products page --->
-	<cfloop query="variables.qrySubCategories">
-		<cfif variables.qrySubCategories.fldSubCategory_Id EQ variables.subCategoryId>
-			<cfset variables.subCategoryName = variables.qrySubCategories.fldSubCategoryName>
+	<cfloop array="#variables.subCategories.data#" item="item">
+		<cfif item.subCategoryId EQ variables.subCategoryId>
+			<cfset variables.subCategoryName = item.subCategoryName>
 		</cfif>
 	</cfloop>
 
 	<!--- Get category id of the current products page --->
-	<cfloop query="variables.qrySubCategories">
-		<cfif variables.qrySubCategories.fldSubCategory_Id EQ variables.subCategoryId>
-			<cfset variables.categoryId = variables.qrySubCategories.fldCategoryId>
+	<cfloop array="#variables.subCategories.data#" item="item">
+		<cfif item.subCategoryId EQ variables.subCategoryId>
+			<cfset variables.categoryId = item.categoryId>
 		</cfif>
 	</cfloop>
 
@@ -41,8 +41,8 @@
 	</cfloop>
 
 	<!--- Reduce the sub categories query to only ones with current page category id --->
-	<cfset variables.qrySubCategories = queryFilter(variables.qrySubCategories, function(row) {
-		return row.fldCategoryId EQ variables.categoryId;
+	<cfset variables.subCategories.data = arrayFilter(variables.subCategories.data, function(item) {
+		return item.categoryId EQ variables.categoryId;
 	})>
 
 	<!--- Main Content --->
@@ -118,14 +118,14 @@
 				<label for="subCategorySelect" class="fw-semibold">SubCategory Name</label>
 				<select id="subCategorySelect" class="form-select" aria-label="SubCategory Select">
 					<option value="0">SubCategory Select</option>
-					<cfloop query="variables.qrySubCategories">
+					<cfloop array="#variables.subCategories.data#" item="item">
 						<option
-							<cfif variables.subCategoryId EQ variables.qrySubCategories.fldSubCategory_Id>
+							<cfif variables.subCategoryId EQ item.subCategoryId>
 								selected
 							</cfif>
-							value="#variables.qrySubCategories.fldSubCategory_Id#"
+							value="#item.subCategoryId#"
 						>
-							#variables.qrySubCategories.fldSubCategoryName#
+							#item.subCategoryName#
 						</option>
 					</cfloop>
 				</select>

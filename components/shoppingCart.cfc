@@ -221,7 +221,7 @@
 				"categoryName": local.qryGetCategories.fldCategoryName
 			}>
 
-			<cfset arrayAppend(local.response.data, categoryStruct)>
+			<cfset arrayAppend(local.response.data, local.categoryStruct)>
 		</cfloop>
 
 		<cfreturn local.response>
@@ -325,11 +325,12 @@
 		</cfstoredproc>
 	</cffunction>
 
-	<cffunction name="getSubCategories" access="remote" returnType="query" returnFormat="json">
+	<cffunction name="getSubCategories" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="categoryId" type="string" required=false>
 
 		<cfset local.response = {}>
 		<cfset local.response["message"] = "">
+		<cfset local.response["data"] = []>
 
 		<!--- Category Id Validation --->
 		<cfif structKeyExists(arguments, "categoryId") AND isValid("integer", arguments.categoryId) EQ false>
@@ -356,7 +357,18 @@
 				</cfif>
 		</cfquery>
 
-		<cfreturn local.qryGetSubCategories>
+		<!--- Fill up the array with sub category information --->
+		<cfloop query="local.qryGetSubCategories">
+			<cfset local.subCategoryStruct = {
+				"subCategoryId": local.qryGetSubCategories.fldSubCategory_Id,
+				"subCategoryName": local.qryGetSubCategories.fldSubCategoryName,
+				"categoryId": local.qryGetSubCategories.fldCategoryId
+			}>
+
+			<cfset arrayAppend(local.response.data, local.subCategoryStruct)>
+		</cfloop>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="modifySubCategory" access="remote" returnType="struct" returnFormat="json">

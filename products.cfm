@@ -29,7 +29,7 @@
 <!--- Check URL Params --->
 <cfif variables.categoryId NEQ -1>
 	<!--- Get Data if categoryId is given --->
-	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
+	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
 <cfelseif variables.subCategoryId NEQ -1>
 	<!--- Get Data if subCategoryId is given --->
 	<cfset variables.qryProducts = application.shoppingCart.getProducts(
@@ -52,23 +52,23 @@
 <cfoutput>
 	<!--- Main Content --->
 	<div class="d-flex flex-column m-3">
-		<cfif structKeyExists(variables, "qrySubCategories")>
+		<cfif structKeyExists(variables, "subCategories")>
 			<!--- Category Listing --->
-			<cfloop query="variables.qrySubCategories">
+			<cfloop array="#variables.subCategories.data#" item="item">
 				<!--- Encrypt SubCategory ID since it is passed to URL param --->
-				<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
+				<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(item.subCategoryId)>
 				<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
 
 				<!--- Gather products --->
 				<cfset variables.qryProducts = application.shoppingCart.getProducts(
-					subCategoryId = variables.qrySubCategories.fldSubCategory_Id,
+					subCategoryId = item.subCategoryId,
 					random = 1,
 					limit = 6
 				)>
 
 				<!--- Show subcategory if it has products --->
 				<cfif variables.qryProducts.recordCount>
-					<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
+					<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h4 text-decoration-none">#item.subCategoryName#</a>
 					<cf_productlist qryProducts="#variables.qryProducts#">
 				</cfif>
 			</cfloop>
