@@ -366,7 +366,7 @@
 				tblSubCategory sc
 			WHERE
 				sc.fldActive = 1
-				<cfif structKeyExists(local, "categoryId") AND len(trim(local.categoryId))>
+				<cfif structKeyExists(local, "categoryId") AND (trim(local.categoryId) NEQ -1)>
 					AND sc.fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
 				</cfif>
 		</cfquery>
