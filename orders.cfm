@@ -31,7 +31,7 @@
 							<tbody>
 								<cfloop list="#variables.order.productNames#" item="variables.item" index="variables.i">
 									<cfset variables.productId = listGetAt(variables.order.productIds, variables.i)>
-									<cfset variables.encryptedProductId = application.shoppingCart.encrypt(
+									<cfset variables.encryptedProductId = application.shoppingCart.encryptText(
 										urlParam = variables.productId
 									)>
 									<cfset variables.encodedProductId = urlEncodedFormat(variables.encryptedProductId)>

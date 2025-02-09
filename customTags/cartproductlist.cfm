@@ -7,7 +7,7 @@
 <cfoutput>
 	<cfloop array="#variables.productInfo.data#" item="item">
 		<!--- Encrypt Product ID since it is passed to URL param --->
-		<cfset variables.encryptedProductId = application.shoppingCart.encrypt(item.productId)>
+		<cfset variables.encryptedProductId = application.shoppingCart.encryptText(item.productId)>
 		<cfset variables.encodedProductId = urlEncodedFormat(variables.encryptedProductId)>
 
 		<!--- Calculate price and actual price --->

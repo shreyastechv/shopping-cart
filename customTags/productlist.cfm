@@ -5,7 +5,7 @@
 	<div class="row px-3 py-1" id="products">
 		<cfloop array="#attributes.products#" item="item">
 			<!--- Encrypt Product ID since it is passed to URL param --->
-			<cfset variables.encryptedProductId = application.shoppingCart.encrypt(item.productId)>
+			<cfset variables.encryptedProductId = application.shoppingCart.encryptText(item.productId)>
 			<cfset variables.encodedProductId = urlEncodedFormat(variables.encryptedProductId)>
 
 			<div class="col-sm-2 mb-4">

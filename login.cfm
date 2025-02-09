@@ -12,7 +12,7 @@
 		<!--- Add product to cart if user came from product page --->
 		<cfif len(trim(url.productId))>
 			<!--- Decrypt Product ID --->
-			<cfset variables.productId = application.shoppingCart.decrypt(url.productId)>
+			<cfset variables.productId = application.shoppingCart.decryptText(url.productId)>
 
 			<!--- Add product to cart only if properly decrypted --->
 			<cfif variables.productId NEQ -1>

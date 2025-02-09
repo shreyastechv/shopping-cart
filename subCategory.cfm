@@ -8,7 +8,7 @@
 	</cfif>
 
 	<!--- Decrypt URL Params --->
-	<cfset variables.categoryId = application.shoppingCart.decrypt(url.categoryId)>
+	<cfset variables.categoryId = application.shoppingCart.decryptText(url.categoryId)>
 
 	<!--- Get Data --->
 	<cfset variables.categories = application.shoppingCart.getCategories()>
@@ -39,7 +39,7 @@
 				</div>
 				<cfloop array="#variables.subCategories.data#" item="item">
 					<!--- Encrypt SubCategory ID since it is passed to URL param --->
-					<cfset variables.encryptedSubCategoryId = application.shoppingCart.encrypt(item.subCategoryId)>
+					<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptText(item.subCategoryId)>
 					<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
 
 					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
