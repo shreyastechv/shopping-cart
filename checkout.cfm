@@ -46,7 +46,7 @@
 
 		<div class="row w-100 my-2">
 			<div class="col-md-8">
-				<form method="post" id="checkoutForm" onsubmit="handleCheckout()">
+				<form method="post" name="checkoutForm" id="checkoutForm" onsubmit="handleCheckout()">
 					<div class="accordion accordion-flush border rounded-2 shadow-sm" id="orderSummary">
 						<!-- Address Section -->
 						<div class="accordion-item">

@@ -11,7 +11,7 @@
 				<h1 class="modal-title fs-5">ADD ADDRESS</h1>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<form method="post">
+			<form method="post" name="addressForm" id="addressForm">
 				<div class="modal-body px-4">
 					<div class="row">
 						<div class="col-sm-6">
