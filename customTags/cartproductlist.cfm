@@ -38,7 +38,7 @@
 							</cfif>
 							>-</button>
 
-							<input type="text" name="quantity" class="form-control text-center w-25" value="#attributes.products[item.productId].quantity#" onchange="handleQuantityChange('productContainer_#item.productId#')" readonly>
+							<input type="text" name="quantity" class="form-control text-center w-25" value="#attributes.products[item.productId].quantity#" onchange="handleQuantityChange('productContainer_#i#')" readonly>
 							<button type="button" class="btn btn-outline-primary btn-sm ms-2" name="incBtn" onclick="editCartItem('productContainer_#i#', '#item.productId#', 'increment')">+</button>
 						</div>
 						<button type="button" class="btn btn-danger btn-sm mt-3" onclick="editCartItem('productContainer_#i#', '#item.productId#', 'delete')">Remove</button>
