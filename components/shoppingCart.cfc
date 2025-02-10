@@ -1951,6 +1951,9 @@
 	</cffunction>
 
 	<cffunction name="logOut" access="remote" returnType="void">
+		<!--- Delete roleId from session immediately so that page will be redirected on location.reload --->
+		<cfset structDelete(session, "roleId")>
+
 		<!--- Update cart asynchronously --->
 		<cfthread name="cartUpdateThread">
 			<cfset updateCartBatch(
