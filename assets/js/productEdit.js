@@ -102,7 +102,6 @@ function processproductForm() {
 	if (!valid) return false;
 
 	const formData = new FormData($("#productForm")[0]);
-	formData.append("categorySelect", categorySelect);
 	formData.append("subCategorySelect", subCategorySelect);
 	formData.append("brandSelect", brandSelect);
 	formData.append("method", "modifyProduct");

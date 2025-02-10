@@ -665,7 +665,6 @@
 
 	<cffunction name="modifyProduct" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="productId" type="string" required=true default="">
-		<cfargument name="categorySelect" type="string" required=true default="">
 		<cfargument name="subCategorySelect" type="string" required=true default="">
 		<cfargument name="productName" type="string" required=true>
 		<cfargument name="brandSelect" type="string" required=true default="">
@@ -680,7 +679,6 @@
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
-		<cfset local.categorySelect = decryptText(arguments.categorySelect)>
 		<cfset local.subCategorySelect = decryptText(arguments.subCategorySelect)>
 		<cfset local.brandSelect = decryptText(arguments.brandSelect)>
 
@@ -688,12 +686,6 @@
 		<cfif len(trim(arguments.productId)) AND (local.productId EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Product Id is invalid. ">
-		</cfif>
-
-		<!--- Category Id Validation --->
-		<cfif (len(trim(arguments.categorySelect)) NEQ 0) AND (local.categorySelect EQ -1)>
-			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
 
 		<!--- Sub Category Id Validation --->
