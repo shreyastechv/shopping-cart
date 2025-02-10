@@ -79,7 +79,8 @@
 								</div>
 								<div class="d-flex justify-content-end p-3">
 									<button type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseThree"
-										aria-expanded="false" aria-controls="flush-collapseThree"class="btn btn-success">
+										aria-expanded="false" aria-controls="flush-collapseThree"class="btn btn-success"
+										id="productsNextBtn">
 										Next
 									</button>
 								</div>
@@ -90,7 +91,8 @@
 						<div class="accordion-item">
 							<h2 class="accordion-header">
 								<button class="accordion-button collapsed text-uppercase fw-semibold" type="button" data-bs-toggle="collapse"
-									data-bs-target="##flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+									data-bs-target="##flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+									id="paymentSectionAccordionBtn">
 									Payment Options
 								</button>
 							</h2>

@@ -155,8 +155,8 @@ function editCartItem(containerId, productId, action) {
 				else if (action == "delete") {
 					$(`#${containerId}`).remove();
 					if ($("#accordionBody").children().length === 0) {
-						$("#accordionBody").parent().find("button").prop("disabled", true);
-						$("#accordionBody").parent().parent().next(".accordion-item").find("button").prop("disabled", true);
+						$("#productsNextBtn").prop("disabled", true);
+						$("#paymentSectionAccordionBtn").prop("disabled", true);
 						$("#accordionBody").append(`
 							<div class="d-flex flex-column align-items-center justify-content-center pt-4">
 								<div class="fs-5 text-secondary mb-3">Product List is Empty</div>
