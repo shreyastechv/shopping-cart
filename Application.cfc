@@ -91,11 +91,7 @@
 		<cfargument name="targetPage" type="string" required=true>
 
 		<cflog type="error" text="Missing template: #arguments.targetPage#">
-		<cfoutput>
-			<h3>#Arguments.targetPage# could not be found.</h3>
-			<p>You requested a non-existent page.<br />
-			Please check the URL.</p>
-		</cfoutput>
+		<cflocation url="/404.cfm" addToken="false">
 	</cffunction>
 
 	<!--- <cffunction name="onError" returnType="void">
