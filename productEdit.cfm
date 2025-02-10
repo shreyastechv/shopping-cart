@@ -65,7 +65,7 @@
 							<div name="price" class="text-success">Rs.#item.price#</div>
 						</div>
 						<div>
-							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#item.productId#)">
+							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage('#item.productId#')">
 								<img class="pe-none" src="#application.productImageDirectory&item.productImage#" alt="Product Image" width="50">
 							</button>
 							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">

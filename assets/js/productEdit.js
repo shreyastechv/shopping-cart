@@ -186,7 +186,7 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 				<div id="price-${prodId}" class="text-success">Rs.${price}</div>
 			</div>
 			<div>
-				<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(${prodId})">
+				<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage('${prodId}')">
 					<div class="d-flex justify-content-center">
 						<img class="pe-none" src="${productImageDirectory}${imageFile}" alt="Product Image" width="50">
 					</div>
