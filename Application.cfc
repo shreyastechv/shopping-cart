@@ -179,6 +179,37 @@
 		<cfinclude template="/includes/footer.cfm">
 	</cffunction>
 
+	<cffunction name="onRequestEnd" returnType="void">
+		<cfargument name="targetPage" type="string" required=true>
+
+		<!--- Update cart when user leaves cart page --->
+		<!--- This code is placed above flag setting code to prevent both running on cart page --->
+		<cfif structKeyExists(session, "cartVisit")
+			AND structKeyExists(session, "cart") AND NOT structIsEmpty(session.cart)
+			AND structKeyExists(session, "userId")
+			AND NOT findNoCase("/components", arguments.targetPage)
+		>
+			<!--- Update cart asynchronously --->
+			<cfthread name="cartUpdateThread">
+				<cfset application.shoppingCart.updateCartBatch(
+					userId = session.userId,
+					cartData = session.cart
+				)>
+			</cfthread>
+
+			<!--- Clear flag --->
+			<cfset structDelete(session, "cartVisit")>
+		</cfif>
+
+		<!--- Set session variable when user enters cart page for first time --->
+		<cfif NOT structKeyExists(session, "cartVisit") AND arguments.targetPage EQ "/cart.cfm"
+			AND structKeyExists(session, "userId")
+		>
+			<!--- Set flag --->
+			<cfset session.cartVisit = true>
+		</cfif>
+	</cffunction>
+
 	<cffunction name="onSessionEnd" returnType="void">
 		<cfset structClear(session)>
 	</cffunction>

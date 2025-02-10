@@ -1180,39 +1180,70 @@
 			message = ""
 		}>
 
-        <cftry>
-            <cftransaction>
-                <cfloop collection="#arguments.cartData#" item="productId">
-                    <cfset local.quantity = arguments.cartData[productId]>
+		<cftry>
+			<cftransaction>
+				<cfloop collection="#arguments.cartData#" item="productId">
+					<cfset local.quantity=arguments.cartData[productId].quantity>
 
-                    <cfif local.quantity GT 0>
-                        <!-- Update or Insert Product in Cart -->
-                        <cfquery>
-                            INSERT INTO tblCart (fldUserId, fldProductId, fldQuantity)
-                            VALUES (
-                                <cfqueryparam value="#arguments.userId#" cfsqltype="integer">,
-                                <cfqueryparam value="#productId#" cfsqltype="integer">,
-                                <cfqueryparam value="#local.quantity#" cfsqltype="integer">
-                            )
-                            ON DUPLICATE KEY UPDATE fldQuantity = <cfqueryparam value="#local.quantity#" cfsqltype="integer">
-                        </cfquery>
-                    <cfelse>
-                        <!-- Delete Product from Cart -->
-                        <cfquery>
-                            DELETE FROM tblCart WHERE fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
-                            AND fldProductId = <cfqueryparam value="#productId#" cfsqltype="integer">
-                        </cfquery>
-                    </cfif>
-                </cfloop>
-            </cftransaction>
+					<cfif local.quantity GT 0>
+						<!--- Check whether product already in cart --->
+						<cfquery name="local.qryCheckCart">
+							SELECT
+								fldProductId
+							FROM
+								tblCart
+							WHERE
+								fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
+								AND fldProductId = <cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">
+						</cfquery>
 
-            <cfset local.response.success = true>
+						<cfif local.qryCheckCart.recordCount>
+							<!--- Update cart if product exists --->
+							<cfquery>
+								UPDATE
+									tblCart
+								SET
+									fldQuantity = <cfqueryparam value="#local.quantity#" cfsqltype="integer">
+								WHERE
+									fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
+									AND fldProductId = <cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">
+							</cfquery>
+						<cfelse>
+							<!--- Insert if product does not exist --->
+							<cfquery>
+								INSERT INTO
+									tblCart (
+										fldUserId,
+										fldProductId,
+										fldQuantity
+									)
+								VALUES (
+									<cfqueryparam value="#arguments.userId#" cfsqltype="integer">,
+									<cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">,
+									<cfqueryparam value="#local.quantity#" cfsqltype="integer">
+								)
+							</cfquery>
+						</cfif>
+					<cfelse>
+						<!-- Delete Product from Cart -->
+						<cfquery>
+							DELETE FROM
+								tblCart
+							WHERE
+								fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
+								AND fldProductId = <cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">
+						</cfquery>
+					</cfif>
+				</cfloop>
+			</cftransaction>
+
+			<cfset local.response.success=true>
 
 			<!--- Catch error --->
 			<cfcatch>
-				<cfset local.response.message = "Error: #cfcatch.message#">
+				<cfset local.response.message="Error: #cfcatch.message#">
 			</cfcatch>
-        </cftry>
+		</cftry>
 
         <cfreturn local.response>
     </cffunction>
@@ -1900,6 +1931,15 @@
 	</cffunction>
 
 	<cffunction name="logOut" access="remote" returnType="void">
-		<cfset structClear(session)>
+		<!--- Update cart asynchronously --->
+		<cfthread name="cartUpdateThread">
+			<cfset application.shoppingCart.updateCartBatch(
+				userId = session.userId,
+				cartData = session.cart
+			)>
+
+			<!--- Clear session --->
+			<cfset structClear(session)>
+		</cfthread>
 	</cffunction>
 </cfcomponent>
