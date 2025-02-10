@@ -79,7 +79,8 @@
 								</div>
 								<div class="d-flex justify-content-end p-3">
 									<button type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseThree"
-										aria-expanded="false" aria-controls="flush-collapseThree"class="btn btn-success">
+										aria-expanded="false" aria-controls="flush-collapseThree"class="btn btn-success"
+										id="productsNextBtn">
 										Next
 									</button>
 								</div>
@@ -90,7 +91,8 @@
 						<div class="accordion-item">
 							<h2 class="accordion-header">
 								<button class="accordion-button collapsed text-uppercase fw-semibold" type="button" data-bs-toggle="collapse"
-									data-bs-target="##flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+									data-bs-target="##flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+									id="paymentSectionAccordionBtn">
 									Payment Options
 								</button>
 							</h2>
@@ -174,7 +176,7 @@
 						<a class="btn btn-primary" href="/orders.cfm">Go to Orders</a>
 					</div>
 					<div name="error" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
-						<img src="#application.imageDirectory#order-failed.jpg" width="200px" alt="Order Success Image">
+						<img src="#application.imageDirectory#order-failed.jpg" width="200px" alt="Order Failed Image">
 						<div class="text-danger fs-5">
 							Sorry! There was an error.
 							<i class="fa-solid fa-circle-exclamation"></i>

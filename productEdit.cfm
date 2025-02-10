@@ -51,7 +51,7 @@
 					</a>
 					<div class="d-flex">
 						<h3 class="fw-semibold text-center mb-0 me-3">#variables.subCategoryName#</h3>
-						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal('#url.subCategoryId#')">
+						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal('#variables.categoryId#', '#url.subCategoryId#')">
 							Add+
 						</button>
 					</div>
@@ -65,10 +65,10 @@
 							<div name="price" class="text-success">Rs.#item.price#</div>
 						</div>
 						<div>
-							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#item.productId#)">
+							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage('#item.productId#')">
 								<img class="pe-none" src="#application.productImageDirectory&item.productImage#" alt="Product Image" width="50">
 							</button>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#item.productId#','#url.subCategoryId#')">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
 							<button class="btn btn-lg" onclick="deleteProduct('productContainer_#i#', '#item.productId#')">

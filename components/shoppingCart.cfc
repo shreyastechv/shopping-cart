@@ -17,8 +17,9 @@
 		<cfargument name="password" type="string" required=true>
 		<cfargument name="confirmPassword" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Trim arguments --->
 		<cfset arguments = trimArguments(arguments)>
@@ -118,8 +119,9 @@
 		<cfargument name="userInput" type="string" required=true>
 		<cfargument name="password" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Trim arguments --->
 		<cfset arguments = trimArguments(arguments)>
@@ -231,8 +233,9 @@
 		<cfargument name="categoryId" type="string" required=true default="">
 		<cfargument name="categoryName" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.categoryId = decryptText(arguments.categoryId)>
@@ -302,8 +305,9 @@
 	<cffunction name="deleteCategory" access="remote" returnType="void">
 		<cfargument name="categoryId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.categoryId = decryptText(arguments.categoryId)>
@@ -336,9 +340,10 @@
 	<cffunction name="getSubCategories" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="categoryId" type="string" required=false default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = []>
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.categoryId = decryptText(arguments.categoryId)>
@@ -388,8 +393,9 @@
 		<cfargument name="subCategoryName" type="string" required=true>
 		<cfargument name="categoryId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
@@ -473,8 +479,9 @@
 	<cffunction name="deleteSubCategory" access="remote" returnType="void">
 		<cfargument name="subCategoryId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
@@ -526,9 +533,10 @@
 		<cfargument name="max" type="float" required="false" default="0">
 		<cfargument name="searchTerm" type="string" required="false" default="">
 
- 		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = []>
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
@@ -589,6 +597,8 @@
 					AND p.fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
 				<cfelseif len(trim(local.productId)) AND local.productId NEQ -1>
 					AND p.fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+				<cfelseif len(trim(arguments.productIdList))>
+					AND fldProductId IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 				</cfif>
 
 				<!--- 0 is the default value of arguments.max hence it should not be used --->
@@ -664,8 +674,9 @@
 		<cfargument name="productTax" type="float" required=true>
 		<cfargument name="productImage" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
@@ -836,8 +847,9 @@
 	<cffunction name="deleteProduct" access="remote" returnType="void">
 		<cfargument name="productId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
@@ -882,9 +894,10 @@
 	<cffunction name="getProductImages" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="productId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = []>
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
@@ -930,8 +943,9 @@
 	<cffunction name="setDefaultImage" access="remote" returnType="void">
 		<cfargument name="imageId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.imageId = decryptText(arguments.imageId)>
@@ -981,8 +995,9 @@
 	<cffunction name="deleteImage" access="remote" returnType="struct">
 		<cfargument name="imageId" type="string" required=true defaul="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.imageId = decryptText(arguments.imageId)>
@@ -1040,7 +1055,7 @@
 
 		<cfloop query="local.qryGetCart">
 			<cfset local.cartItems[encryptText(local.qryGetCart.fldProductId)] = {
-				"cartId" = encryptText(local.qryGetCart.fldCart_Id),
+				<!--- "cartId" = encryptText(local.qryGetCart.fldCart_Id), --->
 				"quantity" = local.qryGetCart.fldQuantity,
 				"unitPrice" = local.qryGetCart.fldPrice,
 				"unitTax" = local.qryGetCart.fldTax
@@ -1054,10 +1069,11 @@
 		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = {}>
+		<cfset local.response = {
+			"message" = "",
+			"success" = false,
+			"data" = {}
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
@@ -1086,30 +1102,9 @@
 		<cfif arguments.action EQ "increment">
 
 			<!--- Check whether the item is present in cart --->
-			<cfquery name="local.qryCheckCart">
-				SELECT
-					fldCart_Id
-				FROM
-					tblCart
-				WHERE
-					fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
-					AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-			</cfquery>
-
-			<cfif local.qryCheckCart.recordCount>
-				<!--- Update cart in case it already have the product --->
-				<cfquery name="local.qryEditCart">
-					UPDATE
-						tblCart
-					SET
-						fldQuantity = fldQuantity + 1
-					WHERE
-						fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
-						AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-				</cfquery>
-
+			<cfif structKeyExists(session.cart, arguments.productId)>
 				<!--- Increment quantity of product in session variable --->
-				<cfset session.cart[encryptText(local.productId)].quantity += 1>
+				<cfset session.cart[arguments.productId].quantity += 1>
 
 				<!--- Set response message --->
 				<cfset local.response["message"] = "Product Quantity Incremented">
@@ -1120,24 +1115,9 @@
 					productId = arguments.productId
 				)>
 
-				<!--- Add product to cart in case it do not have it already --->
-				<cfquery name="local.qryAddToCart" result="local.resultAddToCart">
-					INSERT INTO
-						tblCart (
-							fldUserId,
-							fldProductId,
-							fldQuantity
-						)
-					VALUES (
-						<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-						<cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">,
-						1
-					)
-				</cfquery>
-
 				<!--- Add product to session variable --->
-				<cfset session.cart[encryptText(local.productId)] = {
-					"cartId" = encryptText(local.resultAddToCart.GENERATED_KEY),
+				<cfset session.cart[arguments.productId] = {
+					<!--- "cartId" = encryptText(local.resultAddToCart.GENERATED_KEY), --->
 					"quantity" = 1,
 					"unitPrice" = local.productInfo.data[1].price,
 					"unitTax" = local.productInfo.data[1].tax
@@ -1148,36 +1128,18 @@
 
 			</cfif>
 
-		<cfelseif arguments.action EQ "decrement" AND session.cart[encryptText(local.productId)].quantity GT 1>
-
-			<!--- Decrement product quantity in cart --->
-			<cfquery name="local.qryDecrItem">
-				UPDATE
-					tblCart
-				SET
-					fldQuantity = fldQuantity - 1
-				WHERE
-					fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
-			</cfquery>
+		<cfelseif arguments.action EQ "decrement" AND session.cart[arguments.productId].quantity GT 1>
 
 			<!--- Decrement quantity of product in session variable --->
-			<cfset session.cart[encryptText(local.productId)].quantity -= 1>
+			<cfset session.cart[arguments.productId].quantity -= 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Decremented">
 
 		<cfelse>
 
-			<!--- Delete product from cart --->
-			<cfquery name="local.qryDeleteItem">
-				DELETE FROM
-					tblCart
-				WHERE
-					fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
-			</cfquery>
-
-			<!--- Delete productId key from struct in session variable --->
-			<cfset structDelete(session.cart, encryptText(local.productId))>
+			<!--- Set quantity to 0 in struct in session variable --->
+			<cfset session.cart[arguments.productId].quantity = 0>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
@@ -1185,10 +1147,10 @@
 		</cfif>
 
 		<!--- Do the math --->
-		<cfif structKeyExists(session.cart, encryptText(local.productId))>
-			<cfset local.unitPrice = session.cart[encryptText(local.productId)].unitPrice>
-			<cfset local.unitTax = session.cart[encryptText(local.productId)].unitTax>
-			<cfset local.quantity = session.cart[encryptText(local.productId)].quantity>
+		<cfif structKeyExists(session.cart, arguments.productId)>
+			<cfset local.unitPrice = session.cart[arguments.productId].unitPrice>
+			<cfset local.unitTax = session.cart[arguments.productId].unitTax>
+			<cfset local.quantity = session.cart[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
@@ -1196,7 +1158,7 @@
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"quantity" = session.cart[encryptText(local.productId)].quantity
+				"quantity" = session.cart[arguments.productId].quantity
 			}>
 		</cfif>
 
@@ -1222,6 +1184,83 @@
 
 		<cfreturn local.response>
 	</cffunction>
+
+	<cffunction name="updateCartBatch" access="public" returnType="struct" returnFormat="json">
+		<cfargument name="userId" type="integer" required=true>
+		<cfargument name="cartData" type="struct" required=false>
+
+        <cfset local.response = {
+			success = false,
+			message = ""
+		}>
+
+		<cftry>
+			<cftransaction>
+				<cfloop collection="#arguments.cartData#" item="productId">
+					<cfset local.quantity=arguments.cartData[productId].quantity>
+
+					<cfif local.quantity GT 0>
+						<!--- Check whether product already in cart --->
+						<cfquery name="local.qryCheckCart">
+							SELECT
+								fldProductId
+							FROM
+								tblCart
+							WHERE
+								fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
+								AND fldProductId = <cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">
+						</cfquery>
+
+						<cfif local.qryCheckCart.recordCount>
+							<!--- Update cart if product exists --->
+							<cfquery>
+								UPDATE
+									tblCart
+								SET
+									fldQuantity = <cfqueryparam value="#local.quantity#" cfsqltype="integer">
+								WHERE
+									fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
+									AND fldProductId = <cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">
+							</cfquery>
+						<cfelse>
+							<!--- Insert if product does not exist --->
+							<cfquery>
+								INSERT INTO
+									tblCart (
+										fldUserId,
+										fldProductId,
+										fldQuantity
+									)
+								VALUES (
+									<cfqueryparam value="#arguments.userId#" cfsqltype="integer">,
+									<cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">,
+									<cfqueryparam value="#local.quantity#" cfsqltype="integer">
+								)
+							</cfquery>
+						</cfif>
+					<cfelse>
+						<!-- Delete Product from Cart -->
+						<cfquery>
+							DELETE FROM
+								tblCart
+							WHERE
+								fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
+								AND fldProductId = <cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">
+						</cfquery>
+					</cfif>
+				</cfloop>
+			</cftransaction>
+
+			<cfset local.response.success=true>
+
+			<!--- Catch error --->
+			<cfcatch>
+				<cfset local.response.message="Error: #cfcatch.message#">
+			</cfcatch>
+		</cftry>
+
+        <cfreturn local.response>
+    </cffunction>
 
 	<cffunction name="getAddress" access="public" returnType="struct">
 		<cfargument name="addressId" type="string" required=false default="">
@@ -1294,8 +1333,9 @@
 		<cfargument name="pincode" type="string" required=true>
 		<cfargument name="phone" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<cfif NOT structKeyExists(session, "userId")>
 			<cfset local.response["message"] &= "Cannot proceed without loggin in">
@@ -1432,8 +1472,9 @@
 		<cfargument name="email" type="string" required=true>
 		<cfargument name="phone" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<cfif NOT structKeyExists(session, "userId")>
 			<cfset local.response["message"] &= "Cannot proceed without loggin in">
@@ -1490,9 +1531,10 @@
 		<cfargument name="cardNumber" type="string" required=true>
 		<cfargument name="cvv" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"success" = false,
+			"message" = ""
+		}>
 		<cfset local.validCardNumber = "1111111111111111">
 		<cfset local.validCvv = "111">
 
@@ -1532,10 +1574,11 @@
 		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = {}>
+		<cfset local.response = {
+			"success" = false,
+			"message" = "",
+			"data" = {}
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
@@ -1564,15 +1607,15 @@
 		<cfif arguments.action EQ "increment">
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset session.checkout[encryptText(local.productId)].quantity += 1>
+			<cfset session.checkout[arguments.productId].quantity += 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Incremented">
 
-		<cfelseif arguments.action EQ "decrement" AND session.checkout[encryptText(local.productId)].quantity GT 1>
+		<cfelseif arguments.action EQ "decrement" AND session.checkout[arguments.productId].quantity GT 1>
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset session.checkout[encryptText(local.productId)].quantity -= 1>
+			<cfset session.checkout[arguments.productId].quantity -= 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Decremented">
@@ -1580,7 +1623,7 @@
 		<cfelse>
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset structDelete(session.checkout, encryptText(local.productId))>
+			<cfset structDelete(session.checkout, arguments.productId)>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
@@ -1588,10 +1631,10 @@
 		</cfif>
 
 		<!--- Do the math --->
-		<cfif structKeyExists(session.checkout, encryptText(local.productId))>
-			<cfset local.unitPrice = session.checkout[encryptText(local.productId)].unitPrice>
-			<cfset local.unitTax = session.checkout[encryptText(local.productId)].unitTax>
-			<cfset local.quantity = session.checkout[encryptText(local.productId)].quantity>
+		<cfif structKeyExists(session.checkout, arguments.productId)>
+			<cfset local.unitPrice = session.checkout[arguments.productId].unitPrice>
+			<cfset local.unitTax = session.checkout[arguments.productId].unitTax>
+			<cfset local.quantity = session.checkout[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
@@ -1599,7 +1642,7 @@
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"quantity" = session.checkout[encryptText(local.productId)].quantity
+				"quantity" = session.checkout[arguments.productId].quantity
 			}>
 		</cfif>
 
@@ -1646,9 +1689,10 @@
 	<cffunction name="createOrder" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="addressId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"success" = false,
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.addressId = decryptText(arguments.addressId)>
@@ -1795,9 +1839,10 @@
 		<cfargument name="searchTerm" type="string" required=false default="">
 		<cfargument name="orderId" type="string" required=false default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = []>
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
 
 		<!--- Validate login --->
 		<cfif NOT structKeyExists(session, "userId")>
@@ -1906,6 +1951,18 @@
 	</cffunction>
 
 	<cffunction name="logOut" access="remote" returnType="void">
-		<cfset structClear(session)>
+		<!--- Delete roleId from session immediately so that page will be redirected on location.reload --->
+		<cfset structDelete(session, "roleId")>
+
+		<!--- Update cart asynchronously --->
+		<cfthread name="cartUpdateThread">
+			<cfset updateCartBatch(
+				userId = session.userId,
+				cartData = session.cart
+			)>
+
+			<!--- Clear session --->
+			<cfset structClear(session)>
+		</cfthread>
 	</cffunction>
 </cfcomponent>
