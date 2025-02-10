@@ -102,15 +102,7 @@
 		<cfif NOT (arguments.eventName IS "onSessionEnd") OR
 			(arguments.eventName IS "onApplicationEnd")>
 
-			<!--- Reset page content in case of error --->
-			<cfcontent reset=true>
-
-			<!--- Print error message --->
-			<cfoutput>
-				<h2>An unexpected error occurred.</h2>
-				<p>Please provide the following information to technical support:</p>
-				<p>Error Event: #arguments.eventName#</p>
-			</cfoutput>
+			<cflocation url="/error.cfm?eventName=#arguments.eventName#" addToken="false">
 		</cfif>
 	</cffunction> --->
 

@@ -174,7 +174,7 @@
 						<a class="btn btn-primary" href="/orders.cfm">Go to Orders</a>
 					</div>
 					<div name="error" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
-						<img src="#application.imageDirectory#order-failed.jpg" width="200px" alt="Order Success Image">
+						<img src="#application.imageDirectory#order-failed.jpg" width="200px" alt="Order Failed Image">
 						<div class="text-danger fs-5">
 							Sorry! There was an error.
 							<i class="fa-solid fa-circle-exclamation"></i>
