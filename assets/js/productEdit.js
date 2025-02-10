@@ -1,7 +1,7 @@
 const urlsubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('categoryId');
 
 $(document).ready(function() {
-	$("#categorySelect").change(function() {
+/* 	$("#categorySelect").change(function() {
 		const categoryId = this.value;
 		if (categoryId == 0) {
 			$("#subCategorySelect").prop('disabled', true);
@@ -30,7 +30,7 @@ $(document).ready(function() {
 				}
 			});
 		}
-	});
+	}); */
 });
 
 function processproductForm() {
@@ -130,7 +130,7 @@ function showAddProductModal(categoryId) {
 	$("#productForm")[0].reset();
 	$(".error").text("");
 	$("#productId").val("");
-	$("#categorySelect").val(categoryId).change();
+	// $("#categorySelect").val(categoryId).change();
 	$("#subCategoryModalBtn").text("Add Product");
 }
 
@@ -148,7 +148,7 @@ function showEditProductModal(categoryId, productId) {
 			const responseJSON = JSON.parse(response);
 			const objProductData = responseJSON.data[0];
 
-			$("#categorySelect").val(categoryId).change();
+			// $("#categorySelect").val(categoryId).change();
 			$("#productName").val(objProductData.productName);
 			$("#brandSelect").val(objProductData.brandId).change();
 			$("#productDesc").val(objProductData.description);
