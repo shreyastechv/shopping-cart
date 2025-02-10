@@ -1088,30 +1088,9 @@
 		<cfif arguments.action EQ "increment">
 
 			<!--- Check whether the item is present in cart --->
-			<cfquery name="local.qryCheckCart">
-				SELECT
-					fldCart_Id
-				FROM
-					tblCart
-				WHERE
-					fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
-					AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-			</cfquery>
-
-			<cfif local.qryCheckCart.recordCount>
-				<!--- Update cart in case it already have the product --->
-				<cfquery name="local.qryEditCart">
-					UPDATE
-						tblCart
-					SET
-						fldQuantity = fldQuantity + 1
-					WHERE
-						fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
-						AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-				</cfquery>
-
+			<cfif structKeyExists(session.cart, arguments.productId)>
 				<!--- Increment quantity of product in session variable --->
-				<cfset session.cart[encryptText(local.productId)].quantity += 1>
+				<cfset session.cart[arguments.productId].quantity += 1>
 
 				<!--- Set response message --->
 				<cfset local.response["message"] = "Product Quantity Incremented">
@@ -1122,23 +1101,8 @@
 					productId = arguments.productId
 				)>
 
-				<!--- Add product to cart in case it do not have it already --->
-				<cfquery name="local.qryAddToCart" result="local.resultAddToCart">
-					INSERT INTO
-						tblCart (
-							fldUserId,
-							fldProductId,
-							fldQuantity
-						)
-					VALUES (
-						<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-						<cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">,
-						1
-					)
-				</cfquery>
-
 				<!--- Add product to session variable --->
-				<cfset session.cart[encryptText(local.productId)] = {
+				<cfset session.cart[arguments.productId] = {
 					"cartId" = encryptText(local.resultAddToCart.GENERATED_KEY),
 					"quantity" = 1,
 					"unitPrice" = local.productInfo.data[1].price,
@@ -1150,36 +1114,18 @@
 
 			</cfif>
 
-		<cfelseif arguments.action EQ "decrement" AND session.cart[encryptText(local.productId)].quantity GT 1>
-
-			<!--- Decrement product quantity in cart --->
-			<cfquery name="local.qryDecrItem">
-				UPDATE
-					tblCart
-				SET
-					fldQuantity = fldQuantity - 1
-				WHERE
-					fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
-			</cfquery>
+		<cfelseif arguments.action EQ "decrement" AND session.cart[arguments.productId].quantity GT 1>
 
 			<!--- Decrement quantity of product in session variable --->
-			<cfset session.cart[encryptText(local.productId)].quantity -= 1>
+			<cfset session.cart[arguments.productId].quantity -= 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Decremented">
 
 		<cfelse>
 
-			<!--- Delete product from cart --->
-			<cfquery name="local.qryDeleteItem">
-				DELETE FROM
-					tblCart
-				WHERE
-					fldProductId = <cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">
-			</cfquery>
-
 			<!--- Delete productId key from struct in session variable --->
-			<cfset structDelete(session.cart, encryptText(local.productId))>
+			<cfset structDelete(session.cart, arguments.productId)>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
@@ -1187,10 +1133,10 @@
 		</cfif>
 
 		<!--- Do the math --->
-		<cfif structKeyExists(session.cart, encryptText(local.productId))>
-			<cfset local.unitPrice = session.cart[encryptText(local.productId)].unitPrice>
-			<cfset local.unitTax = session.cart[encryptText(local.productId)].unitTax>
-			<cfset local.quantity = session.cart[encryptText(local.productId)].quantity>
+		<cfif structKeyExists(session.cart, arguments.productId)>
+			<cfset local.unitPrice = session.cart[arguments.productId].unitPrice>
+			<cfset local.unitTax = session.cart[arguments.productId].unitTax>
+			<cfset local.quantity = session.cart[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
@@ -1198,7 +1144,7 @@
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"quantity" = session.cart[encryptText(local.productId)].quantity
+				"quantity" = session.cart[arguments.productId].quantity
 			}>
 		</cfif>
 
@@ -1566,15 +1512,15 @@
 		<cfif arguments.action EQ "increment">
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset session.checkout[encryptText(local.productId)].quantity += 1>
+			<cfset session.checkout[arguments.productId].quantity += 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Incremented">
 
-		<cfelseif arguments.action EQ "decrement" AND session.checkout[encryptText(local.productId)].quantity GT 1>
+		<cfelseif arguments.action EQ "decrement" AND session.checkout[arguments.productId].quantity GT 1>
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset session.checkout[encryptText(local.productId)].quantity -= 1>
+			<cfset session.checkout[arguments.productId].quantity -= 1>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Decremented">
@@ -1582,7 +1528,7 @@
 		<cfelse>
 
 			<!--- Delete productId key from struct in session variable --->
-			<cfset structDelete(session.checkout, encryptText(local.productId))>
+			<cfset structDelete(session.checkout, arguments.productId)>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
@@ -1590,10 +1536,10 @@
 		</cfif>
 
 		<!--- Do the math --->
-		<cfif structKeyExists(session.checkout, encryptText(local.productId))>
-			<cfset local.unitPrice = session.checkout[encryptText(local.productId)].unitPrice>
-			<cfset local.unitTax = session.checkout[encryptText(local.productId)].unitTax>
-			<cfset local.quantity = session.checkout[encryptText(local.productId)].quantity>
+		<cfif structKeyExists(session.checkout, arguments.productId)>
+			<cfset local.unitPrice = session.checkout[arguments.productId].unitPrice>
+			<cfset local.unitTax = session.checkout[arguments.productId].unitTax>
+			<cfset local.quantity = session.checkout[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
@@ -1601,7 +1547,7 @@
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"quantity" = session.checkout[encryptText(local.productId)].quantity
+				"quantity" = session.checkout[arguments.productId].quantity
 			}>
 		</cfif>
 
