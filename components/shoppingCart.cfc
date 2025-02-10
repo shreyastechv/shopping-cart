@@ -697,6 +697,8 @@
 		<!--- Product Description Validation --->
 		<cfif len(arguments.productDesc) EQ 0>
 			<cfset local.response["message"] &= "Product Description should not be empty. ">
+		<cfelseif len(arguments.productDesc) GT 400>
+			<cfset local.response["message"] &= "Product Description should be less than 400 characters. ">
 		</cfif>
 
 		<!--- Brand Id Validation --->
