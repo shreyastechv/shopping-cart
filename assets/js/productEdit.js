@@ -1,4 +1,3 @@
-// const urlSubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId');
 const urlcategoryId = new URLSearchParams(document.URL.split('?')[1]).get('categoryId');
 
 $(document).ready(function() {
@@ -19,12 +18,10 @@ $(document).ready(function() {
 				success: function(response) {
 					const responseJSON = JSON.parse(response);
 					$("#subCategorySelect").empty();
-					for(let i=0; i<responseJSON.DATA.length; i++) {
-						const subCategoryId = responseJSON.DATA[i][0];
-						const subCategoryName = responseJSON.DATA[i][1];
-						const optionTag = `<option value="${subCategoryId}">${subCategoryName}</option>`;
+					responseJSON.data.forEach(function(item) {
+						const optionTag = `<option value="${item.subCategoryId}">${item.subCategoryName}</option>`;
 						$("#subCategorySelect").append(optionTag);
-					}
+					});
 					// if (categoryId == urlcategoryId) {
 					// 	$("#subCategorySelect").val(urlSubCategoryId).change();
 					// }
@@ -117,9 +114,7 @@ function processproductForm() {
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
 			if(responseJSON.message == "Product Updated") {
-				$(`#productName-${productId}`).text(productName);
-				$(`#brandName-${productId}`).text(brandName);
-				$(`#price-${productId}`).text(productPrice);
+        location.reload();
 			}
 			else if (responseJSON.message == "Product Added") {
 				createProductItem(responseJSON.productId, productName, brandName, productPrice, responseJSON.defaultImageFile)
@@ -132,7 +127,7 @@ function processproductForm() {
 function showAddProductModal() {
 	$("#productForm")[0].reset();
 	$(".error").text("");
-	$("#productId").val("-1");
+	$("#productId").val("");
 	// $("#categorySelect").val(urlcategoryId).change();
 	$("#subCategoryModalBtn").text("Add Product");
 }
@@ -149,25 +144,21 @@ function showEditProductModal(productId) {
 		},
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
-			const objProductData = {};
-			for(let i=0; i<responseJSON.COLUMNS.length; i++) {
-				objProductData[responseJSON.COLUMNS[i]] =responseJSON.DATA[0][i]
-			}
+			const objProductData = responseJSON.data[0];
 
 			$("#categorySelect").val(urlcategoryId).change();
-			// $("#subCategorySelect").val(urlSubCategoryId).change();
-			$("#productName").val(objProductData['FLDPRODUCTNAME']);
-			$("#brandSelect").val(objProductData['FLDBRANDID']).change();
-			$("#productDesc").val(objProductData['FLDDESCRIPTION']);
-			$("#productPrice").val(objProductData['FLDPRICE']);
-			$("#productTax").val(objProductData['FLDTAX']);
+			$("#productName").val(objProductData.productName);
+			$("#brandSelect").val(objProductData.brandId).change();
+			$("#productDesc").val(objProductData.description);
+			$("#productPrice").val(objProductData.price);
+			$("#productTax").val(objProductData.tax);
 			$("#productImage").val("");
 			$("#subCategoryModalBtn").text("Edit Product");
 		}
 	});
 }
 
-function deleteProduct (productId) {
+function deleteProduct (containerId, productId) {
 	if (confirm("Delete product?")) {
 		$.ajax({
 			type: "POST",
@@ -177,15 +168,16 @@ function deleteProduct (productId) {
 				productId: productId
 			},
 			success: function() {
-				$(`#productContainer-${productId}`).remove();
+				$(`#${containerId}`).remove();
 			}
 		})
 	}
 }
 
 function createProductItem(prodId, prodName, brand, price, imageFile) {
+	const containerId = "productContainer_" + Math.floor(Math.random() * 1e9);;
 	const productItem = `
-		<div id="productContainer-${prodId}" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
+		<div id="${containerId}" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 			<div class="d-flex flex-column fs-5">
 				<div id="productName-${prodId}" class="fw-bold">${prodName}</div>
 				<div id="brandName-${prodId}" class="fw-semibold">${brand}</div>
@@ -197,10 +189,10 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 						<img class="pe-none" src="${productImageDirectory}${imageFile}" alt="Product Image" width="50">
 					</div>
 				</button>
-				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal(${prodId})">
+				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal('${containerId}, '${prodId}')">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>
 				</button>
-				<button class="btn btn-lg" onclick="deleteProduct(${prodId})">
+				<button class="btn btn-lg" onclick="deleteProduct('${containerId}', '${prodId}')">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
 			</div>
@@ -220,22 +212,22 @@ function createCarousel(productId) {
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
 			$("#carouselContainer").empty();
-			for(let i=0; i<responseJSON.length; i++) {
+			for(let i=0; i<responseJSON.data.length; i++) {
 				const isActive = i === 0 ? "active" : ""; // Set active for the first item
-				const bottomDiv = responseJSON[i].defaultImage === 1 ? `
+				const bottomDiv = responseJSON.data[i].defaultImage === 1 ? `
 					<div class="text-center p-2">
 						Default Image
 					</div>
 				`: `
 					<div class="d-flex justify-content-center pt-3 gap-5">
-						<button class="btn btn-success" onclick="setDefaultImage(${responseJSON[i].imageId})">Set as Default</button>
-						<button class="btn btn-danger" onclick="deleteImage(${responseJSON[i].imageId})">Delete</button>
+						<button class="btn btn-success" onclick="setDefaultImage('${responseJSON.data[i].imageId}')">Set as Default</button>
+						<button class="btn btn-danger" onclick="deleteImage('imageContainer_${i}', '${responseJSON.data[i].imageId}')">Delete</button>
 					</div>
 				`;
 				const carouselItem = `
-					<div class="carousel-item ${isActive}" id="imageContainer_${responseJSON[i].imageId}">
+					<div class="carousel-item ${isActive}" id="imageContainer_${i}">
 						<div class="d-flex justify-content-center">
-							<img src="${productImageDirectory}${responseJSON[i].imageFileName}" class="d-block h-100" alt="Product Image">
+							<img src="${productImageDirectory}${responseJSON.data[i].imageFileName}" class="d-block h-100" alt="Product Image">
 						</div>
 						${bottomDiv}
 					</div>
@@ -266,7 +258,7 @@ function setDefaultImage(imageId) {
 	});
 }
 
-function deleteImage(imageId) {
+function deleteImage(containerId, imageId) {
 	$.ajax({
 		type: "POST",
 		url: "./components/shoppingCart.cfc",
@@ -277,7 +269,7 @@ function deleteImage(imageId) {
 		success: function() {
 			const carousel = new bootstrap.Carousel($('#productImageCarousel'));
 			carousel.next();
-			$(`imageContainer_${imageId}`).parent().parent().remove();
+      $(`#${containerId}`).remove();
 		}
 	});
 }

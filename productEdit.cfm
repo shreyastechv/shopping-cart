@@ -1,35 +1,31 @@
 <!--- Variables --->
-<cfparam name="variables.subCategoryId" default="">
+<cfparam name="url.subCategoryId" default="">
+<cfparam name="variables.categoryId" default="">
 <cfparam name="variables.subCategoryName" default="Products">
-<cfparam name="variables.categoryId" default="0">
-<cfparam name="variables.categoryName" default="Sub categories">
 
 <cfoutput>
-	<!--- Decrypt URL Params --->
-	<cfset variables.subCategoryId = application.shoppingCart.decryptUrlParam(url.subCategoryId)>
-
-	<!--- Go to home page if decryption fails (function returns -1) --->
-	<cfif variables.subCategoryId EQ -1>
+	<!--- Go to home page if sub category id is empty --->
+	<cfif len(trim(url.subCategoryId)) EQ 0>
 		<cflocation url="/" addToken="no">
 	</cfif>
 
 	<!--- Get Data --->
 	<cfset variables.categories = application.shoppingCart.getCategories()>
-	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories()>
-	<cfset variables.qryProducts = application.shoppingCart.getProducts(subCategoryId = variables.subCategoryId)>
-	<cfset variables.qryBrands = application.shoppingCart.getBrands()>
+	<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
+	<cfset variables.products = application.shoppingCart.getProducts(subCategoryId = url.subCategoryId)>
+	<cfset variables.brands = application.shoppingCart.getBrands()>
 
 	<!--- Get sub category name of the current products page --->
-	<cfloop query="variables.qrySubCategories">
-		<cfif variables.qrySubCategories.fldSubCategory_Id EQ variables.subCategoryId>
-			<cfset variables.subCategoryName = variables.qrySubCategories.fldSubCategoryName>
+	<cfloop array="#variables.subCategories.data#" item="item">
+		<cfif item.subCategoryId EQ url.subCategoryId>
+			<cfset variables.subCategoryName = item.subCategoryName>
 		</cfif>
 	</cfloop>
 
 	<!--- Get category id of the current products page --->
-	<cfloop query="variables.qrySubCategories">
-		<cfif variables.qrySubCategories.fldSubCategory_Id EQ variables.subCategoryId>
-			<cfset variables.categoryId = variables.qrySubCategories.fldCategoryId>
+	<cfloop array="#variables.subCategories.data#" item="item">
+		<cfif item.subCategoryId EQ url.subCategoryId>
+			<cfset variables.categoryId = item.categoryId>
 		</cfif>
 	</cfloop>
 
@@ -41,8 +37,8 @@
 	</cfloop>
 
 	<!--- Reduce the sub categories query to only ones with current page category id --->
-	<cfset variables.qrySubCategories = queryFilter(variables.qrySubCategories, function(row) {
-		return row.fldCategoryId EQ variables.categoryId;
+	<cfset variables.subCategories.data = arrayFilter(variables.subCategories.data, function(item) {
+		return item.categoryId EQ variables.categoryId;
 	})>
 
 	<!--- Main Content --->
@@ -55,27 +51,27 @@
 					</a>
 					<div class="d-flex">
 						<h3 class="fw-semibold text-center mb-0 me-3">#variables.subCategoryName#</h3>
-						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal(#variables.subCategoryId#)">
+						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal('#url.subCategoryId#')">
 							Add+
 						</button>
 					</div>
 					<div></div>
 				</div>
-				<cfloop query="variables.qryProducts">
-					<div id="productContainer-#variables.qryProducts.fldProduct_Id#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
+				<cfloop array="#variables.products.data#" item="item" index="i">
+					<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 						<div class="d-flex flex-column fs-5">
-							<div id="productName-#variables.qryProducts.fldProduct_Id#" class="fw-bold">#variables.qryProducts.fldProductName#</div>
-							<div id="brandName-#variables.qryProducts.fldProduct_Id#" class="fw-semibold">#variables.qryProducts.fldBrandName#</div>
-							<div id="price-#variables.qryProducts.fldProduct_Id#" class="text-success">Rs.#variables.qryProducts.fldPrice#</div>
+							<div name="productName" class="fw-bold">#item.productName#</div>
+							<div name="brandName" class="fw-semibold">#item.brandName#</div>
+							<div name="price" class="text-success">Rs.#item.price#</div>
 						</div>
 						<div>
-							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#variables.qryProducts.fldProduct_Id#)">
-								<img class="pe-none" src="#application.productImageDirectory&variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
+							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#item.productId#)">
+								<img class="pe-none" src="#application.productImageDirectory&item.productImage#" alt="Product Image" width="50">
 							</button>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal(#variables.qryProducts.fldProduct_Id#,#variables.subCategoryId#)">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#item.productId#','#url.subCategoryId#')">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" onclick="deleteProduct(#variables.qryProducts.fldProduct_Id#)">
+							<button class="btn btn-lg" onclick="deleteProduct('productContainer_#i#', '#item.productId#')">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
 						</div>
@@ -118,14 +114,14 @@
 				<label for="subCategorySelect" class="fw-semibold">SubCategory Name</label>
 				<select id="subCategorySelect" class="form-select" aria-label="SubCategory Select">
 					<option value="0">SubCategory Select</option>
-					<cfloop query="variables.qrySubCategories">
+					<cfloop array="#variables.subCategories.data#" item="item">
 						<option
-							<cfif variables.subCategoryId EQ variables.qrySubCategories.fldSubCategory_Id>
+							<cfif url.subCategoryId EQ item.subCategoryId>
 								selected
 							</cfif>
-							value="#variables.qrySubCategories.fldSubCategory_Id#"
+							value="#item.subCategoryId#"
 						>
-							#variables.qrySubCategories.fldSubCategoryName#
+							#item.subCategoryName#
 						</option>
 					</cfloop>
 				</select>
@@ -140,8 +136,8 @@
 				<label for="brandSelect" class="fw-semibold">Product Brand</label>
 				<select id="brandSelect" class="form-select" aria-label="SubCategory Select">
 					<option value="0">Brand Name</option>
-					<cfloop query="variables.qryBrands">
-						<option value="#variables.qryBrands.fldBrand_Id#">#variables.qryBrands.fldBrandName# </option>
+					<cfloop array="#variables.brands.data#" item="item">
+						<option value="#item.brandId#">#item.brandName#</option>
 					</cfloop>
 				</select>
 				<div id="brandSelectError" class="text-danger error"></div>

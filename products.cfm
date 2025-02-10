@@ -6,10 +6,6 @@
 <cfparam name="url.subCategoryId" default="">
 <cfparam name="url.search" default="">
 
-<!--- Decrypt URL Params --->
-<cfset variables.categoryId = application.shoppingCart.decryptUrlParam(url.categoryId)>
-<cfset variables.subCategoryId = application.shoppingCart.decryptUrlParam(url.subCategoryId)>
-
 <!--- Form Variables --->
 <cfparam name="form.filterRange" default="">
 <cfparam name="form.min" default="0">
@@ -27,13 +23,13 @@
 </cfif>
 
 <!--- Check URL Params --->
-<cfif variables.categoryId NEQ -1>
+<cfif len(trim(url.categoryId))>
 	<!--- Get Data if categoryId is given --->
-	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
-<cfelseif variables.subCategoryId NEQ -1>
+	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
+<cfelseif len(trim(url.subCategoryId))>
 	<!--- Get Data if subCategoryId is given --->
-	<cfset variables.qryProducts = application.shoppingCart.getProducts(
-		subCategoryId = variables.subCategoryId,
+	<cfset variables.products = application.shoppingCart.getProducts(
+		subCategoryId = url.subCategoryId,
 		limit = form.limit,
 		min = form.min,
 		max = (len(trim(form.max)) ? val(form.max) : ""),
@@ -41,7 +37,7 @@
 	)>
 <cfelseif len(trim(url.search))>
 	<!--- Get Data if search is given --->
-	<cfset variables.qryProducts = application.shoppingCart.getProducts(
+	<cfset variables.products = application.shoppingCart.getProducts(
 		searchTerm = trim(url.search)
 	)>
 <cfelse>
@@ -52,24 +48,23 @@
 <cfoutput>
 	<!--- Main Content --->
 	<div class="d-flex flex-column m-3">
-		<cfif structKeyExists(variables, "qrySubCategories")>
+		<cfif structKeyExists(variables, "subCategories")>
 			<!--- Category Listing --->
-			<cfloop query="variables.qrySubCategories">
-				<!--- Encrypt SubCategory ID since it is passed to URL param --->
-				<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
-				<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
+			<cfloop array="#variables.subCategories.data#" item="item">
+				<!--- Encode Sub Category ID since it is passed to URL param --->
+				<cfset variables.encodedSubCategoryId  = urlEncodedFormat(item.subCategoryId)>
 
 				<!--- Gather products --->
-				<cfset variables.qryProducts = application.shoppingCart.getProducts(
-					subCategoryId = variables.qrySubCategories.fldSubCategory_Id,
+				<cfset variables.products = application.shoppingCart.getProducts(
+					subCategoryId = item.subCategoryId,
 					random = 1,
 					limit = 6
 				)>
 
 				<!--- Show subcategory if it has products --->
-				<cfif variables.qryProducts.recordCount>
-					<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
-					<cf_productlist qryProducts="#variables.qryProducts#">
+				<cfif arrayLen(variables.products.data)>
+					<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h4 text-decoration-none">#item.subCategoryName#</a>
+					<cf_productlist products="#variables.products.data#">
 				</cfif>
 			</cfloop>
 		<cfelse>
@@ -78,7 +73,7 @@
 				<!--- Sorting and Filtering only shown if search results are not shown --->
 				<cfif len(trim(url.search))>
 					<div class="fs-4 fw-semibold px-2">
-						<cfif variables.qryProducts.recordCount>
+						<cfif arrayLen(variables.products.data)>
 							Search Results for '#trim(url.search)#'
 						<cfelse>
 							No Results found for '#trim(url.search)#'
@@ -133,14 +128,14 @@
 			</div>
 
 			<!--- Sub Category / Search Listing --->
-			<cf_productlist qryProducts="#variables.qryProducts#">
+			<cf_productlist products="#variables.products.data#">
 
 			<cfif NOT len(trim(url.search))>
-				<cfif variables.qryProducts.recordCount>
+				<cfif arrayLen(variables.products.data)>
 					<!--- View More Button --->
-					<cfif variables.qryProducts.recordCount GTE form.limit>
+					<cfif arrayLen(variables.products.data) GTE form.limit>
 						<div>
-							<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore(#variables.subCategoryId#)">View More</button>
+							<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore('#url.subCategoryId#')">View More</button>
 						</div>
 					</cfif>
 				<cfelse>

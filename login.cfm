@@ -11,16 +11,10 @@
 	<cfif variables.loginResult.message EQ "Login successful">
 		<!--- Add product to cart if user came from product page --->
 		<cfif len(trim(url.productId))>
-			<!--- Decrypt Product ID --->
-			<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
-
-			<!--- Add product to cart only if properly decrypted --->
-			<cfif variables.productId NEQ -1>
-				<cfset application.shoppingCart.modifyCart(
-					productId = variables.productId,
-					action = "increment"
-				)>
-			</cfif>
+			<cfset application.shoppingCart.modifyCart(
+				productId = url.productId,
+				action = "increment"
+			)>
 		</cfif>
 
 		<!--- Redirect user/admin to url.redirect --->

@@ -21,20 +21,20 @@
 
 		<!--- Variables --->
 		<cfset variables.categories = application.shoppingCart.getCategories()>
-		<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories()>
+		<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
 		<cfset variables.catToSubcatMapping = {}>
 
 		<!--- Loop through sub categories --->
-		<cfloop query="variables.qrySubCategories">
+		<cfloop array="#variables.subCategories.data#" item="item">
 			<!--- If category id does not exist in mapping, create it --->
-			<cfif NOT structKeyExists(variables.catToSubcatMapping, variables.qrySubCategories.fldCategoryId)>
-				<cfset variables.catToSubcatMapping[variables.qrySubCategories.fldCategoryId] = []>
+			<cfif NOT structKeyExists(variables.catToSubcatMapping, item.categoryId)>
+				<cfset variables.catToSubcatMapping[item.categoryId] = []>
 			</cfif>
 
 			<!--- Map sub category info to category id --->
-			<cfset arrayAppend(variables.catToSubcatMapping[variables.qrySubCategories.fldCategoryId], {
-				"subCategoryId" = variables.qrySubCategories.fldSubCategory_Id,
-				"subCategoryName" = variables.qrySubCategories.fldSubCategoryName
+			<cfset arrayAppend(variables.catToSubcatMapping[item.categoryId], {
+				"subCategoryId" = item.subCategoryId,
+				"subCategoryName" = item.subCategoryName
 			})>
 		</cfloop>
 
@@ -44,16 +44,10 @@
 					<img class="p-2 me-2" src="#application.imageDirectory#shopping-cart-logo.png" height="45" alt="Logo Image">
 					<div class="text-white fw-semibold">SHOPPING CART</div>
 				</a>
-				<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-					<a class="text-white text-decoration-none fs-4" href="/adminDashboard.cfm">
-						ADMIN DASHBOARD
-					</a>
-				<cfelse>
-					<form class="d-flex p-1 w-50" method="get" action="/products.cfm">
-						<input class="form-control me-2" type="search" name="search" value="#url.search#" placeholder="Search" onblur="this.value = this.value.trim()">
-						<button class="btn btn-outline-light" type="submit">Search</button>
-					</form>
-				</cfif>
+				<form class="d-flex p-1 w-50" method="get" action="/products.cfm">
+					<input class="form-control me-2" type="search" name="search" value="#url.search#" placeholder="Search" onblur="this.value = this.value.trim()">
+					<button class="btn btn-outline-light" type="submit">Search</button>
+				</form>
 				<nav class="d-flex align-items-center justify-content-between gap-4">
 					<!--- Profile Button --->
 					<button type="button" class="btn btn-outline-light" onclick="location.href='/profile.cfm'">
@@ -99,23 +93,21 @@
 				<nav class="navbar navbar-expand-lg bg-body-tertiary">
 					<div class="container-fluid">
 						<ul class="navbar-nav w-100 d-flex justify-content-evenly">
-							<cfloop array="#variables.categories.data#" item="item">
-								<!--- Encrypt Category ID URL param --->
-								<cfset variables.encryptedCategoryId = application.shoppingCart.encryptUrlParam(item.categoryId)>
-								<cfset variables.encodedCategoryId  = urlEncodedFormat(variables.encryptedCategoryId)>
+							<cfloop array="#variables.categories.data#" item="categoryItem">
+								<!--- Encode Category ID since it is passed to URL param --->
+								<cfset variables.encodedCategoryId  = urlEncodedFormat(categoryItem.categoryId)>
 
 								<li class="nav-item dropdown">
 									<a class="nav-link" href="/products.cfm?categoryId=#variables.encodedCategoryId#">
-										#item.categoryName#
+										#categoryItem.categoryName#
 									</a>
-									<cfif structKeyExists(variables.catToSubcatMapping, item.categoryId)>
+									<cfif structKeyExists(variables.catToSubcatMapping, categoryItem.categoryId)>
 										<ul class="dropdown-menu">
-											<cfloop array="#variables.catToSubcatMapping[item.categoryId]#" item="variables.subCategory">
-												<!--- Encrypt SubCategory ID URL param --->
-												<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.subCategory.subCategoryId)>
-												<cfset variables.encodedSubCategoryId  = urlEncodedFormat(variables.encryptedSubCategoryId)>
+											<cfloop array="#variables.catToSubcatMapping[categoryItem.categoryId]#" item="subCategoryItem">
+												<!--- Encode Sub Category ID since it is passed to URL param --->
+												<cfset variables.encodedSubCategoryId  = urlEncodedFormat(subCategoryItem.subCategoryId)>
 
-												<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#">#variables.subCategory.subCategoryName#</a></li>
+												<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#">#subCategoryItem.subCategoryName#</a></li>
 											</cfloop>
 										</ul>
 									</cfif>

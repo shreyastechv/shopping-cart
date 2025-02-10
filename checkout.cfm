@@ -3,27 +3,23 @@
 
 <!--- Get Data --->
 <cfset variables.addresses = application.shoppingCart.getAddress()>
-<cfset variables.addressEmpty = arrayLen(variables.addresses) EQ 0 ? "disabled" : "">
+<cfset variables.addressEmpty = arrayLen(variables.addresses.data) EQ 0 ? "disabled" : "">
 
 <!--- Variables to store total price and total actual price --->
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>
 
-<!--- Decrypt product id --->
-<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
-
-
-<cfif variables.productId NEQ -1>
+<cfif len(trim(url.productId)) NEQ 0>
 	<!--- Get product price details since this is not in cart --->
 	<cfset variables.productDetails = application.shoppingCart.getProducts(
-		productId = variables.productId
+		productId = url.productId
 	)>
 
 	<!--- Product details when this page was opened by clicking buy now from product page --->
-	<cfset variables.products[variables.productId] = {
+	<cfset variables.products[url.productId] = {
 		"quantity" = 1,
-		"unitPrice" = variables.productDetails.fldPrice,
-		"unitTax" = variables.productDetails.fldTax
+		"unitPrice" = variables.productDetails.data[1].price,
+		"unitTax" = variables.productDetails.data[1].tax
 	}>
 
 	<!--- Session variable to store checkout products --->
@@ -46,7 +42,7 @@
 
 		<div class="row w-100 my-2">
 			<div class="col-md-8">
-				<form method="post" id="checkoutForm" onsubmit="handleCheckout()">
+				<form method="post" name="checkoutForm" id="checkoutForm" onsubmit="handleCheckout()">
 					<div class="accordion accordion-flush border rounded-2 shadow-sm" id="orderSummary">
 						<!-- Address Section -->
 						<div class="accordion-item">
@@ -57,7 +53,7 @@
 							</h2>
 							<div id="flush-collapseOne" class="accordion-collapse collapse show" data-bs-parent="##orderSummary">
 								<div class="accordion-body">
-									<cf_addresslist addresses="#variables.addresses#" currentPage="checkout">
+									<cf_addresslist addresses="#variables.addresses.data#" currentPage="checkout">
 								</div>
 								<div class="d-flex justify-content-between p-3 pt-0">
 									<cf_addaddressbtn>

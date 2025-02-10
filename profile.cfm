@@ -12,6 +12,10 @@
                     </div>
 
 					<div>
+						<!--- Show admin dashboard button --->
+						<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
+							<a href="/adminDashboard.cfm" class="btn btn-info m-2">Admin</a>
+						</cfif>
 						<a href="/orders.cfm" class="btn btn-outline-secondary m-2">View Previous Orders</a>
 						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="##profileModal">
 							Edit Profile
@@ -20,7 +24,7 @@
                 </div>
 
                 <h5 class="mt-4">Saved Addresses</h5>
-				<cf_addresslist addresses="#variables.addresses#" currentPage="profile">
+				<cf_addresslist addresses="#variables.addresses.data#" currentPage="profile">
 				<cf_addaddressbtn>
             </div>
         </div>
