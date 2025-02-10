@@ -1,4 +1,5 @@
 <cfparam name="url.categoryId" default="">
+<cfparam name="variables.categoryName" default="Sub Categories">
 
 <cfoutput>
 	<!--- Check presence of url params --->
