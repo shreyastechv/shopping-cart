@@ -1,3 +1,9 @@
+$("#addressFormModal").on("hidden.bs.modal", function () {
+  // Remove error msgs and red borders from inputs
+  $(".addressInput").removeClass("border-danger");
+  $(".addressError").empty();
+});
+
 function processAddressForm() {
   event.preventDefault();
 
