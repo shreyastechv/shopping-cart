@@ -1720,73 +1720,40 @@
 			<cfset local.orderId = createUUID()>
 		</cfloop>
 
-		<!--- Calculate Total price and Total tax --->
-		<cfset local.priceDetails = session.checkout.reduce(function(result,key,value){
-			result.totalPrice += value.unitPrice * ( 1 + value.unitTax) * value.quantity;
-			result.totalTax += value.unitPrice * value.unitTax * value.quantity;
-			return result;
-		},{totalPrice = 0, totalTax = 0})>
+		<!--- Variables to store total price and total tax --->
+		<cfset local.totalPrice = 0>
+		<cfset local.totalTax = 0>
+
+		<!--- json array to pass to stored procedure --->
+		<cfset local.productList = []>
+
+		<!--- Loop through checkout items --->
+		<cfloop collection="#session.checkout#" item="item">
+			<!--- Calculate total price and tax --->
+			<cfset local.totalPrice += session.checkout[item].unitPrice * ( 1 + session.checkout[item].unitTax) * session.checkout[item].quantity>
+			<cfset local.totalTax += session.checkout[item].unitPrice * session.checkout[item].unitTax * session.checkout[item].quantity>
+
+			<!--- build json array --->
+			<cfset arrayAppend(local.productList, {
+				"productId": decryptText(trim(item)),
+				"quantity": trim(session.checkout[item].quantity),
+				"unitPrice": trim(session.checkout[item].unitPrice),
+				"unitTax": trim(session.checkout[item].unitTax)
+			})>
+		</cfloop>
+
+		<!--- Convert array to JSON --->
+		<cfset local.productJSON = serializeJSON(local.productList)>
 
 		<cftry>
-			<!--- Insert into order table --->
-			<cfquery name="local.qryCreateOrder">
-				INSERT INTO
-					tblOrder (
-						fldOrder_Id,
-						fldUserId,
-						fldAddressId,
-						fldTotalPrice,
-						fldTotalTax
-					)
-				VALUES (
-					<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-					<cfqueryparam value = "#trim(local.addressId)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(local.priceDetails.totalPrice)#" cfsqltype = "decimal">,
-					<cfqueryparam value = "#trim(local.priceDetails.totalTax)#" cfsqltype = "decimal">
-				)
-			</cfquery>
-
-			<!--- Insert into order items table --->
-			<cfquery name="local.qryCreateOrderItems">
-				INSERT INTO
-					tblOrderItems (
-						fldOrderId,
-						fldProductId,
-						fldQuantity,
-						fldUnitPrice,
-						fldUnitTax
-					)
-				VALUES
-				<cfset local.index = 1>
-				<cfloop collection="#session.checkout#" item="item">
-					(
-						<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#decryptText(trim(item))#" cfsqltype = "integer">,
-						<cfqueryparam value = "#trim(session.checkout[item].quantity)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(session.checkout[item].unitPrice)#" cfsqltype = "decimal">,
-						<cfqueryparam value = "#trim(session.checkout[item].unitTax)#" cfsqltype = "decimal">
-					)
-					<cfif local.index LT structCount(session.checkout)>
-						,
-					</cfif>
-					<cfset local.index += 1>
-				</cfloop>
-			</cfquery>
-
-			<!--- Create a list of decrypted product ids --->
-			<cfset local.productIdList = listMap(structKeyList(session.checkout), function(item) {
-				return decryptText(item);
-			})>
-
-			<!--- Delete ordered products from cart table --->
-			<cfquery name="local.qryDeleteCart">
-				DELETE FROM
-					tblCart
-				WHERE
-					fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-					AND fldProductId IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
-			</cfquery>
+			<cfstoredproc procedure="spCreateOrderItems">
+				<cfprocparam cfsqltype="varchar" variable="p_orderId" value="#local.orderId#">
+				<cfprocparam cfsqltype="integer" variable="p_userId" value="#session.userId#">
+				<cfprocparam cfsqltype="integer" variable="p_addressId" value="#local.addressId#">
+				<cfprocparam cfsqltype="decimal" variable="p_totalPrice" value="#local.totalPrice#">
+				<cfprocparam cfsqltype="decimal" variable="p_totalTax" value="#local.totalTax#">
+				<cfprocparam cfsqltype="longvarchar" variable="p_jsonProducts" value="#local.productJSON#">
+			</cfstoredproc>
 
 			<!--- Empty cart structure in session --->
 			<cfset structEach(session.checkout, function(key) {
