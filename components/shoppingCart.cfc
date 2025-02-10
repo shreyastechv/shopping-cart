@@ -1171,6 +1171,52 @@
 		<cfreturn local.response>
 	</cffunction>
 
+	<cffunction name="updateCartBatch" access="public" returnType="struct" returnFormat="json">
+		<cfargument name="userId" type="integer" required=true>
+		<cfargument name="cartData" type="struct" required=false>
+
+        <cfset local.response = {
+			success = false,
+			message = ""
+		}>
+
+        <cftry>
+            <cftransaction>
+                <cfloop collection="#arguments.cartData#" item="productId">
+                    <cfset local.quantity = arguments.cartData[productId]>
+
+                    <cfif local.quantity GT 0>
+                        <!-- Update or Insert Product in Cart -->
+                        <cfquery>
+                            INSERT INTO tblCart (fldUserId, fldProductId, fldQuantity)
+                            VALUES (
+                                <cfqueryparam value="#arguments.userId#" cfsqltype="integer">,
+                                <cfqueryparam value="#productId#" cfsqltype="integer">,
+                                <cfqueryparam value="#local.quantity#" cfsqltype="integer">
+                            )
+                            ON DUPLICATE KEY UPDATE fldQuantity = <cfqueryparam value="#local.quantity#" cfsqltype="integer">
+                        </cfquery>
+                    <cfelse>
+                        <!-- Delete Product from Cart -->
+                        <cfquery>
+                            DELETE FROM tblCart WHERE fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
+                            AND fldProductId = <cfqueryparam value="#productId#" cfsqltype="integer">
+                        </cfquery>
+                    </cfif>
+                </cfloop>
+            </cftransaction>
+
+            <cfset local.response.success = true>
+
+			<!--- Catch error --->
+			<cfcatch>
+				<cfset local.response.message = "Error: #cfcatch.message#">
+			</cfcatch>
+        </cftry>
+
+        <cfreturn local.response>
+    </cffunction>
+
 	<cffunction name="getAddress" access="public" returnType="struct">
 		<cfargument name="addressId" type="string" required=false default="">
 
