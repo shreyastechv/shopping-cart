@@ -589,6 +589,8 @@
 					AND p.fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
 				<cfelseif len(trim(local.productId)) AND local.productId NEQ -1>
 					AND p.fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+				<cfelseif len(trim(arguments.productIdList))>
+					AND fldProductId IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 				</cfif>
 
 				<!--- 0 is the default value of arguments.max hence it should not be used --->
