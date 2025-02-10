@@ -1124,8 +1124,8 @@
 
 		<cfelse>
 
-			<!--- Delete productId key from struct in session variable --->
-			<cfset structDelete(session.cart, arguments.productId)>
+			<!--- Set quantity to 0 in struct in session variable --->
+			<cfset session.cart[arguments.productId].quantity = 0>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
