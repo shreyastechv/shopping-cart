@@ -171,10 +171,11 @@
 		<cfargument name="targetPage" type="string" required=true>
 
 		<!--- Update cart when user leaves cart page --->
-		<!--- This code is placed above flag setting code to prevent both running on cart page --->
+		<!--- This code is placed above 'flag setting' code to prevent both running on cart page --->
 		<cfif structKeyExists(session, "cartVisit")
+			<!--- Below code is to prevent db call when session variable is empty --->
 			AND structKeyExists(session, "cart") AND NOT structIsEmpty(session.cart)
-			AND structKeyExists(session, "userId")
+			<!--- Below code is to prevent ajax calls from being registered as page visit --->
 			AND NOT findNoCase("/components", arguments.targetPage)
 		>
 			<!--- Update cart asynchronously --->
@@ -191,7 +192,6 @@
 
 		<!--- Set session variable when user enters cart page for first time --->
 		<cfif NOT structKeyExists(session, "cartVisit") AND arguments.targetPage EQ "/cart.cfm"
-			AND structKeyExists(session, "userId")
 		>
 			<!--- Set flag --->
 			<cfset session.cartVisit = true>
