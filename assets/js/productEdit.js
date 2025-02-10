@@ -1,7 +1,7 @@
-const urlsubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('categoryId');
+const urlSubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId');
 
 $(document).ready(function() {
-/* 	$("#categorySelect").change(function() {
+	$("#categorySelect").change(function() {
 		const categoryId = this.value;
 		if (categoryId == 0) {
 			$("#subCategorySelect").prop('disabled', true);
@@ -20,17 +20,17 @@ $(document).ready(function() {
 					$("#subCategorySelect").empty();
 					responseJSON.data.forEach(function(item) {
 						let optionTag;
-						if (item.subCategoryId == urlsubCategoryId) {
-							optionTag = `<option value="${item.subCategoryId}">${item.subCategoryName}</option>`;
-						} else {
+						if (item.subCategoryId == urlSubCategoryId) {
 							optionTag = `<option value="${item.subCategoryId}" selected>${item.subCategoryName}</option>`;
+						} else {
+							optionTag = `<option value="${item.subCategoryId}">${item.subCategoryName}</option>`;
 						}
 						$("#subCategorySelect").append(optionTag);
 					});
 				}
 			});
 		}
-	}); */
+	});
 });
 
 function processproductForm() {
@@ -102,7 +102,6 @@ function processproductForm() {
 	if (!valid) return false;
 
 	const formData = new FormData($("#productForm")[0]);
-	formData.append("categorySelect", categorySelect);
 	formData.append("subCategorySelect", subCategorySelect);
 	formData.append("brandSelect", brandSelect);
 	formData.append("method", "modifyProduct");
@@ -130,7 +129,7 @@ function showAddProductModal(categoryId) {
 	$("#productForm")[0].reset();
 	$(".error").text("");
 	$("#productId").val("");
-	// $("#categorySelect").val(categoryId).change();
+	 $("#categorySelect").val(categoryId).change();
 	$("#subCategoryModalBtn").text("Add Product");
 }
 
@@ -148,7 +147,7 @@ function showEditProductModal(categoryId, productId) {
 			const responseJSON = JSON.parse(response);
 			const objProductData = responseJSON.data[0];
 
-			// $("#categorySelect").val(categoryId).change();
+			 $("#categorySelect").val(categoryId).change();
 			$("#productName").val(objProductData.productName);
 			$("#brandSelect").val(objProductData.brandId).change();
 			$("#productDesc").val(objProductData.description);

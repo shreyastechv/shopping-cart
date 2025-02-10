@@ -665,7 +665,6 @@
 
 	<cffunction name="modifyProduct" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="productId" type="string" required=true default="">
-		<cfargument name="categorySelect" type="string" required=true default="">
 		<cfargument name="subCategorySelect" type="string" required=true default="">
 		<cfargument name="productName" type="string" required=true>
 		<cfargument name="brandSelect" type="string" required=true default="">
@@ -680,7 +679,6 @@
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
-		<cfset local.categorySelect = decryptText(arguments.categorySelect)>
 		<cfset local.subCategorySelect = decryptText(arguments.subCategorySelect)>
 		<cfset local.brandSelect = decryptText(arguments.brandSelect)>
 
@@ -688,12 +686,6 @@
 		<cfif len(trim(arguments.productId)) AND (local.productId EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Product Id is invalid. ">
-		</cfif>
-
-		<!--- Category Id Validation --->
-		<cfif (len(trim(arguments.categorySelect)) NEQ 0) AND (local.categorySelect EQ -1)>
-			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
 
 		<!--- Sub Category Id Validation --->
@@ -705,6 +697,8 @@
 		<!--- Product Description Validation --->
 		<cfif len(arguments.productDesc) EQ 0>
 			<cfset local.response["message"] &= "Product Description should not be empty. ">
+		<cfelseif len(arguments.productDesc) GT 400>
+			<cfset local.response["message"] &= "Product Description should be less than 400 characters. ">
 		</cfif>
 
 		<!--- Brand Id Validation --->
@@ -1138,8 +1132,8 @@
 
 		<cfelse>
 
-			<!--- Set quantity to 0 in struct in session variable --->
-			<cfset session.cart[arguments.productId].quantity = 0>
+			<!--- Delete product from session variable --->
+			<cfset structDelete(session.cart, arguments.productId)>
 
 			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
@@ -1189,69 +1183,97 @@
 		<cfargument name="userId" type="integer" required=true>
 		<cfargument name="cartData" type="struct" required=false>
 
-        <cfset local.response = {
+		<cfset local.response = {
 			success = false,
 			message = ""
 		}>
 
 		<cftry>
 			<cftransaction>
-				<cfloop collection="#arguments.cartData#" item="productId">
-					<cfset local.quantity=arguments.cartData[productId].quantity>
+				<!--- Get all products currently in the cart --->
+				<cfquery name="local.qryCartProducts">
+					SELECT fldProductId FROM tblCart WHERE fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
+				</cfquery>
 
-					<cfif local.quantity GT 0>
-						<!--- Check whether product already in cart --->
-						<cfquery name="local.qryCheckCart">
-							SELECT
-								fldProductId
-							FROM
-								tblCart
-							WHERE
-								fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
-								AND fldProductId = <cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">
-						</cfquery>
+				<!--- Get product Ids from cart table --->
+				<cfset local.cartProductIdList = valueList(local.qryCartProducts.fldProductId)>
 
-						<cfif local.qryCheckCart.recordCount>
-							<!--- Update cart if product exists --->
-							<cfquery>
-								UPDATE
-									tblCart
-								SET
-									fldQuantity = <cfqueryparam value="#local.quantity#" cfsqltype="integer">
-								WHERE
-									fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
-									AND fldProductId = <cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">
-							</cfquery>
-						<cfelse>
-							<!--- Insert if product does not exist --->
-							<cfquery>
-								INSERT INTO
-									tblCart (
-										fldUserId,
-										fldProductId,
-										fldQuantity
-									)
-								VALUES (
+				<!--- Encrypt product ids from cart --->
+				<cfset local.cartProductIdList = listMap(local.cartProductIdList, function(item) {
+					return encryptText(item);
+				})>
+
+				<!--- Get product Ids from session variable --->
+				<cfset local.productIdList = structKeyList(arguments.cartData)>
+
+				<!--- Separate product ids into groups --->
+				<cfset local.updatedIdList = listFilter(local.productIdList,function(id){
+					return listContainsNoCase(cartProductIdList, id);
+				})>
+				<cfset local.deleteIdList = listFilter(local.cartProductIdList,function(id){
+					return NOT listContainsNoCase(productIdList, id);
+				})>
+				<cfset local.insertIdList = listFilter(local.productIdList, function(id) {
+					return NOT listContainsNoCase(cartProductIdList, id);
+				})>
+
+				<!--- Decrypt some ids --->
+				<cfset local.updatedIdList = listMap(local.updatedIdList, function(item) {
+					return decryptText(item);
+				})>
+				<cfset local.deleteIdList = listMap(local.deleteIdList, function(item) {
+					return decryptText(item);
+				})>
+
+				<!--- Insert new products to cart --->
+				<cfif listLen(local.insertIdList)>
+					<cfquery>
+						INSERT INTO
+							tblCart (
+								fldUserId,
+								fldProductId,
+								fldQuantity
+							)
+						VALUES
+							<cfloop list="#local.insertIdList#" item="id" index="i">
+								(
 									<cfqueryparam value="#arguments.userId#" cfsqltype="integer">,
-									<cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">,
-									<cfqueryparam value="#local.quantity#" cfsqltype="integer">
+									<cfqueryparam value="#decryptText(id)#" cfsqltype="integer">,
+									<cfqueryparam value="#arguments.cartData[id].quantity#" cfsqltype="integer">
 								)
-							</cfquery>
-						</cfif>
-					<cfelse>
-						<!-- Delete Product from Cart -->
-						<cfquery>
-							DELETE FROM
-								tblCart
-							WHERE
-								fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
-								AND fldProductId = <cfqueryparam value="#decryptText(productId)#" cfsqltype="integer">
-						</cfquery>
-					</cfif>
-				</cfloop>
+								<cfif i NEQ listLen(local.insertIdList)>,</cfif>
+							</cfloop>
+					</cfquery>
+				</cfif>
+
+				<!--- Update products in cart --->
+				<cfif listLen(local.updatedIdList)>
+					<cfquery>
+						UPDATE
+							tblCart
+						SET
+							fldQuantity = CASE fldProductId
+								<cfloop list="#local.updatedIdList#" item="id" index="i">
+									WHEN <cfqueryparam value="#id#" cfsqltype="integer">
+									THEN <cfqueryparam value="#arguments.cartData[encryptText(id)].quantity#" cfsqltype="integer">
+								</cfloop>
+							END
+						WHERE
+							fldProductId IN (<cfqueryparam value = "#local.updatedIdList#" cfsqltype = "varchar" list = "yes">)
+					</cfquery>
+				</cfif>
+
+				<!--- Delete products from cart --->
+				<cfquery>
+					DELETE FROM
+						tblCart
+					WHERE
+						fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
+						AND fldProductId IN (<cfqueryparam value = "#local.deleteIdList#" cfsqltype = "varchar" list = "yes">)
+				</cfquery>
 			</cftransaction>
 
-			<cfset local.response.success=true>
+			<cfset local.response.success = true>
 
 			<!--- Catch error --->
 			<cfcatch>
@@ -1259,8 +1281,8 @@
 			</cfcatch>
 		</cftry>
 
-        <cfreturn local.response>
-    </cffunction>
+		<cfreturn local.response>
+	</cffunction>
 
 	<cffunction name="getAddress" access="public" returnType="struct">
 		<cfargument name="addressId" type="string" required=false default="">
@@ -1726,73 +1748,40 @@
 			<cfset local.orderId = createUUID()>
 		</cfloop>
 
-		<!--- Calculate Total price and Total tax --->
-		<cfset local.priceDetails = session.cart.reduce(function(result,key,value){
-			result.totalPrice += value.unitPrice * ( 1 + value.unitTax) * value.quantity;
-			result.totalTax += value.unitPrice * value.unitTax * value.quantity;
-			return result;
-		},{totalPrice = 0, totalTax = 0})>
+		<!--- Variables to store total price and total tax --->
+		<cfset local.totalPrice = 0>
+		<cfset local.totalTax = 0>
+
+		<!--- json array to pass to stored procedure --->
+		<cfset local.productList = []>
+
+		<!--- Loop through checkout items --->
+		<cfloop collection="#session.checkout#" item="item">
+			<!--- Calculate total price and tax --->
+			<cfset local.totalPrice += session.checkout[item].unitPrice * ( 1 + session.checkout[item].unitTax) * session.checkout[item].quantity>
+			<cfset local.totalTax += session.checkout[item].unitPrice * session.checkout[item].unitTax * session.checkout[item].quantity>
+
+			<!--- build json array --->
+			<cfset arrayAppend(local.productList, {
+				"productId": decryptText(trim(item)),
+				"quantity": trim(session.checkout[item].quantity),
+				"unitPrice": trim(session.checkout[item].unitPrice),
+				"unitTax": trim(session.checkout[item].unitTax)
+			})>
+		</cfloop>
+
+		<!--- Convert array to JSON --->
+		<cfset local.productJSON = serializeJSON(local.productList)>
 
 		<cftry>
-			<!--- Insert into order table --->
-			<cfquery name="local.qryCreateOrder">
-				INSERT INTO
-					tblOrder (
-						fldOrder_Id,
-						fldUserId,
-						fldAddressId,
-						fldTotalPrice,
-						fldTotalTax
-					)
-				VALUES (
-					<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-					<cfqueryparam value = "#trim(local.addressId)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(local.priceDetails.totalPrice)#" cfsqltype = "decimal">,
-					<cfqueryparam value = "#trim(local.priceDetails.totalTax)#" cfsqltype = "decimal">
-				)
-			</cfquery>
-
-			<!--- Insert into order items table --->
-			<cfquery name="local.qryCreateOrderItems">
-				INSERT INTO
-					tblOrderItems (
-						fldOrderId,
-						fldProductId,
-						fldQuantity,
-						fldUnitPrice,
-						fldUnitTax
-					)
-				VALUES
-				<cfset local.index = 1>
-				<cfloop collection="#session.checkout#" item="item">
-					(
-						<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#decryptText(trim(item))#" cfsqltype = "integer">,
-						<cfqueryparam value = "#trim(session.checkout[item].quantity)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(session.checkout[item].unitPrice)#" cfsqltype = "decimal">,
-						<cfqueryparam value = "#trim(session.checkout[item].unitTax)#" cfsqltype = "decimal">
-					)
-					<cfif local.index LT structCount(session.checkout)>
-						,
-					</cfif>
-					<cfset local.index += 1>
-				</cfloop>
-			</cfquery>
-
-			<!--- Create a list of decrypted product ids --->
-			<cfset local.productIdList = listMap(structKeyList(session.checkout), function(item) {
-				return decryptText(item);
-			})>
-
-			<!--- Delete ordered products from cart table --->
-			<cfquery name="local.qryDeleteCart">
-				DELETE FROM
-					tblCart
-				WHERE
-					fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-					AND fldProductId IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
-			</cfquery>
+			<cfstoredproc procedure="spCreateOrderItems">
+				<cfprocparam cfsqltype="varchar" variable="p_orderId" value="#local.orderId#">
+				<cfprocparam cfsqltype="integer" variable="p_userId" value="#session.userId#">
+				<cfprocparam cfsqltype="integer" variable="p_addressId" value="#local.addressId#">
+				<cfprocparam cfsqltype="decimal" variable="p_totalPrice" value="#local.totalPrice#">
+				<cfprocparam cfsqltype="decimal" variable="p_totalTax" value="#local.totalTax#">
+				<cfprocparam cfsqltype="longvarchar" variable="p_jsonProducts" value="#local.productJSON#">
+			</cfstoredproc>
 
 			<!--- Empty cart structure in session --->
 			<cfset structEach(session.checkout, function(key) {
