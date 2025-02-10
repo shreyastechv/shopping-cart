@@ -17,8 +17,9 @@
 		<cfargument name="password" type="string" required=true>
 		<cfargument name="confirmPassword" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Trim arguments --->
 		<cfset arguments = trimArguments(arguments)>
@@ -118,8 +119,9 @@
 		<cfargument name="userInput" type="string" required=true>
 		<cfargument name="password" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Trim arguments --->
 		<cfset arguments = trimArguments(arguments)>
@@ -231,8 +233,9 @@
 		<cfargument name="categoryId" type="string" required=true default="">
 		<cfargument name="categoryName" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.categoryId = decryptText(arguments.categoryId)>
@@ -302,8 +305,9 @@
 	<cffunction name="deleteCategory" access="remote" returnType="void">
 		<cfargument name="categoryId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.categoryId = decryptText(arguments.categoryId)>
@@ -336,9 +340,10 @@
 	<cffunction name="getSubCategories" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="categoryId" type="string" required=false default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = []>
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.categoryId = decryptText(arguments.categoryId)>
@@ -388,8 +393,9 @@
 		<cfargument name="subCategoryName" type="string" required=true>
 		<cfargument name="categoryId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
@@ -473,8 +479,9 @@
 	<cffunction name="deleteSubCategory" access="remote" returnType="void">
 		<cfargument name="subCategoryId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
@@ -526,9 +533,10 @@
 		<cfargument name="max" type="float" required="false" default="0">
 		<cfargument name="searchTerm" type="string" required="false" default="">
 
- 		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = []>
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
@@ -666,8 +674,9 @@
 		<cfargument name="productTax" type="float" required=true>
 		<cfargument name="productImage" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
@@ -838,8 +847,9 @@
 	<cffunction name="deleteProduct" access="remote" returnType="void">
 		<cfargument name="productId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
@@ -884,9 +894,10 @@
 	<cffunction name="getProductImages" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="productId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = []>
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
@@ -932,8 +943,9 @@
 	<cffunction name="setDefaultImage" access="remote" returnType="void">
 		<cfargument name="imageId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.imageId = decryptText(arguments.imageId)>
@@ -983,8 +995,9 @@
 	<cffunction name="deleteImage" access="remote" returnType="struct">
 		<cfargument name="imageId" type="string" required=true defaul="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.imageId = decryptText(arguments.imageId)>
@@ -1056,10 +1069,11 @@
 		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = {}>
+		<cfset local.response = {
+			"message" = "",
+			"success" = false,
+			"data" = {}
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
@@ -1319,8 +1333,9 @@
 		<cfargument name="pincode" type="string" required=true>
 		<cfargument name="phone" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<cfif NOT structKeyExists(session, "userId")>
 			<cfset local.response["message"] &= "Cannot proceed without loggin in">
@@ -1457,8 +1472,9 @@
 		<cfargument name="email" type="string" required=true>
 		<cfargument name="phone" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<cfif NOT structKeyExists(session, "userId")>
 			<cfset local.response["message"] &= "Cannot proceed without loggin in">
@@ -1515,9 +1531,10 @@
 		<cfargument name="cardNumber" type="string" required=true>
 		<cfargument name="cvv" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"success" = false,
+			"message" = ""
+		}>
 		<cfset local.validCardNumber = "1111111111111111">
 		<cfset local.validCvv = "111">
 
@@ -1557,10 +1574,11 @@
 		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = {}>
+		<cfset local.response = {
+			"success" = false,
+			"message" = "",
+			"data" = {}
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.productId = decryptText(arguments.productId)>
@@ -1671,9 +1689,10 @@
 	<cffunction name="createOrder" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="addressId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"success" = false,
+			"message" = ""
+		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.addressId = decryptText(arguments.addressId)>
@@ -1820,9 +1839,10 @@
 		<cfargument name="searchTerm" type="string" required=false default="">
 		<cfargument name="orderId" type="string" required=false default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = []>
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
 
 		<!--- Validate login --->
 		<cfif NOT structKeyExists(session, "userId")>
@@ -1933,7 +1953,7 @@
 	<cffunction name="logOut" access="remote" returnType="void">
 		<!--- Update cart asynchronously --->
 		<cfthread name="cartUpdateThread">
-			<cfset application.shoppingCart.updateCartBatch(
+			<cfset updateCartBatch(
 				userId = session.userId,
 				cartData = session.cart
 			)>
