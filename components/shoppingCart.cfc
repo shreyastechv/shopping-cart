@@ -1042,7 +1042,7 @@
 
 		<cfloop query="local.qryGetCart">
 			<cfset local.cartItems[encryptText(local.qryGetCart.fldProductId)] = {
-				"cartId" = encryptText(local.qryGetCart.fldCart_Id),
+				<!--- "cartId" = encryptText(local.qryGetCart.fldCart_Id), --->
 				"quantity" = local.qryGetCart.fldQuantity,
 				"unitPrice" = local.qryGetCart.fldPrice,
 				"unitTax" = local.qryGetCart.fldTax
@@ -1103,7 +1103,7 @@
 
 				<!--- Add product to session variable --->
 				<cfset session.cart[arguments.productId] = {
-					"cartId" = encryptText(local.resultAddToCart.GENERATED_KEY),
+					<!--- "cartId" = encryptText(local.resultAddToCart.GENERATED_KEY), --->
 					"quantity" = 1,
 					"unitPrice" = local.productInfo.data[1].price,
 					"unitTax" = local.productInfo.data[1].tax
