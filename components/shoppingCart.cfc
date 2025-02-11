@@ -1862,9 +1862,12 @@
 				INNER JOIN tblBrands brnd ON prod.fldBrandId = brnd.fldBrand_Id
 			WHERE
 				ord.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
-				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
 				<cfif len(trim(arguments.orderId))>
+					<!--- For printing pdf for each order --->
 					AND ord.fldOrder_Id = <cfqueryparam value = "#arguments.orderId#" cfsqltype = "varchar">
+				<cfelse>
+					<!--- When searching for orders --->
+					AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
 				</cfif>
 			GROUP BY
 				ord.fldOrder_Id
