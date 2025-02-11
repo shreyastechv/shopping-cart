@@ -1,10 +1,21 @@
+<!--- Variables --->
+<cfparam name="url.search" default="">
+
 <!--- Get Data --->
-<cfset variables.orders = application.shoppingCart.getOrders()>
+<cfset variables.orders = application.shoppingCart.getOrders(searchTerm = url.search)>
 
 <cfoutput>
 	<div class="container py-4">
 		<h2 class="text-center mb-4">Your Orders</h2>
-		<input type="text" id="searchOrders" class="form-control mb-3 shadow" placeholder="Search orders using order id...">
+		<form method="get" class="d-flex gap-2 mb-5">
+			<input type="text" name="search" class="form-control shadow" value="#url.search#"
+				placeholder="Search orders using order id..."
+				oninput="this.value = this.value.trim();"
+			>
+			<button class="btn btn-primary" type="submit">
+				<i class="pe-none fa-solid fa-magnifying-glass"></i>
+			</button>
+		</form>
 
 		<div id="ordersContainer">
 			<!--- Show message if order list in empty --->
