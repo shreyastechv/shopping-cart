@@ -1777,12 +1777,12 @@
 
 		<cftry>
 			<cfstoredproc procedure="spCreateOrderItems">
-				<cfprocparam cfsqltype="varchar" variable="p_orderId" value="#local.orderId#">
-				<cfprocparam cfsqltype="integer" variable="p_userId" value="#session.userId#">
-				<cfprocparam cfsqltype="integer" variable="p_addressId" value="#local.addressId#">
-				<cfprocparam cfsqltype="decimal" variable="p_totalPrice" value="#local.totalPrice#">
-				<cfprocparam cfsqltype="decimal" variable="p_totalTax" value="#local.totalTax#">
-				<cfprocparam cfsqltype="longvarchar" variable="p_jsonProducts" value="#local.productJSON#">
+				<cfprocparam type="in" cfsqltype="varchar" variable="p_orderId" value="#local.orderId#">
+				<cfprocparam type="in" cfsqltype="integer" variable="p_userId" value="#session.userId#">
+				<cfprocparam type="in" cfsqltype="integer" variable="p_addressId" value="#local.addressId#">
+				<cfprocparam type="in" cfsqltype="decimal" variable="p_totalPrice" value="#local.totalPrice#">
+				<cfprocparam type="in" cfsqltype="decimal" variable="p_totalTax" value="#local.totalTax#">
+				<cfprocparam type="in" cfsqltype="longvarchar" variable="p_jsonProducts" value="#local.productJSON#">
 			</cfstoredproc>
 
 			<!--- Empty cart structure in session --->
