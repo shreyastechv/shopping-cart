@@ -39,18 +39,18 @@ BEGIN
         p_orderId,
         jt.fldProductId,
         jt.fldQuantity,
-        jt.fldUnitPrice,
-        jt.fldUnitTax
+        p.fldPrice,
+        p.fldTax
     FROM
         JSON_TABLE(
             p_jsonProducts,
             '$[*]' COLUMNS (
                 fldProductId INT PATH '$.productId',
-                fldQuantity INT PATH '$.quantity',
-                fldUnitPrice DECIMAL(10,2) PATH '$.unitPrice',
-                fldUnitTax DECIMAL(10,2) PATH '$.unitTax'
+                fldQuantity INT PATH '$.quantity'
             )
-        ) AS jt;
+        ) AS jt
+    JOIN tblProduct p
+        ON jt.fldProductId = p.fldProduct_Id;
 
     -- Delete added products from cart table
     DELETE FROM

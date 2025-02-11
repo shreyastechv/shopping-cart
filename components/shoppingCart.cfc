@@ -1757,9 +1757,7 @@
 			<!--- build json array --->
 			<cfset arrayAppend(local.productList, {
 				"productId": decryptText(trim(item)),
-				"quantity": trim(session.checkout[item].quantity),
-				"unitPrice": trim(session.checkout[item].unitPrice),
-				"unitTax": trim(session.checkout[item].unitTax)
+				"quantity": trim(session.checkout[item].quantity)
 			})>
 		</cfloop>
 
