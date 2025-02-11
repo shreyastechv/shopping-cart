@@ -129,7 +129,7 @@
 
 				<!--- Product Name --->
 				<label for="productName" class="fw-semibold">Product Name</label>
-				<input type="text" id="productName" name="productName" placeholder="Product Name" class="form-control mb-1">
+				<input type="text" id="productName" name="productName" class="form-control mb-1">
 				<div id="productNameError" class="text-danger error"></div>
 
 				<!--- Product Brand --->
@@ -144,17 +144,17 @@
 
 				<!--- Product Description --->
 				<label for="productDesc" class="fw-semibold">Product Description</label>
-				<textarea class="form-control mb-1" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400" placeholder="Product Description"></textarea>
+				<textarea class="form-control mb-1" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400"></textarea>
 				<div id="productDescError" class="text-danger error"></div>
 
 				<!--- Product Price --->
 				<label for="productPrice" class="fw-semibold">Product Price</label>
-				<input type="number" step="0.01" min="0" id="productPrice" name="productPrice" placeholder="Product Price" class="form-control mb-1">
+				<input type="number" step="0.01" min="0" id="productPrice" name="productPrice" class="form-control mb-1">
 				<div id="productPriceError" class="text-danger error"></div>
 
 				<!--- Product Tax --->
 				<label for="productTax" class="fw-semibold">Product Price</label>
-				<input type="number" step="0.01" min="0" id="productTax" name="productTax" placeholder="Product Tax" class="form-control mb-1">
+				<input type="number" step="0.01" min="0" id="productTax" name="productTax" class="form-control mb-1">
 				<div id="productTaxError" class="text-danger error"></div>
 
 				<!--- Product Image --->
