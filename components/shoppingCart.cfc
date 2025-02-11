@@ -42,6 +42,13 @@
 		<!--- Password Validation --->
 		<cfif len(trim(arguments.password)) EQ 0>
 			<cfset local.response["message"] &= "Enter a password. ">
+		<cfelseif NOT ( len(trim(arguments.password)) GTE 8
+			AND refind('[A-Z]',trim(arguments.password))
+			AND refind('[a-z]',trim(arguments.password))
+			AND refind('[0-9]',trim(arguments.password))
+			AND refind('[!@##$&*]',trim(arguments.password))
+		)>
+			<cfset local.response["message"] &= "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character. ">
 		</cfif>
 
 		<!--- Confirm Password Validation --->
