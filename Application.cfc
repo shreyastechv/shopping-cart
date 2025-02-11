@@ -173,8 +173,6 @@
 		<!--- Update cart when user leaves cart page --->
 		<!--- This code is placed above 'set flag' code to prevent both running on cart page --->
 		<cfif structKeyExists(session, "cartVisit")
-			<!--- Below code is to prevent db call when session variable is empty --->
-			AND structKeyExists(session, "cart") AND NOT structIsEmpty(session.cart)
 			<!--- Below code is to prevent ajax calls from being registered as page visit --->
 			AND NOT findNoCase("/components", arguments.targetPage)
 		>
