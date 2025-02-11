@@ -1277,6 +1277,8 @@
 
 			<!--- Catch error --->
 			<cfcatch>
+				<!--- Rollback cart update if some queries fail --->
+				<cftransaction action="rollback">
 				<cfset local.response.message="Error: #cfcatch.message#">
 			</cfcatch>
 		</cftry>
