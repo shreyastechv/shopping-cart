@@ -92,7 +92,7 @@
 							<h2 class="accordion-header">
 								<button class="accordion-button collapsed text-uppercase fw-semibold" type="button" data-bs-toggle="collapse"
 									data-bs-target="##flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-									id="paymentSectionAccordionBtn">
+									id="paymentSectionAccordionBtn" #variables.addressEmpty#>
 									Payment Options
 								</button>
 							</h2>
