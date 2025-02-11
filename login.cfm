@@ -26,9 +26,10 @@
 <cfoutput>
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
 		<cfif len(trim(url.redirect))>
+			<!--- To show a message if redirect is specified in url --->
 			<div>Login to get access to #listGetAt(listGetAt(url.redirect, 1, "/"), 1, ".")# page</div>
 		</cfif>
-		<div id="submitMsgSection" class="text-danger p-2">
+		<div id="submitMsgSection" class="p-2">
 			<cfif isDefined("variables.loginResult.message")>
 				#variables.loginResult.message#
 			</cfif>
