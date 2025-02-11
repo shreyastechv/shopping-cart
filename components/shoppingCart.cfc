@@ -1508,7 +1508,7 @@
 				)
 		</cfquery>
 
-		<cfif (local.qryCheckUser.recordCount NEQ 1) OR (local.qryCheckUser.fldUser_Id NEQ session.userId)>
+		<cfif (local.qryCheckUser.recordCount GT 1) OR (local.qryCheckUser.recordCount AND local.qryCheckUser.fldUser_Id NEQ session.userId)>
 			<cfset local.response["message"] = "Email or Phone number already exits.">
 		<cfelse>
 			<cfquery name="local.qryEditProfile">
