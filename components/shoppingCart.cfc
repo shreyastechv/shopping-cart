@@ -42,6 +42,13 @@
 		<!--- Password Validation --->
 		<cfif len(trim(arguments.password)) EQ 0>
 			<cfset local.response["message"] &= "Enter a password. ">
+		<cfelseif NOT ( len(trim(arguments.password)) GTE 8
+			AND refind('[A-Z]',trim(arguments.password))
+			AND refind('[a-z]',trim(arguments.password))
+			AND refind('[0-9]',trim(arguments.password))
+			AND refind('[!@##$&*]',trim(arguments.password))
+		)>
+			<cfset local.response["message"] &= "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character. ">
 		</cfif>
 
 		<!--- Confirm Password Validation --->
@@ -1750,9 +1757,7 @@
 			<!--- build json array --->
 			<cfset arrayAppend(local.productList, {
 				"productId": decryptText(trim(item)),
-				"quantity": trim(session.checkout[item].quantity),
-				"unitPrice": trim(session.checkout[item].unitPrice),
-				"unitTax": trim(session.checkout[item].unitTax)
+				"quantity": trim(session.checkout[item].quantity)
 			})>
 		</cfloop>
 
@@ -1862,9 +1867,12 @@
 				INNER JOIN tblBrands brnd ON prod.fldBrandId = brnd.fldBrand_Id
 			WHERE
 				ord.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
-				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
 				<cfif len(trim(arguments.orderId))>
+					<!--- For printing pdf for each order --->
 					AND ord.fldOrder_Id = <cfqueryparam value = "#arguments.orderId#" cfsqltype = "varchar">
+				<cfelse>
+					<!--- When searching for orders --->
+					AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
 				</cfif>
 			GROUP BY
 				ord.fldOrder_Id

@@ -16,7 +16,7 @@
 <!--- Main Content --->
 <cfoutput>
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
-		<div id="submitMsgSection" class="text-danger p-2">
+		<div id="submitMsgSection" class="p-2">
 			<cfif structKeyExists(variables, "signupResult")>
 				#variables.signupResult.message#
 				<cfif arrayContainsNoCase(["Email or Phone number already exists.", "Account created successfully"], variables.signupResult.message)>

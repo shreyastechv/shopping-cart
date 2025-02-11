@@ -22,10 +22,13 @@
 <cfdocument format="pdf">
 	<cfoutput>
 		<div>
+			<div style="font-size: larger; font-weight: 500; margin-bottom: 10px;">
+				Order Invoice
+			</div>
 			<div>
-				<div><strong>Order ID:</strong> #variables.order.orderId#</div>
-				<div><strong>Order Date:</strong> #dateTimeFormat(variables.order.orderDate, "mmm d YYYY h:nn tt")#</div>
-				<div><strong>Total Price:</strong> Rs. #variables.order.totalPrice#</div>
+				<div style="margin-bottom: 5px;"><strong>Order ID:</strong> #variables.order.orderId#</div>
+				<div style="margin-bottom: 5px;"><strong>Order Date:</strong> #dateTimeFormat(variables.order.orderDate, "mmm d YYYY h:nn tt")#</div>
+				<div style="margin-bottom: 5px;"><strong>Total Price:</strong> Rs. #variables.order.totalPrice#</div>
 			</div>
 			<div>
 				<table border="1" cellpadding="4" cellspacing="0">
