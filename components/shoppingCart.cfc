@@ -1,14 +1,4 @@
 <cfcomponent>
-	<cffunction name="trimArguments" access="private" returnType="struct">
-		<cfargument name="args" type="struct" required=true>
-
-		<cfloop collection="#arguments.args#" item="arg">
-			<cfset arguments.args[arg] = trim(arguments.args[arg])>
-		</cfloop>
-
-		<cfreturn arguments.args>
-	</cffunction>
-
 	<cffunction name="signup" access="public" returnType="struct">
 		<cfargument name="firstName" type="string" required=true>
 		<cfargument name="lastName" type="string" required=true>
@@ -21,46 +11,43 @@
 			"message" = ""
 		}>
 
-		<!--- Trim arguments --->
-		<cfset arguments = trimArguments(arguments)>
-
 		<!--- Firstname Validation --->
-		<cfif len(arguments.firstName) EQ 0>
+		<cfif len(trim(arguments.firstName)) EQ 0>
 			<cfset local.response["message"] &= "Enter first name. ">
-		<cfelseif isValid("regex", arguments.firstName, "/\d/")>
+		<cfelseif isValid("regex", trim(arguments.firstName), "/\d/")>
 			<cfset local.response["message"] &= "First name should not contain any digits. ">
 		</cfif>
 
 		<!--- Lastname Validation --->
-		<cfif len(arguments.lastname) EQ 0>
+		<cfif len(trim(arguments.lastname)) EQ 0>
 			<cfset local.response["message"] &= "Enter last name. ">
-		<cfelseif isValid("regex", arguments.lastName, "/\d/")>
+		<cfelseif isValid("regex", trim(arguments.lastName), "/\d/")>
 			<cfset local.response["message"] &= "Last name should not contain any digits. ">
 		</cfif>
 
 		<!--- Email Validation --->
-		<cfif len(arguments.email) EQ 0>
+		<cfif len(trim(arguments.email)) EQ 0>
 			<cfset local.response["message"] &= "Enter an email address. ">
-		<cfelseif NOT isValid("email", arguments.email)>
+		<cfelseif NOT isValid("email", trim(arguments.email))>
 			<cfset local.response["message"] &= "Invalid email. ">
 		</cfif>
 
 		<!--- Phone Number Validation --->
-		<cfif len(arguments.phone) EQ 0>
+		<cfif len(trim(arguments.phone)) EQ 0>
 			<cfset local.response["message"] &= "Enter an phone number. ">
-		<cfelseif NOT isValid("regex", arguments.phone, "^\d{10}$")>
+		<cfelseif NOT isValid("regex", trim(arguments.phone), "^\d{10}$")>
 			<cfset local.response["message"] &= "Phone number should be 10 digits long. ">
 		</cfif>
 
 		<!--- Password Validation --->
-		<cfif len(arguments.password) EQ 0>
+		<cfif len(trim(arguments.password)) EQ 0>
 			<cfset local.response["message"] &= "Enter a password. ">
 		</cfif>
 
 		<!--- Confirm Password Validation --->
-		<cfif len(arguments.confirmPassword) EQ 0>
+		<cfif len(trim(arguments.confirmPassword)) EQ 0>
 			<cfset local.response["message"] &= "Confirm the password. ">
-		<cfelseif arguments.password NEQ arguments.confirmPassword>
+		<cfelseif arguments.password NEQ trim(arguments.confirmPassword)>
 			<cfset local.response["message"] &= "Passwords must be equal. ">
 		</cfif>
 
@@ -86,7 +73,7 @@
 		<cfelse>
 			<!--- Generate random salt string --->
 			<cfset local.saltString = generateSecretKey("AES", 128)>
-			<cfset local.hashedPassword = hash(arguments.password & local.saltString, "SHA-512", "UTF-8", 50)>
+			<cfset local.hashedPassword = hash(trim(arguments.password) & local.saltString, "SHA-512", "UTF-8", 50)>
 			<cfquery name="local.qryAddUser">
 				INSERT INTO
 					tblUser (
@@ -123,24 +110,21 @@
 			"message" = ""
 		}>
 
-		<!--- Trim arguments --->
-		<cfset arguments = trimArguments(arguments)>
-
 		<!--- UserInput Validation --->
 		<cfif len(trim(arguments.userInput)) EQ 0>
 			<cfset local.response["message"] &= "Enter an Email or Phone Number. ">
-		<cfelseif isValid("integer", arguments.userInput) AND arguments.userInput GT 0>
-			<cfif len(arguments.userInput) NEQ 10>
+		<cfelseif isValid("integer", trim(arguments.userInput)) AND arguments.userInput GT 0>
+			<cfif len(trim(arguments.userInput)) NEQ 10>
 				<cfset local.response["message"] &= "Phone number should be 10 digits long. ">
 			</cfif>
 		<cfelse>
-			<cfif NOT isValid("email", arguments.userInput)>
+			<cfif NOT isValid("email", trim(arguments.userInput))>
 				<cfset local.response["message"] &= "Invalid email. ">
 			</cfif>
 		</cfif>
 
 		<!--- Password Validation --->
-		<cfif len(arguments.password) EQ 0>
+		<cfif len(trim(arguments.password)) EQ 0>
 			<cfset local.response["message"] &= "Enter a password. ">
 		</cfif>
 
@@ -169,7 +153,7 @@
 		</cfquery>
 
 		<cfif local.qryCheckUser.recordCount>
-			<cfif local.qryCheckUser.fldHashedPassword EQ hash(arguments.password & local.qryCheckUser.fldUserSaltString, "SHA-512", "UTF-8", 50)>
+			<cfif local.qryCheckUser.fldHashedPassword EQ hash(trim(arguments.password) & local.qryCheckUser.fldUserSaltString, "SHA-512", "UTF-8", 50)>
 				<cfset session.firstName = local.qryCheckUser.fldFirstName>
 				<cfset session.lastName = local.qryCheckUser.fldLastName>
 				<cfset session.email = local.qryCheckUser.fldEmail>
@@ -1277,6 +1261,8 @@
 
 			<!--- Catch error --->
 			<cfcatch>
+				<!--- Rollback cart update if some queries fail --->
+				<cftransaction action="rollback">
 				<cfset local.response.message="Error: #cfcatch.message#">
 			</cfcatch>
 		</cftry>
@@ -1522,7 +1508,7 @@
 				)
 		</cfquery>
 
-		<cfif (local.qryCheckUser.recordCount NEQ 1) OR (local.qryCheckUser.fldUser_Id NEQ session.userId)>
+		<cfif (local.qryCheckUser.recordCount GT 1) OR (local.qryCheckUser.recordCount AND local.qryCheckUser.fldUser_Id NEQ session.userId)>
 			<cfset local.response["message"] = "Email or Phone number already exits.">
 		<cfelse>
 			<cfquery name="local.qryEditProfile">
@@ -1775,12 +1761,12 @@
 
 		<cftry>
 			<cfstoredproc procedure="spCreateOrderItems">
-				<cfprocparam cfsqltype="varchar" variable="p_orderId" value="#local.orderId#">
-				<cfprocparam cfsqltype="integer" variable="p_userId" value="#session.userId#">
-				<cfprocparam cfsqltype="integer" variable="p_addressId" value="#local.addressId#">
-				<cfprocparam cfsqltype="decimal" variable="p_totalPrice" value="#local.totalPrice#">
-				<cfprocparam cfsqltype="decimal" variable="p_totalTax" value="#local.totalTax#">
-				<cfprocparam cfsqltype="longvarchar" variable="p_jsonProducts" value="#local.productJSON#">
+				<cfprocparam type="in" cfsqltype="varchar" variable="p_orderId" value="#local.orderId#">
+				<cfprocparam type="in" cfsqltype="integer" variable="p_userId" value="#session.userId#">
+				<cfprocparam type="in" cfsqltype="integer" variable="p_addressId" value="#local.addressId#">
+				<cfprocparam type="in" cfsqltype="decimal" variable="p_totalPrice" value="#local.totalPrice#">
+				<cfprocparam type="in" cfsqltype="decimal" variable="p_totalTax" value="#local.totalTax#">
+				<cfprocparam type="in" cfsqltype="longvarchar" variable="p_jsonProducts" value="#local.productJSON#">
 			</cfstoredproc>
 
 			<!--- Empty cart structure in session --->
@@ -1876,7 +1862,7 @@
 				INNER JOIN tblBrands brnd ON prod.fldBrandId = brnd.fldBrand_Id
 			WHERE
 				ord.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
-				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
 				<cfif len(trim(arguments.orderId))>
 					AND ord.fldOrder_Id = <cfqueryparam value = "#arguments.orderId#" cfsqltype = "varchar">
 				</cfif>
@@ -1945,10 +1931,12 @@
 
 		<!--- Update cart asynchronously --->
 		<cfthread name="cartUpdateThread">
-			<cfset updateCartBatch(
-				userId = session.userId,
-				cartData = session.cart
-			)>
+			<cfif structKeyExists(session, "cartVisit")>
+				<cfset updateCartBatch(
+					userId = session.userId,
+					cartData = session.cart
+				)>
+			</cfif>
 
 			<!--- Clear session --->
 			<cfset structClear(session)>

@@ -1,10 +1,21 @@
+<!--- Variables --->
+<cfparam name="url.search" default="">
+
 <!--- Get Data --->
-<cfset variables.orders = application.shoppingCart.getOrders()>
+<cfset variables.orders = application.shoppingCart.getOrders(searchTerm = url.search)>
 
 <cfoutput>
 	<div class="container py-4">
 		<h2 class="text-center mb-4">Your Orders</h2>
-		<input type="text" id="searchOrders" class="form-control mb-3 shadow" placeholder="Search orders using order id...">
+		<form method="get" class="d-flex gap-2 mb-5">
+			<input type="text" name="search" class="form-control shadow" value="#url.search#"
+				placeholder="Search orders using order id..."
+				oninput="this.value = this.value.trim();"
+			>
+			<button class="btn btn-primary" type="submit">
+				<i class="pe-none fa-solid fa-magnifying-glass"></i>
+			</button>
+		</form>
 
 		<div id="ordersContainer">
 			<!--- Show message if order list in empty --->
@@ -20,7 +31,7 @@
 				<div class="card order-card shadow p-3 mb-4" data-order-id="#variables.order.orderId#">
 					<div class="d-flex flex-lg-row flex-column align-items-center justify-content-between mb-2">
 						<div class="mb-0"><strong>Order ID:</strong> #variables.order.orderId#</div>
-						<div class="mb-0"><strong>Order Date:</strong> #dateTimeFormat(variables.order.orderDate, "mmm d YYYY h:n tt")#</div>
+						<div class="mb-0"><strong>Order Date:</strong> #dateTimeFormat(variables.order.orderDate, "mmm d YYYY h:nn tt")#</div>
 						<div class="mb-0"><strong>Total Price:</strong> Rs. #variables.order.totalPrice#</div>
 						<a class="btn btn-sm btn-success" href="/download.cfm?orderId=#variables.order.orderId#">
 							<i class="fa-solid fa-file-arrow-down pe-none"></i>

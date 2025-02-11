@@ -47,7 +47,7 @@
 			"/orders.cfm": {
 				"pageTitle": "Orders",
 				"cssPath": "",
-				"scriptPath": ["orders.js"]
+				"scriptPath": []
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
@@ -171,7 +171,7 @@
 		<cfargument name="targetPage" type="string" required=true>
 
 		<!--- Update cart when user leaves cart page --->
-		<!--- This code is placed above 'flag setting' code to prevent both running on cart page --->
+		<!--- This code is placed above 'set flag' code to prevent both running on cart page --->
 		<cfif structKeyExists(session, "cartVisit")
 			<!--- Below code is to prevent db call when session variable is empty --->
 			AND structKeyExists(session, "cart") AND NOT structIsEmpty(session.cart)
@@ -191,8 +191,7 @@
 		</cfif>
 
 		<!--- Set session variable when user enters cart page for first time --->
-		<cfif NOT structKeyExists(session, "cartVisit") AND arguments.targetPage EQ "/cart.cfm"
-		>
+		<cfif arguments.targetPage EQ "/cart.cfm">
 			<!--- Set flag --->
 			<cfset session.cartVisit = true>
 		</cfif>
