@@ -1,6 +1,5 @@
 DELIMITER $$
 
--- Create Order Stored Procedure Start
 CREATE PROCEDURE spCreateOrderItems (
     IN p_orderId VARCHAR(64),
     IN p_userId INT,
@@ -70,48 +69,5 @@ BEGIN
                 ) AS jt
         );
 END $$
--- Create Order Stored Procedure End
-
--- Delete Category Stored Procedure Start
-CREATE PROCEDURE IF NOT EXISTS spDeleteCategory(
-	IN categoryId INT,
-    IN userId INT
-)
-BEGIN
-	-- Delete products
-	UPDATE
-		tblProduct
-	SET
-		fldActive = 0,
-		fldUpdatedBy = userId
-	WHERE
-		fldSubCategoryId IN (
-			SELECT
-				fldSubCategory_Id
-			FROM
-				tblSubCategory
-			WHERE
-				fldCategoryId = categoryId
-		);
-
-    -- Delete subcategory
-	UPDATE
-		tblSubCategory
-	SET
-		fldActive = 0,
-		fldUpdatedBy = userId
-	WHERE
-		fldCategoryId = categoryId;
-
-	-- Delete category
-	UPDATE
-		tblCategory
-	SET
-		fldActive = 0,
-		fldUpdatedBy = userId
-	WHERE
-		fldCategory_Id = categoryId;
-END $$
--- Delete Category Stored Procedure End
 
 DELIMITER ;
