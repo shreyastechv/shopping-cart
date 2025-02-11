@@ -1,3 +1,8 @@
+$("#profileModal").on("hidden.bs.modal", function () {
+  // Remove error msgs
+  $(".profileError").empty();
+});
+
 function handleProfileChange() {
 	const firstNameNoChange = $("#userFirstName").val().trim() == $("#userFirstName").prop("defaultValue");
 	const lastNameNoChange = $("#userLastName").val().trim() == $("#userLastName").prop("defaultValue");
