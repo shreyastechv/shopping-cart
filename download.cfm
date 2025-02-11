@@ -24,7 +24,7 @@
 		<div>
 			<div>
 				<div><strong>Order ID:</strong> #variables.order.orderId#</div>
-				<div><strong>Order Date:</strong> #dateTimeFormat(variables.order.orderDate, "mmm d YYYY h:n tt")#</div>
+				<div><strong>Order Date:</strong> #dateTimeFormat(variables.order.orderDate, "mmm d YYYY h:nn tt")#</div>
 				<div><strong>Total Price:</strong> Rs. #variables.order.totalPrice#</div>
 			</div>
 			<div>
