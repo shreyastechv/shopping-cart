@@ -1945,10 +1945,12 @@
 
 		<!--- Update cart asynchronously --->
 		<cfthread name="cartUpdateThread">
-			<cfset updateCartBatch(
-				userId = session.userId,
-				cartData = session.cart
-			)>
+			<cfif structKeyExists(session, "cartVisit")>
+				<cfset updateCartBatch(
+					userId = session.userId,
+					cartData = session.cart
+				)>
+			</cfif>
 
 			<!--- Clear session --->
 			<cfset structClear(session)>
