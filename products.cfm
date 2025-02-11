@@ -115,8 +115,8 @@
 									</div>
 								</li>
 								<li class="d-flex gap-2">
-									<input type="number" class="form-control mb-2" id="min" name="min" min="0" placeholder="Min">
-									<input type="number" class="form-control mb-2" id="max" name="max" placeholder="Max">
+									<input type="number" class="form-control mb-2" id="min" name="min" min="0" value="#form.min#" placeholder="Min" oninput="this.value = this.value.replace(/^0+/, '');">
+									<input type="number" class="form-control mb-2" id="max" name="max" value="#form.max#" placeholder="Max" oninput="this.value = this.value.replace(/^0+/, '');">
 								<li>
 								<li class="d-flex">
 									<button class="btn btn-success w-100" type="submit" id="filterBtn">Apply</button>
