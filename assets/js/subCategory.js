@@ -9,7 +9,7 @@ function createSubCategoryItem(subCategoryId, subCategoryName) {
 				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#subCategoryModal" onclick="showEditSubCategoryModal('${containerId}', '${subCategoryId}')">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>
 				</button>
-				<button class="btn btn-lg" onclick="deleteSubCategory('${containerId}', '${subCategoryId}')">
+				<button class="btn btn-lg" onclick="deleteSubCategory('${containerId}', '${subCategoryId}', '${subCategoryName}')">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
 				<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=${subCategoryId}">
@@ -120,8 +120,7 @@ function showEditSubCategoryModal(containerId, subCategoryId) {
 	$("#subCategoryName").val(subCategoryName);
 }
 
-function deleteSubCategory(containerId, subCategoryId) {
-	const subCategoryName = $("#subCategoryName-" + subCategoryId).text();
+function deleteSubCategory(containerId, subCategoryId, subCategoryName) {
 	if (confirm(`Delete subCategory - '${subCategoryName}'?`)) {
 		$.ajax({
 			type: "POST",

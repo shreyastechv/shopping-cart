@@ -10,25 +10,12 @@
 <cfset variables.totalActualPrice = 0>
 
 <cfif len(trim(url.productId)) NEQ 0>
-	<!--- Get product price details since this is not in cart --->
-	<cfset variables.productDetails = application.shoppingCart.getProducts(
-		productId = url.productId
-	)>
-
 	<!--- Product details when this page was opened by clicking buy now from product page --->
-	<cfset variables.products[url.productId] = {
-		"quantity" = 1,
-		"unitPrice" = variables.productDetails.data[1].price,
-		"unitTax" = variables.productDetails.data[1].tax
+	<cfset session.checkout[url.productId] = {
+		"quantity" = 1
 	}>
-
-	<!--- Session variable to store checkout products --->
-	<cfset session.checkout = duplicate(variables.products)>
 <cfelseif structKeyExists(session, "cart") AND structCount(session.cart)>
 	<!--- Product details when this page was opened by clicking clicking checkout from cart page --->
-	<cfset variables.products = session.cart>
-
-	<!--- Session variable to store checkout products --->
 	<cfset session.checkout = duplicate(session.cart)>
 <cfelse>
 	<!--- If this page was opened by user and cart is empty --->

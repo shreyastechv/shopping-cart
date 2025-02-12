@@ -37,12 +37,12 @@
 			"/cart.cfm": {
 				"pageTitle": "Cart Page",
 				"cssPath": "",
-				"scriptPath": ["cart.js"]
+				"scriptPath": ["cartProductList.js"]
 			},
 			"/checkout.cfm": {
 				"pageTitle": "Order Summary",
 				"cssPath": "",
-				"scriptPath": ["checkout.js", "addAddressBtn.js"]
+				"scriptPath": ["checkout.js", "cartProductList.js", "addAddressBtn.js"]
 			},
 			"/orders.cfm": {
 				"pageTitle": "Orders",
@@ -94,7 +94,7 @@
 		<cflocation url="/404.cfm" addToken="false">
 	</cffunction>
 
-	<!--- <cffunction name="onError" returnType="void">
+	<cffunction name="onError" returnType="void">
 		<cfargument name="exception" required=true>
 		<cfargument name="eventName" type="string" required=true>
 
@@ -104,7 +104,7 @@
 
 			<cflocation url="/error.cfm?eventName=#arguments.eventName#" addToken="false">
 		</cfif>
-	</cffunction> --->
+	</cffunction>
 
 	<cffunction name="onRequestStart" returnType="boolean">
 		<cfargument name="targetPage" type="string" required=true>

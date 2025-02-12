@@ -501,6 +501,24 @@
 				fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
 		</cfquery>
 
+		<cfquery name="qryDeleteProductImages">
+			UPDATE
+				tblProductImages
+			SET
+				fldActive = 0,
+				fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
+				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
+			WHERE
+				fldProductId IN (
+					SELECT
+						fldProduct_Id
+					FROM
+						tblProduct
+					WHERE
+						fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
+				);
+		</cfquery>
+
 		<cfquery name="qryDeleteSubCategory">
 			UPDATE
 				tblSubCategory
@@ -1034,16 +1052,14 @@
 			FROM
 				tblCart c
 				INNER JOIN tblProduct p ON c.fldProductId = p.fldProduct_Id
+					AND p.fldActive = 1 <!--- Only take active products --->
 			WHERE
 				c.fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
 		</cfquery>
 
 		<cfloop query="local.qryGetCart">
 			<cfset local.cartItems[encryptText(local.qryGetCart.fldProductId)] = {
-				<!--- "cartId" = encryptText(local.qryGetCart.fldCart_Id), --->
-				"quantity" = local.qryGetCart.fldQuantity,
-				"unitPrice" = local.qryGetCart.fldPrice,
-				"unitTax" = local.qryGetCart.fldTax
+				"quantity" = local.qryGetCart.fldQuantity
 			}>
 		</cfloop>
 
@@ -1095,17 +1111,9 @@
 				<cfset local.response["message"] = "Product Quantity Incremented">
 
 			<cfelse>
-				<!--- Get Product Into --->
-				<cfset local.productInfo = getProducts(
-					productId = arguments.productId
-				)>
-
 				<!--- Add product to session variable --->
 				<cfset session.cart[arguments.productId] = {
-					<!--- "cartId" = encryptText(local.resultAddToCart.GENERATED_KEY), --->
-					"quantity" = 1,
-					"unitPrice" = local.productInfo.data[1].price,
-					"unitTax" = local.productInfo.data[1].tax
+					"quantity" = 1
 				}>
 
 				<!--- Set response message --->
@@ -1862,7 +1870,6 @@
 				INNER JOIN tblOrderItems itm ON ord.fldOrder_Id = itm.fldOrderId
 				INNER JOIN tblProduct prod ON itm.fldProductId = prod.fldProduct_Id
 				INNER JOIN tblProductImages img ON prod.fldProduct_Id = img.fldProductId
-					AND img.fldActive = 1
 					AND img.fldDefaultImage = 1
 				INNER JOIN tblBrands brnd ON prod.fldBrandId = brnd.fldBrand_Id
 			WHERE
