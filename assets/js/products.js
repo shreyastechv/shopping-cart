@@ -37,16 +37,10 @@ function viewMore(subCategoryId) {
 			const responseJSON = JSON.parse(response);
 
 			// Loop over product data to get info we need
-			responseJSON.DATA.forEach(product => {
-				const id = product[0];
-				const image = product[7];
-				const name = product[1];
-				const desc = product[3];
-				const price = product[4];
-
+			for (let item of responseJSON.data) {
 				// Create product div
-				createProduct(id, image, name, desc, price);
-			});
+				createProduct(item.productId, item.productImage, item.productName, item.description, item.price);
+			}
 
 			// Remove view more btn if there are no products to be fetched
 			if (responseJSON.DATA.length < limit) {

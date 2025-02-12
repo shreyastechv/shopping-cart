@@ -1,6 +1,6 @@
 <!--- URL Params --->
 <cfparam name="url.productId" default="">
-<cfparam name="url.redirect" default ="/">
+<cfparam name="url.redirect" default ="">
 
 <!--- Login Logic --->
 <cfif structKeyExists(form, "loginBtn")>
@@ -11,16 +11,10 @@
 	<cfif variables.loginResult.message EQ "Login successful">
 		<!--- Add product to cart if user came from product page --->
 		<cfif len(trim(url.productId))>
-			<!--- Decrypt Product ID --->
-			<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
-
-			<!--- Add product to cart only if properly decrypted --->
-			<cfif variables.productId NEQ -1>
-				<cfset application.shoppingCart.modifyCart(
-					productId = variables.productId,
-					action = "increment"
-				)>
-			</cfif>
+			<cfset application.shoppingCart.modifyCart(
+				productId = url.productId,
+				action = "increment"
+			)>
 		</cfif>
 
 		<!--- Redirect user/admin to url.redirect --->
@@ -31,7 +25,11 @@
 <!--- Main Content --->
 <cfoutput>
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
-		<div id="submitMsgSection" class="text-danger p-2">
+		<cfif len(trim(url.redirect))>
+			<!--- To show a message if redirect is specified in url --->
+			<div>Login to get access to #listGetAt(listGetAt(url.redirect, 1, "/"), 1, ".")# page</div>
+		</cfif>
+		<div id="submitMsgSection" class="p-2">
 			<cfif isDefined("variables.loginResult.message")>
 				#variables.loginResult.message#
 			</cfif>

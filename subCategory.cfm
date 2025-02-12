@@ -1,18 +1,22 @@
-<cfoutput>
-	<!--- URL params --->
-	<cfparam name="url.categoryName" default="Sub Categories">
+<cfparam name="url.categoryId" default="">
+<cfparam name="variables.categoryName" default="Sub Categories">
 
+<cfoutput>
 	<!--- Check presence of url params --->
-	<cfif NOT structKeyExists(url, "categoryId")>
+	<cfif len(trim(url.categoryId)) EQ 0>
 		<cflocation url="/adminDashboard.cfm" addToken="no">
 	</cfif>
 
-	<!--- Decrypt URL Params --->
-	<cfset variables.categoryId = application.shoppingCart.decryptUrlParam(url.categoryId)>
-
 	<!--- Get Data --->
-	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
-	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
+	<cfset variables.categories = application.shoppingCart.getCategories()>
+	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
+
+	<!--- Get Category Name --->
+	<cfloop array="#variables.categories.data#" item="item">
+		<cfif item.categoryId EQ url.categoryId>
+			<cfset variables.categoryName = item.categoryName>
+		</cfif>
+	</cfloop>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
@@ -23,27 +27,27 @@
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">
-						<h3 class="fw-semibold text-center mb-0 me-3">#url.categoryName#</h3>
+						<h3 class="fw-semibold text-center mb-0 me-3">#variables.categoryName#</h3>
 						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showAddSubCategoryModal()">
 							Add+
 						</button>
 					</div>
 					<div></div>
 				</div>
-				<cfloop query="variables.qrySubCategories">
-					<!--- Encrypt SubCategory ID since it is passed to URL param --->
-					<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
+				<cfloop array="#variables.subCategories.data#" item="item" index="i">
+					<!--- Encode SubCategory ID since it is passed to URL param --->
+					<cfset variables.encodedSubCategoryId  = urlEncodedFormat(item.subCategoryId)>
 
-					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-						<div id="subCategoryName-#variables.qrySubCategories.fldSubCategory_Id#" class="fs-5">#variables.qrySubCategories.fldSubCategoryName#</div>
+					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2" id="subCategoryContainer_#i#">
+						<div name="subCategoryName" class="fs-5">#item.subCategoryName#</div>
 						<div>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showEditSubCategoryModal(#variables.qrySubCategories.fldSubCategory_Id#)">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showEditSubCategoryModal('subCategoryContainer_#i#', '#item.subCategoryId#')">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" onclick="deleteSubCategory(#variables.qrySubCategories.fldSubCategory_Id#)">
+							<button class="btn btn-lg" onclick="deleteSubCategory('subCategoryContainer_#i#', '#item.subCategoryId#', '#item.subCategoryName#')">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
-							<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=#variables.encryptedSubCategoryId#&subCategoryName=#variables.qrySubCategories.fldSubCategoryName#&categoryId=#variables.categoryId#&categoryName=#url.categoryName#">
+							<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=#variables.encodedSubCategoryId#">
 								<i class="fa-solid fa-chevron-right"></i>
 							</a>
 						</div>
@@ -66,14 +70,14 @@
 				<input type="hidden" id="subCategoryId" name="subCategoryId" value="">
 				<select id="categorySelect" class="form-select" aria-label="Category Select">
 					<option value="0">Category Select</option>
-					<cfloop query="variables.qryCategories">
+					<cfloop array="#variables.categories.data#" item="item">
 						<option
-							<cfif variables.categoryId EQ variables.qryCategories.fldCategory_Id>
+							<cfif url.categoryId EQ item.categoryId>
 								selected
 							</cfif>
-							value="#variables.qryCategories.fldCategory_Id#"
+							value="#item.categoryId#"
 						>
-							#variables.qryCategories.fldCategoryName#
+							#item.categoryName#
 						</option>
 					</cfloop>
 				</select>

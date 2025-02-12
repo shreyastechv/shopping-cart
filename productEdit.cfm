@@ -1,22 +1,45 @@
+<!--- Variables --->
+<cfparam name="url.subCategoryId" default="">
+<cfparam name="variables.categoryId" default="">
+<cfparam name="variables.subCategoryName" default="Products">
+
 <cfoutput>
-	<!--- Check presence of url params --->
-	<cfif NOT structKeyExists(url, "subCategoryId")>
-		<cflocation url="#cgi.http_referer#" addToken="no">
+	<!--- Go to home page if sub category id is empty --->
+	<cfif len(trim(url.subCategoryId)) EQ 0>
+		<cflocation url="/" addToken="no">
 	</cfif>
 
-	<!--- URL params --->
-	<cfparam  name="url.subCategoryName" default="Products">
-	<cfparam  name="url.categoryId" default="0">
-	<cfparam  name="url.categoryName" default="Sub categories">
-
-	<!--- Decrypt URL Params --->
-	<cfset variables.subCategoryId = application.shoppingCart.decryptUrlParam(url.subCategoryId)>
-
 	<!--- Get Data --->
-	<cfset variables.qryCategories = application.shoppingCart.getCategories()>
-	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
-	<cfset variables.qryProducts = application.shoppingCart.getProducts(subCategoryId = variables.subCategoryId)>
-	<cfset variables.qryBrands = application.shoppingCart.getBrands()>
+	<cfset variables.categories = application.shoppingCart.getCategories()>
+	<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
+	<cfset variables.products = application.shoppingCart.getProducts(subCategoryId = url.subCategoryId)>
+	<cfset variables.brands = application.shoppingCart.getBrands()>
+
+	<!--- Get sub category name of the current products page --->
+	<cfloop array="#variables.subCategories.data#" item="item">
+		<cfif item.subCategoryId EQ url.subCategoryId>
+			<cfset variables.subCategoryName = item.subCategoryName>
+		</cfif>
+	</cfloop>
+
+	<!--- Get category id of the current products page --->
+	<cfloop array="#variables.subCategories.data#" item="item">
+		<cfif item.subCategoryId EQ url.subCategoryId>
+			<cfset variables.categoryId = item.categoryId>
+		</cfif>
+	</cfloop>
+
+	<!--- Get category name of the current products page --->
+	<cfloop array="#variables.categories.data#" item="item">
+		<cfif item.categoryId EQ variables.categoryId>
+			<cfset variables.categoryName = item.categoryName>
+		</cfif>
+	</cfloop>
+
+	<!--- Reduce the sub categories query to only ones with current page category id --->
+	<cfset variables.subCategories.data = arrayFilter(variables.subCategories.data, function(item) {
+		return item.categoryId EQ variables.categoryId;
+	})>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
@@ -27,28 +50,28 @@
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">
-						<h3 class="fw-semibold text-center mb-0 me-3">#url.subCategoryName#</h3>
-						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal(#variables.subCategoryId#)">
+						<h3 class="fw-semibold text-center mb-0 me-3">#variables.subCategoryName#</h3>
+						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal('#variables.categoryId#', '#url.subCategoryId#')">
 							Add+
 						</button>
 					</div>
 					<div></div>
 				</div>
-				<cfloop query="variables.qryProducts">
-					<div id="productContainer-#variables.qryProducts.fldProduct_Id#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
+				<cfloop array="#variables.products.data#" item="item" index="i">
+					<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 						<div class="d-flex flex-column fs-5">
-							<div id="productName-#variables.qryProducts.fldProduct_Id#" class="fw-bold">#variables.qryProducts.fldProductName#</div>
-							<div id="brandName-#variables.qryProducts.fldProduct_Id#" class="fw-semibold">#variables.qryProducts.fldBrandName#</div>
-							<div id="price-#variables.qryProducts.fldProduct_Id#" class="text-success">Rs.#variables.qryProducts.fldPrice#</div>
+							<div name="productName" class="fw-bold">#item.productName#</div>
+							<div name="brandName" class="fw-semibold">#item.brandName#</div>
+							<div name="price" class="text-success">Rs.#item.price#</div>
 						</div>
 						<div>
-							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage(#variables.qryProducts.fldProduct_Id#)">
-								<img class="pe-none" src="#application.productImageDirectory##variables.qryProducts.fldProductImage#" alt="Product Image" width="50">
+							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage('#item.productId#')">
+								<img class="pe-none" src="#application.productImageDirectory&item.productImage#" alt="Product Image" width="50">
 							</button>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal(#variables.qryProducts.fldProduct_Id#,#variables.subCategoryId#)">
+							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" onclick="deleteProduct(#variables.qryProducts.fldProduct_Id#)">
+							<button class="btn btn-lg" onclick="deleteProduct('productContainer_#i#', '#item.productId#')">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
 						</div>
@@ -63,7 +86,7 @@
 	  <div class="modal-dialog">
 		<div class="modal-content">
 		  <div class="modal-header">
-			<h1 class="modal-title fs-5" id="subCategoryModalLabel">Add Sub Category</h1>
+			<h1 class="modal-title fs-5" id="subCategoryModalLabel">Edit Product</h1>
 			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		  </div>
 		  <form id="productForm" method="post" class="form-group" enctype="multipart/form-data" onsubmit="processproductForm()">
@@ -74,14 +97,14 @@
 				<label for="categorySelect" class="fw-semibold">Category Name</label>
 				<select id="categorySelect" class="form-select" aria-label="Category Select">
 					<option value="0">Category Select</option>
-					<cfloop query="variables.qryCategories">
+					<cfloop array="#variables.categories.data#" item="item">
 						<option
-							<cfif url.categoryId EQ variables.qryCategories.fldCategory_Id>
+							<cfif variables.categoryId EQ item.categoryId>
 								selected
 							</cfif>
-							value="#variables.qryCategories.fldCategory_Id#"
+							value="#item.categoryId#"
 						>
-							#variables.qryCategories.fldCategoryName#
+							#item.categoryName#
 						</option>
 					</cfloop>
 				</select>
@@ -91,14 +114,14 @@
 				<label for="subCategorySelect" class="fw-semibold">SubCategory Name</label>
 				<select id="subCategorySelect" class="form-select" aria-label="SubCategory Select">
 					<option value="0">SubCategory Select</option>
-					<cfloop query="variables.qrySubCategories">
+					<cfloop array="#variables.subCategories.data#" item="item">
 						<option
-							<cfif variables.subCategoryId EQ variables.qrySubCategories.fldSubCategory_Id>
+							<cfif url.subCategoryId EQ item.subCategoryId>
 								selected
 							</cfif>
-							value="#variables.qrySubCategories.fldSubCategory_Id#"
+							value="#item.subCategoryId#"
 						>
-							#variables.qrySubCategories.fldSubCategoryName#
+							#item.subCategoryName#
 						</option>
 					</cfloop>
 				</select>
@@ -106,32 +129,32 @@
 
 				<!--- Product Name --->
 				<label for="productName" class="fw-semibold">Product Name</label>
-				<input type="text" id="productName" name="productName" placeholder="Product Name" class="form-control mb-1">
+				<input type="text" id="productName" name="productName" class="form-control mb-1">
 				<div id="productNameError" class="text-danger error"></div>
 
 				<!--- Product Brand --->
 				<label for="brandSelect" class="fw-semibold">Product Brand</label>
 				<select id="brandSelect" class="form-select" aria-label="SubCategory Select">
 					<option value="0">Brand Name</option>
-					<cfloop query="variables.qryBrands">
-						<option value="#variables.qryBrands.fldBrand_Id#">#variables.qryBrands.fldBrandName# </option>
+					<cfloop array="#variables.brands.data#" item="item">
+						<option value="#item.brandId#">#item.brandName#</option>
 					</cfloop>
 				</select>
 				<div id="brandSelectError" class="text-danger error"></div>
 
 				<!--- Product Description --->
 				<label for="productDesc" class="fw-semibold">Product Description</label>
-				<textarea class="form-control mb-1" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400" placeholder="Product Description"></textarea>
+				<textarea class="form-control mb-1" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400"></textarea>
 				<div id="productDescError" class="text-danger error"></div>
 
 				<!--- Product Price --->
 				<label for="productPrice" class="fw-semibold">Product Price</label>
-				<input type="number" step="0.01" min="0" id="productPrice" name="productPrice" placeholder="Product Price" class="form-control mb-1">
+				<input type="number" step="0.01" min="0" id="productPrice" name="productPrice" class="form-control mb-1">
 				<div id="productPriceError" class="text-danger error"></div>
 
 				<!--- Product Tax --->
 				<label for="productTax" class="fw-semibold">Product Price</label>
-				<input type="number" step="0.01" min="0" id="productTax" name="productTax" placeholder="Product Tax" class="form-control mb-1">
+				<input type="number" step="0.01" min="0" id="productTax" name="productTax" class="form-control mb-1">
 				<div id="productTaxError" class="text-danger error"></div>
 
 				<!--- Product Image --->
@@ -156,7 +179,7 @@
 			<h1 class="modal-title fs-5" id="imageModalLabel">Product Images</h1>
 			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		  </div>
-		  <div class="modal-body">
+		  <div class="modal-body" data-bs-theme="dark">
 			<div id="productImageCarousel" class="carousel slide">
 			  <div id="carouselContainer" class="carousel-inner">
 			  </div>

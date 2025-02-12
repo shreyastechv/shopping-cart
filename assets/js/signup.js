@@ -59,8 +59,14 @@ function validateForm() {
 	}
 
 	// Password Validation
+	const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+
 	if (password.length === 0) {
 		$("#passwordError").text("Input password");
+		$("#password").addClass("border-danger");
+		valid = false;
+	} else if (!passwordPattern.test(password)) {
+		$("#passwordError").text("Password must be at least 8 characters long and include uppercase, lowercase, number, and special character");
 		$("#password").addClass("border-danger");
 		valid = false;
 	}

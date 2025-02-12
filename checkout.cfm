@@ -3,34 +3,19 @@
 
 <!--- Get Data --->
 <cfset variables.addresses = application.shoppingCart.getAddress()>
+<cfset variables.addressEmpty = arrayLen(variables.addresses.data) EQ 0 ? "disabled" : "">
 
 <!--- Variables to store total price and total actual price --->
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>
 
-<!--- Decrypt product id --->
-<cfset variables.productId = application.shoppingCart.decryptUrlParam(url.productId)>
-
-<cfif variables.productId NEQ -1>
-	<!--- Get product price details since this is not in cart --->
-	<cfset variables.productDetails = application.shoppingCart.getProducts(
-		productId = variables.productId
-	)>
-
+<cfif len(trim(url.productId)) NEQ 0>
 	<!--- Product details when this page was opened by clicking buy now from product page --->
-	<cfset variables.products[variables.productId] = {
-		"quantity" = 1,
-		"unitPrice" = variables.productDetails.fldPrice,
-		"unitTax" = variables.productDetails.fldTax
+	<cfset session.checkout[url.productId] = {
+		"quantity" = 1
 	}>
-
-	<!--- Session variable to store checkout products --->
-	<cfset session.checkout = duplicate(variables.products)>
 <cfelseif structKeyExists(session, "cart") AND structCount(session.cart)>
 	<!--- Product details when this page was opened by clicking clicking checkout from cart page --->
-	<cfset variables.products = session.cart>
-
-	<!--- Session variable to store checkout products --->
 	<cfset session.checkout = duplicate(session.cart)>
 <cfelse>
 	<!--- If this page was opened by user and cart is empty --->
@@ -44,7 +29,7 @@
 
 		<div class="row w-100 my-2">
 			<div class="col-md-8">
-				<form method="post" id="checkoutForm" onsubmit="handleCheckout()">
+				<form method="post" name="checkoutForm" id="checkoutForm" onsubmit="handleCheckout()">
 					<div class="accordion accordion-flush border rounded-2 shadow-sm" id="orderSummary">
 						<!-- Address Section -->
 						<div class="accordion-item">
@@ -55,17 +40,12 @@
 							</h2>
 							<div id="flush-collapseOne" class="accordion-collapse collapse show" data-bs-parent="##orderSummary">
 								<div class="accordion-body">
-									<div class="list-group">
-										<cfif arrayLen(variables.addresses)>
-											<cf_addresslist addresses="#variables.addresses#" currentPage="checkout">
-										<cfelse>
-											<div class="text-secondary">No Address Saved</div>
-										</cfif>
-									</div>
+									<cf_addresslist addresses="#variables.addresses.data#" currentPage="checkout">
 								</div>
-								<div class="d-flex justify-content-end p-3">
+								<div class="d-flex justify-content-between p-3 pt-0">
+									<cf_addaddressbtn>
 									<button type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseTwo"
-										aria-expanded="false" aria-controls="flush-collapseTwo"class="btn btn-success">
+										aria-expanded="false" aria-controls="flush-collapseTwo"class="btn btn-success" #variables.addressEmpty#>
 										Next
 									</button>
 								</div>
@@ -76,17 +56,18 @@
 						<div class="accordion-item">
 							<h2 class="accordion-header">
 								<button class="accordion-button collapsed text-uppercase fw-semibold" type="button" data-bs-toggle="collapse"
-									data-bs-target="##flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+									data-bs-target="##flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" #variables.addressEmpty#>
 									Product Details
 								</button>
 							</h2>
 							<div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="##orderSummary">
-								<div class="accordion-body">
+								<div class="accordion-body" id="accordionBody">
 									<cf_cartproductlist products="#session.checkout#">
 								</div>
 								<div class="d-flex justify-content-end p-3">
 									<button type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseThree"
-										aria-expanded="false" aria-controls="flush-collapseThree"class="btn btn-success">
+										aria-expanded="false" aria-controls="flush-collapseThree"class="btn btn-success"
+										id="productsNextBtn">
 										Next
 									</button>
 								</div>
@@ -97,7 +78,8 @@
 						<div class="accordion-item">
 							<h2 class="accordion-header">
 								<button class="accordion-button collapsed text-uppercase fw-semibold" type="button" data-bs-toggle="collapse"
-									data-bs-target="##flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+									data-bs-target="##flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
+									id="paymentSectionAccordionBtn" #variables.addressEmpty#>
 									Payment Options
 								</button>
 							</h2>
@@ -111,7 +93,7 @@
 												class="form-control cardInput"
 												id="cardNumber"
 												inputmode="numeric"
-												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-').slice(0, this.maxLength);"
+												oninput="this.value = this.value.replace(/^-/g, '').replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-');"
 												maxlength="19"
 												placeholder="XXXX XXXX XXXX XXXX"
 												autocomplete="cc-number">
@@ -123,7 +105,7 @@
 												class="form-control cardInput"
 												id="cvv"
 												inputmode="numeric"
-												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-').slice(0, this.maxLength);"
+												oninput="this.value = this.value.replace(/[^0-9-]/g, '').replace(/(\d{4})(?=\d)/g, '$1-');"
 												maxlength="3"
 												placeholder="XXX"
 												autocomplete="cc-csc">
@@ -151,7 +133,7 @@
 					<div class="card-body">
 						<h4 class="card-title">Price Details</h4>
 						<hr>
-						<cf_totalprice totalPrice=#variables.totalPrice# totalActualPrice="#variables.totalActualPrice#" totalTax="#variables.totalTax#">
+						<cf_totalprice totalPrice="#variables.totalPrice#" totalActualPrice="#variables.totalActualPrice#" totalTax="#variables.totalTax#">
 					</div>
 				</div>
 			</div>
@@ -173,20 +155,20 @@
 						</div>
 					</div>
 					<div name="success" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
-						<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
+						<img src="#application.imageDirectory#order-success.jpg" width="200px" alt="Order Success Image">
 						<div class="text-success fs-5">
 							Order Placed Successfully
 							<i class="fa-regular fa-circle-check"></i>
 						</div>
 						<a class="btn btn-primary" href="/orders.cfm">Go to Orders</a>
+					</div>
 					<div name="error" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
-						<img src="/assets/images/order-success.jpg" width="200px" alt="Order Success Image">
+						<img src="#application.imageDirectory#order-failed.jpg" width="200px" alt="Order Failed Image">
 						<div class="text-danger fs-5">
 							Sorry! There was an error.
-							<i class="fa-regular fa-circle-check"></i>
+							<i class="fa-solid fa-circle-exclamation"></i>
 						</div>
 						<a class="btn btn-primary" href="/">Go to Home</a>
-					</div>
 					</div>
 				</div>
 			</div>

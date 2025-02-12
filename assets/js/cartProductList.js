@@ -25,11 +25,17 @@ function createAlert(containerId, message) {
 }
 
 function editCartItem(containerId, productId, action) {
+	const currentPage = new URL(document.URL).pathname.split('/').pop();
 	let quantity = parseInt($(`#${containerId} input[name="quantity"]`).val());
 
 	// Create alert if quantity is maxed out
 	if (action == "increment" && quantity == 5) {
-		createAlert(containerId, "Maximum allowed quantity for this item is reached.");
+		createAlert(containerId, "Maximmmmum allowed quantity for this item is reached.");
+		return;
+	}
+
+	// Confirm before deleting product
+	if (action == "delete" && !confirm("Delete Product?")) {
 		return;
 	}
 
@@ -38,7 +44,7 @@ function editCartItem(containerId, productId, action) {
 		type: "POST",
 		url: "./components/shoppingCart.cfc",
 		data: {
-			method: "modifyCart",
+			method: currentPage == "checkout.cfm" ? "modifyCheckout" : "modifyCart",
 			productId: productId,
 			action: action
 		},
@@ -54,6 +60,7 @@ function editCartItem(containerId, productId, action) {
 				}
 				else if (action == "delete") {
 					$(`#${containerId}`).remove();
+					$("#cartCount").text(Number($("#cartCount").text())-1);
 				}
 
 				// Update total price and tax
@@ -62,7 +69,20 @@ function editCartItem(containerId, productId, action) {
 				$("#totalTax").text(totalTax.toFixed(2));
 
 				// If total price is 0 (cart empty) then reload
-				if (data.totalPrice == 0) location.reload();
+				if (totalPrice == 0) {
+					if (currentPage == "checkout.cfm") {
+						$("#productsNextBtn").prop("disabled", true);
+						$("#paymentSectionAccordionBtn").prop("disabled", true);
+						$("#accordionBody").append(`
+							<div class="d-flex flex-column align-items-center justify-content-center pt-4">
+								<div class="fs-5 text-secondary mb-3">Product List is Empty</div>
+								<a class="btn btn-primary" href="/">Shop Now</a>
+							</div>
+						`);
+					} else {
+						location.reload();
+					}
+				}
 			} else {
 				createAlert(containerId, "Sorry. Unable to proceed. Try again.");
 			}

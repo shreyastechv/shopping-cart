@@ -1,14 +1,4 @@
 <cfcomponent>
-	<cffunction name="trimArguments" access="private" returnType="struct">
-		<cfargument name="args" type="struct" required=true>
-
-		<cfloop collection="#arguments.args#" item="arg">
-			<cfset arguments.args[arg] = trim(arguments.args[arg])>
-		</cfloop>
-
-		<cfreturn arguments.args>
-	</cffunction>
-
 	<cffunction name="signup" access="public" returnType="struct">
 		<cfargument name="firstName" type="string" required=true>
 		<cfargument name="lastName" type="string" required=true>
@@ -17,49 +7,54 @@
 		<cfargument name="password" type="string" required=true>
 		<cfargument name="confirmPassword" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-
-		<!--- Trim arguments --->
-		<cfset arguments = trimArguments(arguments)>
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- Firstname Validation --->
-		<cfif len(arguments.firstName) EQ 0>
+		<cfif len(trim(arguments.firstName)) EQ 0>
 			<cfset local.response["message"] &= "Enter first name. ">
-		<cfelseif isValid("regex", arguments.firstName, "/\d/")>
+		<cfelseif isValid("regex", trim(arguments.firstName), "/\d/")>
 			<cfset local.response["message"] &= "First name should not contain any digits. ">
 		</cfif>
 
 		<!--- Lastname Validation --->
-		<cfif len(arguments.lastname) EQ 0>
+		<cfif len(trim(arguments.lastname)) EQ 0>
 			<cfset local.response["message"] &= "Enter last name. ">
-		<cfelseif isValid("regex", arguments.lastName, "/\d/")>
+		<cfelseif isValid("regex", trim(arguments.lastName), "/\d/")>
 			<cfset local.response["message"] &= "Last name should not contain any digits. ">
 		</cfif>
 
 		<!--- Email Validation --->
-		<cfif len(arguments.email) EQ 0>
+		<cfif len(trim(arguments.email)) EQ 0>
 			<cfset local.response["message"] &= "Enter an email address. ">
-		<cfelseif NOT isValid("email", arguments.email)>
+		<cfelseif NOT isValid("email", trim(arguments.email))>
 			<cfset local.response["message"] &= "Invalid email. ">
 		</cfif>
 
 		<!--- Phone Number Validation --->
-		<cfif len(arguments.phone) EQ 0>
+		<cfif len(trim(arguments.phone)) EQ 0>
 			<cfset local.response["message"] &= "Enter an phone number. ">
-		<cfelseif NOT isValid("regex", arguments.phone, "^\d{10}$")>
+		<cfelseif NOT isValid("regex", trim(arguments.phone), "^\d{10}$")>
 			<cfset local.response["message"] &= "Phone number should be 10 digits long. ">
 		</cfif>
 
 		<!--- Password Validation --->
-		<cfif len(arguments.password) EQ 0>
+		<cfif len(trim(arguments.password)) EQ 0>
 			<cfset local.response["message"] &= "Enter a password. ">
+		<cfelseif NOT ( len(trim(arguments.password)) GTE 8
+			AND refind('[A-Z]',trim(arguments.password))
+			AND refind('[a-z]',trim(arguments.password))
+			AND refind('[0-9]',trim(arguments.password))
+			AND refind('[!@##$&*]',trim(arguments.password))
+		)>
+			<cfset local.response["message"] &= "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character. ">
 		</cfif>
 
 		<!--- Confirm Password Validation --->
-		<cfif len(arguments.confirmPassword) EQ 0>
+		<cfif len(trim(arguments.confirmPassword)) EQ 0>
 			<cfset local.response["message"] &= "Confirm the password. ">
-		<cfelseif arguments.password NEQ arguments.confirmPassword>
+		<cfelseif arguments.password NEQ trim(arguments.confirmPassword)>
 			<cfset local.response["message"] &= "Passwords must be equal. ">
 		</cfif>
 
@@ -85,7 +80,7 @@
 		<cfelse>
 			<!--- Generate random salt string --->
 			<cfset local.saltString = generateSecretKey("AES", 128)>
-			<cfset local.hashedPassword = hash(arguments.password & local.saltString, "SHA-512", "UTF-8", 50)>
+			<cfset local.hashedPassword = hash(trim(arguments.password) & local.saltString, "SHA-512", "UTF-8", 50)>
 			<cfquery name="local.qryAddUser">
 				INSERT INTO
 					tblUser (
@@ -118,27 +113,25 @@
 		<cfargument name="userInput" type="string" required=true>
 		<cfargument name="password" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-
-		<!--- Trim arguments --->
-		<cfset arguments = trimArguments(arguments)>
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<!--- UserInput Validation --->
 		<cfif len(trim(arguments.userInput)) EQ 0>
 			<cfset local.response["message"] &= "Enter an Email or Phone Number. ">
-		<cfelseif isValid("integer", arguments.userInput) AND arguments.userInput GT 0>
-			<cfif len(arguments.userInput) NEQ 10>
+		<cfelseif isValid("integer", trim(arguments.userInput)) AND arguments.userInput GT 0>
+			<cfif len(trim(arguments.userInput)) NEQ 10>
 				<cfset local.response["message"] &= "Phone number should be 10 digits long. ">
 			</cfif>
 		<cfelse>
-			<cfif NOT isValid("email", arguments.userInput)>
+			<cfif NOT isValid("email", trim(arguments.userInput))>
 				<cfset local.response["message"] &= "Invalid email. ">
 			</cfif>
 		</cfif>
 
 		<!--- Password Validation --->
-		<cfif len(arguments.password) EQ 0>
+		<cfif len(trim(arguments.password)) EQ 0>
 			<cfset local.response["message"] &= "Enter a password. ">
 		</cfif>
 
@@ -167,7 +160,7 @@
 		</cfquery>
 
 		<cfif local.qryCheckUser.recordCount>
-			<cfif local.qryCheckUser.fldHashedPassword EQ hash(arguments.password & local.qryCheckUser.fldUserSaltString, "SHA-512", "UTF-8", 50)>
+			<cfif local.qryCheckUser.fldHashedPassword EQ hash(trim(arguments.password) & local.qryCheckUser.fldUserSaltString, "SHA-512", "UTF-8", 50)>
 				<cfset session.firstName = local.qryCheckUser.fldFirstName>
 				<cfset session.lastName = local.qryCheckUser.fldLastName>
 				<cfset session.email = local.qryCheckUser.fldEmail>
@@ -186,7 +179,12 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="getCategories" access="public" returnType="query">
+	<cffunction name="getCategories" access="public" returnType="struct">
+		<!--- Create response struct --->
+		<cfset local.response = {
+			"data" = []
+		}>
+
 		<cfquery name="local.qryGetCategories">
 			SELECT
 				c.fldCategory_Id,
@@ -195,31 +193,48 @@
 				tblCategory c
 			WHERE
 				c.fldActive = 1
-				-- Below code is to make sure to return only no-empty categories
-				AND EXISTS (
-					SELECT
-						1
-					FROM
-						tblSubCategory sc
-					WHERE
-						sc.fldCategoryId = c.fldCategory_Id
-						AND sc.fldActive = 1
-				)
+				-- Make sure to return only no-empty categories for non-admin users
+				<cfif NOT structKeyExists(session, "roleId") OR session.roleId EQ 2>
+					AND EXISTS (
+						SELECT
+							1
+						FROM
+							tblSubCategory sc
+						WHERE
+							sc.fldCategoryId = c.fldCategory_Id
+							AND sc.fldActive = 1
+					)
+				</cfif>
 		</cfquery>
 
-		<cfreturn local.qryGetCategories>
+		<!--- Fill up the array with category information --->
+		<cfloop query="local.qryGetCategories">
+			<cfset local.categoryStruct = {
+				"categoryId": encryptText(local.qryGetCategories.fldCategory_Id),
+				"categoryName": local.qryGetCategories.fldCategoryName
+			}>
+
+			<cfset arrayAppend(local.response.data, local.categoryStruct)>
+		</cfloop>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="modifyCategory" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="categoryId" type="string" required=true>
+		<cfargument name="categoryId" type="string" required=true default="">
 		<cfargument name="categoryName" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.categoryId = decryptText(arguments.categoryId)>
 
 		<!--- Category Id Validation --->
-		<cfif len(arguments.categoryId) AND NOT isValid("integer", arguments.categoryId)>
-			<cfset local.response["message"] &= "Category Id should be an integer">
+		<cfif len(trim(arguments.categoryId)) AND local.categoryId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
 
 		<!--- Category Name Validation --->
@@ -246,6 +261,7 @@
 		<cfif local.qryCheckCategory.recordCount>
 			<cfset local.response["message"] = "Category already exists!">
 		<cfelse>
+			<!--- Category Id not empty means we used edit button --->
 			<cfif len(trim(arguments.categoryId))>
 				<cfquery name="qryEditCategory">
 					UPDATE
@@ -254,7 +270,7 @@
 						fldCategoryName = <cfqueryparam value = "#trim(arguments.categoryName)#" cfsqltype = "varchar">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldCategory_Id = <cfqueryparam value = "#trim(arguments.categoryId)#" cfsqltype = "integer">
+						fldCategory_Id = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "Category Updated">
 			<cfelse>
@@ -269,7 +285,7 @@
 						<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					)
 				</cfquery>
-				<cfset local.response["categoryId"] = local.resultAddCategory.GENERATED_KEY>
+				<cfset local.response["categoryId"] = encryptText(local.resultAddCategory.GENERATED_KEY)>
 				<cfset local.response["message"] = "Category Added">
 			</cfif>
 		</cfif>
@@ -278,16 +294,26 @@
 	</cffunction>
 
 	<cffunction name="deleteCategory" access="remote" returnType="void">
-		<cfargument name="categoryId" type="string" required=true>
+		<cfargument name="categoryId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.categoryId = decryptText(arguments.categoryId)>
+
+		<!--- Login Check --->
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfset local.response["message"] &= "User not logged in">
+		</cfif>
 
 		<!--- Category Id Validation --->
-		<cfif len(arguments.categoryId) EQ 0>
-			<cfset local.response["message"] &= "Category Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.categoryId)>
-			<cfset local.response["message"] &= "Category Id should be an integer">
+		<cfif NOT len(trim(arguments.categoryId))>
+			<cfset local.response["message"] &= "Category Id is required. ">
+		<cfelseif local.categoryId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -296,53 +322,27 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryDeleteProducts">
-			UPDATE
-				tblProduct
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldSubCategoryId IN (
-					SELECT
-						fldSubCategory_Id
-					FROM
-						tblSubCategory
-					WHERE
-						fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
-				);
-		</cfquery>
-
-		<cfquery name="qryDeleteSubCategory">
-			UPDATE
-				tblSubCategory
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
-		</cfquery>
-
-		<cfquery name="qryDeleteCategory">
-			UPDATE
-				tblCategory
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldCategory_Id = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
-		</cfquery>
+		<cfstoredproc procedure="spDeleteCategory">
+			<cfprocparam cfsqltype="integer" variable="userId" value="#local.categoryId#">
+			<cfprocparam cfsqltype="integer" variable="contactId" value="#session.userId#">
+		</cfstoredproc>
 	</cffunction>
 
-	<cffunction name="getSubCategories" access="remote" returnType="query" returnFormat="json">
-		<cfargument name="categoryId" type="string" required=false>
+	<cffunction name="getSubCategories" access="remote" returnType="struct" returnFormat="json">
+		<cfargument name="categoryId" type="string" required=false default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.categoryId = decryptText(arguments.categoryId)>
 
 		<!--- Category Id Validation --->
-		<cfif structKeyExists(arguments, "categoryId") AND isValid("integer", arguments.categoryId) EQ false>
-			<cfset local.response["message"] &= "Category Id should be an integer">
+		<cfif (len(trim(arguments.categoryId)) NEQ 0) AND (local.categoryId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -360,25 +360,42 @@
 				tblSubCategory sc
 			WHERE
 				sc.fldActive = 1
-				<cfif structKeyExists(arguments, "categoryId") AND len(trim(arguments.categoryId))>
-					AND sc.fldCategoryId = <cfqueryparam value = "#arguments.categoryId#" cfsqltype = "integer">
+				<cfif structKeyExists(local, "categoryId") AND (trim(local.categoryId) NEQ -1)>
+					AND sc.fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
 				</cfif>
 		</cfquery>
 
-		<cfreturn local.qryGetSubCategories>
+		<!--- Fill up the array with sub category information --->
+		<cfloop query="local.qryGetSubCategories">
+			<cfset local.subCategoryStruct = {
+				"subCategoryId": encryptText(local.qryGetSubCategories.fldSubCategory_Id),
+				"subCategoryName": local.qryGetSubCategories.fldSubCategoryName,
+				"categoryId": encryptText(local.qryGetSubCategories.fldCategoryId)
+			}>
+
+			<cfset arrayAppend(local.response.data, local.subCategoryStruct)>
+		</cfloop>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="modifySubCategory" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="subCategoryId" type="string" required=true>
+		<cfargument name="subCategoryId" type="string" required=true default="">
 		<cfargument name="subCategoryName" type="string" required=true>
-		<cfargument name="categoryId" type="string" required=true>
+		<cfargument name="categoryId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
-		<!--- SubCategory Id Validation --->
-		<cfif len(arguments.subCategoryId) AND NOT isValid("integer", arguments.subCategoryId)>
-			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		<!--- Decrypt ids--->
+		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
+		<cfset local.categoryId = decryptText(arguments.categoryId)>
+
+		<!--- Sub Category Id Validation --->
+		<cfif len(trim(arguments.subCategoryId)) AND local.subCategoryId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
 
 		<!--- SubCategory Name Validation --->
@@ -387,10 +404,11 @@
 		</cfif>
 
 		<!--- Category Id Validation --->
-		<cfif len(arguments.categoryId) EQ 0>
-			<cfset local.response["message"] &= "Category Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.categoryId)>
-			<cfset local.response["message"] &= "Category Id should be an integer">
+		<cfif NOT len(trim(arguments.categoryId))>
+			<cfset local.response["message"] &= "Category Id is required. ">
+		<cfelseif local.categoryId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -406,24 +424,25 @@
 				tblSubCategory
 			WHERE
 				fldSubCategoryName = <cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">
-				AND fldCategoryId = <cfqueryparam value = "#trim(arguments.categoryId)#" cfsqltype = "integer">
-				AND fldSubCategory_Id != <cfqueryparam value = "#val(trim(arguments.subCategoryId))#" cfsqltype = "integer">
+				AND fldCategoryId = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">
+				AND fldSubCategory_Id != <cfqueryparam value = "#val(trim(local.subCategoryId))#" cfsqltype = "integer">
 				AND fldActive = 1
 		</cfquery>
 
 		<cfif local.qryCheckSubCategory.recordCount>
 			<cfset local.response["message"] = "SubCategory already exists!">
 		<cfelse>
+			<!--- sub category id has length means we used edit button --->
 			<cfif len(trim(arguments.subCategoryId))>
 				<cfquery name="qryEditSubCategory">
 					UPDATE
 						tblSubCategory
 					SET
 						fldSubCategoryName = <cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">,
-						fldCategoryId = <cfqueryparam value = "#trim(arguments.categoryId)#" cfsqltype = "integer">,
+						fldCategoryId = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldSubCategory_Id = <cfqueryparam value = "#trim(arguments.subCategoryId)#" cfsqltype = "integer">
+						fldSubCategory_Id = <cfqueryparam value = "#trim(local.subCategoryId)#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "SubCategory Updated">
 			<cfelse>
@@ -436,11 +455,11 @@
 						)
 					VALUES (
 						<cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(arguments.categoryId)#" cfsqltype = "integer">,
+						<cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">,
 						<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					)
 				</cfquery>
-				<cfset local.response["subCategoryId"] = local.resultAddSubCategory.GENERATED_KEY>
+				<cfset local.response["subCategoryId"] = encryptText(local.resultAddSubCategory.GENERATED_KEY)>
 				<cfset local.response["message"] = "SubCategory Added">
 			</cfif>
 		</cfif>
@@ -449,16 +468,21 @@
 	</cffunction>
 
 	<cffunction name="deleteSubCategory" access="remote" returnType="void">
-		<cfargument name="subCategoryId" type="string" required=true>
+		<cfargument name="subCategoryId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
-		<!--- SubCategory Id Validation --->
-		<cfif len(arguments.subCategoryId) EQ 0>
-			<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.subCategoryId)>
-			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		<!--- Decrypt ids--->
+		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
+
+		<!--- Sub Category Id Validation --->
+		<cfif NOT len(trim(arguments.subCategoryId))>
+			<cfset local.response["message"] &= "Sub Category Id is required. ">
+		<cfelseif local.subCategoryId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -474,7 +498,25 @@
 				fldActive = 0,
 				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 			WHERE
-				fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
+				fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
+		</cfquery>
+
+		<cfquery name="qryDeleteProductImages">
+			UPDATE
+				tblProductImages
+			SET
+				fldActive = 0,
+				fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
+				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
+			WHERE
+				fldProductId IN (
+					SELECT
+						fldProduct_Id
+					FROM
+						tblProduct
+					WHERE
+						fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
+				);
 		</cfquery>
 
 		<cfquery name="qryDeleteSubCategory">
@@ -484,32 +526,44 @@
 				fldActive = 0,
 				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 			WHERE
-				fldSubCategory_Id = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
+				fldSubCategory_Id = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="getProducts" access="remote" returnType="query" returnFormat="json">
+	<cffunction name="getProducts" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="subCategoryId" type="string" required=false default="">
 		<cfargument name="productId" type="string" required=false default="">
-		<cfargument name="random" type="string" required=false default="0">
+		<cfargument name="productIdList" type="string" required=false default="">
+		<cfargument name="random" type="integer" required=false default="0">
 		<cfargument name="limit" type="string" required="false" default="">
 		<cfargument name="offset" type="string" required="false" default=0>
 		<cfargument name="sort" type="string" required="false" default="">
-		<cfargument name="min" type="string" required="false" default="0">
-		<cfargument name="max" type="string" required="false" default="">
+		<cfargument name="min" type="float" required="false" default="0">
+		<cfargument name="max" type="float" required="false" default="0">
 		<cfargument name="searchTerm" type="string" required="false" default="">
 
- 		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
 
-		<!--- SubCategory Id Validation --->
-		<cfif len(trim(arguments.subCategoryId)) AND isValid("integer", arguments.subCategoryId) EQ false>
-			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		<!--- Decrypt ids--->
+		<cfset local.subCategoryId = decryptText(arguments.subCategoryId)>
+		<cfset local.productId = decryptText(arguments.productId)>
+		<cfset local.productIdList = listMap(arguments.productIdList, function(item) {
+			return decryptText(item);
+		})>
+
+		<!--- Sub Category Id Validation --->
+		<cfif (len(trim(arguments.subCategoryId)) NEQ 0) AND (local.subCategoryId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
 
-		<!--- Product ID Validation --->
-		<cfif len(trim(arguments.productId)) AND isValid("integer", arguments.productId) EQ false>
-			<cfset local.response["message"] &= "Product Id should be an integer">
+		<!--- Product Id Validation --->
+		<cfif (len(trim(arguments.productId)) NEQ 0) AND (local.productId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
 		<!--- Orderby Validation --->
@@ -548,13 +602,16 @@
 					AND i.fldDefaultImage = 1
 			WHERE
 				p.fldActive = 1
-				<cfif len(trim(arguments.subCategoryId)) AND arguments.subCategoryId NEQ 0>
-					AND p.fldSubCategoryId = <cfqueryparam value = "#arguments.subCategoryId#" cfsqltype = "integer">
-				<cfelseif len(trim(arguments.productId)) AND arguments.productId NEQ 0>
-					AND p.fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+				<cfif len(trim(local.subCategoryId)) AND local.subCategoryId NEQ -1>
+					AND p.fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
+				<cfelseif len(trim(local.productId)) AND local.productId NEQ -1>
+					AND p.fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+				<cfelseif len(trim(arguments.productIdList))>
+					AND fldProductId IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 				</cfif>
 
-				<cfif len(trim(arguments.max))>
+				<!--- 0 is the default value of arguments.max hence it should not be used --->
+				<cfif len(trim(arguments.max)) AND trim(arguments.max) NEQ 0>
 					AND p.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
 						AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
 				</cfif>
@@ -567,26 +624,33 @@
 						OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
 				</cfif>
 
-			<cfif arguments.random EQ 1>
-				ORDER BY
-					RAND()
-			<cfelseif len(trim(arguments.sort))>
-				ORDER BY
-					p.fldPrice #arguments.sort#
-			</cfif>
-
-			<cfif len(trim(arguments.limit))>
-				LIMIT <cfqueryparam value = "#val(arguments.limit)#" cfsqltype = "integer">
-				<cfif len(trim(arguments.offset))>
-					OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
-				</cfif>
-			</cfif>
 		</cfquery>
 
-		<cfreturn local.qryGetProducts>
+		<!--- Loop through the query results and populate the array --->
+		<cfloop query="local.qryGetProducts">
+			<cfset local.productStruct = {
+				"productId": encryptText(local.qryGetProducts.fldProduct_Id),
+				"productName": local.qryGetProducts.fldProductName,
+				"brandId": encryptText(local.qryGetProducts.fldBrandId),
+				"brandName": local.qryGetProducts.fldBrandName,
+				"description": local.qryGetProducts.fldDescription,
+				"price": local.qryGetProducts.fldPrice,
+				"tax": local.qryGetProducts.fldTax,
+				"productImage": local.qryGetProducts.fldProductImage
+			}>
+
+			<!--- Append each product struct to the response array --->
+			<cfset arrayAppend(local.response.data, local.productStruct)>
+		</cfloop>
+
+		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="getBrands" access="public" returnType="query">
+	<cffunction name="getBrands" access="public" returnType="struct">
+		<cfset local.response = {
+			"data" = []
+		}>
+
 		<cfquery name="local.qryGetBrands">
 			SELECT
 				fldBrand_Id,
@@ -595,52 +659,61 @@
 				tblBrands
 		</cfquery>
 
-		<cfreturn local.qryGetBrands>
+		<!--- Fill up the array with brand information --->
+		<cfloop query="local.qryGetBrands">
+			<cfset local.brandStruct = {
+				"brandId": encryptText(local.qryGetBrands.fldBrand_Id),
+				"brandName": local.qryGetBrands.fldBrandName
+			}>
+
+			<cfset arrayAppend(local.response.data, local.brandStruct)>
+		</cfloop>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="modifyProduct" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="productId" type="string" required=true>
-		<cfargument name="categorySelect" type="string" required=true>
-		<cfargument name="subCategorySelect" type="string" required=true>
+		<cfargument name="productId" type="string" required=true default="">
+		<cfargument name="subCategorySelect" type="string" required=true default="">
 		<cfargument name="productName" type="string" required=true>
-		<cfargument name="brandSelect" type="string" required=true>
+		<cfargument name="brandSelect" type="string" required=true default="">
 		<cfargument name="productDesc" type="string" required=true>
-		<cfargument name="productPrice" type="string" required=true>
-		<cfargument name="productTax" type="string" required=true>
+		<cfargument name="productPrice" type="float" required=true>
+		<cfargument name="productTax" type="float" required=true>
 		<cfargument name="productImage" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.productId = decryptText(arguments.productId)>
+		<cfset local.subCategorySelect = decryptText(arguments.subCategorySelect)>
+		<cfset local.brandSelect = decryptText(arguments.brandSelect)>
 
 		<!--- Product Id Validation --->
-		<cfif len(arguments.productId) AND NOT isValid("integer", arguments.productId)>
-			<cfset local.response["message"] &= "Product Id should be an integer">
+		<cfif len(trim(arguments.productId)) AND (local.productId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
-		<!--- Category Id Validation --->
-		<cfif len(arguments.categorySelect) EQ 0>
-			<cfset local.response["message"] &= "Category Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.categorySelect)>
-			<cfset local.response["message"] &= "Category Id should be an integer">
-		</cfif>
-
-		<!--- SubCategory Id Validation --->
-		<cfif len(arguments.subCategorySelect) EQ 0>
-			<cfset local.response["message"] &= "SubCategory Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.subCategorySelect)>
-			<cfset local.response["message"] &= "SubCategory Id should be an integer">
+		<!--- Sub Category Id Validation --->
+		<cfif (len(trim(arguments.subCategorySelect)) NEQ 0) AND (local.subCategorySelect EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
 
 		<!--- Product Description Validation --->
 		<cfif len(arguments.productDesc) EQ 0>
 			<cfset local.response["message"] &= "Product Description should not be empty. ">
+		<cfelseif len(arguments.productDesc) GT 400>
+			<cfset local.response["message"] &= "Product Description should be less than 400 characters. ">
 		</cfif>
 
 		<!--- Brand Id Validation --->
-		<cfif len(arguments.brandSelect) EQ 0>
-			<cfset local.response["message"] &= "Brand Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.brandSelect)>
-			<cfset local.response["message"] &= "Brand Id should be an integer">
+		<cfif (len(trim(arguments.brandSelect)) NEQ 0) AND (local.brandSelect EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
 
 		<!--- Product Name Validation --->
@@ -675,8 +748,8 @@
 				tblProduct
 			WHERE
 				fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "varchar">
-				AND fldSubCategoryId = <cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "integer">
-				AND fldProduct_Id != <cfqueryparam value = "#val(trim(arguments.productId))#" cfsqltype = "integer">
+				AND fldSubCategoryId = <cfqueryparam value = "#trim(local.subCategorySelect)#" cfsqltype = "integer">
+				AND fldProduct_Id != <cfqueryparam value = "#val(trim(local.productId))#" cfsqltype = "integer">
 				AND fldActive = 1
 		</cfquery>
 
@@ -694,20 +767,21 @@
 				allowedextensions=".png,.jpg,.jpeg"
 			>
 
+			<!--- Sub category id has length means we used edit button --->
 			<cfif len(trim(arguments.productId))>
 				<cfquery name="qryEditProduct">
 					UPDATE
 						tblProduct
 					SET
 						fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "varchar">,
-						fldSubCategoryId = <cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "integer">,
-						fldBrandId = <cfqueryparam value = "#trim(arguments.brandSelect)#" cfsqltype = "integer">,
+						fldSubCategoryId = <cfqueryparam value = "#trim(local.subCategorySelect)#" cfsqltype = "integer">,
+						fldBrandId = <cfqueryparam value = "#trim(local.brandSelect)#" cfsqltype = "integer">,
 						fldDescription = <cfqueryparam value = "#trim(arguments.productDesc)#" cfsqltype = "varchar">,
 						fldPrice = <cfqueryparam value = "#trim(arguments.productPrice)#" cfsqltype = "decimal">,
 						fldTax = <cfqueryparam value = "#trim(arguments.productTax)#" cfsqltype = "decimal">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldProduct_Id = <cfqueryparam value = "#val(trim(arguments.productId))#" cfsqltype = "integer">
+						fldProduct_Id = <cfqueryparam value = "#val(trim(local.productId))#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "Product Updated">
 			<cfelse>
@@ -724,15 +798,15 @@
 						)
 					VALUES (
 						<cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(arguments.subCategorySelect)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(arguments.brandSelect)#" cfsqltype = "integer">,
+						<cfqueryparam value = "#trim(local.subCategorySelect)#" cfsqltype = "varchar">,
+						<cfqueryparam value = "#trim(local.brandSelect)#" cfsqltype = "integer">,
 						<cfqueryparam value = "#trim(arguments.productDesc)#" cfsqltype = "varchar">,
 						<cfqueryparam value = "#val(arguments.productPrice)#" cfsqltype = "decimal" scale = "2">,
 						<cfqueryparam value = "#val(arguments.productTax)#" cfsqltype = "decimal" scale = "2">,
 						<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					)
 				</cfquery>
-				<cfset local.response["productId"] = local.resultAddProduct.GENERATED_KEY>
+				<cfset local.response["productId"] = encryptText(local.resultAddProduct.GENERATED_KEY)>
 				<cfset local.response["defaultImageFile"] = local.uploadedImages[1].serverFile>
 				<cfset local.response["message"] = "Product Added">
 			</cfif>
@@ -750,8 +824,9 @@
 					VALUES
 						<cfloop array="#local.uploadedImages#" item="local.image" index="local.i">
 							(
+								-- Product id is not empty means we clicked on edit button
 								<cfif len(trim(arguments.productId))>
-									<cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">,
+									<cfqueryparam value = "#local.productId#" cfsqltype = "integer">,
 								<cfelse>
 									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "integer">,
 								</cfif>
@@ -773,16 +848,21 @@
 	</cffunction>
 
 	<cffunction name="deleteProduct" access="remote" returnType="void">
-		<cfargument name="productId" type="string" required=true>
+		<cfargument name="productId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.productId = decryptText(arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
 			<cfset local.response["message"] &= "Product Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.productId)>
-			<cfset local.response["message"] &= "Product Id should be an integer">
+		<cfelseif local.productId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -798,7 +878,7 @@
 				fldActive = 0,
 				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 			WHERE
-				fldProduct_Id = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+				fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
 		</cfquery>
 
 		<cfquery name="qryDeleteProductImages">
@@ -809,23 +889,28 @@
 				fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
 				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
 			WHERE
-				fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+				fldProductId = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
 		</cfquery>
 
 	</cffunction>
 
-	<cffunction name="getProductImages" access="remote" returnType="array" returnFormat="json">
-		<cfargument name="productId" type="string" required=true>
+	<cffunction name="getProductImages" access="remote" returnType="struct" returnFormat="json">
+		<cfargument name="productId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-		<cfset local.imageArray = []>
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.productId = decryptText(arguments.productId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(arguments.productId) EQ 0>
 			<cfset local.response["message"] &= "Product Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.productId)>
-			<cfset local.response["message"] &= "Product Id should be an integer">
+		<cfelseif local.productId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -842,32 +927,38 @@
 			FROM
 				tblProductImages
 			WHERE
-				fldProductId = <cfqueryparam value = "#arguments.productId#" cfsqltype = "integer">
+				fldProductId = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+				AND fldActive = 1
 		</cfquery>
 
 		<cfloop query="local.qryGetImages">
 			<cfset local.imageStruct = {
-				"imageId" = local.qryGetImages.fldProductImage_Id,
+				"imageId" = encryptText(local.qryGetImages.fldProductImage_Id),
 				"imageFileName" = local.qryGetImages.fldImageFileName,
 				"defaultImage" = local.qryGetImages.fldDefaultImage
 			}>
-			<cfset arrayAppend(local.imageArray, local.imageStruct)>
+			<cfset arrayAppend(local.response.data, local.imageStruct)>
 		</cfloop>
 
-		<cfreturn local.imageArray>
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="setDefaultImage" access="remote" returnType="void">
-		<cfargument name="imageId" type="string" required=true>
+		<cfargument name="imageId" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.imageId = decryptText(arguments.imageId)>
 
 		<!--- Image Id Validation --->
 		<cfif len(arguments.imageId) EQ 0>
 			<cfset local.response["message"] &= "Image Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.imageId)>
-			<cfset local.response["message"] &= "Image Id should be an integer">
+		<cfelseif local.imageId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Image Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -885,7 +976,7 @@
 				FROM
 					tblProductImages
 				WHERE
-					fldProductImage_Id = <cfqueryparam value="#trim(arguments.imageId)#" cfsqltype="integer">
+					fldProductImage_Id = <cfqueryparam value="#trim(local.imageId)#" cfsqltype="integer">
 			) AS subquery
 			ON p.fldProductId = subquery.fldProductId
 			SET
@@ -900,21 +991,26 @@
 			SET
 				fldDefaultImage = 1
 			WHERE
-				fldProductImage_Id = <cfqueryparam value = "#trim(arguments.imageId)#" cfsqltype = "integer">
+				fldProductImage_Id = <cfqueryparam value = "#trim(local.imageId)#" cfsqltype = "integer">
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="deleteImage" access="remote" returnType="void">
-		<cfargument name="imageId" type="string" required=true>
+	<cffunction name="deleteImage" access="remote" returnType="struct">
+		<cfargument name="imageId" type="string" required=true defaul="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.imageId = decryptText(arguments.imageId)>
 
 		<!--- Image Id Validation --->
 		<cfif len(arguments.imageId) EQ 0>
 			<cfset local.response["message"] &= "Image Id should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.imageId)>
-			<cfset local.response["message"] &= "Image Id should be an integer">
+		<cfelseif local.imageId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Image Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -927,10 +1023,15 @@
 			UPDATE
 				tblProductImages
 			SET
-				fldActive = 1
+				fldActive = 0
 			WHERE
-				fldProductImage_Id = <cfqueryparam value = "#trim(arguments.imageId)#" cfsqltype = "integer">
+				fldProductImage_Id = <cfqueryparam value = "#trim(local.imageId)#" cfsqltype = "integer">
 		</cfquery>
+
+		<!--- Set success message --->
+		<cfset local.response["message"] = "Product Image deleted">
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="getCart" access="public" returnType="struct">
@@ -951,16 +1052,14 @@
 			FROM
 				tblCart c
 				INNER JOIN tblProduct p ON c.fldProductId = p.fldProduct_Id
+					AND p.fldActive = 1 <!--- Only take active products --->
 			WHERE
 				c.fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
 		</cfquery>
 
 		<cfloop query="local.qryGetCart">
-			<cfset local.cartItems[local.qryGetCart.fldProductId] = {
-				"cartId" = local.qryGetCart.fldCart_Id,
-				"quantity" = local.qryGetCart.fldQuantity,
-				"unitPrice" = local.qryGetCart.fldPrice,
-				"unitTax" = local.qryGetCart.fldTax
+			<cfset local.cartItems[encryptText(local.qryGetCart.fldProductId)] = {
+				"quantity" = local.qryGetCart.fldQuantity
 			}>
 		</cfloop>
 
@@ -971,16 +1070,21 @@
 		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = {}>
+		<cfset local.response = {
+			"message" = "",
+			"success" = false,
+			"data" = {}
+		}>
 
-		<!--- Validate productId --->
-		<cfif NOT len(trim(arguments.productId))>
-			<cfset local.response["message"] &= "Product ID should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.productId)>
-			<cfset local.response["message"] &= "Product ID should be an integer. ">
+		<!--- Decrypt ids--->
+		<cfset local.productId = decryptText(arguments.productId)>
+
+		<!--- Product Id Validation --->
+		<cfif len(arguments.productId) EQ 0>
+			<cfset local.response["message"] &= "Product Id should not be empty. ">
+		<cfelseif local.productId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
 		<!--- Validate Action --->
@@ -995,32 +1099,11 @@
 			<cfreturn local.response>
 		</cfif>
 
-		<!--- Check whether the item is present in cart --->
-		<cfquery name="local.qryCheckCart">
-			SELECT
-				fldCart_Id
-			FROM
-				tblCart
-			WHERE
-				fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
-				AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-		</cfquery>
-
 		<!--- Continue with code execution if validation succeeds --->
 		<cfif arguments.action EQ "increment">
 
-			<cfif local.qryCheckCart.recordCount>
-				<!--- Update cart in case it already have the product --->
-				<cfquery name="local.qryEditCart">
-					UPDATE
-						tblCart
-					SET
-						fldQuantity = fldQuantity + 1
-					WHERE
-						fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
-						AND fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-				</cfquery>
-
+			<!--- Check whether the item is present in cart --->
+			<cfif structKeyExists(session.cart, arguments.productId)>
 				<!--- Increment quantity of product in session variable --->
 				<cfset session.cart[arguments.productId].quantity += 1>
 
@@ -1028,32 +1111,9 @@
 				<cfset local.response["message"] = "Product Quantity Incremented">
 
 			<cfelse>
-				<!--- Get Product Into --->
-				<cfset local.productInfo = getProducts(
-					productId = arguments.productId
-				)>
-
-				<!--- Add product to cart in case it do not have it already --->
-				<cfquery name="local.qryAddToCart" result="local.resultAddToCart">
-					INSERT INTO
-						tblCart (
-							fldUserId,
-							fldProductId,
-							fldQuantity
-						)
-					VALUES (
-						<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-						<cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">,
-						1
-					)
-				</cfquery>
-
 				<!--- Add product to session variable --->
 				<cfset session.cart[arguments.productId] = {
-					"cartId" = local.resultAddToCart.GENERATED_KEY,
-					"quantity" = 1,
-					"unitPrice" = local.productInfo.fldPrice,
-					"unitTax" = local.productInfo.fldTax
+					"quantity" = 1
 				}>
 
 				<!--- Set response message --->
@@ -1063,16 +1123,6 @@
 
 		<cfelseif arguments.action EQ "decrement" AND session.cart[arguments.productId].quantity GT 1>
 
-			<!--- Decrement product quantity in cart --->
-			<cfquery name="local.qryDecrItem">
-				UPDATE
-					tblCart
-				SET
-					fldQuantity = fldQuantity - 1
-				WHERE
-					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
-			</cfquery>
-
 			<!--- Decrement quantity of product in session variable --->
 			<cfset session.cart[arguments.productId].quantity -= 1>
 
@@ -1081,15 +1131,7 @@
 
 		<cfelse>
 
-			<!--- Delete product from cart --->
-			<cfquery name="local.qryDeleteItem">
-				DELETE FROM
-					tblCart
-				WHERE
-					fldProductId = <cfqueryparam value = "#trim(arguments.productId)#" cfsqltype = "integer">
-			</cfquery>
-
-			<!--- Delete productId key from struct in session variable --->
+			<!--- Delete product from session variable --->
 			<cfset structDelete(session.cart, arguments.productId)>
 
 			<!--- Set response message --->
@@ -1136,11 +1178,136 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="getAddress" access="public" returnType="array">
-		<cfargument name="addressId" type="string" required=false>
+	<cffunction name="updateCartBatch" access="public" returnType="struct" returnFormat="json">
+		<cfargument name="userId" type="integer" required=true>
+		<cfargument name="cartData" type="struct" required=false>
 
-		<cfset local.addresses = []>
+		<cfset local.response = {
+			success = false,
+			message = ""
+		}>
 
+		<cftry>
+			<cftransaction>
+				<!--- Get all products currently in the cart --->
+				<cfquery name="local.qryCartProducts">
+					SELECT fldProductId FROM tblCart WHERE fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
+				</cfquery>
+
+				<!--- Get product Ids from cart table --->
+				<cfset local.cartProductIdList = valueList(local.qryCartProducts.fldProductId)>
+
+				<!--- Encrypt product ids from cart --->
+				<cfset local.cartProductIdList = listMap(local.cartProductIdList, function(item) {
+					return encryptText(item);
+				})>
+
+				<!--- Get product Ids from session variable --->
+				<cfset local.productIdList = structKeyList(arguments.cartData)>
+
+				<!--- Separate product ids into groups --->
+				<cfset local.updatedIdList = listFilter(local.productIdList,function(id){
+					return listContainsNoCase(cartProductIdList, id);
+				})>
+				<cfset local.deleteIdList = listFilter(local.cartProductIdList,function(id){
+					return NOT listContainsNoCase(productIdList, id);
+				})>
+				<cfset local.insertIdList = listFilter(local.productIdList, function(id) {
+					return NOT listContainsNoCase(cartProductIdList, id);
+				})>
+
+				<!--- Decrypt some ids --->
+				<cfset local.updatedIdList = listMap(local.updatedIdList, function(item) {
+					return decryptText(item);
+				})>
+				<cfset local.deleteIdList = listMap(local.deleteIdList, function(item) {
+					return decryptText(item);
+				})>
+
+				<!--- Insert new products to cart --->
+				<cfif listLen(local.insertIdList)>
+					<cfquery>
+						INSERT INTO
+							tblCart (
+								fldUserId,
+								fldProductId,
+								fldQuantity
+							)
+						VALUES
+							<cfloop list="#local.insertIdList#" item="id" index="i">
+								(
+									<cfqueryparam value="#arguments.userId#" cfsqltype="integer">,
+									<cfqueryparam value="#decryptText(id)#" cfsqltype="integer">,
+									<cfqueryparam value="#arguments.cartData[id].quantity#" cfsqltype="integer">
+								)
+								<cfif i NEQ listLen(local.insertIdList)>,</cfif>
+							</cfloop>
+					</cfquery>
+				</cfif>
+
+				<!--- Update products in cart --->
+				<cfif listLen(local.updatedIdList)>
+					<cfquery>
+						UPDATE
+							tblCart
+						SET
+							fldQuantity = CASE fldProductId
+								<cfloop list="#local.updatedIdList#" item="id" index="i">
+									WHEN <cfqueryparam value="#id#" cfsqltype="integer">
+									THEN <cfqueryparam value="#arguments.cartData[encryptText(id)].quantity#" cfsqltype="integer">
+								</cfloop>
+							END
+						WHERE
+							fldProductId IN (<cfqueryparam value = "#local.updatedIdList#" cfsqltype = "varchar" list = "yes">)
+					</cfquery>
+				</cfif>
+
+				<!--- Delete products from cart --->
+				<cfquery>
+					DELETE FROM
+						tblCart
+					WHERE
+						fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
+						AND fldProductId IN (<cfqueryparam value = "#local.deleteIdList#" cfsqltype = "varchar" list = "yes">)
+				</cfquery>
+			</cftransaction>
+
+			<cfset local.response.success = true>
+
+			<!--- Catch error --->
+			<cfcatch>
+				<!--- Rollback cart update if some queries fail --->
+				<cftransaction action="rollback">
+				<cfset local.response.message="Error: #cfcatch.message#">
+			</cfcatch>
+		</cftry>
+
+		<cfreturn local.response>
+	</cffunction>
+
+	<cffunction name="getAddress" access="public" returnType="struct">
+		<cfargument name="addressId" type="string" required=false default="">
+
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.addressId = decryptText(arguments.addressId)>
+
+		<!--- Address Id Validation --->
+		<cfif (len(arguments.addressId) NEQ 0) AND (local.addressId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] = "Address Id is invalid.">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetAddress">
 			SELECT
 				fldAddress_Id,
@@ -1156,16 +1323,16 @@
 				tblAddress
 			WHERE
 				fldActive = 1
-				<cfif structKeyExists(arguments, "addressId") AND len(trim(arguments.addressId))>
-					AND fldAddress_Id = <cfqueryparam value = "#arguments.addressId#" cfsqltype = "integer">
+				<cfif structKeyExists(local, "addressId") AND trim(local.addressId) NEQ -1>
+					AND fldAddress_Id = <cfqueryparam value = "#local.addressId#" cfsqltype = "integer">
 				<cfelse>
 					AND fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 				</cfif>
 		</cfquery>
 
 		<cfloop query="local.qryGetAddress">
-			<cfset arrayAppend(local.addresses, {
-				"addressId" = local.qryGetAddress.fldAddress_Id,
+			<cfset arrayAppend(local.response.data, {
+				"addressId" = encryptText(local.qryGetAddress.fldAddress_Id),
 				"fullName" = local.qryGetAddress.fldFirstName & " " & local.qryGetAddress.fldLastName,
 				"addressLine1" = local.qryGetAddress.fldAddressLine1,
 				"addressLine2" = local.qryGetAddress.fldAddressLine2,
@@ -1176,10 +1343,10 @@
 			})>
 		</cfloop>
 
-		<cfreturn local.addresses>
+		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="addAddress" access="public" returnType="void">
+	<cffunction name="addAddress" access="remote" returnType="struct">
 		<cfargument name="firstName" type="string" required=true>
 		<cfargument name="lastName" type="string" required=true>
 		<cfargument name="addressLine1" type="string" required=true>
@@ -1189,6 +1356,72 @@
 		<cfargument name="pincode" type="string" required=true>
 		<cfargument name="phone" type="string" required=true>
 
+		<cfset local.response = {
+			"message" = ""
+		}>
+
+		<cfif NOT structKeyExists(session, "userId")>
+			<cfset local.response["message"] &= "Cannot proceed without loggin in">
+		</cfif>
+
+		<!--- Firstname Validation --->
+		<cfif len(arguments.firstName) EQ 0>
+			<cfset local.response["message"] &= "Enter first name. ">
+		<cfelseif isValid("regex", arguments.firstName, "/\d/")>
+			<cfset local.response["message"] &= "First name should not contain any digits. ">
+		</cfif>
+
+		<!--- Lastname Validation --->
+		<cfif len(arguments.lastname) EQ 0>
+			<cfset local.response["message"] &= "Enter last name. ">
+		<cfelseif isValid("regex", arguments.lastName, "/\d/")>
+			<cfset local.response["message"] &= "Last name should not contain any digits. ">
+		</cfif>
+
+		<!--- Address Line 1 Validation --->
+		<cfif len(arguments.addressLine1) EQ 0>
+			<cfset local.response["message"] &= "Enter address line 1. ">
+		</cfif>
+
+		<!--- Address Line 2 Validation --->
+		<cfif len(arguments.addressLine2) EQ 0>
+			<cfset local.response["message"] &= "Enter address line 2. ">
+		</cfif>
+
+		<!--- City Validation --->
+		<cfif len(arguments.city) EQ 0>
+			<cfset local.response["message"] &= "Enter city. ">
+		<cfelseif isValid("regex", arguments.city, "/\d/")>
+			<cfset local.response["message"] &= "City should not contain any digits. ">
+		</cfif>
+
+		<!--- State Validation --->
+		<cfif len(arguments.state) EQ 0>
+			<cfset local.response["message"] &= "Enter state. ">
+		<cfelseif isValid("regex", arguments.state, "/\d/")>
+			<cfset local.response["message"] &= "State should not contain any digits. ">
+		</cfif>
+
+		<!--- Pincode Validation --->
+		<cfif len(arguments.pincode) EQ 0>
+			<cfset local.response["message"] &= "Enter pincode. ">
+		<cfelseif NOT isValid("regex", trim(arguments.pincode), "^\d{6}$")>
+			<cfset local.response["message"] &= "Pincode should be 6 digits long. ">
+		</cfif>
+
+		<!--- Phone Number Validation --->
+		<cfif len(arguments.phone) EQ 0>
+			<cfset local.response["message"] &= "Enter an phone number. ">
+		<cfelseif NOT isValid("regex", trim(arguments.phone), "^\d{10}$")>
+			<cfset local.response["message"] &= "Phone number should be 10 digits long. ">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="qryAddAddress">
 			INSERT INTO
 				tblAddress (
@@ -1214,11 +1447,33 @@
 				<cfqueryparam value = "#trim(arguments.phone)#" cfsqltype = "varchar">
 			)
 		</cfquery>
+
+		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="deleteAddress" access="remote" returnType="void">
-		<cfargument name="addressId" type="string" required=true>
+	<cffunction name="deleteAddress" access="remote" returnType="struct">
+		<cfargument name="addressId" type="string" required=true default="">
 
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.addressId = decryptText(arguments.addressId)>
+
+		<!--- Address Id Validation --->
+		<cfif (len(arguments.addressId) NEQ 0) AND (local.addressId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] = "Address Id is invalid.">
+		</cfif>
+
+		<!--- Return message if validation fails --->
+		<cfif len(trim(local.response.message))>
+			<cfreturn local.response>
+		</cfif>
+
+		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryDeleteAddress">
 			UPDATE
 				tblAddress
@@ -1226,8 +1481,12 @@
 				fldActive = 0,
 				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
 			WHERE
-				fldAddress_Id = <cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "integer">
+				fldAddress_Id = <cfqueryparam value = "#trim(local.addressId)#" cfsqltype = "integer">
 		</cfquery>
+
+		<cfset local.response["message"] = "Address deleted succcessfully.">
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="editProfile" access="remote" returnType="struct" returnFormat="json">
@@ -1236,8 +1495,9 @@
 		<cfargument name="email" type="string" required=true>
 		<cfargument name="phone" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"message" = ""
+		}>
 
 		<cfif NOT structKeyExists(session, "userId")>
 			<cfset local.response["message"] &= "Cannot proceed without loggin in">
@@ -1263,7 +1523,7 @@
 				)
 		</cfquery>
 
-		<cfif (local.qryCheckUser.recordCount NEQ 1) OR (local.qryCheckUser.fldUser_Id NEQ session.userId)>
+		<cfif (local.qryCheckUser.recordCount GT 1) OR (local.qryCheckUser.recordCount AND local.qryCheckUser.fldUser_Id NEQ session.userId)>
 			<cfset local.response["message"] = "Email or Phone number already exits.">
 		<cfelse>
 			<cfquery name="local.qryEditProfile">
@@ -1294,9 +1554,10 @@
 		<cfargument name="cardNumber" type="string" required=true>
 		<cfargument name="cvv" type="string" required=true>
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
+		<cfset local.response = {
+			"success" = false,
+			"message" = ""
+		}>
 		<cfset local.validCardNumber = "1111111111111111">
 		<cfset local.validCvv = "111">
 
@@ -1336,16 +1597,21 @@
 		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = {}>
+		<cfset local.response = {
+			"success" = false,
+			"message" = "",
+			"data" = {}
+		}>
 
-		<!--- Validate productId --->
-		<cfif NOT len(trim(arguments.productId))>
-			<cfset local.response["message"] &= "Product ID should not be empty. ">
-		<cfelseif NOT isValid("integer", arguments.productId)>
-			<cfset local.response["message"] &= "Product ID should be an integer. ">
+		<!--- Decrypt ids--->
+		<cfset local.productId = decryptText(arguments.productId)>
+
+		<!--- Product Id Validation --->
+		<cfif len(arguments.productId) EQ 0>
+			<cfset local.response["message"] &= "Product Id should not be empty. ">
+		<cfelseif local.productId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
 
 		<!--- Validate Action --->
@@ -1426,12 +1692,33 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="createOrder" access="remote" returnType="struct">
-		<cfargument name="addressId" type="string" required=true>
+	<cffunction name="orderIdIsUnique" access="private" returnType="boolean">
+		<cfargument name="orderId" type="string" required=true>
+		<cfset local.result = false>
 
-		<cfset local.response = {}>
-		<cfset local.response["success"] = false>
-		<cfset local.response["message"] = "">
+		<cfquery name="local.qryCheckOrderId">
+			SELECT
+				fldOrder_Id
+			FROM
+				tblOrder
+			WHERE
+				fldOrder_Id  = <cfqueryparam value = "#trim(arguments.orderId)#" cfsqltype = "varchar">
+		</cfquery>
+
+		<cfset local.result = (local.qryCheckOrderId.recordCount EQ 0)>
+		<cfreturn local.result>
+	</cffunction>
+
+	<cffunction name="createOrder" access="remote" returnType="struct" returnFormat="json">
+		<cfargument name="addressId" type="string" required=true default="">
+
+		<cfset local.response = {
+			"success" = false,
+			"message" = ""
+		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.addressId = decryptText(arguments.addressId)>
 
 		<!--- Check whether user is logged in --->
 		<cfif NOT structKeyExists(session, "userId")>
@@ -1446,8 +1733,9 @@
 		<!--- Address Id Validation --->
 		<cfif NOT len(trim(arguments.addressId))>
 			<cfset local.response["message"] &= "Address Id is required. ">
-		<cfelseif NOT isValid("integer", arguments.addressId)>
-			<cfset local.response["message"] &= "Address Id should be an integer. ">
+		<cfelseif local.addressId EQ -1>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] = "Address Id is invalid.">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -1457,110 +1745,92 @@
 
 		<!--- Create Order Id --->
 		<cfset local.orderId = createUUID()>
+		<cfloop condition="NOT orderIdIsUnique(orderId = local.orderId)">
+			<cfset local.orderId = createUUID()>
+		</cfloop>
 
-		<!--- Calculate Total price and Total tax --->
-		<cfset local.priceDetails = session.cart.reduce(function(result,key,value){
-			result.totalPrice += value.unitPrice * ( 1 + value.unitTax) * value.quantity;
-			result.totalTax += value.unitPrice * value.unitTax * value.quantity;
-			return result;
-		},{totalPrice = 0, totalTax = 0})>
+		<!--- Variables to store total price and total tax --->
+		<cfset local.totalPrice = 0>
+		<cfset local.totalTax = 0>
 
-		<!--- Insert into order table --->
-		<cfquery name="local.qryCreateOrder">
-			INSERT INTO
-				tblOrder (
-					fldOrder_Id,
-					fldUserId,
-					fldAddressId,
-					fldTotalPrice,
-					fldTotalTax
-				)
-			VALUES (
-				<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-				<cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">,
-				<cfqueryparam value = "#trim(arguments.addressId)#" cfsqltype = "varchar">,
-				<cfqueryparam value = "#trim(local.priceDetails.totalPrice)#" cfsqltype = "decimal">,
-				<cfqueryparam value = "#trim(local.priceDetails.totalTax)#" cfsqltype = "decimal">
-			)
-		</cfquery>
+		<!--- json array to pass to stored procedure --->
+		<cfset local.productList = []>
 
-		<!--- Insert into order items table --->
-		<cfquery name="local.qryCreateOrderItems">
-			INSERT INTO
-				tblOrderItems (
-					fldOrderId,
-					fldProductId,
-					fldQuantity,
-					fldUnitPrice,
-					fldUnitTax
-				)
-			VALUES
-			<cfset local.index = 1>
-			<cfloop collection="#session.checkout#" item="local.productId">
-				(
-					<cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(local.productId)#" cfsqltype = "integer">,
-					<cfqueryparam value = "#trim(session.checkout[local.productId].quantity)#" cfsqltype = "varchar">,
-					<cfqueryparam value = "#trim(session.checkout[local.productId].unitPrice)#" cfsqltype = "decimal">,
-					<cfqueryparam value = "#trim(session.checkout[local.productId].unitTax)#" cfsqltype = "decimal">
-				)
-				<cfif local.index LT structCount(session.checkout)>
-					,
-				</cfif>
-				<cfset local.index += 1>
-			</cfloop>
-		</cfquery>
+		<!--- Loop through checkout items --->
+		<cfloop collection="#session.checkout#" item="item">
+			<!--- Calculate total price and tax --->
+			<cfset local.totalPrice += session.checkout[item].unitPrice * ( 1 + session.checkout[item].unitTax) * session.checkout[item].quantity>
+			<cfset local.totalTax += session.checkout[item].unitPrice * session.checkout[item].unitTax * session.checkout[item].quantity>
 
-		<!--- Delete ordered products from cart table --->
-		<cfquery name="local.qryDeleteCart">
-			DELETE FROM
-				tblCart
-			WHERE
-				fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
-				AND fldProductId IN (#structKeyList(session.checkout)#)
-		</cfquery>
+			<!--- build json array --->
+			<cfset arrayAppend(local.productList, {
+				"productId": decryptText(trim(item)),
+				"quantity": trim(session.checkout[item].quantity)
+			})>
+		</cfloop>
 
-		<!--- Empty cart structure in session --->
-		<cfset structEach(session.checkout, function(key) {
-			structDelete(session.cart, key);
-		})>
+		<!--- Convert array to JSON --->
+		<cfset local.productJSON = serializeJSON(local.productList)>
 
-		<!--- Fetch address details --->
-		<cfset local.address = getAddress(
-			addressId = arguments.addressId
-		)>
+		<cftry>
+			<cfstoredproc procedure="spCreateOrderItems">
+				<cfprocparam type="in" cfsqltype="varchar" variable="p_orderId" value="#local.orderId#">
+				<cfprocparam type="in" cfsqltype="integer" variable="p_userId" value="#session.userId#">
+				<cfprocparam type="in" cfsqltype="integer" variable="p_addressId" value="#local.addressId#">
+				<cfprocparam type="in" cfsqltype="decimal" variable="p_totalPrice" value="#local.totalPrice#">
+				<cfprocparam type="in" cfsqltype="decimal" variable="p_totalTax" value="#local.totalTax#">
+				<cfprocparam type="in" cfsqltype="longvarchar" variable="p_jsonProducts" value="#local.productJSON#">
+			</cfstoredproc>
 
-		<!--- Send email to user --->
-		<cfmail to="#session.email#" from="no-reply@shoppingcart.local" subject="Your order has been successfully placed">
-			Hi #session.firstName# #session.lastName#,
+			<!--- Empty cart structure in session --->
+			<cfset structEach(session.checkout, function(key) {
+				structDelete(session.cart, key);
+			})>
 
-			Your order was placed successfully.
+			<!--- Fetch address details --->
+			<cfset local.address = getAddress(
+				addressId = arguments.addressId
+			)>
 
-			Delivery Address:
-			#local.address[1].fullName#,
-			#local.address[1].addressLine1#,
-			#local.address[1].addressLine2#,
-			#local.address[1].city#, #local.address[1].state# - #local.address[1].pincode#,
-			#local.address[1].phone#
+			<!--- Send email to user --->
+			<cfmail to="#session.email#" from="no-reply@shoppingcart.local" subject="Your order has been successfully placed">
+				Hi #session.firstName# #session.lastName#,
 
-			Order Id: #local.orderId#
-        </cfmail>
+				Your order was placed successfully.
 
-		<!--- Clear session variable --->
-		<cfset structDelete(session, "checkout")>
+				Delivery Address:
+				#local.address.data[1].fullName#,
+				#local.address.data[1].addressLine1#,
+				#local.address.data[1].addressLine2#,
+				#local.address.data[1].city#, #local.address.data[1].state# - #local.address.data[1].pincode#,
+				#local.address.data[1].phone#
 
-		<!--- Set success status --->
-		<cfset local.response["success"] = true>
+				Order Id: #local.orderId#
+			</cfmail>
+
+			<!--- Clear session variable --->
+			<cfset structDelete(session, "checkout")>
+
+			<!--- Set success status --->
+			<cfset local.response["success"] = true>
+
+			<cfcatch type="any">
+				<cfset local.response["success"] = false>
+				<cfreturn local.response>
+			</cfcatch>
+		</cftry>
 
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="getOrders" access="remote" returnType="struct" returnFormat="json">
+	<cffunction name="getOrders" access="public" returnType="struct">
 		<cfargument name="searchTerm" type="string" required=false default="">
+		<cfargument name="orderId" type="string" required=false default="">
 
-		<cfset local.response = {}>
-		<cfset local.response["message"] = "">
-		<cfset local.response["data"] = []>
+		<cfset local.response = {
+			"message" = "",
+			"data" = []
+		}>
 
 		<!--- Validate login --->
 		<cfif NOT structKeyExists(session, "userId")>
@@ -1587,6 +1857,7 @@
 				addr.fldFirstName,
 				addr.fldLastName,
 				addr.fldPhone,
+				GROUP_CONCAT(itm.fldProductId SEPARATOR ',') AS productIds,
 				GROUP_CONCAT(itm.fldQuantity SEPARATOR ',') AS quantities,
 				GROUP_CONCAT(itm.fldUnitPrice SEPARATOR ',') AS unitPrices,
 				GROUP_CONCAT(itm.fldUnitTax SEPARATOR ',') AS unitTaxes,
@@ -1599,12 +1870,17 @@
 				INNER JOIN tblOrderItems itm ON ord.fldOrder_Id = itm.fldOrderId
 				INNER JOIN tblProduct prod ON itm.fldProductId = prod.fldProduct_Id
 				INNER JOIN tblProductImages img ON prod.fldProduct_Id = img.fldProductId
-					AND img.fldActive = 1
 					AND img.fldDefaultImage = 1
 				INNER JOIN tblBrands brnd ON prod.fldBrandId = brnd.fldBrand_Id
 			WHERE
 				ord.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
-				AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+				<cfif len(trim(arguments.orderId))>
+					<!--- For printing pdf for each order --->
+					AND ord.fldOrder_Id = <cfqueryparam value = "#arguments.orderId#" cfsqltype = "varchar">
+				<cfelse>
+					<!--- When searching for orders --->
+					AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
+				</cfif>
 			GROUP BY
 				ord.fldOrder_Id
 			ORDER BY
@@ -1625,6 +1901,9 @@
 				"firstName" = local.qryGetOrders.fldFirstName,
 				"lastName" = local.qryGetOrders.fldLastName,
 				"phone" = local.qryGetOrders.fldPhone,
+				"productIds" = listMap(local.qryGetOrders.productIds, function(item) {
+					return encryptText(item);
+				}),
 				"quantities" = local.qryGetOrders.quantities,
 				"unitPrices" = local.qryGetOrders.unitPrices,
 				"unitTaxes" = local.qryGetOrders.unitTaxes,
@@ -1637,29 +1916,22 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="downloadInvoice" access="remote" returnType="void">
-		<cfargument name="orderId" type="string" required=true>
+	<cffunction name="encryptText" access="private" returnType="string">
+		<cfargument name="plainText" type="string" required=true>
+
+		<cfset local.encryptedText = encrypt(arguments.plainText, application.secretKey, "AES", "Base64")>
+
+		<cfreturn local.encryptedText>
 	</cffunction>
 
-	<cffunction name="encryptUrlParam" access="public" returnType="string">
-		<cfargument name="urlParam" type="string" required=true>
-
-		<cfset local.encryptedParam = encrypt(arguments.urlParam, application.secretKey, "AES", "Base64")>
-		<cfset local.encodedParam = urlEncodedFormat(local.encryptedParam)>
-
-		<cfreturn local.encodedParam>
-	</cffunction>
-
-	<cffunction name="decryptUrlParam" access="public" returnType="string">
-		<cfargument name="urlParam" type="string" required=true>
+	<cffunction name="decryptText" access="private" returnType="string">
+		<cfargument name="encryptedText" type="string" required=true>
 
 		<!--- Handle exception in case decryption failes --->
 		<cftry>
-			<!--- URL Decode not needed since it is handled by cfml page --->
-			<!--- <cfset local.decodedParam = urlDecode(arguments.urlParam)> --->
-			<cfset local.decryptedParam = decrypt(arguments.urlParam, application.secretKey, "AES", "Base64")>
+			<cfset local.decryptedText = decrypt(arguments.encryptedText, application.secretKey, "AES", "Base64")>
 
-			<cfreturn local.decryptedParam>
+			<cfreturn local.decryptedText>
 
 			<cfcatch type="any">
 				<!--- Return -1 if decryption fails --->
@@ -1669,6 +1941,20 @@
 	</cffunction>
 
 	<cffunction name="logOut" access="remote" returnType="void">
-		<cfset structClear(session)>
+		<!--- Delete roleId from session immediately so that page will be redirected on location.reload --->
+		<cfset structDelete(session, "roleId")>
+
+		<!--- Update cart asynchronously --->
+		<cfthread name="cartUpdateThread">
+			<cfif structKeyExists(session, "cartVisit")>
+				<cfset updateCartBatch(
+					userId = session.userId,
+					cartData = session.cart
+				)>
+			</cfif>
+
+			<!--- Clear session --->
+			<cfset structClear(session)>
+		</cfthread>
 	</cffunction>
 </cfcomponent>

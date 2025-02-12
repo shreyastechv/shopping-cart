@@ -6,6 +6,9 @@
 	<cfset this.customTagPaths = expandPath("/customTags")>
 
 	<cffunction name="onApplicationStart" returnType="boolean">
+		<cfset application.cssDirectory = "/assets/css/">
+		<cfset application.scriptDirectory = "/assets/js/">
+		<cfset application.imageDirectory = "/assets/images/">
 		<cfset application.productImageDirectory = "/assets/images/productImages/">
 		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
 
@@ -13,58 +16,63 @@
 		<cfset application.pageDetailsMapping = {
 			"/index.cfm": {
 				"pageTitle": "Home Page",
-				"cssPath": "assets/css/index.css",
-				"scriptPath": ""
+				"cssPath": "index.css",
+				"scriptPath": []
 			},
 			"/profile.cfm": {
 				"pageTitle": "User Profile",
 				"cssPath": "",
-				"scriptPath": "assets/js/profile.js"
+				"scriptPath": ["profile.js", "addAddressBtn.js"]
 			},
 			"/products.cfm": {
 				"pageTitle": "Product Listing",
-				"cssPath": "",
-				"scriptPath": "assets/js/products.js"
+				"cssPath": "products.css",
+				"scriptPath": ["products.js"]
 			},
 			"/productPage.cfm": {
 				"pageTitle": "Product Page",
 				"cssPath": "",
-				"scriptPath": ""
+				"scriptPath": []
 			},
 			"/cart.cfm": {
 				"pageTitle": "Cart Page",
 				"cssPath": "",
-				"scriptPath": "assets/js/cart.js"
+				"scriptPath": ["cartProductList.js"]
 			},
 			"/checkout.cfm": {
 				"pageTitle": "Order Summary",
 				"cssPath": "",
-				"scriptPath": "assets/js/checkout.js"
+				"scriptPath": ["checkout.js", "cartProductList.js", "addAddressBtn.js"]
+			},
+			"/orders.cfm": {
+				"pageTitle": "Orders",
+				"cssPath": "",
+				"scriptPath": []
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",
 				"cssPath": "",
-				"scriptPath": "assets/js/login.js"
+				"scriptPath": ["login.js"]
 			},
 			"/signup.cfm": {
 				"pageTitle": "Sign Up",
 				"cssPath": "",
-				"scriptPath": "assets/js/signup.js"
+				"scriptPath": ["signup.js"]
 			},
 			"/adminDashboard.cfm": {
 				"pageTitle": "Admin Dashboard",
 				"cssPath": "",
-				"scriptPath": "assets/js/adminDashboard.js"
+				"scriptPath": ["adminDashboard.js"]
 			},
 			"/subCategory.cfm": {
 				"pageTitle": "Sub Category",
 				"cssPath": "",
-				"scriptPath": "assets/js/subCategory.js"
+				"scriptPath": ["subCategory.js"]
 			},
 			"/productEdit.cfm": {
 				"pageTitle": "Product Edit",
 				"cssPath": "",
-				"scriptPath": "assets/js/productEdit.js"
+				"scriptPath": ["productEdit.js"]
 			}
 		}>
 
@@ -83,14 +91,10 @@
 		<cfargument name="targetPage" type="string" required=true>
 
 		<cflog type="error" text="Missing template: #arguments.targetPage#">
-		<cfoutput>
-			<h3>#Arguments.targetPage# could not be found.</h3>
-			<p>You requested a non-existent page.<br />
-			Please check the URL.</p>
-		</cfoutput>
+		<cflocation url="/404.cfm" addToken="false">
 	</cffunction>
 
-	<!--- <cffunction name="onError" returnType="void">
+	<cffunction name="onError" returnType="void">
 		<cfargument name="exception" required=true>
 		<cfargument name="eventName" type="string" required=true>
 
@@ -98,21 +102,8 @@
 		<cfif NOT (arguments.eventName IS "onSessionEnd") OR
 			(arguments.eventName IS "onApplicationEnd")>
 
-			<!--- Reset page content in case of error --->
-			<cfcontent reset=true>
-
-			<!--- Print error message --->
-			<cfoutput>
-				<h2>An unexpected error occurred.</h2>
-				<p>Please provide the following information to technical support:</p>
-				<p>Error Event: #arguments.eventName#</p>
-			</cfoutput>
+			<cflocation url="/error.cfm?eventName=#arguments.eventName#" addToken="false">
 		</cfif>
-	</cffunction> --->
-
-	<cffunction name="onSessionStart" returnType="void">
-		<!--- Variable for storing cart information --->
-		<cfset session.cart = {}>
 	</cffunction>
 
 	<cffunction name="onRequestStart" returnType="boolean">
@@ -123,21 +114,9 @@
 			<cfset onApplicationStart()>
 		</cfif>
 
-		<!--- Set page title and script tag path dynamically --->
-		<cfif StructKeyExists(application.pageDetailsMapping, arguments.targetPage)>
-			<cfset request.pageTitle = application.pageDetailsMapping[arguments.targetPage]["pageTitle"]>
-			<cfset request.scriptPath = application.pageDetailsMapping[arguments.targetPage]["scriptPath"]>
-			<cfset request.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
-		<cfelse>
-			<cfset request.pageTitle = "Title">
-			<cfset request.scriptPath = "">
-			<cfset request.cssPath = "">
-		</cfif>
-
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
-		<cfset local.normalUserPages = ["/index.cfm", "/products.cfm", "/productPage.cfm"]>
-		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm"]>
+		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm", "/orders.cfm"]>
 		<cfset local.adminPages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
 
 		<!--- Handle page restrictions --->
@@ -150,19 +129,13 @@
 				</cfif>
 			</cfif>
 		<cfelseif arrayFindNoCase(local.adminPages, arguments.targetPage)>
-			<cfif (NOT structKeyExists(session, "roleId")) OR (session.roleId NEQ 1)>
-				<cflocation url="/" addToken="false">
-			</cfif>
-		<cfelseif arrayFindNoCase(local.normalUserPages, arguments.targetPage)>
 			<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-				<cflocation url="/adminDashboard.cfm" addToken="false">
+				<cfreturn true>
+			<cfelse>
+				<cflocation url="/login.cfm?redirect=#arguments.targetPage#" addToken="false">
 			</cfif>
 		<cfelseif arrayFindNoCase(local.loginUserPages, arguments.targetPage)>
-			<cfif structKeyExists(session, "roleId")>
-				<cfif session.roleId EQ 1>
-					<cflocation url="/adminDashboard.cfm" addToken="false">
-				</cfif>
-			<cfelse>
+			<cfif NOT structKeyExists(session, "roleId")>
 				<cflocation url="/login.cfm?redirect=#arguments.targetPage#" addToken="false">
 			</cfif>
 		</cfif>
@@ -180,7 +153,7 @@
 			<cfset request.cssPath = application.pageDetailsMapping[arguments.targetPage]["cssPath"]>
 		<cfelse>
 			<cfset request.pageTitle = "Title">
-			<cfset request.scriptPath = "">
+			<cfset request.scriptPath = []>
 			<cfset request.cssPath = "">
 		</cfif>
 
@@ -192,6 +165,34 @@
 
 		<!--- Common Footer file --->
 		<cfinclude template="/includes/footer.cfm">
+	</cffunction>
+
+	<cffunction name="onRequestEnd" returnType="void">
+		<cfargument name="targetPage" type="string" required=true>
+
+		<!--- Update cart when user leaves cart page --->
+		<!--- This code is placed above 'set flag' code to prevent both running on cart page --->
+		<cfif structKeyExists(session, "cartVisit")
+			<!--- Below code is to prevent ajax calls from being registered as page visit --->
+			AND NOT findNoCase("/components", arguments.targetPage)
+		>
+			<!--- Update cart asynchronously --->
+			<cfthread name="cartUpdateThread">
+				<cfset application.shoppingCart.updateCartBatch(
+					userId = session.userId,
+					cartData = session.cart
+				)>
+			</cfthread>
+
+			<!--- Clear flag --->
+			<cfset structDelete(session, "cartVisit")>
+		</cfif>
+
+		<!--- Set session variable when user enters cart page for first time --->
+		<cfif arguments.targetPage EQ "/cart.cfm">
+			<!--- Set flag --->
+			<cfset session.cartVisit = true>
+		</cfif>
 	</cffunction>
 
 	<cffunction name="onSessionEnd" returnType="void">

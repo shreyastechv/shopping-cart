@@ -6,14 +6,10 @@
 <cfparam name="url.subCategoryId" default="">
 <cfparam name="url.search" default="">
 
-<!--- Decrypt URL Params --->
-<cfset variables.categoryId = application.shoppingCart.decryptUrlParam(url.categoryId)>
-<cfset variables.subCategoryId = application.shoppingCart.decryptUrlParam(url.subCategoryId)>
-
 <!--- Form Variables --->
 <cfparam name="form.filterRange" default="">
 <cfparam name="form.min" default="0">
-<cfparam name="form.max" default="">
+<cfparam name="form.max" default="0">
 <cfparam name="form.sort" default="">
 <cfparam name="form.limit" default=6>
 
@@ -27,13 +23,13 @@
 </cfif>
 
 <!--- Check URL Params --->
-<cfif variables.categoryId NEQ -1>
+<cfif len(trim(url.categoryId))>
 	<!--- Get Data if categoryId is given --->
-	<cfset variables.qrySubCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
-<cfelseif variables.subCategoryId NEQ -1>
+	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
+<cfelseif len(trim(url.subCategoryId))>
 	<!--- Get Data if subCategoryId is given --->
-	<cfset variables.qryProducts = application.shoppingCart.getProducts(
-		subCategoryId = variables.subCategoryId,
+	<cfset variables.products = application.shoppingCart.getProducts(
+		subCategoryId = url.subCategoryId,
 		limit = form.limit,
 		min = form.min,
 		max = (len(trim(form.max)) ? val(form.max) : ""),
@@ -41,7 +37,7 @@
 	)>
 <cfelseif len(trim(url.search))>
 	<!--- Get Data if search is given --->
-	<cfset variables.qryProducts = application.shoppingCart.getProducts(
+	<cfset variables.products = application.shoppingCart.getProducts(
 		searchTerm = trim(url.search)
 	)>
 <cfelse>
@@ -52,23 +48,23 @@
 <cfoutput>
 	<!--- Main Content --->
 	<div class="d-flex flex-column m-3">
-		<cfif structKeyExists(variables, "qrySubCategories")>
+		<cfif structKeyExists(variables, "subCategories")>
 			<!--- Category Listing --->
-			<cfloop query="variables.qrySubCategories">
-				<!--- Encrypt SubCategory ID since it is passed to URL param --->
-				<cfset variables.encryptedSubCategoryId = application.shoppingCart.encryptUrlParam(variables.qrySubCategories.fldSubCategory_Id)>
+			<cfloop array="#variables.subCategories.data#" item="item">
+				<!--- Encode Sub Category ID since it is passed to URL param --->
+				<cfset variables.encodedSubCategoryId  = urlEncodedFormat(item.subCategoryId)>
 
 				<!--- Gather products --->
-				<cfset variables.qryProducts = application.shoppingCart.getProducts(
-					subCategoryId = variables.qrySubCategories.fldSubCategory_Id,
+				<cfset variables.products = application.shoppingCart.getProducts(
+					subCategoryId = item.subCategoryId,
 					random = 1,
 					limit = 6
 				)>
 
 				<!--- Show subcategory if it has products --->
-				<cfif variables.qryProducts.recordCount>
-					<a href="/products.cfm?subCategoryId=#variables.encryptedSubCategoryId#" class="h4 text-decoration-none">#variables.qrySubCategories.fldSubCategoryName#</a>
-					<cf_productlist qryProducts="#variables.qryProducts#">
+				<cfif arrayLen(variables.products.data)>
+					<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h4 text-decoration-none">#item.subCategoryName#</a>
+					<cf_productlist products="#variables.products.data#">
 				</cfif>
 			</cfloop>
 		<cfelse>
@@ -77,7 +73,7 @@
 				<!--- Sorting and Filtering only shown if search results are not shown --->
 				<cfif len(trim(url.search))>
 					<div class="fs-4 fw-semibold px-2">
-						<cfif variables.qryProducts.recordCount>
+						<cfif arrayLen(variables.products.data)>
 							Search Results for '#trim(url.search)#'
 						<cfelse>
 							No Results found for '#trim(url.search)#'
@@ -98,10 +94,10 @@
 							<i class="fa-solid fa-filter"></i>
 							Filter
 						</button>
-						<ul class="dropdown-menu p-2">
-							<div class="text-center">Price Filter</div>
-							<form id="filterForm" name="filterForm" method="post">
-								<li class="d-flex flex-column justify-content-start">
+						<ul class="dropdown-menu p-3 shadow">
+							<div class="text-center fw-semibold">Price Filter</div>
+							<form method="post">
+								<li class="d-flex flex-column justify-content-start p-1">
 									<div>
 										<input type="radio" name="filterRange" value="0-100"> 0 - 100
 									</div>
@@ -118,12 +114,12 @@
 										<input type="radio" name="filterRange" value="2001-5000"> 2001 - 5000
 									</div>
 								</li>
-								<li class="d-flex m-1">
-									<input type="number" class="form-control" id="min" name="min" min="0" placeholder="Min">
-									<input type="number" class="form-control" id="max" name="max" placeholder="Max">
+								<li class="d-flex gap-2">
+									<input type="number" class="form-control mb-2" id="min" name="min" min="0" value="#form.min#" placeholder="Min" oninput="this.value = this.value.replace(/^0+/, '');">
+									<input type="number" class="form-control mb-2" id="max" name="max" value="#form.max#" placeholder="Max" oninput="this.value = this.value.replace(/^0+/, '');">
 								<li>
-								<li>
-									<button class="btn btn-success" type="submit" id="filterBtn">Apply</button>
+								<li class="d-flex">
+									<button class="btn btn-success w-100" type="submit" id="filterBtn">Apply</button>
 								</li>
 							</form>
 						</ul>
@@ -132,14 +128,16 @@
 			</div>
 
 			<!--- Sub Category / Search Listing --->
-			<cf_productlist qryProducts="#variables.qryProducts#">
+			<cf_productlist products="#variables.products.data#">
 
 			<cfif NOT len(trim(url.search))>
-				<cfif variables.qryProducts.recordCount>
+				<cfif arrayLen(variables.products.data)>
 					<!--- View More Button --->
-					<div>
-						<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore(#variables.subCategoryId#)">View More</button>
-					</div>
+					<cfif arrayLen(variables.products.data) GTE form.limit>
+						<div>
+							<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore('#url.subCategoryId#')">View More</button>
+						</div>
+					</cfif>
 				<cfelse>
 					<div class="fs-4 fw-semibold text-center mx-3 mt-4">No Products Found</div>
 				</cfif>

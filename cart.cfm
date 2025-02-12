@@ -20,7 +20,7 @@
 						<div class="card-body">
 							<h4 class="card-title">Price Details</h4>
 							<hr>
-							<cf_totalprice totalPrice=#variables.totalPrice# totalActualPrice="#variables.totalActualPrice#" totalTax="#variables.totalTax#">
+							<cf_totalprice totalPrice="#variables.totalPrice#" totalActualPrice="#variables.totalActualPrice#" totalTax="#variables.totalTax#">
 							<button class="btn btn-success w-100" onclick="location.href='checkout.cfm'">Checkout</button>
 						</div>
 					</div>
@@ -28,7 +28,7 @@
 			</div>
 		<cfelse>
 			<div class="d-flex flex-column align-items-center justify-content-center">
-				<img src="/assets/images/empty-cart.svg" width="300" alt="Shopping Cart Empty">
+				<img src="#application.imageDirectory#empty-cart.svg" width="300" alt="Shopping Cart Empty">
 				<div class="fs-5 mb-3">Shopping Cart is Empty</div>
 				<a class="btn btn-primary" href="/">Shop Now</a>
 			</div>
