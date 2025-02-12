@@ -1034,6 +1034,7 @@
 			FROM
 				tblCart c
 				INNER JOIN tblProduct p ON c.fldProductId = p.fldProduct_Id
+					AND p.fldActive = 1 <!--- Only take active products --->
 			WHERE
 				c.fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
 		</cfquery>
