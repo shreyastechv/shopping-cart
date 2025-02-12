@@ -37,12 +37,12 @@
 			"/cart.cfm": {
 				"pageTitle": "Cart Page",
 				"cssPath": "",
-				"scriptPath": ["cart.js"]
+				"scriptPath": ["cartProductList.js"]
 			},
 			"/checkout.cfm": {
 				"pageTitle": "Order Summary",
 				"cssPath": "",
-				"scriptPath": ["checkout.js", "addAddressBtn.js"]
+				"scriptPath": ["checkout.js", "cartProductList.js", "addAddressBtn.js"]
 			},
 			"/orders.cfm": {
 				"pageTitle": "Orders",
