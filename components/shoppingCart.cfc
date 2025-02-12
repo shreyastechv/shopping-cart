@@ -1861,7 +1861,6 @@
 				INNER JOIN tblOrderItems itm ON ord.fldOrder_Id = itm.fldOrderId
 				INNER JOIN tblProduct prod ON itm.fldProductId = prod.fldProduct_Id
 				INNER JOIN tblProductImages img ON prod.fldProduct_Id = img.fldProductId
-					AND img.fldActive = 1
 					AND img.fldDefaultImage = 1
 				INNER JOIN tblBrands brnd ON prod.fldBrandId = brnd.fldBrand_Id
 			WHERE
