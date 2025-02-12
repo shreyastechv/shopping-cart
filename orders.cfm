@@ -12,7 +12,7 @@
 				placeholder="Search orders using order id..."
 				oninput="this.value = this.value.trim();"
 			>
-			<button class="btn btn-primary" type="submit">
+			<button class="btn btn-primary shadow" type="submit">
 				<i class="pe-none fa-solid fa-magnifying-glass"></i>
 			</button>
 		</form>
