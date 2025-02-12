@@ -1,14 +1,14 @@
 <!--- Variables --->
-<cfparam name="url.search" default="">
+<cfparam name="url.s" default="">
 
 <!--- Get Data --->
-<cfset variables.orders = application.shoppingCart.getOrders(searchTerm = url.search)>
+<cfset variables.orders = application.shoppingCart.getOrders(searchTerm = url.s)>
 
 <cfoutput>
 	<div class="container py-4">
 		<h2 class="text-center mb-4">Your Orders</h2>
 		<form method="get" class="d-flex gap-2 mb-5">
-			<input type="text" name="search" class="form-control shadow" value="#url.search#"
+			<input type="text" name="s" class="form-control shadow" value="#url.s#"
 				placeholder="Search orders using order id..."
 				oninput="this.value = this.value.trim();"
 			>
