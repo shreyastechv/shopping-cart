@@ -1041,9 +1041,7 @@
 
 		<cfloop query="local.qryGetCart">
 			<cfset local.cartItems[encryptText(local.qryGetCart.fldProductId)] = {
-				"quantity" = local.qryGetCart.fldQuantity,
-				"unitPrice" = local.qryGetCart.fldPrice,
-				"unitTax" = local.qryGetCart.fldTax
+				"quantity" = local.qryGetCart.fldQuantity
 			}>
 		</cfloop>
 
@@ -1095,16 +1093,9 @@
 				<cfset local.response["message"] = "Product Quantity Incremented">
 
 			<cfelse>
-				<!--- Get Product Into --->
-				<cfset local.productInfo = getProducts(
-					productId = arguments.productId
-				)>
-
 				<!--- Add product to session variable --->
 				<cfset session.cart[arguments.productId] = {
-					"quantity" = 1,
-					"unitPrice" = local.productInfo.data[1].price,
-					"unitTax" = local.productInfo.data[1].tax
+					"quantity" = 1
 				}>
 
 				<!--- Set response message --->
