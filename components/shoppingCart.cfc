@@ -501,6 +501,24 @@
 				fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
 		</cfquery>
 
+		<cfquery name="qryDeleteProductImages">
+			UPDATE
+				tblProductImages
+			SET
+				fldActive = 0,
+				fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
+				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
+			WHERE
+				fldProductId IN (
+					SELECT
+						fldProduct_Id
+					FROM
+						tblProduct
+					WHERE
+						fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
+				);
+		</cfquery>
+
 		<cfquery name="qryDeleteSubCategory">
 			UPDATE
 				tblSubCategory
