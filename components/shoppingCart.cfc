@@ -624,6 +624,10 @@
 						OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
 				</cfif>
 
+
+				<cfif len(trim(arguments.limit))>
+					LIMIT <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
+				</cfif>
 		</cfquery>
 
 		<!--- Loop through the query results and populate the array --->
