@@ -1784,8 +1784,8 @@
 		<!--- Loop through checkout items --->
 		<cfloop collection="#session.checkout#" item="item">
 			<!--- Calculate total price and tax --->
-			<cfset local.totalPrice += session.checkout[item].unitPrice * ( 1 + session.checkout[item].unitTax) * session.checkout[item].quantity>
-			<cfset local.totalTax += session.checkout[item].unitPrice * session.checkout[item].unitTax * session.checkout[item].quantity>
+			<cfset local.totalPrice += session.checkout[item].unitPrice * ( 1 + (session.checkout[item].unitTax / 100)) * session.checkout[item].quantity>
+			<cfset local.totalTax += session.checkout[item].unitPrice * (session.checkout[item].unitTax / 100) * session.checkout[item].quantity>
 
 			<!--- build json array --->
 			<cfset arrayAppend(local.productList, {
