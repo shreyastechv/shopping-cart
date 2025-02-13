@@ -624,6 +624,15 @@
 						OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
 				</cfif>
 
+				<!--- Sorting --->
+				<cfif arguments.random EQ 1>
+					ORDER BY
+						RAND()
+				<cfelseif len(trim(arguments.sort))>
+					ORDER BY
+						p.fldPrice #arguments.sort#
+				</cfif>
+
 				<!--- Limit the number of products returned --->
 				<cfif len(trim(arguments.limit))>
 					LIMIT <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
@@ -631,15 +640,6 @@
 						OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
 					</cfif>
 				</cfif>
-
-			<!--- Sorting --->
-			<cfif arguments.random EQ 1>
-				ORDER BY
-					RAND()
-			<cfelseif len(trim(arguments.sort))>
-				ORDER BY
-					p.fldPrice #arguments.sort#
-			</cfif>
 		</cfquery>
 
 		<!--- Loop through the query results and populate the array --->
