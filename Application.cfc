@@ -94,18 +94,6 @@
 		<cflocation url="/404.cfm" addToken="false">
 	</cffunction>
 
-	<cffunction name="onError" returnType="void">
-		<cfargument name="exception" required=true>
-		<cfargument name="eventName" type="string" required=true>
-
-		<!--- Display an error message if there is a page context --->
-		<cfif NOT (arguments.eventName IS "onSessionEnd") OR
-			(arguments.eventName IS "onApplicationEnd")>
-
-			<cflocation url="/error.cfm?eventName=#arguments.eventName#" addToken="false">
-		</cfif>
-	</cffunction>
-
 	<cffunction name="onRequestStart" returnType="boolean">
 		<cfargument name="targetPage" type="string" required=true>
 

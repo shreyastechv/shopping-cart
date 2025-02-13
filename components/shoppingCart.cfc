@@ -583,63 +583,71 @@
 
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetProducts">
-			SELECT
-				p.fldProduct_Id,
-				p.fldProductName,
-				p.fldBrandId,
-				p.fldDescription,
-				p.fldPrice,
-				p.fldTax,
-				b.fldBrandName,
-				i.fldImageFileName AS fldProductImage
-			FROM
-				tblProduct p
-				INNER JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
-				INNER JOIN tblSubCategory s ON p.fldSubCategoryId = s.fldSubCategory_Id
-				INNER JOIN tblCategory c ON s.fldCategoryId = c.fldCategory_Id
-				INNER JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
-					AND i.fldActive = 1
-					AND i.fldDefaultImage = 1
-			WHERE
-				p.fldActive = 1
-				<cfif len(trim(local.subCategoryId)) AND local.subCategoryId NEQ -1>
-					AND p.fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
-				<cfelseif len(trim(local.productId)) AND local.productId NEQ -1>
-					AND p.fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
-				<cfelseif len(trim(arguments.productIdList))>
-					AND fldProductId IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
-				</cfif>
-
-				<!--- 0 is the default value of arguments.max hence it should not be used --->
-				<cfif len(trim(arguments.max)) AND trim(arguments.max) NEQ 0>
-					AND p.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
-						AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
-				</cfif>
-
-				<cfif len(trim(arguments.searchTerm))>
-					AND (p.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR p.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR c.fldCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR s.fldSubCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
-				</cfif>
-
-				<!--- Sorting --->
-				<cfif arguments.random EQ 1>
-					ORDER BY
-						RAND()
-				<cfelseif len(trim(arguments.sort))>
-					ORDER BY
-						p.fldPrice #arguments.sort#
-				</cfif>
-
-				<!--- Limit the number of products returned --->
-				<cfif len(trim(arguments.limit))>
-					LIMIT <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
-					<cfif len(trim(arguments.offset))>
-						OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
+			WITH selectedProducts as (
+				SELECT
+					p.fldProduct_Id,
+					p.fldProductName,
+					p.fldBrandId,
+					p.fldDescription,
+					p.fldPrice,
+					p.fldTax,
+					b.fldBrandName,
+					i.fldImageFileName AS fldProductImage
+				FROM
+					tblProduct p
+					INNER JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
+					INNER JOIN tblSubCategory s ON p.fldSubCategoryId = s.fldSubCategory_Id
+					INNER JOIN tblCategory c ON s.fldCategoryId = c.fldCategory_Id
+					INNER JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
+						AND i.fldActive = 1
+						AND i.fldDefaultImage = 1
+				WHERE
+					p.fldActive = 1
+					<cfif len(trim(local.subCategoryId)) AND local.subCategoryId NEQ -1>
+						AND p.fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
+					<cfelseif len(trim(local.productId)) AND local.productId NEQ -1>
+						AND p.fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+					<cfelseif len(trim(arguments.productIdList))>
+						AND fldProductId IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 					</cfif>
-				</cfif>
+
+					<!--- 0 is the default value of arguments.max hence it should not be used --->
+					<cfif len(trim(arguments.max)) AND trim(arguments.max) NEQ 0>
+						AND p.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
+							AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
+					</cfif>
+
+					<cfif len(trim(arguments.searchTerm))>
+						AND (p.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+							OR p.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+							OR c.fldCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+							OR s.fldSubCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+							OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
+					</cfif>
+
+					<!--- Sorting --->
+					<cfif arguments.random EQ 1>
+						ORDER BY
+							RAND()
+					<cfelseif len(trim(arguments.sort))>
+						ORDER BY
+							p.fldPrice #arguments.sort#
+					</cfif>
+
+					<!--- Limit the number of products returned --->
+					<cfif len(trim(arguments.limit))>
+						LIMIT <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
+						<cfif len(trim(arguments.offset))>
+							OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
+						</cfif>
+					</cfif>
+				)
+				SELECT
+					sp.*,
+					MAX(sp.fldPrice) OVER () AS highestPrice,
+					MIN(sp.fldPrice) OVER () AS lowestPrice
+				FROM
+					selectedProducts sp
 		</cfquery>
 
 		<!--- Loop through the query results and populate the array --->
@@ -652,7 +660,9 @@
 				"description": local.qryGetProducts.fldDescription,
 				"price": local.qryGetProducts.fldPrice,
 				"tax": local.qryGetProducts.fldTax,
-				"productImage": local.qryGetProducts.fldProductImage
+				"productImage": local.qryGetProducts.fldProductImage,
+				"highestPrice" : local.qryGetProducts.highestPrice,
+				"lowestPrice" : local.qryGetProducts.lowestPrice
 			}>
 
 			<!--- Append each product struct to the response array --->

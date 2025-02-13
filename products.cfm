@@ -8,19 +8,9 @@
 <cfparam name="url.sort" default="">
 
 <!--- Form Variables --->
-<cfparam name="form.filterRange" default="">
-<cfparam name="form.min" default="0">
-<cfparam name="form.max" default="0">
+<cfparam name="url.min" default="0">
+<cfparam name="url.max" default="0">
 <cfparam name="form.limit" default=6>
-
-<!--- Check filtering --->
-<cfif len(trim(form.filterRange))>
-	<cfset variables.rangeArray = ListToArray(form.filterRange, "-")>
-	<cfif arrayLen(variables.rangeArray) GTE 2 AND (variables.rangeArray[1] GTE 0 AND variables.rangeArray[2] GT variables.rangeArray[1])>
-		<cfset form.min = variables.rangeArray[1]>
-		<cfset form.max = variables.rangeArray[2]>
-	</cfif>
-</cfif>
 
 <!--- Check URL Params --->
 <cfif len(trim(url.categoryId))>
@@ -31,8 +21,8 @@
 	<cfset variables.products = application.shoppingCart.getProducts(
 		subCategoryId = url.subCategoryId,
 		limit = form.limit,
-		min = form.min,
-		max = (len(trim(form.max)) ? val(form.max) : ""),
+		min = url.min,
+		max = (len(trim(url.max)) ? val(url.max) : ""),
 		sort = (arrayContainsNoCase(["","asc","desc"], url.sort) ? url.sort : "")
 	)>
 <cfelseif len(trim(url.search))>
@@ -97,27 +87,12 @@
 						</button>
 						<ul class="dropdown-menu p-3 shadow">
 							<div class="text-center fw-semibold">Price Filter</div>
-							<form method="post">
-								<li class="d-flex flex-column justify-content-start p-1">
-									<div>
-										<input type="radio" name="filterRange" value="0-100"> 0 - 100
-									</div>
-									<div>
-										<input type="radio" name="filterRange" value="101-500"> 101 - 500
-									</div>
-									<div>
-										<input type="radio" name="filterRange" value="501-1000"> 501 - 1000
-									</div>
-									<div>
-										<input type="radio" name="filterRange" value="1001-2000"> 1001 - 2000
-									</div>
-									<div>
-										<input type="radio" name="filterRange" value="2001-5000"> 2001 - 5000
-									</div>
-								</li>
+							<form method="get">
+								<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
+								<input type="hidden" name="sort" value="#url.sort#">
 								<li class="d-flex gap-2">
-									<input type="number" class="form-control mb-2" id="min" name="min" min="0" value="#form.min#" placeholder="Min" oninput="this.value = this.value.replace(/^0+/, '');">
-									<input type="number" class="form-control mb-2" id="max" name="max" value="#form.max#" placeholder="Max" oninput="this.value = this.value.replace(/^0+/, '');">
+									<input type="number" class="form-control mb-2" id="min" name="min" min="#variables.products.data[1].lowestPrice#" value="#url.min#" placeholder="Min" oninput="this.value = this.value.replace(/^0+/, '');">
+									<input type="number" class="form-control mb-2" id="max" name="max" value="#url.max#" placeholder="Max" oninput="this.value = this.value.replace(/^0+/, '');">
 								<li>
 								<li class="d-flex">
 									<button class="btn btn-success w-100" type="submit" id="filterBtn">Apply</button>
