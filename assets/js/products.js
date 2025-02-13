@@ -5,7 +5,7 @@ function createProduct(id, image, name, desc, price) {
 	const newDiv = `
 		<div class="col-sm-2 mb-4">
 			<div class="card rounded-3 h-100 shadow"
-				onclick="location.href='/productPage.cfm?${id}'" role="button">
+				onclick="location.href='/productPage.cfm?productId=${encodeURIComponent(id)}'" role="button">
 				<img src="${productImageDirectory}${image}" class="p-1 rounded-3"
 					alt="Random Product Image">
 				<div class="card-body">
