@@ -657,6 +657,8 @@
 				fldBrandName
 			FROM
 				tblBrands
+			ORDER BY
+				fldBrandName
 		</cfquery>
 
 		<!--- Fill up the array with brand information --->
