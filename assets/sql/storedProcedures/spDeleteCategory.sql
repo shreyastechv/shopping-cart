@@ -2,7 +2,7 @@ DELIMITER $$
 
 CREATE PROCEDURE IF NOT EXISTS spDeleteCategory(
 	IN categoryId INT,
-    IN userId INT
+	IN userId INT
 )
 BEGIN
 	-- Delete products
