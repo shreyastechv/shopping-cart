@@ -323,8 +323,8 @@
 
 		<!--- Continue with code execution if validation succeeds --->
 		<cfstoredproc procedure="spDeleteCategory">
-			<cfprocparam cfsqltype="integer" variable="userId" value="#local.categoryId#">
-			<cfprocparam cfsqltype="integer" variable="contactId" value="#session.userId#">
+			<cfprocparam cfsqltype="integer" variable="categoryId" value="#local.categoryId#">
+			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
 		</cfstoredproc>
 	</cffunction>
 
@@ -657,6 +657,8 @@
 				fldBrandName
 			FROM
 				tblBrands
+			ORDER BY
+				fldBrandName
 		</cfquery>
 
 		<!--- Fill up the array with brand information --->

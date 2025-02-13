@@ -10,7 +10,7 @@ function createCategoryItem(categoryId, categoryName) {
 				<button class="btn btn-lg" onclick="deleteCategory('${containerId}', '${categoryId}')">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
-				<a class="btn btn-lg" href="/subCategory.cfm?categoryId=${categoryId}">
+				<a class="btn btn-lg" href="/subCategory.cfm?categoryId=${encodeURIComponent(categoryId)}">
 					<i class="fa-solid fa-chevron-right"></i>
 				</a>
 			</div>
