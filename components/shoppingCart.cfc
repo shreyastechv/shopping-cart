@@ -624,9 +624,12 @@
 						OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
 				</cfif>
 
-
+				<!--- Limit the number of products returned --->
 				<cfif len(trim(arguments.limit))>
 					LIMIT <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
+					<cfif len(trim(arguments.offset))>
+						OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
+					</cfif>
 				</cfif>
 		</cfquery>
 
