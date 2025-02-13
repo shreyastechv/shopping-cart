@@ -1129,9 +1129,16 @@
 				<cfset local.response["message"] = "Product Quantity Incremented">
 
 			<cfelse>
+				<!--- Get Product Into --->
+				<cfset local.productInfo = getProducts(
+					productId = arguments.productId
+				)>
+
 				<!--- Add product to session variable --->
 				<cfset session.cart[arguments.productId] = {
-					"quantity" = 1
+					"quantity" = 1,
+					"unitPrice" = local.productInfo.data[1].price,
+					"unitTax" = local.productInfo.data[1].tax
 				}>
 
 				<!--- Set response message --->
