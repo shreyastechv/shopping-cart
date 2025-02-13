@@ -631,6 +631,15 @@
 						OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
 					</cfif>
 				</cfif>
+
+			<!--- Sorting --->
+			<cfif arguments.random EQ 1>
+				ORDER BY
+					RAND()
+			<cfelseif len(trim(arguments.sort))>
+				ORDER BY
+					p.fldPrice #arguments.sort#
+			</cfif>
 		</cfquery>
 
 		<!--- Loop through the query results and populate the array --->
