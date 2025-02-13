@@ -21,7 +21,7 @@ BEGIN
 				fldCategoryId = categoryId
 		);
 
-    -- Delete subcategory
+	-- Delete subcategory
 	UPDATE
 		tblSubCategory
 	SET
