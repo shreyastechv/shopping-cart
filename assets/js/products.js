@@ -43,7 +43,7 @@ function viewMore(subCategoryId) {
 			}
 
 			// Remove view more btn if there are no products to be fetched
-			if (responseJSON.DATA.length < limit) {
+			if (responseJSON.data.length < limit) {
 				$("#viewMoreBtn").hide();
 				return;
 			}
