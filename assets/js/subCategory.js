@@ -12,7 +12,7 @@ function createSubCategoryItem(subCategoryId, subCategoryName) {
 				<button class="btn btn-lg" onclick="deleteSubCategory('${containerId}', '${subCategoryId}', '${subCategoryName}')">
 					<i class="fa-solid fa-trash pe-none"></i>
 				</button>
-				<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=${subCategoryId}">
+				<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=${encodeURIComponent(subCategoryId)}">
 					<i class="fa-solid fa-chevron-right"></i>
 				</a>
 			</div>
