@@ -5,12 +5,12 @@
 <cfparam name="url.categoryId" default="">
 <cfparam name="url.subCategoryId" default="">
 <cfparam name="url.search" default="">
+<cfparam name="url.sort" default="">
 
 <!--- Form Variables --->
 <cfparam name="form.filterRange" default="">
 <cfparam name="form.min" default="0">
 <cfparam name="form.max" default="0">
-<cfparam name="form.sort" default="">
 <cfparam name="form.limit" default=6>
 
 <!--- Check filtering --->
@@ -33,7 +33,7 @@
 		limit = form.limit,
 		min = form.min,
 		max = (len(trim(form.max)) ? val(form.max) : ""),
-		sort = form.sort
+		sort = (arrayContainsNoCase(["","asc","desc"], url.sort) ? url.sort : "")
 	)>
 <cfelseif len(trim(url.search))>
 	<!--- Get Data if search is given --->
@@ -82,7 +82,8 @@
 				<cfelse>
 					<!--- Sorting --->
 					<div class="d-flex px-3 pb-2">
-						<form method="post">
+						<form method="get">
+							<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
 							<button class="btn btn-primary me-sm-2" type="submit" name="sort" value="asc">Price: Low to High</button>
 							<button class="btn btn-primary" type="submit" name="sort" value="desc">Price: High to Low</button>
 						</form>

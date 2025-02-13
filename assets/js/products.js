@@ -1,3 +1,4 @@
+const urlSort = new URLSearchParams(document.URL.split('?')[1]).get('sort');
 const limit = 6;
 let offset = 0;
 
@@ -31,7 +32,8 @@ function viewMore(subCategoryId) {
 			method: "getProducts",
 			subCategoryId: subCategoryId,
 			limit: limit,
-			offset: offset
+			offset: offset,
+			sort: urlSort !== null ? urlSort : ""
 		},
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
