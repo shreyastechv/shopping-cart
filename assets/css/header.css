@@ -1,0 +1,4 @@
+.dropdown:not(.filter):hover .dropdown-menu {
+	display: block;
+	margin-top: 0;
+}
