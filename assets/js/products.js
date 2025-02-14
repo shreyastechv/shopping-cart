@@ -21,7 +21,7 @@ function createProduct(id, image, name, desc, price) {
 	$("#products").append(newDiv);
 }
 
-function viewMore(subCategoryId) {
+function viewMore(subCategoryId, searchTerm) {
 	// Increment offset to fetch next set of products
 	offset += limit;
 
@@ -31,6 +31,7 @@ function viewMore(subCategoryId) {
 		data: {
 			method: "getProducts",
 			subCategoryId: subCategoryId,
+			searchTerm: searchTerm,
 			limit: limit,
 			offset: offset,
 			sort: urlSort !== null ? urlSort : ""
