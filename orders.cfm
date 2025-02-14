@@ -1,8 +1,19 @@
 <!--- Variables --->
 <cfparam name="url.s" default="">
+<cfparam name="url.pageNumber" default=1>
+<cfset variables.pageSize = 4>
+
+<!--- Validate page number --->
+<cfif NOT isValid("integer", url.pageNumber) OR url.pageNumber LT 1>
+	<cfset url.pageNumber EQ 1>
+</cfif>
 
 <!--- Get Data --->
-<cfset variables.orders = application.shoppingCart.getOrders(searchTerm = url.s)>
+<cfset variables.orders = application.shoppingCart.getOrders(
+	searchTerm = url.s,
+	pageNumber = url.pageNumber,
+	pageSize = variables.pageSize
+)>
 
 <cfoutput>
 	<div class="container py-4">
@@ -84,5 +95,21 @@
 				</div>
 			</cfloop>
 		</div>
+
+		<nav aria-label="Order Page Navigation" class="pt-3">
+			<ul class="pagination justify-content-center">
+				<li class="page-item #(url.pageNumber EQ 1 ? "disabled" : "")#">
+					<a href="javascript:void(0)" onclick="goToPage(#url.pageNumber - 1#)" class="page-link">Previous</a>
+				</li>
+				<cfset variables.start = url.pageNumber GTE 2 ? url.pageNumber - 1 : url.pageNumber>
+				<cfset variables.end = arrayLen(variables.orders.data) LT variables.pageSize ? url.pageNumber : url.pageNumber + 1>
+				<cfloop index="i" from="#variables.start#" to="#variables.end#">
+					<li class="page-item #(url.pageNumber EQ i ? "active" : "")#"><a class="page-link" href="javascript:void(0)" onclick="goToPage(#i#)">#i#</a></li>
+				</cfloop>
+				<li class="page-item">
+					<a class="page-link #(arrayLen(variables.orders.data) LT variables.pageSize ? "disabled" : "")#" href="javascript:void(0)" onclick="goToPage(#url.pageNumber + 1#)">Next</a>
+				</li>
+			</ul>
+		</nav>
 	</div>
 </cfoutput>

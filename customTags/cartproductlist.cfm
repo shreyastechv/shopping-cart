@@ -20,6 +20,7 @@
 			<cfset variables.encodedProductId = urlEncodedFormat(item.productId)>
 
 			<!--- Calculate price and tax so that in cfc, we don't have another db call --->
+			<!--- This also makes sure that the price of product shown in cart is up-to-date --->
 			<cfif cgi.SCRIPT_NAME EQ "/cart.cfm">
 				<cfset session.cart[item.productId].unitPrice = item.price>
 				<cfset session.cart[item.productId].unitTax = item.tax>

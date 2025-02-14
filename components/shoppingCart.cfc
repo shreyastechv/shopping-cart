@@ -1851,6 +1851,8 @@
 	<cffunction name="getOrders" access="public" returnType="struct">
 		<cfargument name="searchTerm" type="string" required=false default="">
 		<cfargument name="orderId" type="string" required=false default="">
+		<cfargument name="pageNumber" type="integer" required=false default=1>
+		<cfargument name="pageSize" type="integer" required=false default=4>
 
 		<cfset local.response = {
 			"message" = "",
@@ -1910,6 +1912,13 @@
 				ord.fldOrder_Id
 			ORDER BY
 				ord.fldOrderDate DESC
+
+			<!--- Only apply limit and offset if order id is not specified --->
+			<!--- Otherwise no order will be returned --->
+			<cfif NOT len(trim(arguments.orderId)) AND len(trim(arguments.pageNumber))>
+				LIMIT <cfqueryparam value = "#arguments.pageSize#" cfsqltype = "integer">
+				OFFSET <cfqueryparam value = "#(arguments.pageNumber - 1) * arguments.pageSize#" cfsqltype = "integer">
+			</cfif>
 		</cfquery>
 
 		<cfloop query="local.qryGetOrders">
