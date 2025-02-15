@@ -353,15 +353,17 @@
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetSubCategories">
 			SELECT
-				sc.fldSubCategory_Id,
-				sc.fldSubCategoryName,
-				sc.fldCategoryId
+				SC.fldSubCategory_Id,
+				SC.fldSubCategoryName,
+				SC.fldCategoryId,
+				C.fldCategoryName
 			FROM
-				tblSubCategory sc
+				tblSubCategory SC
+				INNER JOIN tblCategory C ON C.fldCategory_Id = SC.fldCategoryId
 			WHERE
-				sc.fldActive = 1
+				SC.fldActive = 1
 				<cfif structKeyExists(local, "categoryId") AND (trim(local.categoryId) NEQ -1)>
-					AND sc.fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
+					AND SC.fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
 				</cfif>
 		</cfquery>
 
@@ -370,7 +372,8 @@
 			<cfset local.subCategoryStruct = {
 				"subCategoryId": encryptText(local.qryGetSubCategories.fldSubCategory_Id),
 				"subCategoryName": local.qryGetSubCategories.fldSubCategoryName,
-				"categoryId": encryptText(local.qryGetSubCategories.fldCategoryId)
+				"categoryId": encryptText(local.qryGetSubCategories.fldCategoryId),
+				"categoryName": local.qryGetSubCategories.fldCategoryName
 			}>
 
 			<cfset arrayAppend(local.response.data, local.subCategoryStruct)>

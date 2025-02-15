@@ -12,11 +12,7 @@
 	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
 
 	<!--- Get Category Name --->
-	<cfloop array="#variables.categories.data#" item="item">
-		<cfif item.categoryId EQ url.categoryId>
-			<cfset variables.categoryName = item.categoryName>
-		</cfif>
-	</cfloop>
+	<cfset variables.categoryName = variables.subCategories.data[1].categoryName>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
