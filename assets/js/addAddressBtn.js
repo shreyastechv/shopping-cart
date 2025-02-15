@@ -29,7 +29,7 @@ function processAddressForm() {
   const phone = $("#phone");
   const phoneError = $("#phoneError");
 
-  if (firstName.val().trim().length === 0) {
+  if (firstName.val().trim().length == 0) {
     firstName.addClass("border-danger");
     firstNameError.text("First name is required.")
     valid = false;
@@ -39,7 +39,7 @@ function processAddressForm() {
     valid = false;
   }
 
-  if (lastName.val().trim().length === 0) {
+  if (lastName.val().trim().length == 0) {
     lastName.addClass("border-danger");
     lastNameError.text("Last name is required.")
     valid = false;
@@ -49,31 +49,31 @@ function processAddressForm() {
     valid = false;
   }
 
-  if (address.val().trim().length === 0) {
+  if (address.val().trim().length == 0) {
     address.addClass("border-danger");
     addressError.text("Address is required.")
     valid = false;
   }
 
-  if (landmark.val().trim().length === 0) {
+  if (landmark.val().trim().length == 0) {
     landmark.addClass("border-danger");
     landmarkError.text("Landmark is required.")
     valid = false;
   }
 
-  if (city.val().trim().length === 0) {
+  if (city.val().trim().length == 0) {
     city.addClass("border-danger");
     cityError.text("City is required.")
     valid = false;
   }
 
-  if (state.val().trim().length === 0) {
+  if (state.val().trim().length == 0) {
     state.addClass("border-danger");
     stateError.text("State is required.")
     valid = false;
   }
 
-  if (pincode.val().trim().length === 0) {
+  if (pincode.val().trim().length == 0) {
     pincode.addClass("border-danger");
     pincodeError.text("Pincode is required.")
     valid = false;
@@ -83,7 +83,7 @@ function processAddressForm() {
     valid = false;
   }
 
-  if (phone.val().trim().length === 0) {
+  if (phone.val().trim().length == 0) {
     phone.addClass("border-danger");
     phoneError.text("Phone number is required.")
     valid = false;

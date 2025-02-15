@@ -47,7 +47,7 @@ function processSubCategoryForm() {
 	}
 
 	// Subcategory Name Validation
-	if (subCategoryName.length === 0) {
+	if (subCategoryName.length == 0) {
 		$("#subCategoryName").addClass("border-danger");
 		$("#subCategoryModalMsg").text("SubCategory name should not be empty");
 		valid = false;
@@ -57,7 +57,7 @@ function processSubCategoryForm() {
 		$("#subCategoryModalMsg").text("SubCategory name should only contain letters!");
 		valid = false;
 	}
-	else if (urlCategoryId === categoryId && prevSubCategoryName === subCategoryName) {
+	else if (urlCategoryId == categoryId && prevSubCategoryName === subCategoryName) {
 		$("#subCategoryName").addClass("border-danger");
 		$("#subCategoryModalMsg").text("SubCategory name unchanged");
 		valid = false;
@@ -81,7 +81,7 @@ function processSubCategoryForm() {
 			$("#subCategoryModalMsg").text(responseJSON.message);
 			if (responseJSON.message == "SubCategory Added") {
 				subCategoryId = responseJSON.subCategoryId;
-				if (categoryId === urlCategoryId) {
+				if (categoryId == urlCategoryId) {
 					createSubCategoryItem(subCategoryId, subCategoryName);
 				}
 			}

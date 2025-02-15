@@ -33,7 +33,7 @@ function processCategoryForm() {
 	let valid = true;
 
 	// Validation
-	if (categoryName.length === 0) {
+	if (categoryName.length == 0) {
 		$("#categoryName").addClass("border-danger");
 		$("#categoryModalMsg").text("Category name should not be empty");
 		valid = false;
@@ -43,7 +43,7 @@ function processCategoryForm() {
 		$("#categoryModalMsg").text("Category name should only contain letters!");
 		valid = false;
 	}
-	else if (prevCategoryName === categoryName) {
+	else if (prevCategoryName == categoryName) {
 		$("#categoryName").addClass("border-danger");
 		$("#categoryModalMsg").text("Category name unchanged");
 		valid = false;

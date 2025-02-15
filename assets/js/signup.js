@@ -11,7 +11,7 @@ function validateForm() {
 	$(".input").removeClass("border-danger");
 
 	// Firstname Validation
-	if (firstName.length === 0) {
+	if (firstName.length == 0) {
 		$("#firstNameError").text("First name is required");
 		$("#firstName").addClass("border-danger");
 		valid = false;
@@ -23,7 +23,7 @@ function validateForm() {
 	}
 
 	// Lastname Validation
-	if (lastName.length === 0) {
+	if (lastName.length == 0) {
 		$("#lastNameError").text("Last name is required");
 		$("#lastName").addClass("border-danger");
 		valid = false;
@@ -35,7 +35,7 @@ function validateForm() {
 	}
 
 	// Email Validation
-	if (email.length === 0) {
+	if (email.length == 0) {
 		$("#emailError").text("Email is required");
 		$("#email").addClass("border-danger");
 		valid = false;
@@ -47,7 +47,7 @@ function validateForm() {
 	}
 
 	// Phone Validation
-	if (phone.length === 0) {
+	if (phone.length == 0) {
 		$("#phoneError").text("Phone number is required");
 		$("#phone").addClass("border-danger");
 		valid = false;
@@ -61,7 +61,7 @@ function validateForm() {
 	// Password Validation
 	const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
 
-	if (password.length === 0) {
+	if (password.length == 0) {
 		$("#passwordError").text("Input password");
 		$("#password").addClass("border-danger");
 		valid = false;
@@ -73,7 +73,7 @@ function validateForm() {
 
 	// Confirm Password Validation
 	if (password.length !== 0) {
-		if (confirmPassword.length === 0) {
+		if (confirmPassword.length == 0) {
 			$("#confirmPasswordError").text("Input password again");
 			$("#confirmPassword").addClass("border-danger");
 			valid = false;

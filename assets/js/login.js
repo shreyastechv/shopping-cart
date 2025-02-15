@@ -7,7 +7,7 @@ function validateForm() {
 	$("#userInput").removeClass("border-danger bg-danger-subtle");
 	$("#password").removeClass("border-danger bg-danger-subtle");
 
-	if (userInput.length === 0) {
+	if (userInput.length == 0) {
 		$("#userInputError").text("Field is required");
 		$("#userInput").addClass("border-danger bg-danger-subtle");
 		valid = false;
@@ -27,7 +27,7 @@ function validateForm() {
 		}
 	}
 
-	if (password.length === 0) {
+	if (password.length == 0) {
 		$("#passwordError").text("Field is required");
 		$("#password").addClass("border-danger bg-danger-subtle");
 		valid = false;

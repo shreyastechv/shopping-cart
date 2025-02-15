@@ -72,7 +72,7 @@ function createOrder(addressId) {
 		success: function (response) {
 			const responseJSON = JSON.parse(response);
 
-			if (responseJSON.success === true) {
+			if (responseJSON.success == true) {
 				setTimeout(() => {
 					$("#orderSuccess div[name='loading']").addClass("d-none");
 					$("#orderSuccess div[name='error']").addClass("d-none");

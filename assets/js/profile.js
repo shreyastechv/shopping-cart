@@ -32,7 +32,7 @@ function deleteAddress(containerId, addressId) {
 			addressId: addressId
 		},
 		success: function () {
-			if ($(`#${containerId}`).parent().children().length === 1) {
+			if ($(`#${containerId}`).parent().children().length == 1) {
 				// Reload page in case there is no address left
 				location.reload();
 			} else {
@@ -60,7 +60,7 @@ function processProfileForm() {
 	const phone = $("#userPhone");
 	const phoneError = $("#userPhoneError");
 
-	if (firstName.val().trim().length === 0) {
+	if (firstName.val().trim().length == 0) {
 		firstName.addClass("border-danger");
 		firstNameError.text("First name is required.")
 		valid = false;
@@ -70,7 +70,7 @@ function processProfileForm() {
 		valid = false;
 	}
 
-	if (lastName.val().trim().length === 0) {
+	if (lastName.val().trim().length == 0) {
 		lastName.addClass("border-danger");
 		lastNameError.text("Last name is required.")
 		valid = false;
@@ -80,7 +80,7 @@ function processProfileForm() {
 		valid = false;
 	}
 
-	if (email.val().trim().length === 0) {
+	if (email.val().trim().length == 0) {
 		email.addClass("border-danger");
 		emailError.text("Email is required");
 		valid = false;
@@ -91,7 +91,7 @@ function processProfileForm() {
 		valid = false;
 	}
 
-	if (phone.val().trim().length === 0) {
+	if (phone.val().trim().length == 0) {
 		phone.addClass("border-danger");
 		phoneError.text("Phone number is required.")
 		valid = false;

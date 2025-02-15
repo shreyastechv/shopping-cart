@@ -214,8 +214,8 @@ function createCarousel(productId) {
 			const responseJSON = JSON.parse(response);
 			$("#carouselContainer").empty();
 			for(let i=0; i<responseJSON.data.length; i++) {
-				const isActive = i === 0 ? "active" : ""; // Set active for the first item
-				const bottomDiv = responseJSON.data[i].defaultImage === 1 ? `
+				const isActive = i == 0 ? "active" : ""; // Set active for the first item
+				const bottomDiv = responseJSON.data[i].defaultImage == 1 ? `
 					<div class="text-center p-2">
 						Default Image
 					</div>
