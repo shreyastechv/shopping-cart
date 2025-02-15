@@ -997,31 +997,25 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryUnsetDefautImage">
-			UPDATE
-				tblProductImages AS p
-			JOIN (
-				SELECT
-					fldProductId
-				FROM
-					tblProductImages
-				WHERE
-					fldProductImage_Id = <cfqueryparam value="#trim(local.imageId)#" cfsqltype="integer">
-			) AS subquery
-			ON p.fldProductId = subquery.fldProductId
-			SET
-				p.fldDefaultImage = 0
-			WHERE
-				p.fldDefaultImage = 1;
-		</cfquery>
-
 		<cfquery name="qrySetDefautImage">
 			UPDATE
 				tblProductImages
 			SET
-				fldDefaultImage = 1
+				fldDefaultImage =
+					CASE
+						WHEN fldProductImage_Id = <cfqueryparam value = "#local.imageId#" cfsqltype = "integer"> THEN 1
+						ELSE 0
+					END
 			WHERE
-				fldProductImage_Id = <cfqueryparam value = "#trim(local.imageId)#" cfsqltype = "integer">
+				<!--- Find product id of the image and use it in main query --->
+				fldProductId = (
+					SELECT
+						fldProductId
+					FROM
+						tblProductImages
+					WHERE
+						fldProductImage_Id = <cfqueryparam value = "#local.imageId#" cfsqltype = "integer">
+				);
 		</cfquery>
 	</cffunction>
 
