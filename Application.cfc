@@ -76,11 +76,6 @@
 			}
 		}>
 
-		<!--- Create images dir if not exists --->
-		<cfif NOT directoryExists(expandPath(application.productImageDirectory))>
-			<cfdirectory action="create" directory="#expandPath(application.productImageDirectory)#">
-		</cfif>
-
 		<!--- Key for encrypting and decrypting URL params --->
 		<cfset application.secretKey = generateSecretKey('AES')>
 

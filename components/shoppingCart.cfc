@@ -779,6 +779,11 @@
 		<cfif local.qryCheckProduct.recordCount>
 			<cfset local.response["message"] = "Product already exists!">
 		<cfelse>
+			<!--- Create images dir if not exists --->
+			<cfif NOT directoryExists(expandPath(application.productImageDirectory))>
+				<cfdirectory action="create" directory="#expandPath(application.productImageDirectory)#">
+			</cfif>
+
 			<!--- Upload images --->
 			<cffile
 				action="uploadall"
