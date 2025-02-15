@@ -952,6 +952,8 @@
 			WHERE
 				fldProductId = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
 				AND fldActive = 1
+			ORDER BY
+				fldDefaultImage DESC <!--- This is to make sure default image comes first --->
 		</cfquery>
 
 		<cfloop query="local.qryGetImages">
