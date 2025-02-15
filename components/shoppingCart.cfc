@@ -1856,7 +1856,8 @@
 
 		<cfset local.response = {
 			"message" = "",
-			"data" = []
+			"data" = [],
+			"isFinalPage" = false
 		}>
 
 		<!--- Validate login --->
@@ -1916,10 +1917,14 @@
 			<!--- Only apply limit and offset if order id is not specified --->
 			<!--- Otherwise no order will be returned --->
 			<cfif NOT len(trim(arguments.orderId)) AND len(trim(arguments.pageNumber))>
-				LIMIT <cfqueryparam value = "#arguments.pageSize#" cfsqltype = "integer">
+				<!--- Querying one extra order to check whether its the end of orders --->
+				LIMIT <cfqueryparam value = "#arguments.pageSize + 1#" cfsqltype = "integer">
 				OFFSET <cfqueryparam value = "#(arguments.pageNumber - 1) * arguments.pageSize#" cfsqltype = "integer">
 			</cfif>
 		</cfquery>
+
+		<!--- Check whether there are more orders after this --->
+		<cfset local.response.isFinalPage = (local.qryGetOrders.recordCount LTE arguments.pageSize)>
 
 		<cfloop query="local.qryGetOrders">
 			<cfset arrayAppend(local.response["data"], {

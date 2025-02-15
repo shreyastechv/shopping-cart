@@ -102,7 +102,7 @@
 					<a href="javascript:void(0)" onclick="goToPage(#url.pageNumber - 1#)" class="page-link">Previous</a>
 				</li>
 				<cfset variables.start = url.pageNumber GTE 2 ? url.pageNumber - 1 : url.pageNumber>
-				<cfset variables.end = arrayLen(variables.orders.data) LT variables.pageSize ? url.pageNumber : url.pageNumber + 1>
+				<cfset variables.end = variables.orders.isFinalPage ? url.pageNumber : url.pageNumber + 1>
 				<cfloop index="i" from="#variables.start#" to="#variables.end#">
 					<li class="page-item #(url.pageNumber EQ i ? "active" : "")#"><a class="page-link" href="javascript:void(0)" onclick="goToPage(#i#)">#i#</a></li>
 				</cfloop>
