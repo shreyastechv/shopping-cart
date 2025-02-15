@@ -74,12 +74,7 @@
 				<select id="categorySelect" class="form-select" aria-label="Category Select">
 					<option value="0">Category Select</option>
 					<cfloop array="#variables.categories.data#" item="item">
-						<option
-							<cfif variables.categoryId EQ item.categoryId>
-								selected
-							</cfif>
-							value="#item.categoryId#"
-						>
+						<option value="#item.categoryId#" #(variables.categoryId EQ item.categoryId ? "selected" : "")#>
 							#item.categoryName#
 						</option>
 					</cfloop>
@@ -91,12 +86,7 @@
 				<select id="subCategorySelect" class="form-select" aria-label="SubCategory Select">
 					<option value="0">SubCategory Select</option>
 					<cfloop array="#variables.subCategories.data#" item="item">
-						<option
-							<cfif url.subCategoryId EQ item.subCategoryId>
-								selected
-							</cfif>
-							value="#item.subCategoryId#"
-						>
+						<option value="#item.subCategoryId#" #(url.subCategoryId EQ item.subCategoryId ? "selected" : "")#>
 							#item.subCategoryName#
 						</option>
 					</cfloop>

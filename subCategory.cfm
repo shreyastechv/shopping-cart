@@ -65,12 +65,7 @@
 				<select id="categorySelect" class="form-select" aria-label="Category Select">
 					<option value="0">Category Select</option>
 					<cfloop array="#variables.categories.data#" item="item">
-						<option
-							<cfif url.categoryId EQ item.categoryId>
-								selected
-							</cfif>
-							value="#item.categoryId#"
-						>
+						<option value="#item.categoryId#" #(url.categoryId EQ item.categoryId ? "selected" : "")#>
 							#item.categoryName#
 						</option>
 					</cfloop>
