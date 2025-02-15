@@ -20,7 +20,7 @@
 			<cfif structKeyExists(variables, "signupResult")>
 				#variables.signupResult.message#
 				<cfif arrayContainsNoCase(["Email or Phone number already exists.", "Account created successfully"], variables.signupResult.message)>
-					Click <a href="/login.cfm" class="text-decoration-none text-success">here</a> to login
+					Click <a href="/login.cfm?productId=#urlEncodedFormat(url.productId)#" class="text-decoration-none text-success">here</a> to login
 				</cfif>
 			</cfif>
 		</div>
@@ -57,7 +57,7 @@
 					<button type="submit" id="signupBtn" name="signupBtn" class="btn btn-success w-100 rounded-pill">SIGN UP</button>
 				</form>
 				<div class="text-center mt-3">
-					Already have an account? <a class="text-success text-decoration-none" href="/login.cfm?productId=#url.productId#">Login Here</a>
+					Already have an account? <a class="text-success text-decoration-none" href="/login.cfm?productId=#urlEncodedFormat(url.productId)#">Login Here</a>
 				</div>
 			</div>
 		</div>

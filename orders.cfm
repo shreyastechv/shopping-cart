@@ -44,7 +44,7 @@
 						<div class="mb-0"><strong>Order ID:</strong> #variables.order.orderId#</div>
 						<div class="mb-0"><strong>Order Date:</strong> #dateTimeFormat(variables.order.orderDate, "mmm d YYYY h:nn tt")#</div>
 						<div class="mb-0"><strong>Total Price:</strong> Rs. #variables.order.totalPrice#</div>
-						<a class="btn btn-sm btn-success" target="_blank" href="/download.cfm?orderId=#variables.order.orderId#">
+						<a class="btn btn-sm btn-success" target="_blank" href="/download.cfm?orderId=#urlEncodedFormat(variables.order.orderId)#">
 							<i class="fa-solid fa-file-arrow-down pe-none"></i>
 						</a>
 					</div>

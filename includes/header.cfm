@@ -75,12 +75,12 @@
 						</button>
 					<cfelse>
 						<cfif cgi.SCRIPT_NAME EQ "/login.cfm">
-							<a class="text-white text-decoration-none" href="/signup.cfm">
+							<a class="text-white text-decoration-none" href="/signup.cfm?productId=#urlEncodedFormat(url.productId)#">
 								<i class="fa-solid fa-user"></i>
 								Sign Up
 							</a>
 						<cfelse>
-							<a class="text-white text-decoration-none" href="/login.cfm">
+							<a class="text-white text-decoration-none" href="/login.cfm?productId=#urlEncodedFormat(url.productId)#">
 								<i class="fa-solid fa-right-from-bracket"></i>
 								Log In
 							</a>
