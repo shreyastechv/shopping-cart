@@ -2,6 +2,7 @@
 <cfparam name="application.cssDirectory" type="string" default="">
 <cfparam name="application.scriptDirectory" type="string" default="">
 <cfparam name="url.search" default="">
+<cfparam name="url.productId" default="">
 
 <!DOCTYPE html>
 <html lang="en">
