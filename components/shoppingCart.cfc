@@ -544,7 +544,8 @@
 
 		<cfset local.response = {
 			"message" = "",
-			"data" = []
+			"data" = [],
+			"isFinalPage" = false
 		}>
 
 		<!--- Decrypt ids--->
@@ -635,7 +636,8 @@
 
 				<!--- Limit the number of products returned --->
 				<cfif len(trim(arguments.limit))>
-					LIMIT <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
+					<!--- Querying one extra product to check whether its the end of products --->
+					LIMIT <cfqueryparam value = "#arguments.limit + 1#" cfsqltype = "integer">
 					<cfif len(trim(arguments.offset))>
 						OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
 					</cfif>
@@ -658,6 +660,9 @@
 			<!--- Append each product struct to the response array --->
 			<cfset arrayAppend(local.response.data, local.productStruct)>
 		</cfloop>
+
+		<!--- Check whether there are more products after this --->
+		<cfset local.response.isFinalPage = (local.qryGetProducts.recordCount LTE arguments.limit)>
 
 		<cfreturn local.response>
 	</cffunction>

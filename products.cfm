@@ -12,6 +12,9 @@
 <cfparam name="form.min" default="0">
 <cfparam name="form.max" default="0">
 
+<!--- Other variables --->
+<cfset variables.limit = 6>
+
 <!--- Check filtering --->
 <cfif len(trim(form.filterRange))>
 	<cfset variables.rangeArray = ListToArray(form.filterRange, "-")>
@@ -29,7 +32,7 @@
 	<!--- Get Data if subCategoryId is given --->
 	<cfset variables.products = application.shoppingCart.getProducts(
 		subCategoryId = url.subCategoryId,
-		limit = 6,
+		limit = variables.limit,
 		min = form.min,
 		max = (len(trim(form.max)) ? val(form.max) : ""),
 		sort = (arrayContainsNoCase(["","asc","desc"], url.sort) ? url.sort : "")
@@ -38,7 +41,7 @@
 	<!--- Get Data if search is given --->
 	<cfset variables.products = application.shoppingCart.getProducts(
 		searchTerm = trim(url.search),
-		limit = 6
+		limit = variables.limit
 	)>
 <cfelse>
 	<!--- Exit if Required URL Params are not passed --->
@@ -58,7 +61,7 @@
 				<cfset variables.products = application.shoppingCart.getProducts(
 					subCategoryId = item.subCategoryId,
 					random = 1,
-					limit = 6
+					limit = variables.limit
 				)>
 
 				<!--- Show subcategory if it has products --->
@@ -133,7 +136,7 @@
 
 			<cfif arrayLen(variables.products.data)>
 				<!--- View More Button --->
-				<cfif arrayLen(variables.products.data) GTE 6>
+				<cfif variables.products.isFinalPage EQ false>
 					<div>
 						<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore('#url.subCategoryId#', '#url.search#')">View More</button>
 					</div>

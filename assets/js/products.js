@@ -34,7 +34,7 @@ function viewMore(subCategoryId, searchTerm) {
 			searchTerm: searchTerm,
 			limit: limit,
 			offset: offset,
-			sort: urlSort !== null ? urlSort : ""
+			sort: urlSort || ""
 		},
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
@@ -46,7 +46,7 @@ function viewMore(subCategoryId, searchTerm) {
 			}
 
 			// Remove view more btn if there are no products to be fetched
-			if (responseJSON.data.length < limit) {
+			if (responseJSON.isFinalPage) {
 				$("#viewMoreBtn").hide();
 				return;
 			}
