@@ -841,6 +841,7 @@
 						<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					)
 				</cfquery>
+				<cfset local.productId = local.resultAddProduct.GENERATED_KEY>
 				<cfset local.response["productId"] = encryptText(local.resultAddProduct.GENERATED_KEY)>
 				<cfset local.response["defaultImageFile"] = local.uploadedImages[1].serverFile>
 				<cfset local.response["message"] = "Product Added">
@@ -859,18 +860,9 @@
 					VALUES
 						<cfloop array="#local.uploadedImages#" item="local.image" index="local.i">
 							(
-								-- Product id is not empty means we clicked on edit button
-								<cfif len(trim(arguments.productId))>
-									<cfqueryparam value = "#local.productId#" cfsqltype = "integer">,
-								<cfelse>
-									<cfqueryparam value = "#local.resultAddProduct.GENERATED_KEY#" cfsqltype = "integer">,
-								</cfif>
+								<cfqueryparam value = "#local.productId#" cfsqltype = "integer">,
 								<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "varchar">,
-								<cfif local.i EQ 1 AND len(trim(arguments.productId)) EQ 0>
-									1,
-								<cfelse>
-									0,
-								</cfif>
+								(local.i EQ 1 ? 1 : 0),
 								<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 							)
 							<cfif local.i LT arrayLen(local.uploadedImages)>,</cfif>
