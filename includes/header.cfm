@@ -16,6 +16,7 @@
 			<cfif len(trim(request.cssPath))>
 				<link href="#application.cssDirectory&request.cssPath#" rel="stylesheet">
 			</cfif>
+			<script src="#application.scriptDirectory#jquery-3.7.1.min.js"></script>
 			<script src="#application.scriptDirectory#header.js"></script>
 		</head>
 
@@ -93,16 +94,16 @@
 				<nav class="navbar navbar-expand-lg bg-body-tertiary">
 					<div class="container-fluid">
 						<ul class="navbar-nav w-100 d-flex justify-content-evenly">
-							<cfloop array="#variables.categories.data#" item="categoryItem">
+							<cfloop array="#variables.categories.data#" item="categoryItem" index="i">
 								<!--- Encode Category ID since it is passed to URL param --->
 								<cfset variables.encodedCategoryId  = urlEncodedFormat(categoryItem.categoryId)>
 
 								<li class="nav-item dropdown">
-									<a class="nav-link" href="/products.cfm?categoryId=#variables.encodedCategoryId#">
+									<a class="nav-link dropdown-toggle" href="/products.cfm?categoryId=#variables.encodedCategoryId#">
 										#categoryItem.categoryName#
 									</a>
 									<cfif structKeyExists(variables.catToSubcatMapping, categoryItem.categoryId)>
-										<ul class="dropdown-menu">
+										<ul class="dropdown-menu mt-0 #(i EQ arrayLen(variables.categories.data) ? "dropdown-menu-end" : "")#">
 											<cfloop array="#variables.catToSubcatMapping[categoryItem.categoryId]#" item="subCategoryItem">
 												<!--- Encode Sub Category ID since it is passed to URL param --->
 												<cfset variables.encodedSubCategoryId  = urlEncodedFormat(subCategoryItem.subCategoryId)>

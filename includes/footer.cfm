@@ -7,7 +7,6 @@
 			<!--- Load common scripts --->
 			<script src="#application.scriptDirectory#fontawesome.js"></script>
 			<script src="#application.scriptDirectory#bootstrap.bundle.min.js"></script>
-			<script src="#application.scriptDirectory#jquery-3.7.1.min.js"></script>
 
 			<!--- Set js variables --->
 			<script>
