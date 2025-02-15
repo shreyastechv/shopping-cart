@@ -597,7 +597,7 @@
 				tblProduct P
 				INNER JOIN tblBrands B ON P.fldBrandId = B.fldBrand_Id
 				INNER JOIN tblSubCategory SC ON P.fldSubCategoryId = SC.fldSubCategory_Id
-				INNER JOIN tblCategory C ON S.fldCategoryId = C.fldCategory_Id
+				INNER JOIN tblCategory C ON SC.fldCategoryId = C.fldCategory_Id
 				INNER JOIN tblProductImages PI ON P.fldProduct_Id = PI.fldProductId
 					AND PI.fldActive = 1
 					AND PI.fldDefaultImage = 1
