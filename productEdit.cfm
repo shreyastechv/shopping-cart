@@ -11,17 +11,11 @@
 
 	<!--- Get Data --->
 	<cfset variables.categories = application.shoppingCart.getCategories()>
-	<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
 	<cfset variables.products = application.shoppingCart.getProducts(subCategoryId = url.subCategoryId)>
 	<cfset variables.brands = application.shoppingCart.getBrands()>
-	<cfset variables.categoryId = variables.products.data[1].categoryId>
-	<cfset variables.categoryName = variables.products.data[1].categoryName>
-	<cfset variables.subCategoryName = variables.products.data[1].subCategoryName>
-
-	<!--- Reduce the sub categories query to only ones with current page category id --->
-	<cfset variables.subCategories.data = arrayFilter(variables.subCategories.data, function(item) {
-		return item.categoryId EQ variables.categoryId;
-	})>
+	<cfset variables.categoryId = arrayLen(variables.products.data) ? variables.products.data[1].categoryId : 0>
+	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
+	<cfset variables.subCategoryName = arrayLen(variables.products.data) ? variables.products.data[1].subCategoryName : "Products">
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">

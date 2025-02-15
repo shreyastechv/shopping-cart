@@ -10,9 +10,7 @@
 	<!--- Get Data --->
 	<cfset variables.categories = application.shoppingCart.getCategories()>
 	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
-
-	<!--- Get Category Name --->
-	<cfset variables.categoryName = variables.subCategories.data[1].categoryName>
+	<cfset variables.categoryName = arrayLen(variables.subCategories.data) ? variables.subCategories.data[1].categoryName : "Sub Categories">
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
