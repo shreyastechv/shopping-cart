@@ -10,6 +10,7 @@
 		<cfset application.scriptDirectory = "/assets/js/">
 		<cfset application.imageDirectory = "/assets/images/">
 		<cfset application.productImageDirectory = "/assets/images/productImages/">
+		<cfset application.secretKey = generateSecretKey('AES')>
 		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
 
 		<!--- Map pages to title, css and script path --->
@@ -75,9 +76,6 @@
 				"scriptPath": ["productEdit.js"]
 			}
 		}>
-
-		<!--- Key for encrypting and decrypting URL params --->
-		<cfset application.secretKey = generateSecretKey('AES')>
 
 		<cfreturn true>
 	</cffunction>
