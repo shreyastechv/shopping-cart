@@ -597,7 +597,6 @@
 				B.fldBrandName,
 				PI.fldImageFileName AS fldProductImage,
 				C.fldCategory_Id,
-				C.fldCategoryName,
 				SC.fldSubCategoryName
 			FROM
 				tblProduct P
@@ -662,7 +661,6 @@
 				"tax": local.qryGetProducts.fldTax,
 				"productImage": local.qryGetProducts.fldProductImage,
 				"categoryId": encryptText(local.qryGetProducts.fldCategory_Id),
-				"categoryName": local.qryGetProducts.fldCategoryName,
 				"subCategoryName": local.qryGetProducts.fldSubCategoryName
 			}>
 
