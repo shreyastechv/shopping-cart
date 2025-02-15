@@ -153,7 +153,7 @@
 				<div id="productPriceError" class="text-danger error"></div>
 
 				<!--- Product Tax --->
-				<label for="productTax" class="fw-semibold">Product Price</label>
+				<label for="productTax" class="fw-semibold">Product Tax</label>
 				<input type="number" step="0.01" min="0" id="productTax" name="productTax" class="form-control mb-1">
 				<div id="productTaxError" class="text-danger error"></div>
 

@@ -47,7 +47,7 @@
 			"/orders.cfm": {
 				"pageTitle": "Orders",
 				"cssPath": "",
-				"scriptPath": []
+				"scriptPath": ["orders.js"]
 			},
 			"/login.cfm": {
 				"pageTitle": "Log In",

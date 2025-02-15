@@ -5,13 +5,12 @@
 <cfparam name="url.categoryId" default="">
 <cfparam name="url.subCategoryId" default="">
 <cfparam name="url.search" default="">
+<cfparam name="url.sort" default="">
 
 <!--- Form Variables --->
 <cfparam name="form.filterRange" default="">
 <cfparam name="form.min" default="0">
 <cfparam name="form.max" default="0">
-<cfparam name="form.sort" default="">
-<cfparam name="form.limit" default=6>
 
 <!--- Check filtering --->
 <cfif len(trim(form.filterRange))>
@@ -30,15 +29,16 @@
 	<!--- Get Data if subCategoryId is given --->
 	<cfset variables.products = application.shoppingCart.getProducts(
 		subCategoryId = url.subCategoryId,
-		limit = form.limit,
+		limit = 6,
 		min = form.min,
 		max = (len(trim(form.max)) ? val(form.max) : ""),
-		sort = form.sort
+		sort = (arrayContainsNoCase(["","asc","desc"], url.sort) ? url.sort : "")
 	)>
 <cfelseif len(trim(url.search))>
 	<!--- Get Data if search is given --->
 	<cfset variables.products = application.shoppingCart.getProducts(
-		searchTerm = trim(url.search)
+		searchTerm = trim(url.search),
+		limit = 6
 	)>
 <cfelse>
 	<!--- Exit if Required URL Params are not passed --->
@@ -82,7 +82,8 @@
 				<cfelse>
 					<!--- Sorting --->
 					<div class="d-flex px-3 pb-2">
-						<form method="post">
+						<form method="get">
+							<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
 							<button class="btn btn-primary me-sm-2" type="submit" name="sort" value="asc">Price: Low to High</button>
 							<button class="btn btn-primary" type="submit" name="sort" value="desc">Price: High to Low</button>
 						</form>
@@ -130,17 +131,15 @@
 			<!--- Sub Category / Search Listing --->
 			<cf_productlist products="#variables.products.data#">
 
-			<cfif NOT len(trim(url.search))>
-				<cfif arrayLen(variables.products.data)>
-					<!--- View More Button --->
-					<cfif arrayLen(variables.products.data) GTE form.limit>
-						<div>
-							<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore('#url.subCategoryId#')">View More</button>
-						</div>
-					</cfif>
-				<cfelse>
-					<div class="fs-4 fw-semibold text-center mx-3 mt-4">No Products Found</div>
+			<cfif arrayLen(variables.products.data)>
+				<!--- View More Button --->
+				<cfif arrayLen(variables.products.data) GTE 6>
+					<div>
+						<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore('#url.subCategoryId#', '#url.search#')">View More</button>
+					</div>
 				</cfif>
+			<cfelse>
+				<div class="fs-4 fw-semibold text-center mx-3 mt-4">No Products Found</div>
 			</cfif>
 		</cfif>
 	</div>

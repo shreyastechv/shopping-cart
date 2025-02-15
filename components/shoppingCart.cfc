@@ -624,6 +624,22 @@
 						OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
 				</cfif>
 
+				<!--- Sorting --->
+				<cfif arguments.random EQ 1>
+					ORDER BY
+						RAND()
+				<cfelseif len(trim(arguments.sort))>
+					ORDER BY
+						p.fldPrice #arguments.sort#
+				</cfif>
+
+				<!--- Limit the number of products returned --->
+				<cfif len(trim(arguments.limit))>
+					LIMIT <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
+					<cfif len(trim(arguments.offset))>
+						OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
+					</cfif>
+				</cfif>
 		</cfquery>
 
 		<!--- Loop through the query results and populate the array --->
@@ -1113,9 +1129,16 @@
 				<cfset local.response["message"] = "Product Quantity Incremented">
 
 			<cfelse>
+				<!--- Get Product Into --->
+				<cfset local.productInfo = getProducts(
+					productId = arguments.productId
+				)>
+
 				<!--- Add product to session variable --->
 				<cfset session.cart[arguments.productId] = {
-					"quantity" = 1
+					"quantity" = 1,
+					"unitPrice" = local.productInfo.data[1].price,
+					"unitTax" = local.productInfo.data[1].tax
 				}>
 
 				<!--- Set response message --->
@@ -1761,8 +1784,8 @@
 		<!--- Loop through checkout items --->
 		<cfloop collection="#session.checkout#" item="item">
 			<!--- Calculate total price and tax --->
-			<cfset local.totalPrice += session.checkout[item].unitPrice * ( 1 + session.checkout[item].unitTax) * session.checkout[item].quantity>
-			<cfset local.totalTax += session.checkout[item].unitPrice * session.checkout[item].unitTax * session.checkout[item].quantity>
+			<cfset local.totalPrice += session.checkout[item].unitPrice * ( 1 + (session.checkout[item].unitTax / 100)) * session.checkout[item].quantity>
+			<cfset local.totalTax += session.checkout[item].unitPrice * (session.checkout[item].unitTax / 100) * session.checkout[item].quantity>
 
 			<!--- build json array --->
 			<cfset arrayAppend(local.productList, {
@@ -1828,6 +1851,8 @@
 	<cffunction name="getOrders" access="public" returnType="struct">
 		<cfargument name="searchTerm" type="string" required=false default="">
 		<cfargument name="orderId" type="string" required=false default="">
+		<cfargument name="pageNumber" type="integer" required=false default=1>
+		<cfargument name="pageSize" type="integer" required=false default=4>
 
 		<cfset local.response = {
 			"message" = "",
@@ -1887,6 +1912,13 @@
 				ord.fldOrder_Id
 			ORDER BY
 				ord.fldOrderDate DESC
+
+			<!--- Only apply limit and offset if order id is not specified --->
+			<!--- Otherwise no order will be returned --->
+			<cfif NOT len(trim(arguments.orderId)) AND len(trim(arguments.pageNumber))>
+				LIMIT <cfqueryparam value = "#arguments.pageSize#" cfsqltype = "integer">
+				OFFSET <cfqueryparam value = "#(arguments.pageNumber - 1) * arguments.pageSize#" cfsqltype = "integer">
+			</cfif>
 		</cfquery>
 
 		<cfloop query="local.qryGetOrders">
