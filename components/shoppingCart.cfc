@@ -595,7 +595,10 @@
 				P.fldPrice,
 				P.fldTax,
 				B.fldBrandName,
-				PI.fldImageFileName AS fldProductImage
+				PI.fldImageFileName AS fldProductImage,
+				C.fldCategory_Id,
+				C.fldCategoryName,
+				SC.fldSubCategoryName
 			FROM
 				tblProduct P
 				INNER JOIN tblBrands B ON P.fldBrandId = B.fldBrand_Id
@@ -657,7 +660,10 @@
 				"description": local.qryGetProducts.fldDescription,
 				"price": local.qryGetProducts.fldPrice,
 				"tax": local.qryGetProducts.fldTax,
-				"productImage": local.qryGetProducts.fldProductImage
+				"productImage": local.qryGetProducts.fldProductImage,
+				"categoryId": encryptText(local.qryGetProducts.fldCategory_Id),
+				"categoryName": local.qryGetProducts.fldCategoryName,
+				"subCategoryName": local.qryGetProducts.fldSubCategoryName
 			}>
 
 			<!--- Append each product struct to the response array --->

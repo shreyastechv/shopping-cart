@@ -14,27 +14,9 @@
 	<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
 	<cfset variables.products = application.shoppingCart.getProducts(subCategoryId = url.subCategoryId)>
 	<cfset variables.brands = application.shoppingCart.getBrands()>
-
-	<!--- Get sub category name of the current products page --->
-	<cfloop array="#variables.subCategories.data#" item="item">
-		<cfif item.subCategoryId EQ url.subCategoryId>
-			<cfset variables.subCategoryName = item.subCategoryName>
-		</cfif>
-	</cfloop>
-
-	<!--- Get category id of the current products page --->
-	<cfloop array="#variables.subCategories.data#" item="item">
-		<cfif item.subCategoryId EQ url.subCategoryId>
-			<cfset variables.categoryId = item.categoryId>
-		</cfif>
-	</cfloop>
-
-	<!--- Get category name of the current products page --->
-	<cfloop array="#variables.categories.data#" item="item">
-		<cfif item.categoryId EQ variables.categoryId>
-			<cfset variables.categoryName = item.categoryName>
-		</cfif>
-	</cfloop>
+	<cfset variables.categoryId = variables.products.data[1].categoryId>
+	<cfset variables.categoryName = variables.products.data[1].categoryName>
+	<cfset variables.subCategoryName = variables.products.data[1].subCategoryName>
 
 	<!--- Reduce the sub categories query to only ones with current page category id --->
 	<cfset variables.subCategories.data = arrayFilter(variables.subCategories.data, function(item) {
