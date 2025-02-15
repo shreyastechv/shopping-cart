@@ -585,44 +585,44 @@
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetProducts">
 			SELECT
-				p.fldProduct_Id,
-				p.fldProductName,
-				p.fldBrandId,
-				p.fldDescription,
-				p.fldPrice,
-				p.fldTax,
-				b.fldBrandName,
-				i.fldImageFileName AS fldProductImage
+				P.fldProduct_Id,
+				P.fldProductName,
+				P.fldBrandId,
+				P.fldDescription,
+				P.fldPrice,
+				P.fldTax,
+				B.fldBrandName,
+				PI.fldImageFileName AS fldProductImage
 			FROM
-				tblProduct p
-				INNER JOIN tblBrands b ON p.fldBrandId = b.fldBrand_Id
-				INNER JOIN tblSubCategory s ON p.fldSubCategoryId = s.fldSubCategory_Id
-				INNER JOIN tblCategory c ON s.fldCategoryId = c.fldCategory_Id
-				INNER JOIN tblProductImages i ON p.fldProduct_Id = i.fldProductId
-					AND i.fldActive = 1
-					AND i.fldDefaultImage = 1
+				tblProduct P
+				INNER JOIN tblBrands B ON P.fldBrandId = B.fldBrand_Id
+				INNER JOIN tblSubCategory SC ON P.fldSubCategoryId = SC.fldSubCategory_Id
+				INNER JOIN tblCategory C ON S.fldCategoryId = C.fldCategory_Id
+				INNER JOIN tblProductImages PI ON P.fldProduct_Id = PI.fldProductId
+					AND PI.fldActive = 1
+					AND PI.fldDefaultImage = 1
 			WHERE
-				p.fldActive = 1
+				P.fldActive = 1
 				<cfif len(trim(local.subCategoryId)) AND local.subCategoryId NEQ -1>
-					AND p.fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
+					AND P.fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
 				<cfelseif len(trim(local.productId)) AND local.productId NEQ -1>
-					AND p.fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+					AND P.fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
 				<cfelseif len(trim(arguments.productIdList))>
-					AND fldProductId IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
+					AND P.fldProduct_Id IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 				</cfif>
 
 				<!--- 0 is the default value of arguments.max hence it should not be used --->
 				<cfif len(trim(arguments.max)) AND trim(arguments.max) NEQ 0>
-					AND p.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
+					AND P.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
 						AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
 				</cfif>
 
 				<cfif len(trim(arguments.searchTerm))>
-					AND (p.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR p.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR c.fldCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR s.fldSubCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR b.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
+					AND (P.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+						OR P.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+						OR C.fldCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+						OR SC.fldSubCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+						OR B.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
 				</cfif>
 
 				<!--- Sorting --->
@@ -631,7 +631,7 @@
 						RAND()
 				<cfelseif len(trim(arguments.sort))>
 					ORDER BY
-						p.fldPrice #arguments.sort#
+						P.fldPrice #arguments.sort#
 				</cfif>
 
 				<!--- Limit the number of products returned --->
@@ -1074,17 +1074,17 @@
 
 		<cfquery name="local.qryGetCart">
 			SELECT
-				c.fldCart_Id,
-				c.fldProductId,
-				c.fldQuantity,
-				p.fldPrice,
-				p.fldTax
+				C.fldCart_Id,
+				C.fldProductId,
+				C.fldQuantity,
+				P.fldPrice,
+				P.fldTax
 			FROM
-				tblCart c
-				INNER JOIN tblProduct p ON c.fldProductId = p.fldProduct_Id
-					AND p.fldActive = 1 <!--- Only take active products --->
+				tblCart C
+				INNER JOIN tblProduct P ON C.fldProductId = P.fldProduct_Id
+					AND P.fldActive = 1 <!--- Only take active products --->
 			WHERE
-				c.fldUserId = <cfqueryparam value = "#trim(session.userId)#" cfsqltype = "integer">
+				C.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 		</cfquery>
 
 		<cfloop query="local.qryGetCart">
@@ -1885,46 +1885,46 @@
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetOrders">
 			SELECT
-				ord.fldOrder_Id,
-				ord.fldOrderDate,
-				ord.fldTotalPrice,
-				ord.fldTotalTax,
-				addr.fldAddressLine1,
-				addr.fldAddressLine2,
-				addr.fldCity,
-				addr.fldState,
-				addr.fldPincode,
-				addr.fldFirstName,
-				addr.fldLastName,
-				addr.fldPhone,
-				GROUP_CONCAT(itm.fldProductId SEPARATOR ',') AS productIds,
-				GROUP_CONCAT(itm.fldQuantity SEPARATOR ',') AS quantities,
-				GROUP_CONCAT(itm.fldUnitPrice SEPARATOR ',') AS unitPrices,
-				GROUP_CONCAT(itm.fldUnitTax SEPARATOR ',') AS unitTaxes,
-				GROUP_CONCAT(prod.fldProductName SEPARATOR ',') AS productNames,
-				GROUP_CONCAT(img.fldImageFileName SEPARATOR ',') AS productImages,
-				GROUP_CONCAT(brnd.fldBrandName SEPARATOR ',') AS brandNames
+				O.fldOrder_Id,
+				O.fldOrderDate,
+				O.fldTotalPrice,
+				O.fldTotalTax,
+				A.fldAddressLine1,
+				A.fldAddressLine2,
+				A.fldCity,
+				A.fldState,
+				A.fldPincode,
+				A.fldFirstName,
+				A.fldLastName,
+				A.fldPhone,
+				GROUP_CONCAT(OI.fldProductId SEPARATOR ',') AS productIds,
+				GROUP_CONCAT(OI.fldQuantity SEPARATOR ',') AS quantities,
+				GROUP_CONCAT(OI.fldUnitPrice SEPARATOR ',') AS unitPrices,
+				GROUP_CONCAT(OI.fldUnitTax SEPARATOR ',') AS unitTaxes,
+				GROUP_CONCAT(P.fldProductName SEPARATOR ',') AS productNames,
+				GROUP_CONCAT(PI.fldImageFileName SEPARATOR ',') AS productImages,
+				GROUP_CONCAT(B.fldBrandName SEPARATOR ',') AS brandNames
 			FROM
-				tblOrder ord
-				INNER JOIN tblAddress addr ON ord.fldAddressId = addr.fldAddress_Id
-				INNER JOIN tblOrderItems itm ON ord.fldOrder_Id = itm.fldOrderId
-				INNER JOIN tblProduct prod ON itm.fldProductId = prod.fldProduct_Id
-				INNER JOIN tblProductImages img ON prod.fldProduct_Id = img.fldProductId
-					AND img.fldDefaultImage = 1
-				INNER JOIN tblBrands brnd ON prod.fldBrandId = brnd.fldBrand_Id
+				tblOrder O
+				INNER JOIN tblAddress A ON A.fldAddress_Id = O.fldAddressId
+				INNER JOIN tblOrderItems OI ON OI.fldOrderId = O.fldOrder_Id
+				INNER JOIN tblProduct P ON P.fldProduct_Id = OI.fldProductId
+				INNER JOIN tblProductImages PI ON PI.fldProductId = P.fldProduct_Id
+					AND PI.fldDefaultImage = 1
+				INNER JOIN tblBrands B ON B.fldBrand_Id = P.fldBrandId
 			WHERE
-				ord.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
+				O.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "varchar">
 				<cfif len(trim(arguments.orderId))>
 					<!--- For printing pdf for each order --->
-					AND ord.fldOrder_Id = <cfqueryparam value = "#arguments.orderId#" cfsqltype = "varchar">
+					AND O.fldOrder_Id = <cfqueryparam value = "#arguments.orderId#" cfsqltype = "varchar">
 				<cfelse>
 					<!--- When searching for orders --->
-					AND ord.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
+					AND O.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
 				</cfif>
 			GROUP BY
-				ord.fldOrder_Id
+				O.fldOrder_Id
 			ORDER BY
-				ord.fldOrderDate DESC
+				O.fldOrderDate DESC
 
 			<!--- Only apply limit and offset if order id is not specified --->
 			<!--- Otherwise no order will be returned --->
