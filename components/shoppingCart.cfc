@@ -8,6 +8,7 @@
 		<cfargument name="confirmPassword" type="string" required=true>
 
 		<cfset local.response = {
+			"success" = false,
 			"message" = ""
 		}>
 
@@ -106,6 +107,7 @@
 			<cfset local.response["message"] = "Account created successfully.">
 		</cfif>
 
+		<cfset local.response.success = true>
 		<cfreturn local.response>
 	</cffunction>
 

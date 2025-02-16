@@ -3,7 +3,7 @@
 
 <!--- Signup Logic --->
 <cfif structKeyExists(form, "signupBtn")>
-	<cfset variables.signupResult = application.shoppingCart.signup(
+	<cfset variables.signUpResult = application.shoppingCart.signup(
 		firstName = form.firstName,
 		lastName = form.lastName,
 		email = form.email,
@@ -17,9 +17,9 @@
 <cfoutput>
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
 		<div id="submitMsgSection" class="p-2">
-			<cfif structKeyExists(variables, "signupResult")>
-				#variables.signupResult.message#
-				<cfif arrayContainsNoCase(["Email or Phone number already exists.", "Account created successfully"], variables.signupResult.message)>
+			<cfif structKeyExists(variables, "signUpResult")>
+				#variables.signUpResult.message#
+				<cfif variables.signUpResult.success>
 					Click <a href="/login.cfm?productId=#urlEncodedFormat(url.productId)#" class="text-decoration-none text-success">here</a> to login
 				</cfif>
 			</cfif>
