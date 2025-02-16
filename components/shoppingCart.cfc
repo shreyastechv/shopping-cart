@@ -359,7 +359,7 @@
 				INNER JOIN tblCategory C ON C.fldCategory_Id = SC.fldCategoryId
 			WHERE
 				SC.fldActive = 1
-				<cfif structKeyExists(local, "categoryId") AND (trim(local.categoryId) NEQ -1)>
+				<cfif local.categoryId NEQ -1)>
 					AND SC.fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
 				</cfif>
 		</cfquery>
@@ -1304,7 +1304,7 @@
 				tblAddress
 			WHERE
 				fldActive = 1
-				<cfif structKeyExists(local, "addressId") AND trim(local.addressId) NEQ -1>
+				<cfif local.addressId NEQ -1>
 					AND fldAddress_Id = <cfqueryparam value = "#local.addressId#" cfsqltype = "integer">
 				<cfelse>
 					AND fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
@@ -1720,7 +1720,7 @@
 		</cfif>
 
 		<!--- Return message if validation fails --->
-		<cfif structKeyExists(local.response, "message") AND len(trim(local.response.message))>
+		<cfif len(trim(local.response.message))>
 			<cfreturn local.response>
 		</cfif>
 

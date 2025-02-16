@@ -167,7 +167,7 @@
 		<!--- This code is placed above 'set flag' code to prevent both running on cart page --->
 		<cfif structKeyExists(session, "cartVisit")
 			<!--- Below code is to prevent ajax calls from being registered as page visit --->
-			AND NOT findNoCase("/components", arguments.targetPage)
+			AND NOT findNoCase("cfc", arguments.targetPage)
 		>
 			<!--- Update cart asynchronously --->
 			<cfthread name="cartUpdateThread">
