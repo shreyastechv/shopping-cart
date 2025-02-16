@@ -1872,10 +1872,10 @@
 
 			<!--- Only apply limit and offset if order id is not specified --->
 			<!--- Otherwise no order will be returned --->
-			<cfif NOT len(trim(arguments.orderId)) AND len(trim(arguments.pageNumber))>
+			<cfif NOT len(trim(arguments.orderId)) AND val(arguments.pageNumber)>
 				<!--- Querying one extra order to check whether its the end of orders --->
 				LIMIT <cfqueryparam value = "#arguments.pageSize + 1#" cfsqltype = "integer">
-				OFFSET <cfqueryparam value = "#arguments.pageNumber#" cfsqltype = "integer">
+				OFFSET <cfqueryparam value = "#(arguments.pageNumber - 1) * arguments.pageSize#" cfsqltype = "integer">
 			</cfif>
 		</cfquery>
 
