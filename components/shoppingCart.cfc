@@ -359,7 +359,7 @@
 				INNER JOIN tblCategory C ON C.fldCategory_Id = SC.fldCategoryId
 			WHERE
 				SC.fldActive = 1
-				<cfif local.categoryId NEQ -1)>
+				<cfif local.categoryId NEQ -1>
 					AND SC.fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
 				</cfif>
 		</cfquery>
