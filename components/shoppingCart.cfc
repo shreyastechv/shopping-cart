@@ -322,8 +322,9 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfstoredproc procedure="spDeleteCategory">
-			<cfprocparam cfsqltype="integer" variable="categoryId" value="#local.categoryId#">
+		<cfstoredproc procedure="spDeleteItem">
+			<cfprocparam cfsqltype="varchar" variable="item" value="category">
+			<cfprocparam cfsqltype="integer" variable="itemId" value="#local.categoryId#">
 			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
 		</cfstoredproc>
 	</cffunction>
@@ -494,43 +495,11 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryDeleteProducts">
-			UPDATE
-				tblProduct
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
-		</cfquery>
-
-		<cfquery name="qryDeleteProductImages">
-			UPDATE
-				tblProductImages
-			SET
-				fldActive = 0,
-				fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
-				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
-			WHERE
-				fldProductId IN (
-					SELECT
-						fldProduct_Id
-					FROM
-						tblProduct
-					WHERE
-						fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
-				);
-		</cfquery>
-
-		<cfquery name="qryDeleteSubCategory">
-			UPDATE
-				tblSubCategory
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldSubCategory_Id = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
-		</cfquery>
+		<cfstoredproc procedure="spDeleteItem">
+			<cfprocparam cfsqltype="varchar" variable="item" value="subcategory">
+			<cfprocparam cfsqltype="integer" variable="itemId" value="#local.subCategoryId#">
+			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
+		</cfstoredproc>
 	</cffunction>
 
 	<cffunction name="getProducts" access="remote" returnType="struct" returnFormat="json">
@@ -898,27 +867,11 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryDeleteProducts">
-			UPDATE
-				tblProduct
-			SET
-				fldActive = 0,
-				fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
-			WHERE
-				fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
-		</cfquery>
-
-		<cfquery name="qryDeleteProductImages">
-			UPDATE
-				tblProductImages
-			SET
-				fldActive = 0,
-				fldDeactivatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">,
-				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
-			WHERE
-				fldProductId = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
-		</cfquery>
-
+		<cfstoredproc procedure="spDeleteItem">
+			<cfprocparam cfsqltype="varchar" variable="item" value="product">
+			<cfprocparam cfsqltype="integer" variable="itemId" value="#local.productId#">
+			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
+		</cfstoredproc>
 	</cffunction>
 
 	<cffunction name="getProductImages" access="remote" returnType="struct" returnFormat="json">
@@ -1042,14 +995,11 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qryDeleteImage">
-			UPDATE
-				tblProductImages
-			SET
-				fldActive = 0
-			WHERE
-				fldProductImage_Id = <cfqueryparam value = "#trim(local.imageId)#" cfsqltype = "integer">
-		</cfquery>
+		<cfstoredproc procedure="spDeleteItem">
+			<cfprocparam cfsqltype="varchar" variable="item" value="productimage">
+			<cfprocparam cfsqltype="integer" variable="itemId" value="#local.imageId#">
+			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
+		</cfstoredproc>
 
 		<!--- Set success message --->
 		<cfset local.response["message"] = "Product Image deleted">
