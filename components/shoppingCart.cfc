@@ -186,24 +186,18 @@
 		}>
 
 		<cfquery name="local.qryGetCategories">
-			SELECT
-				c.fldCategory_Id,
-				c.fldCategoryName
+			SELECT DISTINCT
+				C.fldCategory_Id,
+				C.fldCategoryName
 			FROM
-				tblCategory c
+				tblCategory C
+			LEFT JOIN
+				tblSubCategory SC ON SC.fldCategoryId = C.fldCategory_Id
+				AND SC.fldActive = 1
 			WHERE
-				c.fldActive = 1
-				-- Make sure to return only no-empty categories for non-admin users
+				C.fldActive = 1
 				<cfif NOT structKeyExists(session, "roleId") OR session.roleId EQ 2>
-					AND EXISTS (
-						SELECT
-							1
-						FROM
-							tblSubCategory sc
-						WHERE
-							sc.fldCategoryId = c.fldCategory_Id
-							AND sc.fldActive = 1
-					)
+					AND SC.fldCategoryId IS NOT NULL
 				</cfif>
 		</cfquery>
 
