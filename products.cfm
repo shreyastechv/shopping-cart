@@ -26,26 +26,18 @@
 
 <!--- Check URL Params --->
 <cfif len(trim(url.categoryId))>
-	<!--- Get Data if categoryId is given --->
+	<!--- Sub Category Product Listing --->
 	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
-<cfelseif len(trim(url.subCategoryId))>
-	<!--- Get Data if subCategoryId is given --->
+<cfelse>
+	<!--- Category or Search Product Listing --->
 	<cfset variables.products = application.shoppingCart.getProducts(
 		subCategoryId = url.subCategoryId,
+		searchTerm = trim(url.search),
 		limit = variables.limit,
 		min = form.min,
 		max = (len(trim(form.max)) ? val(form.max) : ""),
 		sort = (arrayContainsNoCase(["","asc","desc"], url.sort) ? url.sort : "")
 	)>
-<cfelseif len(trim(url.search))>
-	<!--- Get Data if search is given --->
-	<cfset variables.products = application.shoppingCart.getProducts(
-		searchTerm = trim(url.search),
-		limit = variables.limit
-	)>
-<cfelse>
-	<!--- Exit if Required URL Params are not passed --->
-	<cflocation url="/" addToken="false">
 </cfif>
 
 <cfoutput>
@@ -136,9 +128,9 @@
 
 			<cfif arrayLen(variables.products.data)>
 				<!--- View More Button --->
-				<cfif variables.products.isFinalPage EQ false>
+				<cfif variables.products.hasMoreRows>
 					<div>
-						<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore('#url.subCategoryId#', '#url.search#')">View More</button>
+						<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore()">View More</button>
 					</div>
 				</cfif>
 			<cfelse>

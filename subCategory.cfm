@@ -2,11 +2,6 @@
 <cfparam name="variables.categoryName" default="Sub Categories">
 
 <cfoutput>
-	<!--- Check presence of url params --->
-	<cfif len(trim(url.categoryId)) EQ 0>
-		<cflocation url="/adminDashboard.cfm" addToken="no">
-	</cfif>
-
 	<!--- Get Data --->
 	<cfset variables.categories = application.shoppingCart.getCategories()>
 	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>

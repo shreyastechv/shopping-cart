@@ -102,12 +102,12 @@
 					<a href="javascript:void(0)" onclick="goToPage(#url.pageNumber - 1#)" class="page-link">Previous</a>
 				</li>
 				<cfset variables.start = url.pageNumber GTE 2 ? url.pageNumber - 1 : url.pageNumber>
-				<cfset variables.end = variables.orders.isFinalPage ? url.pageNumber : url.pageNumber + 1>
+				<cfset variables.end = variables.orders.hasMoreRows ? url.pageNumber + 1 : url.pageNumber>
 				<cfloop index="i" from="#variables.start#" to="#variables.end#">
 					<li class="page-item #(url.pageNumber EQ i ? "active" : "")#"><a class="page-link" href="javascript:void(0)" onclick="goToPage(#i#)">#i#</a></li>
 				</cfloop>
 				<li class="page-item">
-					<a class="page-link #(arrayLen(variables.orders.data) LT variables.pageSize ? "disabled" : "")#" href="javascript:void(0)" onclick="goToPage(#url.pageNumber + 1#)">Next</a>
+					<a class="page-link #(variables.orders.hasMoreRows ? "" : "disabled")#" href="javascript:void(0)" onclick="goToPage(#url.pageNumber + 1#)">Next</a>
 				</li>
 			</ul>
 		</nav>

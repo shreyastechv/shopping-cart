@@ -1,4 +1,6 @@
 const urlSort = new URLSearchParams(document.URL.split('?')[1]).get('sort');
+const urlSearchTerm = new URLSearchParams(document.URL.split('?')[1]).get('search');
+const urlSubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId');
 const limit = 6;
 let offset = 0;
 
@@ -21,7 +23,7 @@ function createProduct(id, image, name, desc, price) {
 	$("#products").append(newDiv);
 }
 
-function viewMore(subCategoryId, searchTerm) {
+function viewMore() {
 	// Increment offset to fetch next set of products
 	offset += limit;
 
@@ -30,8 +32,8 @@ function viewMore(subCategoryId, searchTerm) {
 		url: "./components/shoppingCart.cfc",
 		data: {
 			method: "getProducts",
-			subCategoryId: subCategoryId,
-			searchTerm: searchTerm,
+			subCategoryId: urlSubCategoryId || "",
+			searchTerm: urlSearchTerm || "",
 			limit: limit,
 			offset: offset,
 			sort: urlSort || ""
@@ -46,7 +48,7 @@ function viewMore(subCategoryId, searchTerm) {
 			}
 
 			// Remove view more btn if there are no products to be fetched
-			if (responseJSON.isFinalPage) {
+			if (!responseJSON.hasMoreRows) {
 				$("#viewMoreBtn").hide();
 				return;
 			}

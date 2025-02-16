@@ -4,11 +4,6 @@
 <cfparam name="variables.subCategoryName" default="Products">
 
 <cfoutput>
-	<!--- Go to home page if sub category id is empty --->
-	<cfif len(trim(url.subCategoryId)) EQ 0>
-		<cflocation url="/" addToken="no">
-	</cfif>
-
 	<!--- Get Data --->
 	<cfset variables.categories = application.shoppingCart.getCategories()>
 	<cfset variables.products = application.shoppingCart.getProducts(subCategoryId = url.subCategoryId)>

@@ -507,8 +507,8 @@
 		<cfargument name="productId" type="string" required=false default="">
 		<cfargument name="productIdList" type="string" required=false default="">
 		<cfargument name="random" type="integer" required=false default="0">
-		<cfargument name="limit" type="string" required="false" default="">
-		<cfargument name="offset" type="string" required="false" default=0>
+		<cfargument name="limit" type="integer" required="false" default=6>
+		<cfargument name="offset" type="integer" required="false" default=0>
 		<cfargument name="sort" type="string" required="false" default="">
 		<cfargument name="min" type="float" required="false" default="0">
 		<cfargument name="max" type="float" required="false" default="0">
@@ -517,7 +517,7 @@
 		<cfset local.response = {
 			"message" = "",
 			"data" = [],
-			"isFinalPage" = false
+			"hasMoreRows" = false
 		}>
 
 		<!--- Decrypt ids--->
@@ -610,13 +610,21 @@
 
 				<!--- Limit the number of products returned --->
 				<cfif len(trim(arguments.limit))>
-					<!--- Querying one extra product to check whether its the end of products --->
+					<!--- Querying one extra product to check whether there are more products --->
 					LIMIT <cfqueryparam value = "#arguments.limit + 1#" cfsqltype = "integer">
 					<cfif len(trim(arguments.offset))>
 						OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
 					</cfif>
 				</cfif>
 		</cfquery>
+
+		<!--- Check whether there are more products --->
+		<cfif local.qryGetProducts.recordCount GT arguments.limit>
+			<cfset local.response.hasMoreRows = true>
+
+			<!--- Remove the extra row --->
+			<cfset local.qryGetProducts = queryDeleteRow(local.qryGetProducts, local.qryGetProducts.recordCount)>
+		</cfif>
 
 		<!--- Loop through the query results and populate the array --->
 		<cfloop query="local.qryGetProducts">
@@ -636,9 +644,6 @@
 			<!--- Append each product struct to the response array --->
 			<cfset arrayAppend(local.response.data, local.productStruct)>
 		</cfloop>
-
-		<!--- Check whether there are more products after this --->
-		<cfset local.response.isFinalPage = (local.qryGetProducts.recordCount LTE arguments.limit)>
 
 		<cfreturn local.response>
 	</cffunction>
@@ -1812,7 +1817,7 @@
 		<cfset local.response = {
 			"message" = "",
 			"data" = [],
-			"isFinalPage" = false
+			"hasMoreRows" = false
 		}>
 
 		<!--- Validate login --->
@@ -1874,12 +1879,17 @@
 			<cfif NOT len(trim(arguments.orderId)) AND len(trim(arguments.pageNumber))>
 				<!--- Querying one extra order to check whether its the end of orders --->
 				LIMIT <cfqueryparam value = "#arguments.pageSize + 1#" cfsqltype = "integer">
-				OFFSET <cfqueryparam value = "#(arguments.pageNumber - 1) * arguments.pageSize#" cfsqltype = "integer">
+				OFFSET <cfqueryparam value = "#arguments.pageNumber#" cfsqltype = "integer">
 			</cfif>
 		</cfquery>
 
-		<!--- Check whether there are more orders after this --->
-		<cfset local.response.isFinalPage = (local.qryGetOrders.recordCount LTE arguments.pageSize)>
+		<!--- Check whether there are more orders --->
+		<cfif local.qryGetOrders.recordCount GT arguments.pageSize>
+			<cfset local.response.hasMoreRows = true>
+
+			<!--- Remove the extra row --->
+			<cfset local.qryGetOrders = queryDeleteRow(local.qryGetOrders, local.qryGetOrders.recordCount)>
+		</cfif>
 
 		<cfloop query="local.qryGetOrders">
 			<cfset arrayAppend(local.response["data"], {
