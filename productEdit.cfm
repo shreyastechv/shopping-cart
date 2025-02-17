@@ -122,6 +122,9 @@
 				<label for="productImage" class="fw-semibold">Product Image</label>
 				<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control mb-1" multiple>
 				<div id="productImageError" class="text-danger error"></div>
+				<div class="d-flex flex-wrap gap-3 mt-4">
+
+				</div>
 				<div id="productImagePreview" class="d-flex flex-wrap gap-3 mt-4"></div>
 			  </div>
 			  <div class="modal-footer">

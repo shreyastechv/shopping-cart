@@ -44,7 +44,8 @@ $(document).ready(function() {
 				let imgDiv = $(`
 					<div id="productImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100">
 						<img src="${URL.createObjectURL(file)}" class="img-fluid mb-2 h-75">
-						<div>
+						<div class="d-flex justify-content-around">
+							<input type="radio" name="defaultImage" value="${i}">
 							<button type="button" class="btn btn-sm" onclick="removeSelectedFile('productImageContainer_${i}', 'productImage', '${file.name}')">
 								<i class="fa-solid fa-xmark pe-none"></i>
 							</button>

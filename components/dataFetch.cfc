@@ -150,7 +150,8 @@
 				P.fldPrice,
 				P.fldTax,
 				B.fldBrandName,
-				PI.fldImageFileName AS fldProductImage,
+				PI.fldImageFileName AS fldProductImages,
+				PI.fldDefaultImage AS fldDefaultImageValues
 				C.fldCategory_Id,
 				SC.fldSubCategoryName
 			FROM
@@ -160,7 +161,6 @@
 				INNER JOIN tblCategory C ON SC.fldCategoryId = C.fldCategory_Id
 				INNER JOIN tblProductImages PI ON P.fldProduct_Id = PI.fldProductId
 					AND PI.fldActive = 1
-					AND PI.fldDefaultImage = 1
 			WHERE
 				P.fldActive = 1
 				<cfif local.subCategoryId NEQ -1>
@@ -194,6 +194,9 @@
 						P.fldPrice #arguments.sort#
 				</cfif>
 
+			GROUP BY
+				P.fldProduct_Id
+
 				<!--- Limit the number of products returned --->
 				<cfif len(trim(arguments.limit))>
 					<!--- Querying one extra product to check whether there are more products --->
@@ -222,7 +225,8 @@
 				"description": local.qryGetProducts.fldDescription,
 				"price": local.qryGetProducts.fldPrice,
 				"tax": local.qryGetProducts.fldTax,
-				"productImage": local.qryGetProducts.fldProductImage,
+				"productImages": local.qryGetProducts.fldProductImages,
+				"defaultImageValues": local.qryGetProducts.fldDefaultImageValues,
 				"categoryId": application.commonFunctions.encryptText(local.qryGetProducts.fldCategory_Id),
 				"subCategoryName": local.qryGetProducts.fldSubCategoryName
 			}>
