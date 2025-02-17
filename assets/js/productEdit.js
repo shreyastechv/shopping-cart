@@ -31,7 +31,47 @@ $(document).ready(function() {
 			});
 		}
 	});
+
+	$("#productImage").on("change", function () {
+		let files = this.files;
+		let dt = new DataTransfer();
+		let previewContainer = $("#productImagePreview").empty();
+
+		$.each(files, function (i, file) {
+			if (file.type.startsWith("image/")) {
+				dt.items.add(file);
+
+				let imgDiv = $(`
+					<div id="productImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100">
+						<img src="${URL.createObjectURL(file)}" class="img-fluid mb-2 h-75">
+						<div>
+							<button type="button" class="btn btn-sm" onclick="removeSelectedFile('productImageContainer_${i}', 'productImage', '${file.name}')">
+								<i class="fa-solid fa-xmark pe-none"></i>
+							</button>
+						</div>
+					</div>
+                `);
+				previewContainer.append(imgDiv);
+			}
+		});
+
+		this.files = dt.files;
+	});
 });
+
+function removeSelectedFile(containerId, inputId, fileName) {
+	let files = $(`#${inputId}`)[0].files;
+	let dt = new DataTransfer();
+
+	$.each(files, function (i, file) {
+		if (file.name != fileName) {
+			dt.items.add(file);
+		}
+	});
+
+	$(`#${inputId}`)[0].files = dt.files;
+	$(`#${containerId}`).remove();
+}
 
 function processproductForm() {
 	event.preventDefault();
@@ -113,9 +153,10 @@ function processproductForm() {
 		processData: false,
 		contentType: false,
 		success: function(response) {
+
 			const responseJSON = JSON.parse(response);
 			if(responseJSON.message == "Product Updated") {
-        location.reload();
+				location.reload();
 			}
 			else if (responseJSON.message == "Product Added") {
 				createProductItem(responseJSON.productId, productName, brandName, productPrice, responseJSON.defaultImageFile)
@@ -131,6 +172,7 @@ function showAddProductModal(categoryId) {
 	$("#productId").val("");
 	 $("#categorySelect").val(categoryId).change();
 	$("#subCategoryModalBtn").text("Add Product");
+	$("#productImagePreview").empty();
 }
 
 function showEditProductModal(categoryId, productId) {
@@ -155,6 +197,7 @@ function showEditProductModal(categoryId, productId) {
 			$("#productTax").val(objProductData.tax);
 			$("#productImage").val("");
 			$("#subCategoryModalBtn").text("Edit Product");
+			$("#productImagePreview").empty();
 		}
 	});
 }
@@ -228,13 +271,12 @@ function createCarousel(productId) {
 				const carouselItem = `
 					<div class="carousel-item ${isActive}" id="imageContainer_${i}">
 						<div class="d-flex justify-content-center">
-							<img src="${productImageDirectory}${responseJSON.data[i].imageFileName}" class="d-block h-100" alt="Product Image">
+							<img src="${productImageDirectory}${responseJSON.data[i].imageFileName}" alt="Product Image">
 						</div>
 						${bottomDiv}
 					</div>
 				`;
 				$("#carouselContainer").append(carouselItem);
-				$("#carouselContainer").attr("data-sc-productId", productId);
 			}
 		}
 	});
