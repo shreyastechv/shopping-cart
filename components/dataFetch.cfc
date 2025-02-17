@@ -150,8 +150,8 @@
 				P.fldPrice,
 				P.fldTax,
 				B.fldBrandName,
-				GROUP_CONCAT(PI.fldImageFileName SEPARATOR ',') AS fldProductImages,
-				GROUP_CONCAT(PI.fldDefaultImage SEPARATOR ',') AS fldDefaultImageValues,
+				GROUP_CONCAT(PI.fldImageFileName ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldProductImages,
+				GROUP_CONCAT(PI.fldDefaultImage ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldDefaultImageValues,
 				C.fldCategory_Id,
 				SC.fldSubCategoryName
 			FROM
