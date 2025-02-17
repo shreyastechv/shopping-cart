@@ -228,7 +228,7 @@
 		<cfset local.categoryId = decryptText(arguments.categoryId)>
 
 		<!--- Category Id Validation --->
-		<cfif len(trim(arguments.categoryId)) AND local.categoryId EQ -1>
+		<cfif len(trim(arguments.categoryId)) AND (local.categoryId EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
@@ -266,7 +266,7 @@
 						fldCategoryName = <cfqueryparam value = "#trim(arguments.categoryName)#" cfsqltype = "varchar">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldCategory_Id = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">
+						fldCategory_Id = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "Category Updated">
 			<cfelse>
@@ -393,7 +393,7 @@
 		<cfset local.categoryId = decryptText(arguments.categoryId)>
 
 		<!--- Sub Category Id Validation --->
-		<cfif len(trim(arguments.subCategoryId)) AND local.subCategoryId EQ -1>
+		<cfif len(trim(arguments.subCategoryId)) AND (local.subCategoryId EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
@@ -424,8 +424,8 @@
 				tblSubCategory
 			WHERE
 				fldSubCategoryName = <cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">
-				AND fldCategoryId = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">
-				AND fldSubCategory_Id != <cfqueryparam value = "#val(trim(local.subCategoryId))#" cfsqltype = "integer">
+				AND fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
+				AND fldSubCategory_Id != <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
 				AND fldActive = 1
 		</cfquery>
 
@@ -439,10 +439,10 @@
 						tblSubCategory
 					SET
 						fldSubCategoryName = <cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">,
-						fldCategoryId = <cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">,
+						fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldSubCategory_Id = <cfqueryparam value = "#trim(local.subCategoryId)#" cfsqltype = "integer">
+						fldSubCategory_Id = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "SubCategory Updated">
 			<cfelse>
@@ -455,7 +455,7 @@
 						)
 					VALUES (
 						<cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#trim(local.categoryId)#" cfsqltype = "integer">,
+						<cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">,
 						<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					)
 				</cfquery>
@@ -541,7 +541,7 @@
 		</cfif>
 
 		<!--- Min Max Validation --->
-		<cfif len(trim(arguments.max)) AND arguments.max LT arguments.min>
+		<cfif len(trim(arguments.max)) AND (arguments.max LT arguments.min)>
 			<cfset local.response["message"] &= "Max should be greater than or equal to Min">
 		</cfif>
 
@@ -573,9 +573,9 @@
 					AND PI.fldDefaultImage = 1
 			WHERE
 				P.fldActive = 1
-				<cfif len(trim(local.subCategoryId)) AND local.subCategoryId NEQ -1>
+				<cfif local.subCategoryId NEQ -1>
 					AND P.fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
-				<cfelseif len(trim(local.productId)) AND local.productId NEQ -1>
+				<cfelseif local.productId NEQ -1>
 					AND P.fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
 				<cfelseif len(trim(arguments.productIdList))>
 					AND P.fldProduct_Id IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
@@ -748,8 +748,8 @@
 				tblProduct
 			WHERE
 				fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "varchar">
-				AND fldSubCategoryId = <cfqueryparam value = "#trim(local.subCategorySelect)#" cfsqltype = "integer">
-				AND fldProduct_Id != <cfqueryparam value = "#val(trim(local.productId))#" cfsqltype = "integer">
+				AND fldSubCategoryId = <cfqueryparam value = "#local.subCategorySelect#" cfsqltype = "integer">
+				AND fldProduct_Id != <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
 				AND fldActive = 1
 		</cfquery>
 
@@ -786,7 +786,7 @@
 						fldTax = <cfqueryparam value = "#trim(arguments.productTax)#" cfsqltype = "decimal">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldProduct_Id = <cfqueryparam value = "#val(trim(local.productId))#" cfsqltype = "integer">
+						fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "Product Updated">
 			<cfelse>
@@ -1462,7 +1462,7 @@
 				fldActive = 0,
 				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
 			WHERE
-				fldAddress_Id = <cfqueryparam value = "#trim(local.addressId)#" cfsqltype = "integer">
+				fldAddress_Id = <cfqueryparam value = "#local.addressId#" cfsqltype = "integer">
 		</cfquery>
 
 		<cfset local.response["message"] = "Address deleted succcessfully.">
