@@ -2,7 +2,7 @@
 <cfparam name="url.productId" default="">
 
 <!--- Get Data --->
-<cfset variables.addresses = application.shoppingCart.getAddress()>
+<cfset variables.addresses = application.dataFetch.getAddress()>
 <cfset variables.addressEmpty = arrayLen(variables.addresses.data) EQ 0 ? "disabled" : "">
 
 <!--- Variables to store total price and total actual price --->

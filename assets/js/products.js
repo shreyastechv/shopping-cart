@@ -29,7 +29,7 @@ function viewMore() {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/dataFetch.cfc",
 		data: {
 			method: "getProducts",
 			subCategoryId: urlSubCategoryId || "",

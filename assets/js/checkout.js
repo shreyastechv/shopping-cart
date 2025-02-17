@@ -38,7 +38,7 @@ function handleCheckout() {
 	// Validate card nummber and cvv
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/cartManagement.cfc",
 		data: {
 			method: "validateCard",
 			cardNumber: formattedCardNumber,
@@ -64,7 +64,7 @@ function createOrder(addressId) {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/cartManagement.cfc",
 		data: {
 			method: "createOrder",
 			addressId: addressId

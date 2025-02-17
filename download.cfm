@@ -10,7 +10,7 @@
 </cfif>
 
 <!--- Get order details --->
-<cfset variables.order = application.shoppingCart.getOrders(
+<cfset variables.order = application.dataFetch.getOrders(
 	orderId = url.orderId
 ).data[1]>
 

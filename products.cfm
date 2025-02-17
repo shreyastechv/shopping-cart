@@ -27,10 +27,10 @@
 <!--- Check URL Params --->
 <cfif len(trim(url.categoryId))>
 	<!--- Sub Category Product Listing --->
-	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
+	<cfset variables.subCategories = application.dataFetch.getSubCategories(categoryId = url.categoryId)>
 <cfelse>
 	<!--- Category or Search Product Listing --->
-	<cfset variables.products = application.shoppingCart.getProducts(
+	<cfset variables.products = application.dataFetch.getProducts(
 		subCategoryId = url.subCategoryId,
 		searchTerm = trim(url.search),
 		limit = variables.limit,
@@ -50,7 +50,7 @@
 				<cfset variables.encodedSubCategoryId  = urlEncodedFormat(item.subCategoryId)>
 
 				<!--- Gather products --->
-				<cfset variables.products = application.shoppingCart.getProducts(
+				<cfset variables.products = application.dataFetch.getProducts(
 					subCategoryId = item.subCategoryId,
 					random = 1,
 					limit = variables.limit

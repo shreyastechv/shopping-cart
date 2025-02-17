@@ -1,6 +1,6 @@
 <cfoutput>
 	<!--- Get Data --->
-	<cfset variables.categories = application.shoppingCart.getCategories()>
+	<cfset variables.categories = application.dataFetch.getCategories()>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">

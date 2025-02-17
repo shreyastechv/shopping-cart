@@ -7,13 +7,13 @@
 </cfif>
 
 <!--- Get Data if productId is given --->
-<cfset variables.productInfo = application.shoppingCart.getProducts(productId = url.productId)>
-<cfset variables.qryProductImages = application.shoppingCart.getProductImages(productId = url.productId)>
+<cfset variables.productInfo = application.dataFetch.getProducts(productId = url.productId)>
+<cfset variables.qryProductImages = application.dataFetch.getProductImages(productId = url.productId)>
 
 <!--- Handle add to cart button --->
 <cfif structKeyExists(form, "addToCart")>
 	<cfif structKeyExists(session, "userId")>
-		<cfset application.shoppingCart.modifyCart(
+		<cfset application.cartManagement.modifyCart(
 			productId = url.productId,
 			action = "increment"
 		)>
@@ -28,7 +28,7 @@
 <!--- Handle buy now button --->
 <cfif structKeyExists(form, "buyNow")>
 	<cfif structKeyExists(session, "userId")>
-		<cfset application.shoppingCart.modifyCart(
+		<cfset application.cartManagement.modifyCart(
 			productId = url.productId,
 			action = "increment"
 		)>

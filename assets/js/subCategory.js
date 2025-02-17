@@ -67,7 +67,7 @@ function processSubCategoryForm() {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/productManagement.cfc",
 		data: {
 			method: "modifySubCategory",
 			subCategoryId: subCategoryId,
@@ -126,7 +126,7 @@ function deleteSubCategory(containerId, subCategoryId, subCategoryName) {
 	if (confirm(`Delete subCategory - '${subCategoryName}'?`)) {
 		$.ajax({
 			type: "POST",
-			url: "./components/shoppingCart.cfc",
+			url: "./components/productManagement.cfc",
 			data: {
 				method: "deleteSubCategory",
 				subCategoryId: subCategoryId

@@ -13,7 +13,7 @@
 
 	<!--- Get Product Details --->
 	<cfif structCount(variables.products)>
-		<cfset variables.productInfo = application.shoppingCart.getProducts(productIdList = structKeyList(variables.products))>
+		<cfset variables.productInfo = application.dataFetch.getProducts(productIdList = structKeyList(variables.products))>
 
 		<cfloop array="#variables.productInfo.data#" item="item" index="i">
 			<!--- Encode Product ID since it is passed to URL param --->

@@ -1,4 +1,4 @@
-<cfset variables.randomProducts = application.shoppingCart.getProducts(
+<cfset variables.randomProducts = application.dataFetch.getProducts(
 	random = 1,
 	limit = 12
 )>

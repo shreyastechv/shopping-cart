@@ -4,14 +4,14 @@
 
 <!--- Login Logic --->
 <cfif structKeyExists(form, "loginBtn")>
-	<cfset variables.loginResult = application.shoppingCart.login(
+	<cfset variables.loginResult = application.userManagement.login(
 		userInput = form.userInput,
 		password = form.password
 	)>
 	<cfif variables.loginResult.message EQ "Login successful">
 		<!--- Add product to cart if user came from product page --->
 		<cfif len(trim(url.productId))>
-			<cfset application.shoppingCart.modifyCart(
+			<cfset application.cartManagement.modifyCart(
 				productId = url.productId,
 				action = "increment"
 			)>

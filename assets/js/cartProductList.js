@@ -42,7 +42,7 @@ function editCartItem(containerId, productId, action) {
 	//Go on with execution if no alert is generated
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/cartManagement.cfc",
 		data: {
 			method: currentPage == "checkout.cfm" ? "modifyCheckout" : "modifyCart",
 			productId: productId,

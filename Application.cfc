@@ -11,7 +11,13 @@
 		<cfset application.imageDirectory = "/assets/images/">
 		<cfset application.productImageDirectory = "/assets/images/productImages/">
 		<cfset application.secretKey = "xpzpO2awP8KM+/nk1vmmFA==">
-		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
+
+		<!--- Create component objects --->
+		<cfset application.cartManagement = createObject("component", "components.cartManagement")>
+		<cfset application.commonFunctions = createObject("component", "components.commonFunctions")>
+		<cfset application.dataFetch = createObject("component", "components.dataFetch")>
+		<cfset application.productManagement = createObject("component", "components.productManagement")>
+		<cfset application.userManagement = createObject("component", "components.userManagement")>
 
 		<!--- Map pages to title, css and script path --->
 		<cfset application.pageDetailsMapping = {
@@ -87,7 +93,7 @@
 		<cflocation url="/404.cfm" addToken="false">
 	</cffunction>
 
-	<cffunction name="onError" returnType="void">
+	<!---<cffunction name="onError" returnType="void">
 		<cfargument name="exception" required=true>
 		<cfargument name="eventName" type="string" required=true>
 
@@ -97,7 +103,7 @@
 
 			<cflocation url="/error.cfm?eventName=#arguments.eventName#" addToken="false">
 		</cfif>
-	</cffunction>
+	</cffunction>--->
 
 	<cffunction name="onRequestStart" returnType="boolean">
 		<cfargument name="targetPage" type="string" required=true>
@@ -171,7 +177,7 @@
 		>
 			<!--- Update cart asynchronously --->
 			<cfthread name="cartUpdateThread">
-				<cfset application.shoppingCart.updateCartBatch(
+				<cfset application.cartManagement.updateCartBatch(
 					userId = session.userId,
 					cartData = session.cart
 				)>

@@ -5,11 +5,11 @@
 
 <cfoutput>
 	<!--- Get Data --->
-	<cfset variables.categories = application.shoppingCart.getCategories()>
-	<cfset variables.products = application.shoppingCart.getProducts(subCategoryId = url.subCategoryId)>
-	<cfset variables.brands = application.shoppingCart.getBrands()>
+	<cfset variables.categories = application.dataFetch.getCategories()>
+	<cfset variables.products = application.dataFetch.getProducts(subCategoryId = url.subCategoryId)>
+	<cfset variables.brands = application.dataFetch.getBrands()>
 	<cfset variables.categoryId = arrayLen(variables.products.data) ? variables.products.data[1].categoryId : 0>
-	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = variables.categoryId)>
+	<cfset variables.subCategories = application.dataFetch.getSubCategories(categoryId = variables.categoryId)>
 	<cfset variables.subCategoryName = arrayLen(variables.products.data) ? variables.products.data[1].subCategoryName : "Products">
 
 	<!--- Main Content --->

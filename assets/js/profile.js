@@ -26,7 +26,7 @@ $(document).ready(function () {
 function deleteAddress(containerId, addressId) {
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/userManagement.cfc",
 		data: {
 			method: "deleteAddress",
 			addressId: addressId
@@ -105,7 +105,7 @@ function processProfileForm() {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/userManagement.cfc",
 		data: {
 			method: "editProfile",
 			firstName: firstName.val().trim(),

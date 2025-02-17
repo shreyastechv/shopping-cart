@@ -22,8 +22,8 @@
 		</head>
 
 		<!--- Variables --->
-		<cfset variables.categories = application.shoppingCart.getCategories()>
-		<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
+		<cfset variables.categories = application.dataFetch.getCategories()>
+		<cfset variables.subCategories = application.dataFetch.getSubCategories()>
 		<cfset variables.catToSubcatMapping = {}>
 
 		<!--- Loop through sub categories --->

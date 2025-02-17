@@ -9,7 +9,7 @@
 </cfif>
 
 <!--- Get Data --->
-<cfset variables.orders = application.shoppingCart.getOrders(
+<cfset variables.orders = application.dataFetch.getOrders(
 	searchTerm = url.s,
 	pageNumber = url.pageNumber,
 	pageSize = variables.pageSize

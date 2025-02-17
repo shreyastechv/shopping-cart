@@ -3,8 +3,8 @@
 
 <cfoutput>
 	<!--- Get Data --->
-	<cfset variables.categories = application.shoppingCart.getCategories()>
-	<cfset variables.subCategories = application.shoppingCart.getSubCategories(categoryId = url.categoryId)>
+	<cfset variables.categories = application.dataFetch.getCategories()>
+	<cfset variables.subCategories = application.dataFetch.getSubCategories(categoryId = url.categoryId)>
 	<cfset variables.categoryName = arrayLen(variables.subCategories.data) ? variables.subCategories.data[1].categoryName : "Sub Categories">
 
 	<!--- Main Content --->

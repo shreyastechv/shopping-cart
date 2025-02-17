@@ -97,7 +97,7 @@ function processAddressForm() {
 
   $.ajax({
     type: "POST",
-    url: "./components/shoppingCart.cfc",
+    url: "./components/userManagement.cfc",
     data: {
       method: "addAddress",
       firstName: firstName.val().trim(),

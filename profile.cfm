@@ -1,5 +1,5 @@
 <!--- Get Data --->
-<cfset variables.addresses = application.shoppingCart.getAddress()>
+<cfset variables.addresses = application.dataFetch.getAddress()>
 
 <cfoutput>
     <div class="container mt-5">

@@ -3,7 +3,7 @@
 
 <!--- Signup Logic --->
 <cfif structKeyExists(form, "signupBtn")>
-	<cfset variables.signUpResult = application.shoppingCart.signup(
+	<cfset variables.signUpResult = application.userManagement.signup(
 		firstName = form.firstName,
 		lastName = form.lastName,
 		email = form.email,
