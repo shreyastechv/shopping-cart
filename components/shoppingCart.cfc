@@ -337,7 +337,7 @@
 		<cfset local.categoryId = decryptText(arguments.categoryId)>
 
 		<!--- Category Id Validation --->
-		<cfif (len(trim(arguments.categoryId)) NEQ 0) AND (local.categoryId EQ -1)>
+		<cfif len(trim(arguments.categoryId)) AND (local.categoryId EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Category Id is invalid. ">
 		</cfif>
@@ -506,8 +506,8 @@
 		<cfargument name="limit" type="integer" required="false" default=6>
 		<cfargument name="offset" type="integer" required="false" default=0>
 		<cfargument name="sort" type="string" required="false" default="">
-		<cfargument name="min" type="float" required="false" default="0">
-		<cfargument name="max" type="float" required="false" default="0">
+		<cfargument name="min" type="float" required="false" default=0>
+		<cfargument name="max" type="float" required="false" default=0>
 		<cfargument name="searchTerm" type="string" required="false" default="">
 
 		<cfset local.response = {
@@ -524,13 +524,13 @@
 		})>
 
 		<!--- Sub Category Id Validation --->
-		<cfif (len(trim(arguments.subCategoryId)) NEQ 0) AND (local.subCategoryId EQ -1)>
+		<cfif len(trim(arguments.subCategoryId)) AND (local.subCategoryId EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
 
 		<!--- Product Id Validation --->
-		<cfif (len(trim(arguments.productId)) NEQ 0) AND (local.productId EQ -1)>
+		<cfif len(trim(arguments.productId)) AND (local.productId EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Product Id is invalid. ">
 		</cfif>
@@ -582,7 +582,7 @@
 				</cfif>
 
 				<!--- 0 is the default value of arguments.max hence it should not be used --->
-				<cfif len(trim(arguments.max)) AND trim(arguments.max) NEQ 0>
+				<cfif val(arguments.max) NEQ 0>
 					AND P.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
 						AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
 				</cfif>
@@ -698,7 +698,7 @@
 		</cfif>
 
 		<!--- Sub Category Id Validation --->
-		<cfif (len(trim(arguments.subCategorySelect)) NEQ 0) AND (local.subCategorySelect EQ -1)>
+		<cfif len(trim(arguments.subCategorySelect)) AND (local.subCategorySelect EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
@@ -711,7 +711,7 @@
 		</cfif>
 
 		<!--- Brand Id Validation --->
-		<cfif (len(trim(arguments.brandSelect)) NEQ 0) AND (local.brandSelect EQ -1)>
+		<cfif len(trim(arguments.brandSelect)) AND (local.brandSelect EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
 		</cfif>
@@ -1278,7 +1278,7 @@
 		<cfset local.addressId = decryptText(arguments.addressId)>
 
 		<!--- Address Id Validation --->
-		<cfif (len(arguments.addressId) NEQ 0) AND (local.addressId EQ -1)>
+		<cfif len(arguments.addressId) AND (local.addressId EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] = "Address Id is invalid.">
 		</cfif>
@@ -1444,7 +1444,7 @@
 		<cfset local.addressId = decryptText(arguments.addressId)>
 
 		<!--- Address Id Validation --->
-		<cfif (len(arguments.addressId) NEQ 0) AND (local.addressId EQ -1)>
+		<cfif len(arguments.addressId) AND (local.addressId EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] = "Address Id is invalid.">
 		</cfif>

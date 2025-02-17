@@ -9,7 +9,7 @@
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>
 
-<cfif len(trim(url.productId)) NEQ 0>
+<cfif len(trim(url.productId))>
 	<!--- Product details when this page was opened by clicking buy now from product page --->
 	<cfset session.checkout[url.productId] = {
 		"quantity" = 1
