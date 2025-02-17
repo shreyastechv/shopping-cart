@@ -174,6 +174,7 @@ function showAddProductModal(categoryId) {
 	 $("#categorySelect").val(categoryId).change();
 	$("#subCategoryModalBtn").text("Add Product");
 	$("#productImagePreview").empty();
+	$("#uploadedProductImages").empty();
 }
 
 function showEditProductModal(categoryId, productId) {
@@ -189,6 +190,8 @@ function showEditProductModal(categoryId, productId) {
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
 			const objProductData = responseJSON.data[0];
+			const productImages = objProductData.productImages.split(",");
+			const productImageIds = objProductData.productImageIds.split(",");
 
 			 $("#categorySelect").val(categoryId).change();
 			$("#productName").val(objProductData.productName);
@@ -199,6 +202,21 @@ function showEditProductModal(categoryId, productId) {
 			$("#productImage").val("");
 			$("#subCategoryModalBtn").text("Edit Product");
 			$("#productImagePreview").empty();
+			$("#uploadedProductImages").empty();
+			$.each(productImages, function (i, file) {
+				let imgDiv = $(`
+					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100">
+						<img src="${productImageDirectory}${file}" class="img-fluid mb-2 h-75">
+						<div class="d-flex justify-content-around">
+							<input type="radio" name="defaultImageId" value="${productImageIds[i]}" ${i == 0 ? "checked" : ""}>
+							<button type="button" class="btn btn-sm ${i == 0 ? 'd-none' : ''}" onclick="deleteProduct('uploadedProductImageContainer_${i}', '${productImageIds[i]}')">
+								<i class="fa-solid fa-xmark pe-none"></i>
+							</button>
+						</div>
+					</div>
+				`);
+				$("#uploadedProductImages").append(imgDiv);
+			});
 		}
 	});
 }
@@ -246,62 +264,6 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 	$("#productMainContainer").append(productItem);
 }
 
-function createCarousel(productId) {
-	$.ajax({
-		type: "POST",
-		url: "./components/dataFetch.cfc",
-		data: {
-			method: "getProductImages",
-			productId: productId
-		},
-		success: function(response) {
-			const responseJSON = JSON.parse(response);
-			$("#carouselContainer").empty();
-			for(let i=0; i<responseJSON.data.length; i++) {
-				const isActive = i == 0 ? "active" : ""; // Set active for the first item
-				const bottomDiv = responseJSON.data[i].defaultImage == 1 ? `
-					<div class="text-center p-2">
-						Default Image
-					</div>
-				`: `
-					<div class="d-flex justify-content-center pt-3 gap-5">
-						<button class="btn btn-success" onclick="setDefaultImage('${responseJSON.data[i].imageId}')">Set as Default</button>
-						<button class="btn btn-danger" onclick="deleteImage('imageContainer_${i}', '${responseJSON.data[i].imageId}')">Delete</button>
-					</div>
-				`;
-				const carouselItem = `
-					<div class="carousel-item ${isActive}" id="imageContainer_${i}">
-						<div class="d-flex justify-content-center">
-							<img src="${productImageDirectory}${responseJSON.data[i].imageFileName}" alt="Product Image">
-						</div>
-						${bottomDiv}
-					</div>
-				`;
-				$("#carouselContainer").append(carouselItem);
-			}
-		}
-	});
-}
-
-function editDefaultImage(productId) {
-	createCarousel(productId);
-	$("#productImageModal").modal("show");
-}
-
-function setDefaultImage(imageId) {
-	$.ajax({
-		type: "POST",
-		url: "./components/productManagement.cfc",
-		data: {
-			method: "setDefaultImage",
-			imageId: imageId
-		},
-		success: function() {
-			window.location.reload();
-		}
-	});
-}
-
 function deleteImage(containerId, imageId) {
 	$.ajax({
 		type: "POST",
@@ -313,7 +275,7 @@ function deleteImage(containerId, imageId) {
 		success: function() {
 			const carousel = new bootstrap.Carousel($('#productImageCarousel'));
 			carousel.next();
-      $(`#${containerId}`).remove();
+			$(`#${containerId}`).remove();
 		}
 	});
 }

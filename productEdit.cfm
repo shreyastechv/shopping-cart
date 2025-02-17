@@ -35,10 +35,8 @@
 							<div name="brandName" class="fw-semibold">#item.brandName#</div>
 							<div name="price" class="text-success">Rs.#item.price#</div>
 						</div>
-						<div>
-							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage('#item.productId#')">
-								<img class="pe-none" src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" width="50">
-							</button>
+						<div class="d-flex gap-4">
+							<img class="pe-none" src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" width="50">
 							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
@@ -122,9 +120,7 @@
 				<label for="productImage" class="fw-semibold">Product Image</label>
 				<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control mb-1" multiple>
 				<div id="productImageError" class="text-danger error"></div>
-				<div class="d-flex flex-wrap gap-3 mt-4">
-
-				</div>
+				<div id="uploadedProductImages" class="d-flex flex-wrap gap-3 mt-4"></div>
 				<div id="productImagePreview" class="d-flex flex-wrap gap-3 mt-4"></div>
 			  </div>
 			  <div class="modal-footer">
@@ -132,32 +128,6 @@
 				<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Add Product</button>
 			  </div>
 		  </form>
-		</div>
-	  </div>
-	</div>
-
-	<!--- Product Image Modal --->
-	<div class="modal fade" id="productImageModal">
-	  <div class="modal-dialog w-50">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h1 class="modal-title fs-5" id="imageModalLabel">Product Images</h1>
-			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		  </div>
-		  <div class="modal-body" data-bs-theme="dark">
-			<div id="productImageCarousel" class="carousel slide">
-			  <div id="carouselContainer" class="carousel-inner">
-			  </div>
-			  <button class="carousel-control-prev" type="button" data-bs-target="##productImageCarousel" data-bs-slide="prev">
-				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				<span class="visually-hidden">Previous</span>
-			  </button>
-			  <button class="carousel-control-next" type="button" data-bs-target="##productImageCarousel" data-bs-slide="next">
-				<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				<span class="visually-hidden">Next</span>
-			  </button>
-			</div>
-		  </div>
 		</div>
 	  </div>
 	</div>

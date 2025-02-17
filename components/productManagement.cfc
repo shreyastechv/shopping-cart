@@ -236,6 +236,7 @@
 		<cfargument name="productPrice" type="float" required=true>
 		<cfargument name="productTax" type="float" required=true>
 		<cfargument name="productImage" type="string" required=true>
+		<cfargument name="defaultImageId" type="string" required=true>
 
 		<cfset local.response = {
 			"message" = ""
@@ -245,6 +246,7 @@
 		<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
 		<cfset local.subCategorySelect = application.commonFunctions.decryptText(arguments.subCategorySelect)>
 		<cfset local.brandSelect = application.commonFunctions.decryptText(arguments.brandSelect)>
+		<cfset local.defaultImageId = application.commonFunctions.decryptText(arguments.defaultImageId)>
 
 		<!--- Product Id Validation --->
 		<cfif len(trim(arguments.productId)) AND (local.productId EQ -1)>
@@ -343,6 +345,12 @@
 					WHERE
 						fldProduct_Id = <cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">
 				</cfquery>
+
+				<!--- Not equal to -1 means we selected an already uploaded image --->
+				<cfif val(local.defaultImageId) NEQ -1>
+					<cfset setDefaultImage(imageId = arguments.defaultImageId)>
+				</cfif>
+
 				<cfset local.response["message"] = "Product Updated">
 			<cfelse>
 				<cfquery name="local.qryAddProduct" result="local.resultAddProduct">
@@ -368,7 +376,7 @@
 				</cfquery>
 				<cfset local.productId = local.resultAddProduct.GENERATED_KEY>
 				<cfset local.response["productId"] = application.commonFunctions.encryptText(local.resultAddProduct.GENERATED_KEY)>
-				<cfset local.response["defaultImageFile"] = local.uploadedImages[1].serverFile>
+				<cfset local.response["defaultImageFile"] = local.uploadedImages[val(arguments.defaultImageId)].serverFile>
 				<cfset local.response["message"] = "Product Added">
 			</cfif>
 
@@ -387,7 +395,7 @@
 							(
 								<cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">,
 								<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "varchar">,
-								<cfqueryparam value = "#(local.i EQ 1 AND len(trim(arguments.productId)) EQ 0 ? 1 : 0)#" cfsqltype = "tinyint">,
+								<cfqueryparam value = "#(local.i EQ val(arguments.defaultImageId) ? 1 : 0)#" cfsqltype = "tinyint">,
 								<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 							)
 							<cfif local.i LT arrayLen(local.uploadedImages)>,</cfif>

@@ -151,6 +151,7 @@
 				P.fldTax,
 				B.fldBrandName,
 				GROUP_CONCAT(PI.fldImageFileName ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldProductImages,
+				GROUP_CONCAT(PI.fldProductImage_Id ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldProductImageIds,
 				GROUP_CONCAT(PI.fldDefaultImage ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldDefaultImageValues,
 				C.fldCategory_Id,
 				SC.fldSubCategoryName
@@ -226,6 +227,9 @@
 				"price": local.qryGetProducts.fldPrice,
 				"tax": local.qryGetProducts.fldTax,
 				"productImages": local.qryGetProducts.fldProductImages,
+				"productImageIds": listMap(local.qryGetProducts.fldProductImageIds, function(item) {
+					return application.commonFunctions.encryptText(item);
+				}),
 				"defaultImageValues": local.qryGetProducts.fldDefaultImageValues,
 				"categoryId": application.commonFunctions.encryptText(local.qryGetProducts.fldCategory_Id),
 				"subCategoryName": local.qryGetProducts.fldSubCategoryName
