@@ -46,7 +46,7 @@
 		  <form id="categoryForm" method="post" class="form-group" onsubmit="processCategoryForm()">
 			  <div class="modal-body">
 				<input type="hidden" id="categoryId" name="categoryId" value="">
-				<input type="text" id="categoryName" name="categoryName" placeholder="Category name" class="form-control">
+				<input type="text" id="categoryName" name="categoryName" maxlength="64" placeholder="Category name" class="form-control">
 				<div id="categoryModalMsg" class="mt-2"></div>
 			  </div>
 			  <div class="modal-footer">

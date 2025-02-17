@@ -42,17 +42,17 @@
 					<div class="modal-body px-4">
 						<div class="mb-3">
 							<label for="userFirstName" class="form-label">First Name</label>
-							<input type="text" class="form-control profileInput" id="userFirstName" value="#session.firstName#">
+							<input type="text" class="form-control profileInput" id="userFirstName" maxlength="32" value="#session.firstName#">
 							<div id="userFirstNameError" class="form-text text-danger profileError"></div>
 						</div>
 						<div class="mb-3">
 							<label for="userLastName" class="form-label">Last Name</label>
-							<input type="text" class="form-control profileInput" id="userLastName" value="#session.lastName#">
+							<input type="text" class="form-control profileInput" id="userLastName" maxlength="32" value="#session.lastName#">
 							<div id="userLastNameError" class="form-text text-danger profileError"></div>
 						</div>
 						<div class="mb-3">
 							<label for="userEmail" class="form-label">Email</label>
-							<input type="text" class="form-control profileInput" id="userEmail" name="email" value="#session.email#" autocomplete="on">
+							<input type="text" class="form-control profileInput" id="userEmail" name="email" maxlength="100" value="#session.email#" autocomplete="on">
 							<div id="userEmailError" class="form-text text-danger profileError"></div>
 						</div>
 						<div class="mb-3">

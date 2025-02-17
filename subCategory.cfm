@@ -66,7 +66,7 @@
 					</cfloop>
 				</select>
 				<div id="categorySelectError" class="mt-2 text-danger"></div>
-				<input type="text" id="subCategoryName" name="subCategoryName" placeholder="Sub Category name" class="form-control mt-3">
+				<input type="text" id="subCategoryName" name="subCategoryName" maxlength="64" placeholder="Sub Category name" class="form-control mt-3">
 				<div id="subCategoryModalMsg" class="mt-2"></div>
 			  </div>
 			  <div class="modal-footer">

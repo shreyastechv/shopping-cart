@@ -31,19 +31,19 @@
 				</div>
 				<form id="signupForm" name="loginForm" method="post" onsubmit="validateForm()">
 					<div class="mb-3">
-						<input type="text" class="form-control input" id="firstName" name="firstName" placeholder="First name" autocomplete="given-name">
+						<input type="text" class="form-control input" id="firstName" name="firstName" placeholder="First name" maxlength="32" autocomplete="given-name">
 						<div id="firstNameError" class="error text-danger ps-2"></div>
 					</div>
 					<div class="mb-3">
-						<input type="text" class="form-control input" id="lastName" name="lastName" placeholder="Last name" autocomplete="family-name">
+						<input type="text" class="form-control input" id="lastName" name="lastName" placeholder="Last name" maxlength="32" autocomplete="family-name">
 						<div id="lastNameError" class="error text-danger ps-2"></div>
 					</div>
 					<div class="mb-3">
-						<input type="text" class="form-control input" id="email" name="email" placeholder="Email" autocomplete="email">
+						<input type="text" class="form-control input" id="email" name="email" placeholder="Email" maxlength="100" autocomplete="email">
 						<div id="emailError" class="error text-danger ps-2"></div>
 					</div>
 					<div class="mb-3">
-						<input type="text" class="form-control input" id="phone" name="phone" maxlength="10" placeholder="Phone" autocomplete="tel">
+						<input type="text" class="form-control input" id="phone" name="phone" placeholder="Phone" maxlength="10" autocomplete="tel">
 						<div id="phoneError" class="error text-danger ps-2"></div>
 					</div>
 					<div class="mb-3">

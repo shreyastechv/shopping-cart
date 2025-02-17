@@ -90,7 +90,7 @@
 
 				<!--- Product Name --->
 				<label for="productName" class="fw-semibold">Product Name</label>
-				<input type="text" id="productName" name="productName" class="form-control mb-1">
+				<input type="text" id="productName" name="productName" maxlength="100" class="form-control mb-1">
 				<div id="productNameError" class="text-danger error"></div>
 
 				<!--- Product Brand --->
@@ -110,7 +110,7 @@
 
 				<!--- Product Price --->
 				<label for="productPrice" class="fw-semibold">Product Price</label>
-				<input type="number" step="0.01" min="0" id="productPrice" name="productPrice" class="form-control mb-1">
+				<input type="number" step="0.01" min="0" id="productPrice" max="99999999" name="productPrice" class="form-control mb-1">
 				<div id="productPriceError" class="text-danger error"></div>
 
 				<!--- Product Tax --->
