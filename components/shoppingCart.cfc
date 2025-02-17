@@ -832,7 +832,7 @@
 							(
 								<cfqueryparam value = "#local.productId#" cfsqltype = "integer">,
 								<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "varchar">,
-								(local.i EQ 1 ? 1 : 0),
+								<cfqueryparam value = "#(local.i EQ 1 AND len(trim(arguments.productId)) EQ 0 ? 1 : 0)#" cfsqltype = "tinyint">,
 								<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 							)
 							<cfif local.i LT arrayLen(local.uploadedImages)>,</cfif>
