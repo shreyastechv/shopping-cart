@@ -266,7 +266,7 @@
 						fldCategoryName = <cfqueryparam value = "#trim(arguments.categoryName)#" cfsqltype = "varchar">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldCategory_Id = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
+						fldCategory_Id = <cfqueryparam value = "#val(local.categoryId)#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "Category Updated">
 			<cfelse>
@@ -320,7 +320,7 @@
 		<!--- Continue with code execution if validation succeeds --->
 		<cfstoredproc procedure="spDeleteItem">
 			<cfprocparam cfsqltype="varchar" variable="item" value="category">
-			<cfprocparam cfsqltype="integer" variable="itemId" value="#local.categoryId#">
+			<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.categoryId)#">
 			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
 		</cfstoredproc>
 	</cffunction>
@@ -360,7 +360,7 @@
 			WHERE
 				SC.fldActive = 1
 				<cfif local.categoryId NEQ -1>
-					AND SC.fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
+					AND SC.fldCategoryId = <cfqueryparam value = "#val(local.categoryId)#" cfsqltype = "integer">
 				</cfif>
 		</cfquery>
 
@@ -424,8 +424,8 @@
 				tblSubCategory
 			WHERE
 				fldSubCategoryName = <cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">
-				AND fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">
-				AND fldSubCategory_Id != <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
+				AND fldCategoryId = <cfqueryparam value = "#val(local.categoryId)#" cfsqltype = "integer">
+				AND fldSubCategory_Id != <cfqueryparam value = "#val(local.subCategoryId)#" cfsqltype = "integer">
 				AND fldActive = 1
 		</cfquery>
 
@@ -439,10 +439,10 @@
 						tblSubCategory
 					SET
 						fldSubCategoryName = <cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">,
-						fldCategoryId = <cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">,
+						fldCategoryId = <cfqueryparam value = "#val(local.categoryId)#" cfsqltype = "integer">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldSubCategory_Id = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
+						fldSubCategory_Id = <cfqueryparam value = "#val(local.subCategoryId)#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "SubCategory Updated">
 			<cfelse>
@@ -455,7 +455,7 @@
 						)
 					VALUES (
 						<cfqueryparam value = "#trim(arguments.subCategoryName)#" cfsqltype = "varchar">,
-						<cfqueryparam value = "#local.categoryId#" cfsqltype = "integer">,
+						<cfqueryparam value = "#val(local.categoryId)#" cfsqltype = "integer">,
 						<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					)
 				</cfquery>
@@ -493,7 +493,7 @@
 		<!--- Continue with code execution if validation succeeds --->
 		<cfstoredproc procedure="spDeleteItem">
 			<cfprocparam cfsqltype="varchar" variable="item" value="subcategory">
-			<cfprocparam cfsqltype="integer" variable="itemId" value="#local.subCategoryId#">
+			<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.subCategoryId)#">
 			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
 		</cfstoredproc>
 	</cffunction>
@@ -574,9 +574,9 @@
 			WHERE
 				P.fldActive = 1
 				<cfif local.subCategoryId NEQ -1>
-					AND P.fldSubCategoryId = <cfqueryparam value = "#local.subCategoryId#" cfsqltype = "integer">
+					AND P.fldSubCategoryId = <cfqueryparam value = "#val(local.subCategoryId)#" cfsqltype = "integer">
 				<cfelseif local.productId NEQ -1>
-					AND P.fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+					AND P.fldProduct_Id = <cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">
 				<cfelseif len(trim(arguments.productIdList))>
 					AND P.fldProduct_Id IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 				</cfif>
@@ -749,7 +749,7 @@
 			WHERE
 				fldProductName = <cfqueryparam value = "#trim(arguments.productName)#" cfsqltype = "varchar">
 				AND fldSubCategoryId = <cfqueryparam value = "#local.subCategorySelect#" cfsqltype = "integer">
-				AND fldProduct_Id != <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+				AND fldProduct_Id != <cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">
 				AND fldActive = 1
 		</cfquery>
 
@@ -786,7 +786,7 @@
 						fldTax = <cfqueryparam value = "#trim(arguments.productTax)#" cfsqltype = "decimal">,
 						fldUpdatedBy = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 					WHERE
-						fldProduct_Id = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+						fldProduct_Id = <cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">
 				</cfquery>
 				<cfset local.response["message"] = "Product Updated">
 			<cfelse>
@@ -830,7 +830,7 @@
 					VALUES
 						<cfloop array="#local.uploadedImages#" item="local.image" index="local.i">
 							(
-								<cfqueryparam value = "#local.productId#" cfsqltype = "integer">,
+								<cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">,
 								<cfqueryparam value = "#local.image.serverFile#" cfsqltype = "varchar">,
 								<cfqueryparam value = "#(local.i EQ 1 AND len(trim(arguments.productId)) EQ 0 ? 1 : 0)#" cfsqltype = "tinyint">,
 								<cfqueryparam value = "#session.userId#" cfsqltype = "integer">
@@ -870,7 +870,7 @@
 		<!--- Continue with code execution if validation succeeds --->
 		<cfstoredproc procedure="spDeleteItem">
 			<cfprocparam cfsqltype="varchar" variable="item" value="product">
-			<cfprocparam cfsqltype="integer" variable="itemId" value="#local.productId#">
+			<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.productId)#">
 			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
 		</cfstoredproc>
 	</cffunction>
@@ -908,7 +908,7 @@
 			FROM
 				tblProductImages
 			WHERE
-				fldProductId = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+				fldProductId = <cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">
 				AND fldActive = 1
 			ORDER BY
 				fldDefaultImage DESC <!--- This is to make sure default image comes first --->
@@ -956,7 +956,7 @@
 			SET
 				fldDefaultImage =
 					CASE
-						WHEN fldProductImage_Id = <cfqueryparam value = "#local.imageId#" cfsqltype = "integer"> THEN 1
+						WHEN fldProductImage_Id = <cfqueryparam value = "#val(local.imageId)#" cfsqltype = "integer"> THEN 1
 						ELSE 0
 					END
 			WHERE
@@ -967,7 +967,7 @@
 					FROM
 						tblProductImages
 					WHERE
-						fldProductImage_Id = <cfqueryparam value = "#local.imageId#" cfsqltype = "integer">
+						fldProductImage_Id = <cfqueryparam value = "#val(local.imageId)#" cfsqltype = "integer">
 				);
 		</cfquery>
 	</cffunction>
@@ -998,7 +998,7 @@
 		<!--- Continue with code execution if validation succeeds --->
 		<cfstoredproc procedure="spDeleteItem">
 			<cfprocparam cfsqltype="varchar" variable="item" value="productimage">
-			<cfprocparam cfsqltype="integer" variable="itemId" value="#local.imageId#">
+			<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.imageId)#">
 			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
 		</cfstoredproc>
 
@@ -1305,7 +1305,7 @@
 			WHERE
 				fldActive = 1
 				<cfif local.addressId NEQ -1>
-					AND fldAddress_Id = <cfqueryparam value = "#local.addressId#" cfsqltype = "integer">
+					AND fldAddress_Id = <cfqueryparam value = "#val(local.addressId)#" cfsqltype = "integer">
 				<cfelse>
 					AND fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
 				</cfif>
@@ -1462,7 +1462,7 @@
 				fldActive = 0,
 				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
 			WHERE
-				fldAddress_Id = <cfqueryparam value = "#local.addressId#" cfsqltype = "integer">
+				fldAddress_Id = <cfqueryparam value = "#val(local.addressId)#" cfsqltype = "integer">
 		</cfquery>
 
 		<cfset local.response["message"] = "Address deleted succcessfully.">
@@ -1757,7 +1757,7 @@
 			<cfstoredproc procedure="spCreateOrderItems">
 				<cfprocparam type="in" cfsqltype="varchar" variable="p_orderId" value="#local.orderId#">
 				<cfprocparam type="in" cfsqltype="integer" variable="p_userId" value="#session.userId#">
-				<cfprocparam type="in" cfsqltype="integer" variable="p_addressId" value="#local.addressId#">
+				<cfprocparam type="in" cfsqltype="integer" variable="p_addressId" value="#val(local.addressId)#">
 				<cfprocparam type="in" cfsqltype="decimal" variable="p_totalPrice" value="#local.totalPrice#">
 				<cfprocparam type="in" cfsqltype="decimal" variable="p_totalTax" value="#local.totalTax#">
 				<cfprocparam type="in" cfsqltype="longvarchar" variable="p_jsonProducts" value="#local.productJSON#">
