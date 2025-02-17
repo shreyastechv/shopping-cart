@@ -8,7 +8,6 @@
 
 <!--- Get Data if productId is given --->
 <cfset variables.productInfo = application.dataFetch.getProducts(productId = url.productId)>
-<cfset variables.qryProductImages = application.dataFetch.getProductImages(productId = url.productId)>
 
 <!--- Handle add to cart button --->
 <cfif structKeyExists(form, "addToCart")>
@@ -47,10 +46,10 @@
 			<div class="col-md-4" data-bs-theme="dark">
 				<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 h-100 shadow">
 					<div class="carousel-inner">
-						<cfloop array="#variables.qryProductImages.data#" item="variables.imageItem">
-							<div class="carousel-item #(variables.imageItem.defaultImage EQ 1 ? "active" : "")#">
+						<cfloop list="#variables.productInfo.data[1].productImages#" item="item" index="i">
+							<div class="carousel-item #(listGetAt(variables.productInfo.data[1].defaultImageValues, i) EQ 1 ? "active" : "")#">
 								<div class="d-flex justify-content-center">
-									<img src="#application.productImageDirectory&variables.imageItem.imageFileName#" class="img-fluid" alt="Product Image">
+									<img src="#application.productImageDirectory&item#" class="img-fluid" alt="Product Image">
 								</div>
 							</div>
 						</cfloop>

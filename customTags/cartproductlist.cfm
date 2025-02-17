@@ -42,7 +42,7 @@
 				<div class="row g-0">
 					<div class="col-md-4 p-3">
 						<a href="/productPage.cfm?productId=#variables.encodedProductId#">
-							<img src="#application.productImageDirectory&item.productImage#" class="img-fluid rounded-start" alt="Product">
+							<img src="#application.productImageDirectory&listGetAt(item.productImages, ListContains(item.defaultImageValues, '1'))#" class="img-fluid rounded-start" alt="Product">
 						</a>
 					</div>
 					<div class="col-md-8">

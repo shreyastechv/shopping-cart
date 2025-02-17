@@ -150,8 +150,8 @@
 				P.fldPrice,
 				P.fldTax,
 				B.fldBrandName,
-				PI.fldImageFileName AS fldProductImages,
-				PI.fldDefaultImage AS fldDefaultImageValues
+				GROUP_CONCAT(PI.fldImageFileName SEPARATOR ',') AS fldProductImages,
+				GROUP_CONCAT(PI.fldDefaultImage SEPARATOR ',') AS fldDefaultImageValues,
 				C.fldCategory_Id,
 				SC.fldSubCategoryName
 			FROM
@@ -185,6 +185,9 @@
 						OR B.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
 				</cfif>
 
+			GROUP BY
+				P.fldProduct_Id
+
 				<!--- Sorting --->
 				<cfif arguments.random EQ 1>
 					ORDER BY
@@ -194,14 +197,11 @@
 						P.fldPrice #arguments.sort#
 				</cfif>
 
-			GROUP BY
-				P.fldProduct_Id
-
 				<!--- Limit the number of products returned --->
-				<cfif len(trim(arguments.limit))>
+				<cfif val(arguments.limit)>
 					<!--- Querying one extra product to check whether there are more products --->
 					LIMIT <cfqueryparam value = "#arguments.limit + 1#" cfsqltype = "integer">
-					<cfif len(trim(arguments.offset))>
+					<cfif val(arguments.offset)>
 						OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
 					</cfif>
 				</cfif>
