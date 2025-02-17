@@ -1,4 +1,4 @@
-<cfquery name="local.qryGetProductImages">
+<cfquery name="variables.qryGetProductImages">
 	SELECT
 		fldImageFileName
 	FROM
@@ -7,10 +7,10 @@
 		fldActive = 0
 </cfquery>
 
-<cfloop query="local.qryGetProductImages">
-	<cfset local.productPath = expandPath(application.productImageDirectory)&local.qryGetProductImages.fldImageFileName>
+<cfloop query="variables.qryGetProductImages">
+	<cfset variables.productPath = expandPath(application.productImageDirectory)&variables.qryGetProductImages.fldImageFileName>
 
-	<cfif fileExists(local.productPath)>
-		<cffile action="delete" file="#local.productPath#">
+	<cfif fileExists(variables.productPath)>
+		<cffile action="delete" file="#variables.productPath#">
 	</cfif>
 </cfloop>
