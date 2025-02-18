@@ -243,17 +243,13 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 	const productItem = `
 		<div id="${containerId}" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
 			<div class="d-flex flex-column fs-5">
-				<div id="productName-${prodId}" class="fw-bold">${prodName}</div>
-				<div id="brandName-${prodId}" class="fw-semibold">${brand}</div>
-				<div id="price-${prodId}" class="text-success">Rs.${price}</div>
+				<div name="productName" class="fw-bold">${prodName}</div>
+				<div name="brandName" class="fw-semibold">${brand}</div>
+				<div name="price" class="text-success">Rs.${price}</div>
 			</div>
 			<div>
-				<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage('${prodId}')">
-					<div class="d-flex justify-content-center">
-						<img class="pe-none" src="${productImageDirectory}${imageFile}" alt="Product Image" width="50">
-					</div>
-				</button>
-				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal('${containerId}, '${prodId}')">
+				<img src="${productImageDirectory}${imageFile}" alt="Product Image" width="50">
+				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal('${containerId}', '${prodId}')">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>
 				</button>
 				<button class="btn btn-lg" onclick="deleteProduct('${containerId}', '${prodId}')">

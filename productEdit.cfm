@@ -36,7 +36,7 @@
 							<div name="price" class="text-success">Rs.#item.price#</div>
 						</div>
 						<div class="d-flex gap-4">
-							<img class="pe-none" src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" width="50">
+							<img src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" width="50">
 							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
