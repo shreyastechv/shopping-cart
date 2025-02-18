@@ -464,23 +464,17 @@
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="qrySetDefautImage">
 			UPDATE
-				tblProductImages
+				tblProductImages PI1
+			JOIN
+				tblProductImages PI2 ON PI1.fldProductId = PI2.fldProductId
 			SET
-				fldDefaultImage =
+				PI1.fldDefaultImage =
 					CASE
-						WHEN fldProductImage_Id = <cfqueryparam value = "#val(local.imageId)#" cfsqltype = "integer"> THEN 1
+						WHEN PI1.fldProductImage_Id = <cfqueryparam value = "#val(local.imageId)#" cfsqltype = "integer"> THEN 1
 						ELSE 0
 					END
 			WHERE
-				<!--- Find product id of the image and use it in main query --->
-				fldProductId = (
-					SELECT
-						fldProductId
-					FROM
-						tblProductImages
-					WHERE
-						fldProductImage_Id = <cfqueryparam value = "#val(local.imageId)#" cfsqltype = "integer">
-				);
+				PI2.fldProductImage_Id = <cfqueryparam value = "#val(local.imageId)#" cfsqltype = "integer">
 		</cfquery>
 	</cffunction>
 

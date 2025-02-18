@@ -45,7 +45,7 @@ $(document).ready(function() {
 					<div id="productImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100">
 						<img src="${URL.createObjectURL(file)}" class="img-fluid mb-2 h-75">
 						<div class="d-flex justify-content-around">
-							<input type="radio" name="defaultImage" value="${i}">
+							<input type="radio" name="defaultImageId" value="${i+1}">
 							<button type="button" class="btn btn-sm" onclick="removeSelectedFile('productImageContainer_${i}', 'productImage', '${file.name}')">
 								<i class="fa-solid fa-xmark pe-none"></i>
 							</button>
@@ -146,6 +146,7 @@ function processproductForm() {
 	formData.append("subCategorySelect", subCategorySelect);
 	formData.append("brandSelect", brandSelect);
 	formData.append("method", "modifyProduct");
+
 	$.ajax({
 		type: "POST",
 		url: "./components/productManagement.cfc",
@@ -205,11 +206,11 @@ function showEditProductModal(categoryId, productId) {
 			$("#uploadedProductImages").empty();
 			$.each(productImages, function (i, file) {
 				let imgDiv = $(`
-					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100">
+					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100 ph-150">
 						<img src="${productImageDirectory}${file}" class="img-fluid mb-2 h-75">
 						<div class="d-flex justify-content-around">
 							<input type="radio" name="defaultImageId" value="${productImageIds[i]}" ${i == 0 ? "checked" : ""}>
-							<button type="button" class="btn btn-sm ${i == 0 ? 'd-none' : ''}" onclick="deleteProduct('uploadedProductImageContainer_${i}', '${productImageIds[i]}')">
+							<button type="button" class="btn btn-sm ${i == 0 ? 'd-none' : ''}" onclick="deleteImage('uploadedProductImageContainer_${i}', '${productImageIds[i]}')">
 								<i class="fa-solid fa-xmark pe-none"></i>
 							</button>
 						</div>
@@ -273,8 +274,6 @@ function deleteImage(containerId, imageId) {
 			imageId: imageId
 		},
 		success: function() {
-			const carousel = new bootstrap.Carousel($('#productImageCarousel'));
-			carousel.next();
 			$(`#${containerId}`).remove();
 		}
 	});
