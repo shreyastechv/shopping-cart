@@ -125,7 +125,8 @@
 			  </div>
 			  <div class="modal-footer">
 				<div id="productEditModalMsg" class="mt-2 error"></div>
-				<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Add Product</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Save</button>
 			  </div>
 		  </form>
 		</div>

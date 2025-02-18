@@ -173,7 +173,8 @@ function showAddProductModal(categoryId) {
 	$(".error").text("");
 	$("#productId").val("");
 	 $("#categorySelect").val(categoryId).change();
-	$("#subCategoryModalBtn").text("Add Product");
+	$("#subCategoryModalLabel").text("ADD PRODUCT");
+	$("#subCategoryModalBtn").text("Save");
 	$("#productImagePreview").empty();
 	$("#uploadedProductImages").empty();
 }
@@ -201,7 +202,8 @@ function showEditProductModal(categoryId, productId) {
 			$("#productPrice").val(objProductData.price);
 			$("#productTax").val(objProductData.tax);
 			$("#productImage").val("");
-			$("#subCategoryModalBtn").text("Edit Product");
+			$("#subCategoryModalLabel").text("EDIT PRODUCT");
+			$("#subCategoryModalBtn").text("Save Changes");
 			$("#productImagePreview").empty();
 			$("#uploadedProductImages").empty();
 			$.each(productImages, function (i, file) {

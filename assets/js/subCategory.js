@@ -104,7 +104,7 @@ function processSubCategoryForm() {
 function showAddSubCategoryModal() {
 	clearSubCategoryModal();
 	$("#subCategoryModalLabel").text("ADD SUBCATEGORY");
-	$("#subCategoryModalBtn").text("Add SubCategory");
+	$("#subCategoryModalBtn").text("Save");
 	$("#categorySelect").val(urlCategoryId).change();
 	$("#subCategoryId").val("");
 	$("#subCategoryName").attr("data-sc-prevSubCategoryName", "");
@@ -115,7 +115,7 @@ function showEditSubCategoryModal(containerId, subCategoryId) {
 	const subCategoryName = $(`#${containerId} [name='subCategoryName']`).text();
 	clearSubCategoryModal();
 	$("#subCategoryModalLabel").text("EDIT SUBCATEGORY");
-	$("#subCategoryModalBtn").text("Edit SubCategory");
+	$("#subCategoryModalBtn").text("Save Changes");
 	$("#categorySelect").val(urlCategoryId).change();
 	$("#subCategoryId").val(subCategoryId);
 	$("#subCategoryName").attr("data-sc-prevSubCategoryName", subCategoryName);

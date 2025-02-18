@@ -63,8 +63,8 @@
 					</div>
 					<div class="modal-footer">
 						<div id="profileError" class="profileError text-danger"></div>
-						<div>
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<div class="d-flex gap-2">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 							<button type="submit" class="btn btn-primary" id="profileSubmitBtn" disabled>Save changes</button>
 						</div>
 					</div>

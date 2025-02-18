@@ -47,10 +47,11 @@
 			  <div class="modal-body">
 				<input type="hidden" id="categoryId" name="categoryId" value="">
 				<input type="text" id="categoryName" name="categoryName" maxlength="64" placeholder="Category name" class="form-control">
-				<div id="categoryModalMsg" class="mt-2"></div>
+				<div id="categoryModalMsg" class="ps-2 fs-6 mt-2 text-danger"></div>
 			  </div>
 			  <div class="modal-footer">
-				<button type="submit" id="categoryModalBtn" class="btn btn-primary">Add Category</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="submit" id="categoryModalBtn" class="btn btn-primary">Save</button>
 			  </div>
 		  </form>
 		</div>

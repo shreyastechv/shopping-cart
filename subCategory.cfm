@@ -70,7 +70,8 @@
 				<div id="subCategoryModalMsg" class="mt-2"></div>
 			  </div>
 			  <div class="modal-footer">
-				<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Add Sub Category</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Save</button>
 			  </div>
 		  </form>
 		</div>
