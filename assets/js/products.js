@@ -1,6 +1,8 @@
 const urlSort = new URLSearchParams(document.URL.split('?')[1]).get('sort');
 const urlSearchTerm = new URLSearchParams(document.URL.split('?')[1]).get('search');
 const urlSubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId');
+const urlMin = new URLSearchParams(document.URL.split('?')[1]).get('min');
+const urlMax = new URLSearchParams(document.URL.split('?')[1]).get('max');
 const limit = 6;
 let offset = 0;
 
@@ -34,6 +36,8 @@ function viewMore() {
 			method: "getProducts",
 			subCategoryId: urlSubCategoryId || "",
 			searchTerm: urlSearchTerm || "",
+			min: urlMin || "",
+			max: urlMax || "",
 			limit: limit,
 			offset: offset,
 			sort: urlSort || ""
@@ -56,3 +60,15 @@ function viewMore() {
 		}
 	});
 }
+
+$(document).ready(function () {
+  $("#min").on("input", function () {
+    let minVal = $(this).val();
+    $("#max").attr("min", minVal);
+  });
+
+  $("#clearBtn").click(function () {
+    $("#min, #max").val(0);
+    $("#priceFilterForm").submit();
+  });
+});

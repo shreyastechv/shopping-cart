@@ -8,21 +8,11 @@
 <cfparam name="url.sort" default="">
 
 <!--- Form Variables --->
-<cfparam name="form.filterRange" default="">
-<cfparam name="form.min" default="0">
-<cfparam name="form.max" default="0">
+<cfparam name="url.min" default=0>
+<cfparam name="url.max" default=0>
 
 <!--- Other variables --->
 <cfset variables.limit = 6>
-
-<!--- Check filtering --->
-<cfif len(trim(form.filterRange))>
-	<cfset variables.rangeArray = ListToArray(form.filterRange, "-")>
-	<cfif arrayLen(variables.rangeArray) GTE 2 AND (variables.rangeArray[1] GTE 0 AND variables.rangeArray[2] GT variables.rangeArray[1])>
-		<cfset form.min = variables.rangeArray[1]>
-		<cfset form.max = variables.rangeArray[2]>
-	</cfif>
-</cfif>
 
 <!--- Check URL Params --->
 <cfif len(trim(url.categoryId))>
@@ -38,8 +28,8 @@
 		subCategoryId = url.subCategoryId,
 		searchTerm = trim(url.search),
 		limit = variables.limit,
-		min = form.min,
-		max = (len(trim(form.max)) ? val(form.max) : ""),
+		min = val(url.min),
+		max = val(url.max),
 		sort = (arrayContainsNoCase(["","asc","desc"], url.sort) ? url.sort : "")
 	)>
 </cfif>
@@ -85,44 +75,49 @@
 					<div class="d-flex px-3 pb-2">
 						<form method="get">
 							<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
-							<button class="btn btn-primary me-sm-2" type="submit" name="sort" value="asc">Price: Low to High</button>
-							<button class="btn btn-primary" type="submit" name="sort" value="desc">Price: High to Low</button>
+							<input type="hidden" name="min" value="#url.min#">
+							<input type="hidden" name="max" value="#url.max#">
+							<button class="btn btn-primary me-sm-2" type="submit" name="sort" value="asc">
+								<i class="fa-solid fa-arrow-up-wide-short"></i>
+								Price: Low to High
+							</button>
+							<button class="btn btn-primary" type="submit" name="sort" value="desc">
+								<i class="fa-solid fa-arrow-down-wide-short"></i>
+								Price: High to Low
+							</button>
 						</form>
 					</div>
 
 					<!--- Filtering --->
 					<div class="filter dropdown pe-3">
 						<button class="btn btn-secondary" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-							<i class="fa-solid fa-filter"></i>
+							<i class="fa-solid fa-filter-circle-dollar"></i>
 							Filter
 						</button>
 						<ul class="dropdown-menu p-3 shadow">
-							<div class="text-center fw-semibold">Price Filter</div>
-							<form method="post">
-								<li class="d-flex flex-column justify-content-start p-1">
+							<div class="d-flex align-items-center justify-content-between fw-semibold mb-2 gap-2">
+								Price Filter
+								<button type="button" id="clearBtn" class="btn btn-sm btn-outline-danger">Clear</button>
+							</div>
+
+							<form method="get" id="priceFilterForm">
+								<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
+								<input type="hidden" name="sort" value="#url.sort#">
+
+								<div class="d-flex gap-2">
 									<div>
-										<input type="radio" name="filterRange" value="0-100"> 0 - 100
+										<label for="min">Min</label>
+										<input type="number" class="form-control mb-2" id="min" name="min" min="0" value="#url.min#"
+											oninput="this.value = this.value.replace(/^0+/, '');">
 									</div>
 									<div>
-										<input type="radio" name="filterRange" value="101-500"> 101 - 500
+										<label for="max">Max</label>
+										<input type="number" class="form-control mb-2" id="max" name="max" max="10000000" value="#url.max#"
+											oninput="this.value = this.value.replace(/^0+/, '');">
 									</div>
-									<div>
-										<input type="radio" name="filterRange" value="501-1000"> 501 - 1000
-									</div>
-									<div>
-										<input type="radio" name="filterRange" value="1001-2000"> 1001 - 2000
-									</div>
-									<div>
-										<input type="radio" name="filterRange" value="2001-5000"> 2001 - 5000
-									</div>
-								</li>
-								<li class="d-flex gap-2">
-									<input type="number" class="form-control mb-2" id="min" name="min" min="0" value="#form.min#" placeholder="Min" oninput="this.value = this.value.replace(/^0+/, '');">
-									<input type="number" class="form-control mb-2" id="max" name="max" max="10000000" value="#form.max#" placeholder="Max" oninput="this.value = this.value.replace(/^0+/, '');">
-								<li>
-								<li class="d-flex">
-									<button class="btn btn-success w-100" type="submit" id="filterBtn">Apply</button>
-								</li>
+								</div>
+
+								<button class="btn btn-success w-100" type="submit" id="filterBtn">Apply</button>
 							</form>
 						</ul>
 					</div>

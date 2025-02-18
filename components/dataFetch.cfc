@@ -97,8 +97,8 @@
 		<cfargument name="limit" type="integer" required="false" default=0>
 		<cfargument name="offset" type="integer" required="false" default=0>
 		<cfargument name="sort" type="string" required="false" default="">
-		<cfargument name="min" type="float" required="false" default=0>
-		<cfargument name="max" type="float" required="false" default=0>
+		<cfargument name="min" type="integer" required="false" default=0>
+		<cfargument name="max" type="integer" required="false" default=0>
 		<cfargument name="searchTerm" type="string" required="false" default="">
 
 		<cfset local.response = {
@@ -213,9 +213,9 @@
 					<!--- Because another technique is used to limit in that case --->
 					<cfif (val(arguments.limit) NEQ 0) AND (local.categoryId EQ -1)>
 						<!--- Querying one extra product to check whether there are more products --->
-						LIMIT <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
+						LIMIT <cfqueryparam value = "#val(arguments.limit)#" cfsqltype = "integer">
 						<cfif val(arguments.offset)>
-							OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
+							OFFSET <cfqueryparam value = "#val(arguments.offset)#" cfsqltype = "integer">
 						</cfif>
 					</cfif>
 			)
@@ -226,7 +226,7 @@
 			<!--- Limit is calculated differently when it comes to category product listing --->
 			<cfif (val(local.categoryId) NEQ -1) AND val(arguments.limit)>
 				WHERE
-					rn <= <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
+					rn <= <cfqueryparam value = "#val(arguments.limit)#" cfsqltype = "integer">
 			</cfif>
 		</cfquery>
 
