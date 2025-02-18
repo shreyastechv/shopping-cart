@@ -249,7 +249,7 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 				<div name="brandName" class="fw-semibold">${brand}</div>
 				<div name="price" class="text-success">Rs.${price}</div>
 			</div>
-			<div>
+			<div class="d-flex gap-4">
 				<img src="${productImageDirectory}${imageFile}" alt="Product Image" width="50">
 				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal('${containerId}', '${prodId}')">
 					<i class="fa-solid fa-pen-to-square pe-none"></i>

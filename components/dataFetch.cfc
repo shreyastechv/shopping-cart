@@ -93,8 +93,8 @@
 		<cfargument name="subCategoryId" type="string" required=false default="">
 		<cfargument name="productId" type="string" required=false default="">
 		<cfargument name="productIdList" type="string" required=false default="">
-		<cfargument name="random" type="integer" required=false default="0">
-		<cfargument name="limit" type="integer" required="false" default=6>
+		<cfargument name="random" type="integer" required=false default=0>
+		<cfargument name="limit" type="integer" required="false" default=0>
 		<cfargument name="offset" type="integer" required="false" default=0>
 		<cfargument name="sort" type="string" required="false" default="">
 		<cfargument name="min" type="float" required="false" default=0>
@@ -132,11 +132,6 @@
 			<cfset local.response["message"] &= "Sort value should either be asc or desc">
 		</cfif>
 
-		<!--- Min Max Validation --->
-		<cfif len(trim(arguments.max)) AND (arguments.max LT arguments.min)>
-			<cfset local.response["message"] &= "Max should be greater than or equal to Min">
-		</cfif>
-
 		<!--- Return message if validation fails --->
 		<cfif len(trim(local.response.message))>
 			<cfreturn local.response>
@@ -159,7 +154,7 @@
 					C.fldCategory_Id,
 					SC.fldSubCategory_Id,
 					SC.fldSubCategoryName,
-					ROW_NUMBER() OVER (PARTITION BY SC.fldSubCategory_Id ORDER BY P.fldProduct_Id) AS rn
+					ROW_NUMBER() OVER (PARTITION BY P.fldSubCategoryId ORDER BY P.fldProduct_Id) AS rn
 				FROM
 					tblProduct P
 					INNER JOIN tblBrands B ON P.fldBrandId = B.fldBrand_Id
@@ -179,10 +174,16 @@
 						AND P.fldProduct_Id IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 					</cfif>
 
+
+					<!--- Minimum price --->
+					<cfif val(arguments.min)>
+						AND P.fldPrice >= <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
+					</cfif>
+
+					<!--- Maximum price --->
 					<!--- 0 is the default value of arguments.max hence it should not be used --->
 					<cfif val(arguments.max) NEQ 0>
-						AND P.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
-							AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
+						AND P.fldPrice <= <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
 					</cfif>
 
 					<cfif len(trim(arguments.searchTerm))>
@@ -207,7 +208,8 @@
 
 					<!--- Limit the number of products returned --->
 					<!--- Don't use this limiting method if category id is used to fetch products --->
-					<cfif val(arguments.limit) AND local.categoryId EQ -1>
+					<!--- Because another technique is used to limit in that case --->
+					<cfif (val(arguments.limit) NEQ 0) AND (local.categoryId EQ -1)>
 						<!--- Querying one extra product to check whether there are more products --->
 						LIMIT <cfqueryparam value = "#arguments.limit + 1#" cfsqltype = "integer">
 						<cfif val(arguments.offset)>
@@ -220,14 +222,14 @@
 			FROM
 				productQuery
 			<!--- Limit is calculated differently when it comes to category product listing --->
-			<cfif val(local.categoryId) NEQ -1>
+			<cfif (val(local.categoryId) NEQ -1) AND val(arguments.limit)>
 				WHERE
 					rn <= <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
 			</cfif>
 		</cfquery>
 
 		<!--- Check whether there are more products --->
-		<cfif local.qryGetProducts.recordCount GT arguments.limit>
+		<cfif val(arguments.limit) AND (local.qryGetProducts.recordCount GT arguments.limit)>
 			<cfset local.response.hasMoreRows = true>
 
 			<!--- Remove the extra row --->
