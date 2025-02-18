@@ -97,7 +97,7 @@
 						<ul class="dropdown-menu p-3 shadow">
 							<div class="d-flex align-items-center justify-content-between fw-semibold mb-2 gap-2">
 								Price Filter
-								<button type="button" id="clearBtn" class="btn btn-sm btn-outline-danger">Clear</button>
+								<button type="button" id="clearBtn" class="btn btn-sm btn-outline-danger" disabled>Clear</button>
 							</div>
 
 							<form method="get" id="priceFilterForm">
