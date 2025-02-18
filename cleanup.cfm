@@ -18,6 +18,13 @@
 			<cffile action="delete" file="#variables.productPath#">
 		</cfif>
 	</cfloop>
+
+	<cfquery name="variables.qryDeleteProductImages">
+		DELETE FROM
+			tblProductImages
+		WHERE
+			fldActive = 0
+	</cfquery>
 <cfelse>
 	<cfinclude template="/403.cfm">
 </cfif>
