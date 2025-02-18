@@ -26,10 +26,14 @@
 
 <!--- Check URL Params --->
 <cfif len(trim(url.categoryId))>
-	<!--- Sub Category Product Listing --->
-	<cfset variables.subCategories = application.dataFetch.getSubCategories(categoryId = url.categoryId)>
+	<!--- Category Product Listing --->
+	<cfset variables.products = application.dataFetch.getProducts(
+		categoryId = url.categoryId,
+		random = 1,
+		limit = variables.limit
+	)>
 <cfelse>
-	<!--- Category or Search Product Listing --->
+	<!--- Sub Category or Search Product Listing --->
 	<cfset variables.products = application.dataFetch.getProducts(
 		subCategoryId = url.subCategoryId,
 		searchTerm = trim(url.search),
@@ -43,24 +47,28 @@
 <cfoutput>
 	<!--- Main Content --->
 	<div class="d-flex flex-column m-3">
-		<cfif structKeyExists(variables, "subCategories")>
+		<cfif len(trim(url.categoryId))>
 			<!--- Category Listing --->
-			<cfloop array="#variables.subCategories.data#" item="item">
-				<!--- Encode Sub Category ID since it is passed to URL param --->
-				<cfset variables.encodedSubCategoryId  = urlEncodedFormat(item.subCategoryId)>
-
-				<!--- Gather products --->
-				<cfset variables.products = application.dataFetch.getProducts(
-					subCategoryId = item.subCategoryId,
-					random = 1,
-					limit = variables.limit
-				)>
-
-				<!--- Show subcategory if it has products --->
-				<cfif arrayLen(variables.products.data)>
-					<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h4 text-decoration-none">#item.subCategoryName#</a>
-					<cf_productlist products="#variables.products.data#">
+			<cfset variables.subCategoryMapping = {}>
+			<cfloop array="#variables.products.data#" item="item">
+				<cfif NOT structKeyExists(variables.subCategoryMapping, item.subCategoryId)>
+					<cfset variables.subCategoryMapping[item.subCategoryId].name = item.subCategoryName>
+					<cfset variables.subCategoryMapping[item.subCategoryId].data = []>
 				</cfif>
+				<cfset arrayAppend(variables.subCategoryMapping[item.subCategoryId].data, {
+					"productId" = item.productId,
+					"productImages" = item.productImages,
+					"productName" = item.productName,
+					"description" = item.description,
+					"price" = item.price
+				})>
+			</cfloop>
+			<cfloop collection="#variables.subCategoryMapping#" item="subCategoryId">
+				<!--- Encode Sub Category ID since it is passed to URL param --->
+				<cfset variables.encodedSubCategoryId  = urlEncodedFormat(subCategoryId)>
+
+				<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h4 text-decoration-none">#variables.subCategoryMapping[subCategoryId].name#</a>
+				<cf_productlist products="#variables.subCategoryMapping[subCategoryId].data#">
 			</cfloop>
 		<cfelse>
 			<div class="d-flex justify-content-start p-1">

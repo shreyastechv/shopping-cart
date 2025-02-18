@@ -89,6 +89,7 @@
 	</cffunction>
 
 	<cffunction name="getProducts" access="remote" returnType="struct" returnFormat="json">
+		<cfargument name="categoryId" type="string" required=false default="">
 		<cfargument name="subCategoryId" type="string" required=false default="">
 		<cfargument name="productId" type="string" required=false default="">
 		<cfargument name="productIdList" type="string" required=false default="">
@@ -107,6 +108,7 @@
 		}>
 
 		<!--- Decrypt ids--->
+		<cfset local.categoryId = application.commonFunctions.decryptText(arguments.categoryId)>
 		<cfset local.subCategoryId = application.commonFunctions.decryptText(arguments.subCategoryId)>
 		<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
 		<cfset local.productIdList = listMap(arguments.productIdList, function(item) {
@@ -142,70 +144,86 @@
 
 		<!--- Continue with code execution if validation succeeds --->
 		<cfquery name="local.qryGetProducts">
-			SELECT
-				P.fldProduct_Id,
-				P.fldProductName,
-				P.fldBrandId,
-				P.fldDescription,
-				P.fldPrice,
-				P.fldTax,
-				B.fldBrandName,
-				GROUP_CONCAT(PI.fldImageFileName ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldProductImages,
-				GROUP_CONCAT(PI.fldProductImage_Id ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldProductImageIds,
-				GROUP_CONCAT(PI.fldDefaultImage ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldDefaultImageValues,
-				C.fldCategory_Id,
-				SC.fldSubCategoryName
-			FROM
-				tblProduct P
-				INNER JOIN tblBrands B ON P.fldBrandId = B.fldBrand_Id
-				INNER JOIN tblSubCategory SC ON P.fldSubCategoryId = SC.fldSubCategory_Id
-				INNER JOIN tblCategory C ON SC.fldCategoryId = C.fldCategory_Id
-				INNER JOIN tblProductImages PI ON P.fldProduct_Id = PI.fldProductId
-					AND PI.fldActive = 1
-			WHERE
-				P.fldActive = 1
-				<cfif local.subCategoryId NEQ -1>
-					AND P.fldSubCategoryId = <cfqueryparam value = "#val(local.subCategoryId)#" cfsqltype = "integer">
-				<cfelseif local.productId NEQ -1>
-					AND P.fldProduct_Id = <cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">
-				<cfelseif len(trim(arguments.productIdList))>
-					AND P.fldProduct_Id IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
-				</cfif>
-
-				<!--- 0 is the default value of arguments.max hence it should not be used --->
-				<cfif val(arguments.max) NEQ 0>
-					AND P.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
-						AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
-				</cfif>
-
-				<cfif len(trim(arguments.searchTerm))>
-					AND (P.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR P.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR C.fldCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR SC.fldSubCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
-						OR B.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
-				</cfif>
-
-			GROUP BY
-				P.fldProduct_Id
-
-				<!--- Sorting --->
-				<cfif arguments.random EQ 1>
-					ORDER BY
-						RAND()
-				<cfelseif len(trim(arguments.sort))>
-					ORDER BY
-						P.fldPrice #arguments.sort#
-				</cfif>
-
-				<!--- Limit the number of products returned --->
-				<cfif val(arguments.limit)>
-					<!--- Querying one extra product to check whether there are more products --->
-					LIMIT <cfqueryparam value = "#arguments.limit + 1#" cfsqltype = "integer">
-					<cfif val(arguments.offset)>
-						OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
+			WITH productQuery AS (
+				SELECT
+					P.fldProduct_Id,
+					P.fldProductName,
+					P.fldBrandId,
+					P.fldDescription,
+					P.fldPrice,
+					P.fldTax,
+					B.fldBrandName,
+					GROUP_CONCAT(PI.fldImageFileName ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldProductImages,
+					GROUP_CONCAT(PI.fldProductImage_Id ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldProductImageIds,
+					GROUP_CONCAT(PI.fldDefaultImage ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldDefaultImageValues,
+					C.fldCategory_Id,
+					SC.fldSubCategory_Id,
+					SC.fldSubCategoryName,
+					ROW_NUMBER() OVER (PARTITION BY SC.fldSubCategory_Id ORDER BY P.fldProduct_Id) AS rn
+				FROM
+					tblProduct P
+					INNER JOIN tblBrands B ON P.fldBrandId = B.fldBrand_Id
+					INNER JOIN tblSubCategory SC ON P.fldSubCategoryId = SC.fldSubCategory_Id
+					INNER JOIN tblCategory C ON SC.fldCategoryId = C.fldCategory_Id
+					INNER JOIN tblProductImages PI ON P.fldProduct_Id = PI.fldProductId
+						AND PI.fldActive = 1
+				WHERE
+					P.fldActive = 1
+					<cfif local.categoryId NEQ -1>
+						AND C.fldCategory_Id = <cfqueryparam value = "#val(local.categoryId)#" cfsqltype = "integer">
+					<cfelseif local.subCategoryId NEQ -1>
+						AND P.fldSubCategoryId = <cfqueryparam value = "#val(local.subCategoryId)#" cfsqltype = "integer">
+					<cfelseif local.productId NEQ -1>
+						AND P.fldProduct_Id = <cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">
+					<cfelseif len(trim(arguments.productIdList))>
+						AND P.fldProduct_Id IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 					</cfif>
-				</cfif>
+
+					<!--- 0 is the default value of arguments.max hence it should not be used --->
+					<cfif val(arguments.max) NEQ 0>
+						AND P.fldPrice BETWEEN <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
+							AND <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
+					</cfif>
+
+					<cfif len(trim(arguments.searchTerm))>
+						AND (P.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+							OR P.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+							OR C.fldCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+							OR SC.fldSubCategoryName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
+							OR B.fldBrandName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">)
+					</cfif>
+
+				GROUP BY
+					P.fldProduct_Id
+
+					<!--- Sorting --->
+					<cfif arguments.random EQ 1>
+						ORDER BY
+							RAND()
+					<cfelseif len(trim(arguments.sort))>
+						ORDER BY
+							P.fldPrice #arguments.sort#
+					</cfif>
+
+					<!--- Limit the number of products returned --->
+					<!--- Don't use this limiting method if category id is used to fetch products --->
+					<cfif val(arguments.limit) AND local.categoryId EQ -1>
+						<!--- Querying one extra product to check whether there are more products --->
+						LIMIT <cfqueryparam value = "#arguments.limit + 1#" cfsqltype = "integer">
+						<cfif val(arguments.offset)>
+							OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
+						</cfif>
+					</cfif>
+			)
+			SELECT
+				*
+			FROM
+				productQuery
+			<!--- Limit is calculated differently when it comes to category product listing --->
+			<cfif val(local.categoryId) NEQ -1>
+				WHERE
+					rn <= <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
+			</cfif>
 		</cfquery>
 
 		<!--- Check whether there are more products --->
@@ -232,6 +250,7 @@
 				}),
 				"defaultImageValues": local.qryGetProducts.fldDefaultImageValues,
 				"categoryId": application.commonFunctions.encryptText(local.qryGetProducts.fldCategory_Id),
+				"subCategoryId": application.commonFunctions.encryptText(local.qryGetProducts.fldSubCategory_Id),
 				"subCategoryName": local.qryGetProducts.fldSubCategoryName
 			}>
 
