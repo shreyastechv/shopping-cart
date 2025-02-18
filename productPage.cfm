@@ -41,7 +41,7 @@
 
 <cfoutput>
 	<div class="container mt-5">
-		<div class="row d-flex justify-content-center">
+		<div class="row d-flex justify-content-center py-4">
 			<!-- Product Image -->
 			<div class="col-md-4" data-bs-theme="dark">
 				<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 h-100 shadow">
@@ -67,6 +67,19 @@
 
 			<!-- Product Details -->
 			<div class="col-md-6">
+				<nav style="--bs-breadcrumb-divider: url(&##34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&##34;);" aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">
+							<a href="/products.cfm?categoryId=#urlEncodedFormat(variables.productInfo.data[1].categoryId)#" class="text-decoration-none">#variables.productInfo.data[1].categoryName#</a>
+						</li>
+						<li class="breadcrumb-item">
+							<a href="/products.cfm?subCategoryId=#urlEncodedFormat(variables.productInfo.data[1].subCategoryId)#" class="text-decoration-none">#variables.productInfo.data[1].subCategoryName#</a>
+						</li>
+						<li class="breadcrumb-item active">
+							#variables.productInfo.data[1].productName#
+						</li>
+					</ol>
+				</nav>
 				<h1 class="display-4">#variables.productInfo.data[1].productName#</h1>
 				<p class="lead">#variables.productInfo.data[1].brandName#</p>
 				<p class="h4 text-success">Rs. #variables.productInfo.data[1].price#</p>

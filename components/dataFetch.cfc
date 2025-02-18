@@ -152,6 +152,7 @@
 					GROUP_CONCAT(PI.fldProductImage_Id ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldProductImageIds,
 					GROUP_CONCAT(PI.fldDefaultImage ORDER BY PI.fldDefaultImage DESC SEPARATOR ',') AS fldDefaultImageValues,
 					C.fldCategory_Id,
+					C.fldCategoryName,
 					SC.fldSubCategory_Id,
 					SC.fldSubCategoryName,
 					ROW_NUMBER() OVER (PARTITION BY P.fldSubCategoryId ORDER BY P.fldProduct_Id) AS rn
@@ -252,6 +253,7 @@
 				}),
 				"defaultImageValues": local.qryGetProducts.fldDefaultImageValues,
 				"categoryId": application.commonFunctions.encryptText(local.qryGetProducts.fldCategory_Id),
+				"categoryName": local.qryGetProducts.fldCategoryName,
 				"subCategoryId": application.commonFunctions.encryptText(local.qryGetProducts.fldSubCategory_Id),
 				"subCategoryName": local.qryGetProducts.fldSubCategoryName
 			}>
