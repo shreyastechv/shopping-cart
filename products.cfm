@@ -92,7 +92,7 @@
 
 					<!--- Filtering --->
 					<div class="filter dropdown pe-3">
-						<button class="btn btn-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<button class="btn btn-secondary" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
 							<i class="fa-solid fa-filter"></i>
 							Filter
 						</button>
