@@ -18,7 +18,14 @@ BEGIN
 			C.fldActive = 0,
 			SC.fldActive = 0,
 			P.fldActive = 0,
-			PI.fldActive = 0
+			PI.fldActive = 0,
+
+			C.fldUpdatedBy = userId,
+			SC.fldUpdatedBy = userId,
+			P.fldUpdatedBy = userId,
+			PI.fldDeactivatedBy = userId,
+
+			PI.fldDeactivatedDate = NOW()
 		WHERE
 			C.fldCategory_Id = itemId;
 
@@ -31,7 +38,13 @@ BEGIN
 		SET
 			SC.fldActive = 0,
 			P.fldActive = 0,
-			PI.fldActive = 0
+			PI.fldActive = 0,
+
+			SC.fldUpdatedBy = userId,
+			P.fldUpdatedBy = userId,
+			PI.fldDeactivatedBy = userId,
+
+			PI.fldDeactivatedDate = NOW()
 		WHERE
 			SC.fldSubCategory_Id = itemId;
 
@@ -42,7 +55,12 @@ BEGIN
 				LEFT JOIN tblProductImages PI ON PI.fldProductId = P.fldProduct_Id
 		SET
 			P.fldActive = 0,
-			PI.fldActive = 0
+			PI.fldActive = 0,
+
+			P.fldUpdatedBy = userId,
+			PI.fldDeactivatedBy = userId,
+
+			PI.fldDeactivatedDate = NOW()
 		WHERE
 			P.fldProduct_Id = itemId;
 
@@ -51,7 +69,9 @@ BEGIN
 		UPDATE
 			tblProductImages
 		SET
-			fldActive = 0
+			fldActive = 0,
+			fldDeactivatedBy = userId,
+			fldDeactivatedDate = NOW()
 		WHERE
 			fldProductImage_Id = itemId;
 
