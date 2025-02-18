@@ -155,6 +155,7 @@
 					C.fldCategoryName,
 					SC.fldSubCategory_Id,
 					SC.fldSubCategoryName,
+					COUNT(P.fldProduct_Id) OVER() AS totalRows,
 					ROW_NUMBER() OVER (PARTITION BY P.fldSubCategoryId ORDER BY P.fldProduct_Id) AS rn
 				FROM
 					tblProduct P
@@ -212,7 +213,7 @@
 					<!--- Because another technique is used to limit in that case --->
 					<cfif (val(arguments.limit) NEQ 0) AND (local.categoryId EQ -1)>
 						<!--- Querying one extra product to check whether there are more products --->
-						LIMIT <cfqueryparam value = "#arguments.limit + 1#" cfsqltype = "integer">
+						LIMIT <cfqueryparam value = "#arguments.limit#" cfsqltype = "integer">
 						<cfif val(arguments.offset)>
 							OFFSET <cfqueryparam value = "#arguments.offset#" cfsqltype = "integer">
 						</cfif>
@@ -230,12 +231,7 @@
 		</cfquery>
 
 		<!--- Check whether there are more products --->
-		<cfif val(arguments.limit) AND (local.qryGetProducts.recordCount GT arguments.limit)>
-			<cfset local.response.hasMoreRows = true>
-
-			<!--- Remove the extra row --->
-			<cfset local.qryGetProducts = queryDeleteRow(local.qryGetProducts, local.qryGetProducts.recordCount)>
-		</cfif>
+		<cfset local.response.hasMoreRows = (local.qryGetProducts.totalRows - val(arguments.limit) - val(arguments.offset)) GT 0>
 
 		<!--- Loop through the query results and populate the array --->
 		<cfloop query="local.qryGetProducts">
@@ -474,6 +470,7 @@
 				A.fldFirstName,
 				A.fldLastName,
 				A.fldPhone,
+				COUNT(O.fldOrder_Id) OVER() AS totalRows,
 				GROUP_CONCAT(OI.fldProductId SEPARATOR ',') AS productIds,
 				GROUP_CONCAT(OI.fldQuantity SEPARATOR ',') AS quantities,
 				GROUP_CONCAT(OI.fldUnitPrice SEPARATOR ',') AS unitPrices,
@@ -507,18 +504,13 @@
 			<!--- Otherwise no order will be returned --->
 			<cfif NOT len(trim(arguments.orderId)) AND val(arguments.pageNumber)>
 				<!--- Querying one extra order to check whether its the end of orders --->
-				LIMIT <cfqueryparam value = "#arguments.pageSize + 1#" cfsqltype = "integer">
+				LIMIT <cfqueryparam value = "#arguments.pageSize#" cfsqltype = "integer">
 				OFFSET <cfqueryparam value = "#(arguments.pageNumber - 1) * arguments.pageSize#" cfsqltype = "integer">
 			</cfif>
 		</cfquery>
 
 		<!--- Check whether there are more orders --->
-		<cfif local.qryGetOrders.recordCount GT arguments.pageSize>
-			<cfset local.response.hasMoreRows = true>
-
-			<!--- Remove the extra row --->
-			<cfset local.qryGetOrders = queryDeleteRow(local.qryGetOrders, local.qryGetOrders.recordCount)>
-		</cfif>
+		<cfset local.response.hasMoreRows = (local.qryGetOrders.totalRows - val(arguments.pageSize) - (val(arguments.pageNumber - 1) * val(arguments.pageSize))) GT 0>
 
 		<cfloop query="local.qryGetOrders">
 			<cfset arrayAppend(local.response["data"], {
