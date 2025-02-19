@@ -40,8 +40,8 @@
 </cfif>
 
 <cfoutput>
-	<div class="container mt-5">
-		<div class="row d-flex justify-content-center py-4">
+	<div class="container p-5">
+		<div class="row d-flex justify-content-center">
 			<!-- Product Image -->
 			<div class="col-md-4" data-bs-theme="dark">
 				<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 h-100 shadow">
