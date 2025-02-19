@@ -289,57 +289,6 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="getProductImages" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="productId" type="string" required=true default="">
-
-		<cfset local.response = {
-			"message" = "",
-			"data" = []
-		}>
-
-		<!--- Decrypt ids--->
-		<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
-
-		<!--- Product Id Validation --->
-		<cfif len(arguments.productId) EQ 0>
-			<cfset local.response["message"] &= "Product Id should not be empty. ">
-		<cfelseif local.productId EQ -1>
-			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] &= "Product Id is invalid. ">
-		</cfif>
-
-		<!--- Return message if validation fails --->
-		<cfif len(trim(local.response.message))>
-			<cfreturn local.response>
-		</cfif>
-
-		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="local.qryGetImages">
-			SELECT
-				fldProductImage_Id,
-				fldImageFileName,
-				fldDefaultImage
-			FROM
-				tblProductImages
-			WHERE
-				fldProductId = <cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">
-				AND fldActive = 1
-			ORDER BY
-				fldDefaultImage DESC <!--- This is to make sure default image comes first --->
-		</cfquery>
-
-		<cfloop query="local.qryGetImages">
-			<cfset local.imageStruct = {
-				"imageId" = application.commonFunctions.encryptText(local.qryGetImages.fldProductImage_Id),
-				"imageFileName" = local.qryGetImages.fldImageFileName,
-				"defaultImage" = local.qryGetImages.fldDefaultImage
-			}>
-			<cfset arrayAppend(local.response.data, local.imageStruct)>
-		</cfloop>
-
-		<cfreturn local.response>
-	</cffunction>
-
 	<cffunction name="getCart" access="public" returnType="struct">
 		<cfset local.cartItems = {}>
 
