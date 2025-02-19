@@ -459,7 +459,7 @@
 		</cfquery>
 
 		<!--- Check whether there are more orders --->
-		<cfset local.response.hasMoreRows = (val(local.qryGetProducts.totalRows) - val(arguments.pageSize) - (val(arguments.pageNumber - 1) * val(arguments.pageSize))) GT 0>
+		<cfset local.response.hasMoreRows = (val(local.qryGetOrders.totalRows) - val(arguments.pageSize) - (val(arguments.pageNumber - 1) * val(arguments.pageSize))) GT 0>
 
 		<cfloop query="local.qryGetOrders">
 			<cfset arrayAppend(local.response["data"], {
