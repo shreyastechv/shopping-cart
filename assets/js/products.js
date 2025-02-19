@@ -61,27 +61,16 @@ function viewMore() {
 	});
 }
 
-function toggleClearBtn() {
-	const minVal = $("#min").val();
-	const maxVal = $("#max").val();
-	if (minVal == 0 && maxVal == 0) {
-		$("#clearBtn").prop("disabled", true);
-	} else {
-		$("#clearBtn").prop("disabled", false);
-	}
-}
-
 $(document).ready(function () {
-	$("#min").on("input", function () {
-		let minVal = $(this).val();
-		$("#max").attr("min", minVal);
-		toggleClearBtn();
+	$("#min, #max").on("input", function () {
+		const minVal = $("#min").val();
+		const maxVal = $("#max").val();
+		if (minVal == 0 && maxVal == 0) {
+			$("#clearBtn").prop("disabled", true);
+		} else {
+			$("#clearBtn").prop("disabled", false);
+		}
 	});
-
-	$("#max").on("input", function () {
-		toggleClearBtn();
-	})
-
 	$("#clearBtn").click(function () {
 		$("#min, #max").val(0);
 		$("#priceFilterForm").submit();
