@@ -36,8 +36,8 @@ function viewMore() {
 			method: "getProducts",
 			subCategoryId: urlSubCategoryId || "",
 			searchTerm: urlSearchTerm || "",
-			min: urlMin || "",
-			max: urlMax || "",
+			min: urlMin || 0,
+			max: urlMax || 0,
 			limit: limit,
 			offset: offset,
 			sort: urlSort || ""
