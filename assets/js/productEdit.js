@@ -42,10 +42,10 @@ $(document).ready(function() {
 				dt.items.add(file);
 
 				let imgDiv = $(`
-					<div id="productImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100">
+					<div id="productImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100 mt-3">
 						<img src="${URL.createObjectURL(file)}" class="img-fluid mb-2 h-75">
 						<div class="d-flex justify-content-around">
-							<input type="radio" name="defaultImageId" value="${i+1}">
+							<input type="radio" name="defaultImageId" value="${i+1}" checked>
 							<button type="button" class="btn btn-sm" onclick="removeSelectedFile('productImageContainer_${i}', 'productImage', '${file.name}')">
 								<i class="fa-solid fa-xmark pe-none"></i>
 							</button>
@@ -135,7 +135,7 @@ function processproductForm() {
 	}
 
 	// Product Image Validation
-	if (productId.length == 0 && productImage.length == 0) { // Validate product image only when adding products not when editing
+	if (productId.length == 0 && (productImage.length == 0 || $('input[name="defaultImageId"]:checked').is(":checked") == false)) { // Validate product image only when adding products not when editing
 		$("#productImageError").text("Select atleast one image");
 		valid = false;
 	}
@@ -208,7 +208,7 @@ function showEditProductModal(categoryId, productId) {
 			$("#uploadedProductImages").empty();
 			$.each(productImages, function (i, file) {
 				let imgDiv = $(`
-					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100 ph-150">
+					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100 ph-150 mt-3">
 						<img src="${productImageDirectory}${file}" class="img-fluid mb-2 h-75">
 						<div class="d-flex justify-content-around">
 							<input type="radio" name="defaultImageId" value="${productImageIds[i]}" ${i == 0 ? "checked" : ""}>

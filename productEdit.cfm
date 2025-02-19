@@ -72,10 +72,10 @@
 						</option>
 					</cfloop>
 				</select>
-				<div id="categorySelectError" class="mt-2 text-danger error error"></div>
+				<div id="categorySelectError" class="text-danger error ps-2"></div>
 
 				<!--- SubCategory Select --->
-				<label for="subCategorySelect" class="fw-semibold">SubCategory Name</label>
+				<label for="subCategorySelect" class="fw-semibold mt-2">SubCategory Name</label>
 				<select id="subCategorySelect" class="form-select" aria-label="SubCategory Select">
 					<option value="0">SubCategory Select</option>
 					<cfloop array="#variables.subCategories.data#" item="item">
@@ -84,44 +84,44 @@
 						</option>
 					</cfloop>
 				</select>
-				<div id="subCategorySelectError" class="mt-2 text-danger error"></div>
+				<div id="subCategorySelectError" class="mt-2 text-danger error ps-2"></div>
 
 				<!--- Product Name --->
-				<label for="productName" class="fw-semibold">Product Name</label>
-				<input type="text" id="productName" name="productName" maxlength="100" class="form-control mb-1">
-				<div id="productNameError" class="text-danger error"></div>
+				<label for="productName" class="fw-semibold mt-2">Product Name</label>
+				<input type="text" id="productName" name="productName" maxlength="100" class="form-control">
+				<div id="productNameError" class="text-danger error ps-2"></div>
 
 				<!--- Product Brand --->
-				<label for="brandSelect" class="fw-semibold">Product Brand</label>
+				<label for="brandSelect" class="fw-semibold mt-2">Product Brand</label>
 				<select id="brandSelect" class="form-select" aria-label="SubCategory Select">
 					<option value="0">Brand Name</option>
 					<cfloop array="#variables.brands.data#" item="item">
 						<option value="#item.brandId#">#item.brandName#</option>
 					</cfloop>
 				</select>
-				<div id="brandSelectError" class="text-danger error"></div>
+				<div id="brandSelectError" class="text-danger error ps-2"></div>
 
 				<!--- Product Description --->
-				<label for="productDesc" class="fw-semibold">Product Description</label>
-				<textarea class="form-control mb-1" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400"></textarea>
-				<div id="productDescError" class="text-danger error"></div>
+				<label for="productDesc" class="fw-semibold mt-2">Product Description</label>
+				<textarea class="form-control" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400"></textarea>
+				<div id="productDescError" class="text-danger error ps-2"></div>
 
 				<!--- Product Price --->
-				<label for="productPrice" class="fw-semibold">Product Price</label>
-				<input type="number" step="0.01" min="0" id="productPrice" max="99999999" name="productPrice" class="form-control mb-1">
-				<div id="productPriceError" class="text-danger error"></div>
+				<label for="productPrice" class="fw-semibold mt-2">Product Price</label>
+				<input type="number" step="0.01" min="0" id="productPrice" max="99999999" name="productPrice" class="form-control">
+				<div id="productPriceError" class="text-danger error ps-2"></div>
 
 				<!--- Product Tax --->
-				<label for="productTax" class="fw-semibold">Product Tax (%)</label>
-				<input type="number" step="0.01" min="0" max="100" id="productTax" name="productTax" class="form-control mb-1">
-				<div id="productTaxError" class="text-danger error"></div>
+				<label for="productTax" class="fw-semibold mt-2">Product Tax (%)</label>
+				<input type="number" step="0.01" min="0" max="100" id="productTax" name="productTax" class="form-control">
+				<div id="productTaxError" class="text-danger error ps-2"></div>
 
 				<!--- Product Image --->
-				<label for="productImage" class="fw-semibold">Product Image</label>
-				<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control mb-1" multiple>
-				<div id="productImageError" class="text-danger error"></div>
-				<div id="uploadedProductImages" class="d-flex flex-wrap gap-3 mt-4"></div>
-				<div id="productImagePreview" class="d-flex flex-wrap gap-3 mt-4"></div>
+				<label for="productImage" class="fw-semibold mt-2">Product Image</label>
+				<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control" multiple>
+				<div id="uploadedProductImages" class="d-flex flex-wrap gap-3"></div>
+				<div id="productImagePreview" class="d-flex flex-wrap gap-3"></div>
+				<div id="productImageError" class="text-danger error mt-1 ps-2"></div>
 			  </div>
 			  <div class="modal-footer">
 				<div id="productEditModalMsg" class="mt-2 error"></div>
