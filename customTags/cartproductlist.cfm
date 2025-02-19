@@ -1,19 +1,10 @@
 <cfoutput>
 	<!--- Variables --->
 	<cfparam name="attributes.products" type="struct" default="#structNew()#">
-	<cfparam name="variables.products" type="struct" default="#structNew()#">
-
-	<!--- Get products with non-zero quantity --->
-	<cfset variables.products = attributes.products.filter(function(key, val) {
-		if (isStruct(val) && val.quantity != 0) {
-			return true;
-		}
-		return false;
-	})>
 
 	<!--- Get Product Details --->
-	<cfif structCount(variables.products)>
-		<cfset variables.productInfo = application.dataFetch.getProducts(productIdList = structKeyList(variables.products))>
+	<cfif structCount(attributes.products)>
+		<cfset variables.productInfo = application.dataFetch.getProducts(productIdList = structKeyList(attributes.products))>
 
 		<cfloop array="#variables.productInfo.data#" item="item" index="i">
 			<!--- Encode Product ID since it is passed to URL param --->
@@ -30,7 +21,7 @@
 			</cfif>
 
 			<!--- Calculate price and actual price --->
-			<cfset variables.quantity = variables.products[item.productId].quantity>
+			<cfset variables.quantity = attributes.products[item.productId].quantity>
 			<cfset variables.actualPrice = item.price * variables.quantity>
 			<cfset variables.price = item.price * (1 + (item.tax / 100)) * variables.quantity>
 
@@ -53,12 +44,12 @@
 							<p class="mb-1">Tax: <span class="fw-bold"><span name="tax">#item.tax#</span> %</span></p>
 							<div class="d-flex align-items-center">
 								<button type="button" class="btn btn-outline-primary btn-sm me-2" name="decBtn" onclick="editCartItem('productContainer_#i#', '#item.productId#', 'decrement')"
-								<cfif variables.products[item.productId].quantity EQ 1>
+								<cfif attributes.products[item.productId].quantity EQ 1>
 									disabled
 								</cfif>
 								>-</button>
 
-								<input type="text" name="quantity" class="form-control text-center w-25" value="#variables.products[item.productId].quantity#" onchange="handleQuantityChange('productContainer_#i#')" readonly>
+								<input type="text" name="quantity" class="form-control text-center w-25" value="#attributes.products[item.productId].quantity#" onchange="handleQuantityChange('productContainer_#i#')" readonly>
 								<button type="button" class="btn btn-outline-primary btn-sm ms-2" name="incBtn" onclick="editCartItem('productContainer_#i#', '#item.productId#', 'increment')">+</button>
 							</div>
 							<button type="button" class="btn btn-danger btn-sm mt-3" onclick="editCartItem('productContainer_#i#', '#item.productId#', 'delete')">Remove</button>
