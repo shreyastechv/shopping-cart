@@ -47,7 +47,7 @@
 					<div class="text-white fw-semibold">SHOPPING CART</div>
 				</a>
 				<form class="d-flex p-1 w-50" method="get" action="/products.cfm">
-					<input class="form-control me-2" type="search" name="search" value="#url.search#" placeholder="Search" onblur="this.value = this.value.trim()">
+					<input class="form-control me-2" type="search" name="search" value="#url.search#" placeholder="Search for products, categories, sub categories, brands ..." onblur="this.value = this.value.trim()">
 					<button class="btn btn-outline-light" type="submit">Search</button>
 				</form>
 				<nav class="d-flex align-items-center justify-content-between gap-4">

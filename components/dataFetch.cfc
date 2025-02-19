@@ -442,7 +442,11 @@
 					AND O.fldOrder_Id = <cfqueryparam value = "#arguments.orderId#" cfsqltype = "varchar">
 				<cfelse>
 					<!--- When searching for orders --->
-					AND O.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
+					AND (
+						O.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
+						OR P.fldProductName LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
+						OR B.fldBrandName LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
+					)
 				</cfif>
 			GROUP BY
 				O.fldOrder_Id

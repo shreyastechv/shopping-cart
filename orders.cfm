@@ -20,7 +20,7 @@
 		<h2 class="text-center mb-4">Your Orders</h2>
 		<form method="get" class="d-flex gap-2 mb-5">
 			<input type="text" name="s" class="form-control shadow" value="#url.s#"
-				placeholder="Search orders using order id..."
+				placeholder="Search orders using order id, product name, brand ..."
 				oninput="this.value = this.value.trim();"
 			>
 			<button class="btn btn-primary shadow" type="submit">
