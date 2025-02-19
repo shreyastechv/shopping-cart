@@ -462,10 +462,9 @@
 				structDelete(session.cart, key);
 			})>
 
-			<!--- Fetch address details --->
-			<cfset local.address = application.dataFetch.getAddress(
-				addressId = arguments.addressId
-			)>
+			<!--- Fetch order details --->
+			<cfset local.orders = application.dataFetch.getOrders(orderId = local.orderId)>
+			<cfset local.order = arrayLen(local.orders.data) ? local.orders.data[1] : []>
 
 			<!--- Send email to user --->
 			<cfmail to="#session.email#" from="no-reply@shoppingcart.local" subject="Your order has been successfully placed">
@@ -473,14 +472,49 @@
 
 				Your order was placed successfully.
 
-				Delivery Address:
-				#local.address.data[1].fullName#,
-				#local.address.data[1].addressLine1#,
-				#local.address.data[1].addressLine2#,
-				#local.address.data[1].city#, #local.address.data[1].state# - #local.address.data[1].pincode#,
-				#local.address.data[1].phone#
+				Product Details:
+				<table border="1" cellpadding="4" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Product</th>
+							<th>Brand</th>
+							<th>Unit Price</th>
+							<th>Unit Tax</th>
+							<th>Quantity</th>
+							<th>Total Price</th>
+						</tr>
+					</thead>
+					<tbody>
+						<cfloop list="#local.order.productIds#" item="item" index="i">
+							<cfset local.unitPrice = listGetAt(local.order.unitPrices, i)>
+							<cfset local.unitTax = listGetAt(local.order.unitTaxes, i)>
+							<cfset local.quantity = listGetAt(local.order.quantities, i)>
+							<cfset local.price = (local.unitPrice + local.unitTax) * local.quantity>
+							<cfset local.productName = listGetAt(local.order.productNames, i)>
+							<cfset local.brandName = listGetAt(local.order.brandNames, i)>
 
-				Order Id: #local.orderId#
+							<tr>
+								<td>#local.productName#</td>
+								<td>#local.brandName#</td>
+								<td>#local.unitPrice#</td>
+								<td>#local.unitTax#</td>
+								<td>#local.quantity#</td>
+								<td>#local.price#</td>
+							</tr>
+						</cfloop>
+					</tbody>
+				</table>
+
+				Delivery Address:
+				#local.order.firstName# #local.order.lastName#,
+				#local.order.addressLine1#,
+				#local.order.addressLine2#,
+				#local.order.city#, #local.order.state# - #local.order.pincode#,
+				#local.order.phone#
+
+				Order Id: #local.order.orderId#
+				Order Date: #local.order.orderDate#
+				Total Price: #local.order.totalPrice#
 			</cfmail>
 
 			<!--- Clear session variable --->
