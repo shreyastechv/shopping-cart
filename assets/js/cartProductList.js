@@ -25,12 +25,13 @@ function createAlert(containerId, message) {
 }
 
 function editCartItem(containerId, productId, action) {
+	const clickedBtn = $(event.target);
 	const currentPage = new URL(document.URL).pathname.split('/').pop();
 	let quantity = parseInt($(`#${containerId} input[name="quantity"]`).val());
 
 	// Create alert if quantity is maxed out
 	if (action == "increment" && quantity == 5) {
-		createAlert(containerId, "Maximmmmum allowed quantity for this item is reached.");
+		createAlert(containerId, "Maximum allowed quantity for this item is reached.");
 		return;
 	}
 
@@ -38,6 +39,9 @@ function editCartItem(containerId, productId, action) {
 	if (action == "delete" && !confirm("Delete Product?")) {
 		return;
 	}
+
+	// Disable button
+	clickedBtn.prop("disabled", true);
 
 	//Go on with execution if no alert is generated
 	$.ajax({
@@ -87,5 +91,8 @@ function editCartItem(containerId, productId, action) {
 				createAlert(containerId, "Sorry. Unable to proceed. Try again.");
 			}
 		}
+	}).always(function() {
+		// Enable button back
+		clickedBtn.prop("disabled", false);
 	});
 }
