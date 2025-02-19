@@ -42,7 +42,10 @@ $(document).ready(function() {
 				dt.items.add(file);
 
 				let imgDiv = $(`
-					<div id="productImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100 mt-3">
+					<div id="productImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100 mt-3"
+						onMouseOver="this.style.cursor='pointer'"
+						onclick="$(this).children().find('input[name=defaultImageId]').prop('checked', true).trigger('change');"
+					>
 						<img src="${URL.createObjectURL(file)}" class="img-fluid mb-2 h-75">
 						<div class="d-flex justify-content-around">
 							<input type="radio" name="defaultImageId" value="${i+1}" checked>
@@ -208,7 +211,10 @@ function showEditProductModal(categoryId, productId) {
 			$("#uploadedProductImages").empty();
 			$.each(productImages, function (i, file) {
 				let imgDiv = $(`
-					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100 ph-150 mt-3">
+					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100 ph-150 mt-3"
+						onMouseOver="this.style.cursor='pointer'"
+						onclick="$(this).children().find('input[name=defaultImageId]').prop('checked', true).trigger('change');"
+					>
 						<img src="${productImageDirectory}${file}" class="img-fluid mb-2 h-75">
 						<div class="d-flex justify-content-around">
 							<input type="radio" name="defaultImageId" value="${productImageIds[i]}" ${i == 0 ? "checked" : ""}>
