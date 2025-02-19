@@ -9,6 +9,13 @@
 <!--- Get Data if productId is given --->
 <cfset variables.productInfo = application.dataFetch.getProducts(productId = url.productId)>
 
+<!--- Prevent entering the page if product data is empty --->
+<!--- This usually happends if the product id in url is invalid --->
+<cfif arrayLen(variables.productInfo.data) EQ 0>
+	<cfinclude template="/404.cfm">
+	<cfabort>
+</cfif>
+
 <!--- Handle add to cart button --->
 <cfif structKeyExists(form, "addToCart")>
 	<cfif structKeyExists(session, "userId")>
@@ -40,6 +47,7 @@
 </cfif>
 
 <cfoutput>
+<<<<<<< Updated upstream
 	<div class="container p-5">
 		<div class="row d-flex justify-content-center">
 			<!-- Product Image -->
@@ -50,53 +58,67 @@
 							<div class="carousel-item #(i EQ 1 ? "active" : "")#">
 								<div class="d-flex justify-content-center">
 									<img src="#application.productImageDirectory&item#" class="img-fluid" alt="Product Image">
+=======
+	<cfif arrayLen(variables.productInfo.data)>
+		<div class="container p-5">
+			<div class="row d-flex justify-content-center">
+				<!-- Product Image -->
+				<div class="col-md-4" data-bs-theme="dark">
+					<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 h-100 shadow">
+						<div class="carousel-inner">
+							<cfloop list="#variables.productInfo.data[1].productImages#" item="item" index="i">
+								<div class="carousel-item #(i EQ 1 ? "active" : "")#">
+									<div class="d-flex justify-content-center">
+										<img src="#application.productImageDirectory&item#" class="img-fluid" alt="Product Image">
+									</div>
+>>>>>>> Stashed changes
 								</div>
-							</div>
-						</cfloop>
+							</cfloop>
+						</div>
+						<button class="carousel-control-prev" type="button" data-bs-target="##productImages" data-bs-slide="prev">
+							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Previous</span>
+						</button>
+						<button class="carousel-control-next" type="button" data-bs-target="##productImages" data-bs-slide="next">
+							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Next</span>
+						</button>
 					</div>
-					<button class="carousel-control-prev" type="button" data-bs-target="##productImages" data-bs-slide="prev">
-						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-						<span class="visually-hidden">Previous</span>
-					</button>
-					<button class="carousel-control-next" type="button" data-bs-target="##productImages" data-bs-slide="next">
-						<span class="carousel-control-next-icon" aria-hidden="true"></span>
-						<span class="visually-hidden">Next</span>
-					</button>
 				</div>
-			</div>
 
-			<!-- Product Details -->
-			<div class="col-md-6">
-				<nav style="--bs-breadcrumb-divider: url(&##34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&##34;);" aria-label="breadcrumb">
-					<ol class="breadcrumb">
-						<li class="breadcrumb-item">
-							<a href="/products.cfm?categoryId=#urlEncodedFormat(variables.productInfo.data[1].categoryId)#" class="text-decoration-none">#variables.productInfo.data[1].categoryName#</a>
-						</li>
-						<li class="breadcrumb-item">
-							<a href="/products.cfm?subCategoryId=#urlEncodedFormat(variables.productInfo.data[1].subCategoryId)#" class="text-decoration-none">#variables.productInfo.data[1].subCategoryName#</a>
-						</li>
-						<li class="breadcrumb-item active">
-							#variables.productInfo.data[1].productName#
-						</li>
-					</ol>
-				</nav>
-				<h1 class="display-4">#variables.productInfo.data[1].productName#</h1>
-				<p class="lead">#variables.productInfo.data[1].brandName#</p>
-				<p class="h4 text-success">Rs. #variables.productInfo.data[1].price#</p>
-				<p class="h6 text-secondary">Tax: #variables.productInfo.data[1].tax#%</p>
-				<p class="mt-4">#variables.productInfo.data[1].description#</p>
+				<!-- Product Details -->
+				<div class="col-md-6">
+					<nav style="--bs-breadcrumb-divider: url(&##34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&##34;);" aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="/products.cfm?categoryId=#urlEncodedFormat(variables.productInfo.data[1].categoryId)#" class="text-decoration-none">#variables.productInfo.data[1].categoryName#</a>
+							</li>
+							<li class="breadcrumb-item">
+								<a href="/products.cfm?subCategoryId=#urlEncodedFormat(variables.productInfo.data[1].subCategoryId)#" class="text-decoration-none">#variables.productInfo.data[1].subCategoryName#</a>
+							</li>
+							<li class="breadcrumb-item active">
+								#variables.productInfo.data[1].productName#
+							</li>
+						</ol>
+					</nav>
+					<h1 class="display-4">#variables.productInfo.data[1].productName#</h1>
+					<p class="lead">#variables.productInfo.data[1].brandName#</p>
+					<p class="h4 text-success">Rs. #variables.productInfo.data[1].price#</p>
+					<p class="h6 text-secondary">Tax: #variables.productInfo.data[1].tax#%</p>
+					<p class="mt-4">#variables.productInfo.data[1].description#</p>
 
-				<!-- Action Buttons -->
-				<div class="mt-4">
-					<form method="post">
-						<!--- Add to cart button --->
-						<button type="submit" name="addToCart" class="btn btn-primary btn-lg mr-3">Add to Cart</button>
+					<!-- Action Buttons -->
+					<div class="mt-4">
+						<form method="post">
+							<!--- Add to cart button --->
+							<button type="submit" name="addToCart" class="btn btn-primary btn-lg mr-3">Add to Cart</button>
 
-						<!---Buy now button --->
-						<button type="submit" name="buyNow" class="btn btn-danger btn-lg">Buy Now</button>
-					</form>
+							<!---Buy now button --->
+							<button type="submit" name="buyNow" class="btn btn-danger btn-lg">Buy Now</button>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</cfif>
 </cfoutput>
