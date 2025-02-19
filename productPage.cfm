@@ -13,7 +13,6 @@
 <!--- This usually happends if the product id in url is invalid --->
 <cfif arrayLen(variables.productInfo.data) EQ 0>
 	<cfinclude template="/404.cfm">
-	<cfabort>
 </cfif>
 
 <!--- Handle add to cart button --->
@@ -47,18 +46,6 @@
 </cfif>
 
 <cfoutput>
-<<<<<<< Updated upstream
-	<div class="container p-5">
-		<div class="row d-flex justify-content-center">
-			<!-- Product Image -->
-			<div class="col-md-4" data-bs-theme="dark">
-				<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 h-100 shadow">
-					<div class="carousel-inner">
-						<cfloop list="#variables.productInfo.data[1].productImages#" item="item" index="i">
-							<div class="carousel-item #(i EQ 1 ? "active" : "")#">
-								<div class="d-flex justify-content-center">
-									<img src="#application.productImageDirectory&item#" class="img-fluid" alt="Product Image">
-=======
 	<cfif arrayLen(variables.productInfo.data)>
 		<div class="container p-5">
 			<div class="row d-flex justify-content-center">
@@ -71,7 +58,6 @@
 									<div class="d-flex justify-content-center">
 										<img src="#application.productImageDirectory&item#" class="img-fluid" alt="Product Image">
 									</div>
->>>>>>> Stashed changes
 								</div>
 							</cfloop>
 						</div>

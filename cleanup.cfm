@@ -9,6 +9,7 @@
 			tblProductImages
 		WHERE
 			fldActive = 0
+			AND fldDefaultImage = 0
 	</cfquery>
 
 	<cfloop query="variables.qryGetProductImages">
@@ -24,6 +25,7 @@
 			tblProductImages
 		WHERE
 			fldActive = 0
+			AND fldDefaultImage = 0
 	</cfquery>
 <cfelse>
 	<cfinclude template="/403.cfm">
