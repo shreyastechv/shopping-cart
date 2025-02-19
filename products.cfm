@@ -41,7 +41,10 @@
 	<!--- Main Content --->
 	<div class="d-flex flex-column m-3">
 		<cfif arrayLen(variables.products.data)>
-			<cfif NOT len(trim(url.categoryId))>
+			<cfif len(trim(url.categoryId))>
+				<div class="h4 fw-normal text-muted">#variables.products.data[1].categoryName#</div>
+				<hr class="text-muted m-0 p-0 opacity-25">
+			<cfelse>
 				<div class="d-flex justify-content-start p-1">
 					<!--- Sorting --->
 					<div class="d-flex px-3 pb-2">
@@ -117,7 +120,12 @@
 					<!--- Encode Sub Category ID since it is passed to URL param --->
 					<cfset variables.encodedSubCategoryId  = urlEncodedFormat(subCategoryId)>
 
-					<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h4 text-decoration-none">#variables.subCategoryMapping[subCategoryId].name#</a>
+					<div class="px-3 pt-3 pb-2">
+						<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h5 text-decoration-none">
+							#variables.subCategoryMapping[subCategoryId].name#
+							<i class="fs-6 fa-solid fa-circle-chevron-right ms-1"></i>
+						</a>
+					</div>
 				</cfif>
 				<cf_productlist products="#variables.subCategoryMapping[subCategoryId].data#">
 			</cfloop>
@@ -129,7 +137,11 @@
 				</div>
 			</cfif>
 		<cfelse>
-			<div class="fs-4 fw-semibold text-center mx-3 mt-4">No Products Found</div>
+			<div class="d-flex flex-column align-items-center justify-content-center">
+				<img src="#application.imageDirectory#empty-cart.svg" width="300" alt="Shopping Cart Empty">
+				<div class="fs-4 fw-semibold text-center mx-3">No Products Found</div>
+				<a class="btn btn-primary mt-4" href="/">Go to Home</a>
+			</div>
 		</cfif>
 	</div>
 </cfoutput>
