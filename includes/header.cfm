@@ -22,7 +22,6 @@
 		</head>
 
 		<!--- Variables --->
-		<cfset variables.categories = application.dataFetch.getCategories()>
 		<cfset variables.subCategories = application.dataFetch.getSubCategories()>
 		<cfset variables.catToSubcatMapping = {}>
 
@@ -95,7 +94,7 @@
 				<nav class="navbar navbar-expand-lg bg-body-tertiary">
 					<div class="container-fluid">
 						<ul class="navbar-nav w-100 d-flex justify-content-evenly">
-							<cfloop array="#variables.categories.data#" item="categoryItem" index="i">
+							<cfloop array="#application.categories.data#" item="categoryItem" index="i">
 								<!--- Encode Category ID since it is passed to URL param --->
 								<cfset variables.encodedCategoryId  = urlEncodedFormat(categoryItem.categoryId)>
 								<li class="nav-item dropdown categoryDropdown">

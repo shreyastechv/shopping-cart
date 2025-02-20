@@ -139,6 +139,15 @@
 			</cfif>
 		</cfif>
 
+		<!--- Categories Query Caching --->
+		<cfif NOT structKeyExists(application, "categories")
+			OR NOT structKeyExists(application, "categoriesLastUpdated")
+			OR application.categoriesLastUpdated LT application.commonFunctions.getLastUpdatedTimestamp('category')
+		>
+			<cfset application.categories = application.dataFetch.getCategories()>
+			<cfset application.categoriesLastUpdated = application.commonFunctions.getLastUpdatedTimestamp('category')>
+		</cfif>
+
 		<cfreturn true>
 	</cffunction>
 
