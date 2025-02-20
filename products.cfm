@@ -100,35 +100,40 @@
 					</div>
 				</div>
 			</cfif>
-			<!--- Product Listing --->
-			<cfset variables.subCategoryMapping = {}>
-			<cfloop array="#variables.products.data#" item="item">
-				<cfif NOT structKeyExists(variables.subCategoryMapping, item.subCategoryId)>
-					<cfset variables.subCategoryMapping[item.subCategoryId].name = item.subCategoryName>
-					<cfset variables.subCategoryMapping[item.subCategoryId].data = []>
-				</cfif>
-				<cfset arrayAppend(variables.subCategoryMapping[item.subCategoryId].data, {
-					"productId" = item.productId,
-					"productImages" = item.productImages,
-					"productName" = item.productName,
-					"description" = item.description,
-					"price" = item.price
-				})>
-			</cfloop>
-			<cfloop collection="#variables.subCategoryMapping#" item="subCategoryId">
-				<cfif len(trim(url.categoryId))>
-					<!--- Encode Sub Category ID since it is passed to URL param --->
-					<cfset variables.encodedSubCategoryId  = urlEncodedFormat(subCategoryId)>
+			<cfif len(trim(url.categoryId))>
+				<!--- Category Product Listing --->
+				<cfset variables.subCategoryMapping = {}>
+				<cfloop array="#variables.products.data#" item="item">
+					<cfif NOT structKeyExists(variables.subCategoryMapping, item.subCategoryId)>
+						<cfset variables.subCategoryMapping[item.subCategoryId].name = item.subCategoryName>
+						<cfset variables.subCategoryMapping[item.subCategoryId].data = []>
+					</cfif>
+					<cfset arrayAppend(variables.subCategoryMapping[item.subCategoryId].data, {
+						"productId" = item.productId,
+						"productImages" = item.productImages,
+						"productName" = item.productName,
+						"description" = item.description,
+						"price" = item.price
+					})>
+				</cfloop>
+				<cfloop collection="#variables.subCategoryMapping#" item="subCategoryId">
+					<cfif len(trim(url.categoryId))>
+						<!--- Encode Sub Category ID since it is passed to URL param --->
+						<cfset variables.encodedSubCategoryId  = urlEncodedFormat(subCategoryId)>
 
-					<div class="px-3 pt-3 pb-2">
-						<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h5 text-decoration-none">
-							#variables.subCategoryMapping[subCategoryId].name#
-							<i class="fs-6 fa-solid fa-circle-chevron-right ms-1"></i>
-						</a>
-					</div>
-				</cfif>
-				<cf_productlist products="#variables.subCategoryMapping[subCategoryId].data#">
-			</cfloop>
+						<div class="px-3 pt-3 pb-2">
+							<a href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#" class="h5 text-decoration-none">
+								#variables.subCategoryMapping[subCategoryId].name#
+								<i class="fs-6 fa-solid fa-circle-chevron-right ms-1"></i>
+							</a>
+						</div>
+					</cfif>
+					<cf_productlist products="#variables.subCategoryMapping[subCategoryId].data#">
+				</cfloop>
+			<cfelse>
+				<!--- Sub category / Search Product listing --->
+				<cf_productlist products="#variables.products.data#">
+			</cfif>
 
 			<!--- View More Button --->
 			<cfif variables.products.hasMoreRows>
