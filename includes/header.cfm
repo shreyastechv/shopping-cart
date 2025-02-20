@@ -40,7 +40,7 @@
 			})>
 		</cfloop>
 
-		<body>
+		<body class="overflow-x-hidden">
 			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2 py-1">
 				<a class="d-flex align-items-center text-decoration-none" href="/">
 					<img class="p-2 me-2" src="#application.imageDirectory#shopping-cart-logo.png" height="45" alt="Logo Image">
@@ -98,48 +98,34 @@
 							<cfloop array="#variables.categories.data#" item="categoryItem" index="i">
 								<!--- Encode Category ID since it is passed to URL param --->
 								<cfset variables.encodedCategoryId  = urlEncodedFormat(categoryItem.categoryId)>
-
-								<cfif i LT 8>
-									<li class="nav-item dropdown categoryDropdown">
-										<a class="nav-link dropdown-toggle" href="/products.cfm?categoryId=#variables.encodedCategoryId#">
+								<li class="nav-item dropdown categoryDropdown">
+									<cfif i LT 8>
+										<a class="nav-link dropdown-toggle" href="/products.cfm?categoryId=#urlEncodedFormat(categoryItem.categoryId)#">
 											#categoryItem.categoryName#
 										</a>
-										<cfif structKeyExists(variables.catToSubcatMapping, categoryItem.categoryId)>
-											<ul class="dropdown-menu subCategoryDropdown mt-0">
-												<cfloop array="#variables.catToSubcatMapping[categoryItem.categoryId]#" item="subCategoryItem">
-													<!--- Encode Sub Category ID since it is passed to URL param --->
-													<cfset variables.encodedSubCategoryId  = urlEncodedFormat(subCategoryItem.subCategoryId)>
-
-													<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#">#subCategoryItem.subCategoryName#</a></li>
-												</cfloop>
-											</ul>
-										</cfif>
-									</li>
-								<cfelse>
-									<li class="nav-item dropdown">
-										<button class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-											More
-										</button>
+									<cfelse>
+										<button class="nav-link dropdown-toggle" data-bs-toggle="dropdown">More</button>
 										<ul class="dropdown-menu dropdown-menu-end">
-											<li class="dropdown-submenu">
-												<a class="dropdown-item" href="/products.cfm?categoryId=#variables.encodedCategoryId#">
-													<i class="fa-solid fa-caret-left"></i>
-													#categoryItem.categoryName#
+											<li>
+												<a class="dropdown-item" href="/products.cfm?categoryId=#urlEncodedFormat(categoryItem.categoryId)#">
+													<i class="fa-solid fa-caret-left"></i> #categoryItem.categoryName#
 												</a>
-												<cfif structKeyExists(variables.catToSubcatMapping, categoryItem.categoryId)>
-													<ul class="dropdown-menu">
-														<cfloop array="#variables.catToSubcatMapping[categoryItem.categoryId]#" item="subCategoryItem">
-															<!--- Encode Sub Category ID since it is passed to URL param --->
-															<cfset variables.encodedSubCategoryId  = urlEncodedFormat(subCategoryItem.subCategoryId)>
-
-															<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#">Subcategory 3.2</a></li>
-														</cfloop>
-													</ul>
-												</cfif>
 											</li>
 										</ul>
-									</li>
-								</cfif>
+									</cfif>
+
+									<cfif structKeyExists(variables.catToSubcatMapping, categoryItem.categoryId)>
+										<ul class="dropdown-menu subCategoryDropdown">
+											<cfloop array="#variables.catToSubcatMapping[categoryItem.categoryId]#" item="subCategoryItem">
+												<li>
+													<a class="dropdown-item" href="/products.cfm?subCategoryId=#urlEncodedFormat(subCategoryItem.subCategoryId)#">
+														#subCategoryItem.subCategoryName#
+													</a>
+												</li>
+											</cfloop>
+										</ul>
+									</cfif>
+								</li>
 							</cfloop>
 						</ul>
 					</div>
