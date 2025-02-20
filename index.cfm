@@ -57,6 +57,6 @@
 	</div>
 
 	<!--- Random Products --->
-	<div class="h2 px-2 pt-3 pb-1">Random Products</div>
+	<div class="h5 px-3 pt-3 pb-1">Exciting New Products</div>
 	<cf_productlist products="#variables.randomProducts.data#">
 </cfoutput>
