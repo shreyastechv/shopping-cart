@@ -62,16 +62,7 @@ function viewMore() {
 }
 
 $(document).ready(function () {
-	$("#min, #max").on("input", function () {
-		const minVal = $("#min").val();
-		const maxVal = $("#max").val();
-		if (minVal == 0 && maxVal == 0) {
-			$("#clearBtn").prop("disabled", true);
-		} else {
-			$("#clearBtn").prop("disabled", false);
-		}
-	});
-	$("#clearBtn").click(function () {
+	$("#clearFilterBtn").click(function () {
 		$("#min, #max").val(0);
 		$("#priceFilterForm").submit();
 	});

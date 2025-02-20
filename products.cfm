@@ -40,7 +40,6 @@
 <cfoutput>
 	<!--- Main Content --->
 	<div class="d-flex flex-column m-3">
-		<cfif arrayLen(variables.products.data)>
 			<cfif len(trim(url.categoryId))>
 				<div class="h4 fw-normal text-muted">#variables.products.data[1].categoryName#</div>
 				<hr class="text-muted m-0 p-0 opacity-25">
@@ -66,14 +65,13 @@
 
 					<!--- Filtering --->
 					<div class="filter dropdown pe-3">
-						<button class="btn btn-secondary" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+						<button class="btn btn-secondary me-2" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
 							<i class="fa-solid fa-filter-circle-dollar"></i>
 							Filter
 						</button>
 						<ul class="dropdown-menu p-3 shadow">
 							<div class="d-flex align-items-center justify-content-between fw-semibold mb-2 gap-2">
 								Price Filter
-								<button type="button" id="clearBtn" class="btn btn-sm btn-outline-danger" disabled>Clear</button>
 							</div>
 
 							<form method="get" id="priceFilterForm">
@@ -97,9 +95,16 @@
 								<button class="btn btn-success w-100" type="submit" id="filterBtn">Apply</button>
 							</form>
 						</ul>
+						<cfif val(url.min) OR val(url.max)>
+							<button type="button" id="clearFilterBtn" class="btn btn-outline-danger">
+								<i class="fa-solid fa-circle-xmark"></i>
+								Clear Filter
+							</button>
+						</cfif>
 					</div>
 				</div>
 			</cfif>
+		<cfif arrayLen(variables.products.data)>
 			<cfif len(trim(url.categoryId))>
 				<!--- Category Product Listing --->
 				<cfset variables.subCategoryMapping = {}>
@@ -145,7 +150,6 @@
 			<div class="d-flex flex-column align-items-center justify-content-center">
 				<img src="#application.imageDirectory#empty-cart.svg" width="300" alt="Shopping Cart Empty">
 				<div class="fs-4 fw-semibold text-center mx-3">No Products Found</div>
-				<a class="btn btn-primary mt-4" href="/">Go to Home</a>
 			</div>
 		</cfif>
 	</div>
