@@ -419,7 +419,6 @@
 				A.fldFirstName,
 				A.fldLastName,
 				A.fldPhone,
-				COUNT(O.fldOrder_Id) OVER() AS totalRows,
 				GROUP_CONCAT(OI.fldProductId SEPARATOR ',') AS productIds,
 				GROUP_CONCAT(OI.fldQuantity SEPARATOR ',') AS quantities,
 				GROUP_CONCAT(OI.fldUnitPrice SEPARATOR ',') AS unitPrices,
@@ -440,7 +439,7 @@
 				<cfif len(trim(arguments.orderId))>
 					<!--- For printing pdf for each order --->
 					AND O.fldOrder_Id = <cfqueryparam value = "#arguments.orderId#" cfsqltype = "varchar">
-				<cfelse>
+				<cfelseif len(trim(arguments.searchTerm))>
 					<!--- When searching for orders --->
 					AND (
 						O.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
@@ -463,7 +462,8 @@
 		</cfquery>
 
 		<!--- Check whether there are more orders --->
-		<cfset local.response.hasMoreRows = (val(local.qryGetOrders.totalRows) - val(arguments.pageSize) - (val(arguments.pageNumber - 1) * val(arguments.pageSize))) GT 0>
+		<cfset local.qryGetRowCount = queryExecute("SELECT COUNT(fldOrder_Id) AS totalRows FROM tblOrder")>
+		<cfset local.response.hasMoreRows = (val(local.qryGetRowCount.totalRows) - val(arguments.pageSize) - (val(arguments.pageNumber - 1) * val(arguments.pageSize))) GT 0>
 
 		<cfloop query="local.qryGetOrders">
 			<cfset arrayAppend(local.response["data"], {
