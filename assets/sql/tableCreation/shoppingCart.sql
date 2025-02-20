@@ -257,9 +257,49 @@ CREATE UNIQUE INDEX `fldImage_Id_UNIQUE` ON `tblProductImages` (`fldProductImage
 
 CREATE INDEX `createdBy_idx` ON `tblProductImages` (`fldCreatedBy` ASC, `fldDeactivatedBy` ASC) VISIBLE;
 
-
-INSERT INTO `tblBrands` (`fldBrand_Id`, `fldBrandName`, `fldActive`) VALUES (1, 'Samsung', 1);
-INSERT INTO `tblBrands` (`fldBrand_Id`, `fldBrandName`, `fldActive`) VALUES (2, 'Sony', 1);
+-- Insert into brands table
+INSERT INTO `tblbrands` VALUES
+	(1,'Samsung',1),
+	(2,'Sony',1),
+	(3,'Others',1),
+	(4,'iQOO',1),
+	(5,'Apple',1),
+	(6,'POCO',1),
+	(7,'Motorola',1),
+	(8,'OnePlus',1),
+	(9,'realme',1),
+	(10,'HONOR',1),
+	(11,'Redmi',1),
+	(12,'HP',1),
+	(13,'Lenovo',1),
+	(14,'Acer',1),
+	(15,'MSI',1),
+	(18,'ASUS',1),
+	(19,'Epson',1),
+	(20,'Canon',1),
+	(21,'Brother',1),
+	(22,'TSC',1),
+	(23,'SHREYANS',1),
+	(24,'SEZNIK',1),
+	(25,'Amazon Basics',1),
+	(26,'Ambrane',1),
+	(27,'Zebronics',1),
+	(28,'Seagull',1),
+	(29,'Portronics',1),
+	(30,'Noise',1),
+	(31,'boAt',1),
+	(32,'Godrej',1),
+	(33,'LG',1),
+	(34,'KENT',1),
+	(35,'SVAAR',1),
+	(36,'Milton',1),
+	(37,'Lifelong',1),
+	(38,'Protinex',1),
+	(39,'Jawdrobe',1),
+	(40,'Mom\'s Home',1);
 
 INSERT INTO `tblRole` (`fldRole_Id`, `fldRoleName`) VALUES (1, 'Admin');
 INSERT INTO `tblRole` (`fldRole_Id`, `fldRoleName`) VALUES (2, 'User');
+
+-- Set product id + user id combination as unique so that insert query can be simpler
+ALTER TABLE tblCart ADD UNIQUE (fldProductId, fldUserId);
