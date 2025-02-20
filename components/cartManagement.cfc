@@ -33,50 +33,30 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
+		<cfstoredproc procedure="spModifyCart">
+			<cfprocparam type="in" cfsqltype="integer" variable="productId" value="#val(local.productId)#">
+			<cfprocparam type="in" cfsqltype="varchar" variable="action" value="#arguments.action#">
+			<cfprocparam type="in" cfsqltype="integer" variable="userId" value="#session.userId#">
+		</cfstoredproc>
+
+		<!--- Update the session variable --->
 		<cfif arguments.action EQ "increment">
-
-			<!--- Check whether the item is present in cart --->
 			<cfif structKeyExists(session.cart, arguments.productId)>
-				<!--- Increment quantity of product in session variable --->
 				<cfset session.cart[arguments.productId].quantity += 1>
-
-				<!--- Set response message --->
 				<cfset local.response["message"] = "Product Quantity Incremented">
-
 			<cfelse>
-				<!--- Get Product Into --->
-				<cfset local.productInfo = application.dataFetch.getProducts(
-					productId = arguments.productId
-				)>
-
-				<!--- Add product to session variable --->
-				<cfset session.cart[arguments.productId] = {
-					"quantity" = 1,
-					"unitPrice" = local.productInfo.data[1].price,
-					"unitTax" = local.productInfo.data[1].tax
-				}>
-
-				<!--- Set response message --->
+				<cfset session.cart[arguments.productId] = application.dataFetch.getCart(
+					productId = local.productId
+				)[arguments.productId]>
 				<cfset local.response["message"] = "Product Added">
 
 			</cfif>
-
 		<cfelseif arguments.action EQ "decrement" AND session.cart[arguments.productId].quantity GT 1>
-
-			<!--- Decrement quantity of product in session variable --->
 			<cfset session.cart[arguments.productId].quantity -= 1>
-
-			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Quantity Decremented">
-
 		<cfelse>
-
-			<!--- Delete product from session variable --->
 			<cfset structDelete(session.cart, arguments.productId)>
-
-			<!--- Set response message --->
 			<cfset local.response["message"] = "Product Deleted">
-
 		</cfif>
 
 		<!--- Do the math --->
@@ -114,113 +94,6 @@
 		})>
 
 		<cfset local.response["success"] = true>
-
-		<cfreturn local.response>
-	</cffunction>
-
-	<cffunction name="updateCartBatch" access="public" returnType="struct" returnFormat="json">
-		<cfargument name="userId" type="integer" required=true>
-		<cfargument name="cartData" type="struct" required=false>
-
-		<cfset local.response = {
-			success = false,
-			message = ""
-		}>
-
-		<cftry>
-			<cftransaction>
-				<!--- Get all products currently in the cart --->
-				<cfquery name="local.qryCartProducts">
-					SELECT fldProductId FROM tblCart WHERE fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
-				</cfquery>
-
-				<!--- Get product Ids from cart table --->
-				<cfset local.cartProductIdList = valueList(local.qryCartProducts.fldProductId)>
-
-				<!--- Encrypt product ids from cart --->
-				<cfset local.cartProductIdList = listMap(local.cartProductIdList, function(item) {
-					return application.commonFunctions.encryptText(item);
-				})>
-
-				<!--- Get product Ids from session variable --->
-				<cfset local.productIdList = structKeyList(arguments.cartData)>
-
-				<!--- Separate product ids into groups --->
-				<cfset local.updatedIdList = listFilter(local.productIdList,function(id){
-					return listContainsNoCase(cartProductIdList, id);
-				})>
-				<cfset local.deleteIdList = listFilter(local.cartProductIdList,function(id){
-					return NOT listContainsNoCase(productIdList, id);
-				})>
-				<cfset local.insertIdList = listFilter(local.productIdList, function(id) {
-					return NOT listContainsNoCase(cartProductIdList, id);
-				})>
-
-				<!--- Decrypt some ids --->
-				<cfset local.updatedIdList = listMap(local.updatedIdList, function(item) {
-					return application.commonFunctions.decryptText(item);
-				})>
-				<cfset local.deleteIdList = listMap(local.deleteIdList, function(item) {
-					return application.commonFunctions.decryptText(item);
-				})>
-
-				<!--- Insert new products to cart --->
-				<cfif listLen(local.insertIdList)>
-					<cfquery>
-						INSERT INTO
-							tblCart (
-								fldUserId,
-								fldProductId,
-								fldQuantity
-							)
-						VALUES
-							<cfloop list="#local.insertIdList#" item="id" index="i">
-								(
-									<cfqueryparam value="#arguments.userId#" cfsqltype="integer">,
-									<cfqueryparam value="#application.commonFunctions.decryptText(id)#" cfsqltype="integer">,
-									<cfqueryparam value="#arguments.cartData[id].quantity#" cfsqltype="integer">
-								)
-								<cfif i NEQ listLen(local.insertIdList)>,</cfif>
-							</cfloop>
-					</cfquery>
-				</cfif>
-
-				<!--- Update products in cart --->
-				<cfif listLen(local.updatedIdList)>
-					<cfquery>
-						UPDATE
-							tblCart
-						SET
-							fldQuantity = CASE fldProductId
-								<cfloop list="#local.updatedIdList#" item="id" index="i">
-									WHEN <cfqueryparam value="#id#" cfsqltype="integer">
-									THEN <cfqueryparam value="#arguments.cartData[application.commonFunctions.encryptText(id)].quantity#" cfsqltype="integer">
-								</cfloop>
-							END
-						WHERE
-							fldProductId IN (<cfqueryparam value = "#local.updatedIdList#" cfsqltype = "varchar" list = "yes">)
-					</cfquery>
-				</cfif>
-
-				<!--- Delete products from cart --->
-				<cfquery>
-					DELETE FROM
-						tblCart
-					WHERE
-						fldUserId = <cfqueryparam value="#arguments.userId#" cfsqltype="integer">
-						AND fldProductId IN (<cfqueryparam value = "#local.deleteIdList#" cfsqltype = "varchar" list = "yes">)
-				</cfquery>
-			</cftransaction>
-
-			<cfset local.response.success = true>
-
-			<!--- Catch error --->
-			<cfcatch>
-				<!--- Rollback cart update if some queries fail --->
-				<cftransaction action="rollback">
-				<cfset local.response.message="Error: #cfcatch.message#">
-			</cfcatch>
-		</cftry>
 
 		<cfreturn local.response>
 	</cffunction>

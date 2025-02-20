@@ -10,16 +10,6 @@
 			<!--- Encode Product ID since it is passed to URL param --->
 			<cfset variables.encodedProductId = urlEncodedFormat(item.productId)>
 
-			<!--- Calculate price and tax so that in cfc, we don't have another db call --->
-			<!--- This also makes sure that the price of product shown in cart is up-to-date --->
-			<cfif cgi.SCRIPT_NAME EQ "/cart.cfm">
-				<cfset session.cart[item.productId].unitPrice = item.price>
-				<cfset session.cart[item.productId].unitTax = item.tax>
-			<cfelse>
-				<cfset session.checkout[item.productId].unitPrice = item.price>
-				<cfset session.checkout[item.productId].unitTax = item.tax>
-			</cfif>
-
 			<!--- Calculate price and actual price --->
 			<cfset variables.quantity = attributes.products[item.productId].quantity>
 			<cfset variables.actualPrice = item.price * variables.quantity>

@@ -11,15 +11,15 @@
 
 <cfif len(trim(url.productId))>
 	<!--- Product details when this page was opened by clicking buy now from product page --->
-	<cfset session.checkout[url.productId] = {
-		"quantity" = 1
-	}>
-<cfelseif structKeyExists(session, "cart") AND structCount(session.cart)>
-	<!--- Product details when this page was opened by clicking clicking checkout from cart page --->
-	<cfset session.checkout = duplicate(session.cart)>
+	<cfset session.checkout = application.dataFetch.getCart(
+		productId = url.productId
+	)>
+
+	<!--- Set quantity of product to 1 (similar to flipkart) --->
+	<cfset session.checkout[url.productId].quantity = 1>
 <cfelse>
-	<!--- If this page was opened by user and cart is empty --->
-	<cflocation  url="/cart.cfm" addToken="no">
+	<!--- Product details when this page was opened by clicking clicking checkout from cart page --->
+	<cfset session.checkout = application.dataFetch.getCart()>
 </cfif>
 
 <cfoutput>

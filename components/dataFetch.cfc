@@ -290,7 +290,10 @@
 	</cffunction>
 
 	<cffunction name="getCart" access="public" returnType="struct">
+		<cfargument name="productId" type="string" required=false default="">
+
 		<cfset local.cartItems = {}>
+		<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
 
 		<!--- UserId Validation --->
 		<cfif NOT structKeyExists(session, "userId")>
@@ -310,11 +313,16 @@
 					AND P.fldActive = 1 <!--- Only take active products --->
 			WHERE
 				C.fldUserId = <cfqueryparam value = "#session.userId#" cfsqltype = "integer">
+				<cfif val(local.productId) NEQ -1>
+					AND C.fldProductId = <cfqueryparam value = "#local.productId#" cfsqltype = "integer">
+				</cfif>
 		</cfquery>
 
 		<cfloop query="local.qryGetCart">
 			<cfset local.cartItems[application.commonFunctions.encryptText(local.qryGetCart.fldProductId)] = {
-				"quantity" = local.qryGetCart.fldQuantity
+				"quantity" = local.qryGetCart.fldQuantity,
+				"unitPrice" = local.qryGetCart.fldPrice,
+				"unitTax" = local.qryGetCart.fldTax
 			}>
 		</cfloop>
 

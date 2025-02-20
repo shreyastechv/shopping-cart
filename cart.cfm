@@ -2,9 +2,12 @@
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>
 
+<!--- Get cart data into session variable so that price manipulations can be easier --->
+<cfset session.cart = application.dataFetch.getCart()>
+
 <cfoutput>
 	<div class="container my-5">
-		<cfif structKeyExists(session, "cart") AND structCount(session.cart)>
+		<cfif structCount(session.cart)>
 			<div class="row">
 				<!-- Products Section -->
 				<div class="col-md-8">

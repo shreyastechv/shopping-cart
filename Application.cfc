@@ -166,34 +166,6 @@
 		<cfinclude template="/includes/footer.cfm">
 	</cffunction>
 
-	<cffunction name="onRequestEnd" returnType="void">
-		<cfargument name="targetPage" type="string" required=true>
-
-		<!--- Update cart when user leaves cart page --->
-		<!--- This code is placed above 'set flag' code to prevent both running on cart page --->
-		<cfif structKeyExists(session, "cartVisit")
-			<!--- Below code is to prevent ajax calls from being registered as page visit --->
-			AND NOT findNoCase("cfc", arguments.targetPage)
-		>
-			<!--- Update cart asynchronously --->
-			<cfthread name="cartUpdateThread">
-				<cfset application.cartManagement.updateCartBatch(
-					userId = session.userId,
-					cartData = session.cart
-				)>
-			</cfthread>
-
-			<!--- Clear flag --->
-			<cfset structDelete(session, "cartVisit")>
-		</cfif>
-
-		<!--- Set session variable when user enters cart page for first time --->
-		<cfif arguments.targetPage EQ "/cart.cfm">
-			<!--- Set flag --->
-			<cfset session.cartVisit = true>
-		</cfif>
-	</cffunction>
-
 	<cffunction name="onSessionEnd" returnType="void">
 		<cfset structClear(session)>
 	</cffunction>
