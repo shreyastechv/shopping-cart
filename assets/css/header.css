@@ -5,3 +5,22 @@
 .ph-150 {
 	height: 150px;
 }
+
+.categoryDropdown:hover .subCategoryDropdown {
+	display: block;
+}
+
+.dropdown-submenu {
+	position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+	position: absolute;
+	top: -8px;
+	left: -93%;
+	display: none;
+}
+
+.dropdown-submenu:hover .dropdown-menu {
+	display: block;
+}

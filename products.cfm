@@ -12,6 +12,7 @@
 <cfparam name="url.max" default=0>
 
 <!--- Other variables --->
+<cfparam name="variables.categoryName" default="">
 <cfset variables.limit = 6>
 <cfset variables.products = {
 	data = []
@@ -25,6 +26,8 @@
 		random = 1,
 		limit = variables.limit
 	)>
+
+	<cfset variables.categoryName = arrayLen(variables.products.data) ? variables.products.data[1].categoryName : "">
 <cfelse>
 	<!--- Sub Category or Search Product Listing --->
 	<cfset variables.products = application.dataFetch.getProducts(
@@ -41,7 +44,7 @@
 	<!--- Main Content --->
 	<div class="d-flex flex-column m-3">
 			<cfif len(trim(url.categoryId))>
-				<div class="h4 fw-normal text-muted">#variables.products.data[1].categoryName#</div>
+				<div class="h4 fw-normal text-muted">#variables.categoryName#</div>
 				<hr class="text-muted m-0 p-0 opacity-25">
 			<cfelse>
 				<div class="d-flex justify-content-start p-1">
@@ -69,7 +72,7 @@
 							<i class="fa-solid fa-filter-circle-dollar"></i>
 							Filter
 						</button>
-						<ul class="dropdown-menu p-3 shadow">
+						<ul class="dropdown-menu p-3 shadow-lg">
 							<div class="d-flex align-items-center justify-content-between fw-semibold mb-2 gap-2">
 								Price Filter
 							</div>
@@ -141,7 +144,7 @@
 			</cfif>
 
 			<!--- View More Button --->
-			<cfif variables.products.hasMoreRows>
+			<cfif variables.products.hasMoreRows AND NOT len(trim(url.categoryId))>
 				<div>
 					<button class="btn btn-warning mx-3" id="viewMoreBtn" type="button" onclick="viewMore()">View More</button>
 				</div>
