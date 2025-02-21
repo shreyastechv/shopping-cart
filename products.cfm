@@ -48,14 +48,6 @@
 			<div class="d-flex justify-content-start p-1">
 				<!--- Sorting --->
 				<div class="d-flex px-3 pb-2 gap-2">
-					<!---<button class="btn btn-primary" type="button" onclick="updateUrlParam({'sort':'asc'})" #(url.sort EQ "asc" ? "disabled" : "")#>
-						<i class="fa-solid fa-arrow-up-wide-short"></i>
-						Price: Low to High
-					</button>
-					<button class="btn btn-primary" type="button" onclick="updateUrlParam({'sort':'desc'})" #(url.sort EQ "desc" ? "disabled" : "")#>
-						<i class="fa-solid fa-arrow-down-wide-short"></i>
-						Price: High to Low
-					</button>--->
 					<select class="form-select shadow-sm" id="sortSelect">
 						<option value="featured" selected>Featured</option>
 						<option value="price-asc" #(url.sort EQ "asc" ? "selected" : "")#>Price - Low to High</option>
@@ -65,7 +57,7 @@
 
 				<!--- Filtering --->
 				<div class="filter dropdown pe-3">
-					<button class="btn btn-secondary me-2" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+					<button class="btn btn-secondary me-2 shadow-sm" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
 						<i class="fa-solid fa-filter-circle-dollar"></i>
 						Filter
 					</button>
@@ -80,6 +72,11 @@
 								<input type="number" class="form-control mb-2" id="min" name="min" min="0" value="#url.min#"
 									oninput="this.value = this.value.replace(/^0+/, '');">
 							</div>
+							<div class="d-flex">
+								<button type="button" class="btn btn-sm mt-3" onclick="swapFilter()">
+									<i class="fa-solid fa-right-left pe-none"></i>
+								</button>
+							</div>
 							<div>
 								<label for="max">Max</label>
 								<input type="number" class="form-control mb-2" id="max" name="max" max="10000000" value="#url.max#"
@@ -90,7 +87,7 @@
 						<button class="btn btn-success w-100" type="submit" id="filterBtn" onclick="applyFilter()">Apply</button>
 					</ul>
 					<cfif val(url.min) OR val(url.max)>
-						<button type="button" id="clearFilterBtn" class="btn btn-outline-danger" onclick="clearFilter()">
+						<button type="button" id="clearFilterBtn" class="btn btn-outline-danger shadow-sm" onclick="clearFilter()">
 							<i class="fa-solid fa-circle-xmark"></i>
 							Clear Filter
 						</button>

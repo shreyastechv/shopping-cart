@@ -88,6 +88,14 @@ function applyFilter() {
 	});
 }
 
+function swapFilter() {
+	const min = $("#min").val();
+	const max = $("#max").val();
+
+	$("#min").val(max).change();
+	$("#max").val(min).change();
+}
+
 $(document).ready(function() {
 	$('#sortSelect').on('change', function() {
 		var selectedOption = $('#sortSelect option:selected').val();
