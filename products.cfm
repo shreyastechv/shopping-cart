@@ -25,7 +25,7 @@
 	)>
 
 	<cfset variables.categoryName = arrayLen(variables.products.data) ? variables.products.data[1].categoryName : "">
-<cfelse>
+<cfelseif len(trim(url.subCategoryId)) OR len(trim(url.search))>
 	<!--- Sub Category or Search Product Listing --->
 	<cfset variables.products = application.dataFetch.getProducts(
 		subCategoryId = url.subCategoryId,
@@ -35,6 +35,8 @@
 		max = val(url.max),
 		sort = (arrayContainsNoCase(["","asc","desc"], url.sort) ? url.sort : "")
 	)>
+<cfelse>
+	<cflocation url="/" addToken="false">
 </cfif>
 
 <cfoutput>
