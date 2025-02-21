@@ -72,7 +72,7 @@
 							<i class="fa-solid fa-filter-circle-dollar"></i>
 							Filter
 						</button>
-						<ul class="dropdown-menu p-3 shadow-lg">
+						<ul class="productFilterMenu dropdown-menu p-3 shadow-lg">
 							<div class="d-flex align-items-center justify-content-between fw-semibold mb-2 gap-2">
 								Price Filter
 							</div>
