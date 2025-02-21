@@ -433,6 +433,12 @@
 				INNER JOIN tblAddress A ON A.fldAddress_Id = O.fldAddressId
 				INNER JOIN tblOrderItems OI ON OI.fldOrderId = O.fldOrder_Id
 				INNER JOIN tblProduct P ON P.fldProduct_Id = OI.fldProductId
+
+				<!--- Order items and products needs to be re-joined to get
+				all the products in an order where a product name is matched --->
+				INNER JOIN tblOrderItems OI2 ON O.fldOrder_Id = OI2.fldOrderId
+				INNER JOIN tblProduct P2 ON OI2.fldProductId = P2.fldProduct_Id
+
 				INNER JOIN tblProductImages PI ON PI.fldProductId = P.fldProduct_Id
 					AND PI.fldDefaultImage = 1
 				INNER JOIN tblBrands B ON B.fldBrand_Id = P.fldBrandId
@@ -445,7 +451,7 @@
 					<!--- When searching for orders --->
 					AND (
 						O.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
-						OR P.fldProductName LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
+						OR P2.fldProductName LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
 						OR B.fldBrandName LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
 					)
 				</cfif>
