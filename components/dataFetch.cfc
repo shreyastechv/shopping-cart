@@ -470,7 +470,20 @@
 		</cfquery>
 
 		<!--- Check whether there are more orders --->
-		<cfset local.qryGetRowCount = queryExecute("SELECT COUNT(fldOrder_Id) AS totalRows FROM tblOrder")>
+		<cfquery name="local.qryGetRowCount">
+			SELECT
+				COUNT(fldOrder_Id) AS totalRows
+			FROM
+				tblOrder O
+				INNER JOIN tblAddress A ON A.fldAddress_Id = O.fldAddressId
+				INNER JOIN tblOrderItems OI ON OI.fldOrderId = O.fldOrder_Id
+				INNER JOIN tblProduct P ON P.fldProduct_Id = OI.fldProductId
+				INNER JOIN tblBrands B ON B.fldBrand_Id = P.fldBrandId
+			WHERE
+				O.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
+				OR P.fldProductName LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
+				OR B.fldBrandName LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
+		</cfquery>
 		<cfset local.response.hasMoreRows = (val(local.qryGetRowCount.totalRows) - val(arguments.pageSize) - (val(arguments.pageNumber - 1) * val(arguments.pageSize))) GT 0>
 
 		<cfloop query="local.qryGetOrders">
