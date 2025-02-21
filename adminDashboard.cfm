@@ -5,7 +5,7 @@
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
-			<div id="categoryMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
+			<div id="categoryMainContainer" class="bg-white col-md-8 p-4 rounded-4 w-100">
 				<div class="d-flex justify-content-center align-items-center mb-4">
 					<h3 class="fw-semibold text-center mb-0 me-3">CATEGORIES</h3>
 					<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showAddCategoryModal()">
@@ -16,7 +16,7 @@
 					<!--- Encode Category ID since it is passed to URL param --->
 					<cfset variables.encodedCategoryId = urlEncodedFormat(item.categoryId)>
 
-					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2" id="categoryContainer_#i#">
+					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2 mb-3 shadow-sm" id="categoryContainer_#i#">
 						<div name="categoryName" class="fs-5">#item.categoryName#</div>
 						<div>
 							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showEditCategoryModal('categoryContainer_#i#', '#item.categoryId#')">

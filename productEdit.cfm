@@ -29,20 +29,22 @@
 					<div></div>
 				</div>
 				<cfloop array="#variables.products.data#" item="item" index="i">
-					<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
+					<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-3 py-2 mb-3 shadow-sm">
 						<div class="d-flex flex-column fs-5">
 							<div name="productName" class="fw-bold">#item.productName#</div>
-							<div name="brandName" class="fw-semibold">#item.brandName#</div>
+							<div name="brandName">#item.brandName#</div>
 							<div name="price" class="text-success">Rs.#item.price#</div>
 						</div>
 						<div class="d-flex gap-4">
-							<img src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" width="50">
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
-								<i class="fa-solid fa-pen-to-square pe-none"></i>
-							</button>
-							<button class="btn btn-lg" onclick="deleteProduct('productContainer_#i#', '#item.productId#')">
-								<i class="fa-solid fa-trash pe-none"></i>
-							</button>
+							<img src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" class="img-fluid p-1" width="90">
+							<div class="d-flex flex-column">
+								<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
+									<i class="fa-solid fa-pen-to-square pe-none"></i>
+								</button>
+								<button class="btn btn-lg" onclick="deleteProduct('productContainer_#i#', '#item.productId#')">
+									<i class="fa-solid fa-trash pe-none"></i>
+								</button>
+							</div>
 						</div>
 					</div>
 				</cfloop>

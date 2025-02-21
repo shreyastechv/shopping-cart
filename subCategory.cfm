@@ -27,7 +27,7 @@
 					<!--- Encode SubCategory ID since it is passed to URL param --->
 					<cfset variables.encodedSubCategoryId  = urlEncodedFormat(item.subCategoryId)>
 
-					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2" id="subCategoryContainer_#i#">
+					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2 mb-3 shadow-sm" id="subCategoryContainer_#i#">
 						<div name="subCategoryName" class="fs-5">#item.subCategoryName#</div>
 						<div>
 							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showEditSubCategoryModal('subCategoryContainer_#i#', '#item.subCategoryId#')">
