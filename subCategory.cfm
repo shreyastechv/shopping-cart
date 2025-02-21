@@ -15,13 +15,10 @@
 					<a href="/adminDashboard.cfm" class="btn">
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
-					<div class="d-flex">
-						<h3 class="fw-semibold text-center mb-0 me-3">#variables.categoryName#</h3>
-						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showAddSubCategoryModal()">
-							Add+
-						</button>
-					</div>
-					<div></div>
+					<h3 class="fw-semibold text-center mb-0 me-3">#variables.categoryName#</h3>
+					<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showAddSubCategoryModal()">
+						Add+
+					</button>
 				</div>
 				<cfloop array="#variables.subCategories.data#" item="item" index="i">
 					<!--- Encode SubCategory ID since it is passed to URL param --->
