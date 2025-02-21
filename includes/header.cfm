@@ -40,7 +40,7 @@
 			})>
 		</cfloop>
 
-		<body class="overflow-x-hidden">
+		<body class="overflow-x-hidden overflow-y-scroll">
 			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2 py-1">
 				<a class="d-flex align-items-center text-decoration-none" href="/">
 					<img class="p-2 me-2" src="#application.imageDirectory#shopping-cart-logo.png" height="45" alt="Logo Image">

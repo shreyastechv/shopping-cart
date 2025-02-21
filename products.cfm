@@ -1,6 +1,3 @@
-<!--- Clear variables scope to prevent issues --->
-<cfset structClear(variables)>
-
 <!--- URL Params --->
 <cfparam name="url.categoryId" default="">
 <cfparam name="url.subCategoryId" default="">
@@ -43,70 +40,64 @@
 <cfoutput>
 	<!--- Main Content --->
 	<div class="d-flex flex-column m-3">
-			<cfif len(trim(url.categoryId))>
-				<div class="h4 fw-normal text-muted">#variables.categoryName#</div>
-				<hr class="text-muted m-0 p-0 opacity-25">
-			<cfelse>
-				<div class="d-flex justify-content-start p-1">
-					<!--- Sorting --->
-					<div class="d-flex px-3 pb-2">
-						<form method="get">
-							<input type="hidden" name="search" value="#url.search#">
-							<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
-							<input type="hidden" name="min" value="#url.min#">
-							<input type="hidden" name="max" value="#url.max#">
-							<button class="btn btn-primary me-sm-2" type="submit" name="sort" value="asc">
-								<i class="fa-solid fa-arrow-up-wide-short"></i>
-								Price: Low to High
-							</button>
-							<button class="btn btn-primary" type="submit" name="sort" value="desc">
-								<i class="fa-solid fa-arrow-down-wide-short"></i>
-								Price: High to Low
-							</button>
-						</form>
-					</div>
-
-					<!--- Filtering --->
-					<div class="filter dropdown pe-3">
-						<button class="btn btn-secondary me-2" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-							<i class="fa-solid fa-filter-circle-dollar"></i>
-							Filter
-						</button>
-						<ul class="productFilterMenu dropdown-menu p-3 shadow-lg">
-							<div class="d-flex align-items-center justify-content-between fw-semibold mb-2 gap-2">
-								Price Filter
-							</div>
-
-							<form method="get" id="priceFilterForm">
-								<input type="hidden" name="search" value="#url.search#">
-								<input type="hidden" name="subCategoryId" value="#url.subCategoryId#">
-								<input type="hidden" name="sort" value="#url.sort#">
-
-								<div class="d-flex gap-2">
-									<div>
-										<label for="min">Min</label>
-										<input type="number" class="form-control mb-2" id="min" name="min" min="0" value="#url.min#"
-											oninput="this.value = this.value.replace(/^0+/, '');">
-									</div>
-									<div>
-										<label for="max">Max</label>
-										<input type="number" class="form-control mb-2" id="max" name="max" max="10000000" value="#url.max#"
-											oninput="this.value = this.value.replace(/^0+/, '');">
-									</div>
-								</div>
-
-								<button class="btn btn-success w-100" type="submit" id="filterBtn">Apply</button>
-							</form>
-						</ul>
-						<cfif val(url.min) OR val(url.max)>
-							<button type="button" id="clearFilterBtn" class="btn btn-outline-danger">
-								<i class="fa-solid fa-circle-xmark"></i>
-								Clear Filter
-							</button>
-						</cfif>
-					</div>
+		<cfif len(trim(url.categoryId))>
+			<div class="h4 fw-normal text-muted">#variables.categoryName#</div>
+			<hr class="text-muted m-0 p-0 opacity-25">
+		<cfelse>
+			<!--- Don't show sorting and filtering for category product listing --->
+			<div class="d-flex justify-content-start p-1">
+				<!--- Sorting --->
+				<div class="d-flex px-3 pb-2 gap-2">
+					<!---<button class="btn btn-primary" type="button" onclick="updateUrlParam({'sort':'asc'})" #(url.sort EQ "asc" ? "disabled" : "")#>
+						<i class="fa-solid fa-arrow-up-wide-short"></i>
+						Price: Low to High
+					</button>
+					<button class="btn btn-primary" type="button" onclick="updateUrlParam({'sort':'desc'})" #(url.sort EQ "desc" ? "disabled" : "")#>
+						<i class="fa-solid fa-arrow-down-wide-short"></i>
+						Price: High to Low
+					</button>--->
+					<select class="form-select shadow-sm" id="sortSelect">
+						<option value="featured" selected>Featured</option>
+						<option value="price-asc" #(url.sort EQ "asc" ? "selected" : "")#>Price - Low to High</option>
+						<option value="price-desc" #(url.sort EQ "desc" ? "selected" : "")#>Price - High to Low</option>
+					</select>
 				</div>
-			</cfif>
+
+				<!--- Filtering --->
+				<div class="filter dropdown pe-3">
+					<button class="btn btn-secondary me-2" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+						<i class="fa-solid fa-filter-circle-dollar"></i>
+						Filter
+					</button>
+					<ul class="productFilterMenu dropdown-menu p-3 shadow-lg">
+						<div class="d-flex align-items-center justify-content-between fw-semibold mb-2 gap-2">
+							Price Filter
+						</div>
+
+						<div class="d-flex gap-2">
+							<div>
+								<label for="min">Min</label>
+								<input type="number" class="form-control mb-2" id="min" name="min" min="0" value="#url.min#"
+									oninput="this.value = this.value.replace(/^0+/, '');">
+							</div>
+							<div>
+								<label for="max">Max</label>
+								<input type="number" class="form-control mb-2" id="max" name="max" max="10000000" value="#url.max#"
+									oninput="this.value = this.value.replace(/^0+/, '');">
+							</div>
+						</div>
+
+						<button class="btn btn-success w-100" type="submit" id="filterBtn" onclick="applyFilter()">Apply</button>
+					</ul>
+					<cfif val(url.min) OR val(url.max)>
+						<button type="button" id="clearFilterBtn" class="btn btn-outline-danger" onclick="clearFilter()">
+							<i class="fa-solid fa-circle-xmark"></i>
+							Clear Filter
+						</button>
+					</cfif>
+				</div>
+			</div>
+		</cfif>
 		<cfif arrayLen(variables.products.data)>
 			<cfif len(trim(url.categoryId))>
 				<!--- Category Product Listing --->

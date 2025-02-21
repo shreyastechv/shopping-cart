@@ -61,9 +61,47 @@ function viewMore() {
 	});
 }
 
-$(document).ready(function () {
-	$("#clearFilterBtn").click(function () {
-		$("#min, #max").val(0);
-		$("#priceFilterForm").submit();
+function clearFilter() {
+	updateUrlParam({
+		min: 0,
+		max: 0
+	});
+}
+
+function updateUrlParam(paramData) {
+	const urlParams = new URLSearchParams(window.location.search);
+	for (let urlParam in paramData) {
+		if (paramData.hasOwnProperty(urlParam)) {
+			urlParams.set(urlParam, paramData[urlParam]);
+		}
+	}
+	window.location.href = window.location.pathname + '?' + urlParams.toString();
+}
+
+function applyFilter() {
+	const min = $("#min").val();
+	const max = $("#max").val();
+
+	updateUrlParam({
+		min: min,
+		max: max
+	});
+}
+
+$(document).ready(function() {
+	$('#sortSelect').on('change', function() {
+		var selectedOption = $('#sortSelect option:selected').val();
+		switch(selectedOption) {
+			case "price-asc":
+				updateUrlParam({ sort: "asc" });
+				break;
+
+			case "price-desc":
+				updateUrlParam({ sort: "desc" });
+				break;
+
+			default:
+				updateUrlParam({ sort: "" });
+		}
 	});
 });
