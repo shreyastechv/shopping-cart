@@ -6,19 +6,13 @@
 		}>
 
 		<cfquery name="local.qryGetCategories">
-			SELECT DISTINCT
-				C.fldCategory_Id,
-				C.fldCategoryName
+			SELECT
+				fldCategory_Id,
+				fldCategoryName
 			FROM
-				tblCategory C
-			LEFT JOIN
-				tblSubCategory SC ON SC.fldCategoryId = C.fldCategory_Id
-				AND SC.fldActive = 1
+				tblCategory
 			WHERE
-				C.fldActive = 1
-				<cfif NOT structKeyExists(session, "roleId") OR session.roleId EQ 2>
-					AND SC.fldCategoryId IS NOT NULL
-				</cfif>
+				fldActive = 1
 		</cfquery>
 
 		<!--- Fill up the array with category information --->
