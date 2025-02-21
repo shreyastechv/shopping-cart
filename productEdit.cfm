@@ -119,8 +119,8 @@
 				<!--- Product Image --->
 				<label for="productImage" class="fw-semibold mt-2">Product Image</label>
 				<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control" multiple>
-				<div id="uploadedProductImages" class="d-flex flex-wrap gap-3"></div>
-				<div id="productImagePreview" class="d-flex flex-wrap gap-3"></div>
+				<div id="uploadedProductImages" class="row justify-content-between p-3 gap-3 mt-1"></div>
+				<div id="productImagePreview" class="row justify-content-between p-3 gap-3 mt-1"></div>
 				<div id="productImageError" class="text-danger error mt-1 ps-2"></div>
 			  </div>
 			  <div class="modal-footer">
