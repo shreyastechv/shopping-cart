@@ -35,14 +35,14 @@ $(document).ready(function() {
 	$("#productImage").on("change", function () {
 		let files = this.files;
 		let dt = new DataTransfer();
-		let previewContainer = $("#productImagePreview").empty();
+		$(".newProductImage").remove();
 
 		$.each(files, function (i, file) {
 			if (file.type.startsWith("image/")) {
 				dt.items.add(file);
 
 				let imgDiv = $(`
-					<div id="productImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100"
+					<div id="productImageContainer_${i}" class="newProductImage d-inline-block border p-2 rounded text-center pw-100"
 						onMouseOver="this.style.cursor='pointer'"
 						onclick="$(this).children().find('input[name=defaultImageId]').prop('checked', true).trigger('change');"
 					>
@@ -55,7 +55,7 @@ $(document).ready(function() {
 						</div>
 					</div>
                 `);
-				previewContainer.append(imgDiv);
+				$("#uploadedProductImages").append(imgDiv);
 			}
 		});
 
@@ -178,7 +178,6 @@ function showAddProductModal(categoryId) {
 	 $("#categorySelect").val(categoryId).change();
 	$("#subCategoryModalLabel").text("ADD PRODUCT");
 	$("#subCategoryModalBtn").text("Save");
-	$("#productImagePreview").empty();
 	$("#uploadedProductImages").empty();
 }
 
@@ -207,7 +206,6 @@ function showEditProductModal(categoryId, productId) {
 			$("#productImage").val("");
 			$("#subCategoryModalLabel").text("EDIT PRODUCT");
 			$("#subCategoryModalBtn").text("Save Changes");
-			$("#productImagePreview").empty();
 			$("#uploadedProductImages").empty();
 			$.each(productImages, function (i, file) {
 				let imgDiv = $(`
@@ -270,6 +268,7 @@ function createProductItem(prodId, prodName, brand, price, imageFile) {
 }
 
 function deleteImage(containerId, imageId) {
+	event.stopPropagation(); // This is to prevent the image from getting selected as default
 	$.ajax({
 		type: "POST",
 		url: "./components/productManagement.cfc",
