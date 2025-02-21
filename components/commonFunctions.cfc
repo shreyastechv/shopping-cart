@@ -22,16 +22,4 @@
 			</cfcatch>
 		</cftry>
 	</cffunction>
-
-	<cffunction name="getLastUpdatedTimestamp" returntype="date" access="public">
-		<cfargument name="item" type="string" required=true default="">
-
-		<cfquery name="local.qryGetTimeStamp">
-			<cfif arguments.item EQ "category">
-				SELECT MAX(GREATEST(fldCreatedDate, fldUpdatedDate)) AS lastUpdate FROM tblCategory
-			</cfif>
-		</cfquery>
-
-		<cfreturn local.qryGetTimeStamp.recordCount ? local.qryGetTimeStamp.lastUpdate : now()>
-	</cffunction>
 </cfcomponent>
