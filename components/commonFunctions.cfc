@@ -28,7 +28,7 @@
 
 		<cfquery name="local.qryGetTimeStamp">
 			<cfif arguments.item EQ "category">
-				SELECT MAX(fldUpdatedDate) AS lastUpdate FROM tblCategory
+				SELECT MAX(GREATEST(fldCreatedDate, fldUpdatedDate)) AS lastUpdate FROM tblCategory
 			</cfif>
 		</cfquery>
 
