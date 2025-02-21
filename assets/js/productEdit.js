@@ -229,19 +229,28 @@ function showEditProductModal(categoryId, productId) {
 }
 
 function deleteProduct (containerId, productId) {
-	if (confirm("Delete product?")) {
-		$.ajax({
-			type: "POST",
-			url: "./components/productManagement.cfc",
-			data: {
-				method: "deleteProduct",
-				productId: productId
-			},
-			success: function() {
-				$(`#${containerId}`).remove();
-			}
-		})
-	}
+	Swal.fire({
+		icon: "warning",
+		title: "Delete Product ?",
+		showDenyButton: false,
+		showCancelButton: true,
+		confirmButtonText: "Ok",
+		denyButtonText: "Deny"
+	}).then((result) => {
+		if (result.isConfirmed) {
+			$.ajax({
+				type: "POST",
+				url: "./components/productManagement.cfc",
+				data: {
+					method: "deleteProduct",
+					productId: productId
+				},
+				success: function() {
+					$(`#${containerId}`).remove();
+				}
+			})
+		}
+	});
 }
 
 function createProductItem(prodId, prodName, brand, price, imageFile) {

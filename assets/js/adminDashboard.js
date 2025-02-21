@@ -108,17 +108,27 @@ function showEditCategoryModal(containerId, categoryId) {
 
 function deleteCategory(containerId, categoryId) {
 	const categoryName = $(`#${containerId} [name='categoryName']`).text();
-	if (confirm(`Delete category - '${categoryName}'?`)) {
-		$.ajax({
-			type: "POST",
-			url: "./components/productManagement.cfc",
-			data: {
-				method: "deleteCategory",
-				categoryId: categoryId
-			},
-			success: function() {
-				$(`#${containerId}`).remove();
-			}
-		});
-	}
+
+	Swal.fire({
+		icon: "warning",
+		title: `Delete category - '${categoryName}'?`,
+		showDenyButton: false,
+		showCancelButton: true,
+		confirmButtonText: "Ok",
+		denyButtonText: "Deny"
+	}).then((result) => {
+		if (result.isConfirmed) {
+			$.ajax({
+				type: "POST",
+				url: "./components/productManagement.cfc",
+				data: {
+					method: "deleteCategory",
+					categoryId: categoryId
+				},
+				success: function() {
+					$(`#${containerId}`).remove();
+				}
+			});
+		}
+	});
 }

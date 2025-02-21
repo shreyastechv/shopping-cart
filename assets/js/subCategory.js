@@ -123,17 +123,26 @@ function showEditSubCategoryModal(containerId, subCategoryId) {
 }
 
 function deleteSubCategory(containerId, subCategoryId, subCategoryName) {
-	if (confirm(`Delete subCategory - '${subCategoryName}'?`)) {
-		$.ajax({
-			type: "POST",
-			url: "./components/productManagement.cfc",
-			data: {
-				method: "deleteSubCategory",
-				subCategoryId: subCategoryId
-			},
-			success: function() {
-				$(`#${containerId}`).remove();
-			}
-		});
-	}
+	Swal.fire({
+		icon: "warning",
+		title: `Delete subCategory - '${subCategoryName}'?`,
+		showDenyButton: false,
+		showCancelButton: true,
+		confirmButtonText: "Ok",
+		denyButtonText: "Deny"
+	}).then((result) => {
+		if (result.isConfirmed) {
+			$.ajax({
+				type: "POST",
+				url: "./components/productManagement.cfc",
+				data: {
+					method: "deleteSubCategory",
+					subCategoryId: subCategoryId
+				},
+				success: function() {
+					$(`#${containerId}`).remove();
+				}
+			});
+		}
+	});
 }

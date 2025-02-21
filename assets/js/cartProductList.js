@@ -36,8 +36,19 @@ function editCartItem(containerId, productId, action) {
 	}
 
 	// Confirm before deleting product
-	if (action == "delete" && !confirm("Delete Product?")) {
-		return;
+	if (action == "delete") {
+		Swal.fire({
+			icon: "warning",
+			title: "Delete Product ?",
+			showDenyButton: false,
+			showCancelButton: true,
+			confirmButtonText: "Ok",
+			denyButtonText: "Deny"
+		}).then((result) => {
+			if (result.isDenied) {
+				return;
+			}
+		});
 	}
 
 	// Disable button
