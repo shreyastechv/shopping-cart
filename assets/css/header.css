@@ -7,6 +7,13 @@
 }
 
 .categoryDropdown:hover .subCategoryDropdown {
+	position: float;
+	top: 40px;
+	left: -10px;
+	display: none;
+}
+
+.categoryDropdown:hover .subCategoryDropdown {
 	display: block;
 }
 
