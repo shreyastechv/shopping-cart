@@ -91,8 +91,8 @@
 		<cfargument name="limit" type="integer" required="false" default=0>
 		<cfargument name="offset" type="integer" required="false" default=0>
 		<cfargument name="sort" type="string" required="false" default="">
-		<cfargument name="min" type="integer" required="false" default=0>
-		<cfargument name="max" type="integer" required="false" default=0>
+		<cfargument name="min" type="float" required="false" default=0>
+		<cfargument name="max" type="float" required="false" default=0>
 		<cfargument name="searchTerm" type="string" required="false" default="">
 
 		<cfset local.response = {
@@ -173,13 +173,13 @@
 
 					<!--- Minimum price --->
 					<cfif val(arguments.min)>
-						AND P.fldPrice >= <cfqueryparam value = "#arguments.min#" cfsqltype = "integer">
+						AND P.fldPrice >= <cfqueryparam value = "#arguments.min#" cfsqltype = "decimal">
 					</cfif>
 
 					<!--- Maximum price --->
 					<!--- 0 is the default value of arguments.max hence it should not be used --->
 					<cfif val(arguments.max) NEQ 0>
-						AND P.fldPrice <= <cfqueryparam value = "#arguments.max#" cfsqltype = "integer">
+						AND P.fldPrice <= <cfqueryparam value = "#arguments.max#" cfsqltype = "decimal">
 					</cfif>
 
 					<cfif len(trim(arguments.searchTerm))>
