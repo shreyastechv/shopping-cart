@@ -71,7 +71,7 @@
 						<div class="d-flex gap-2">
 							<div>
 								<label for="min">Min</label>
-								<input type="number" class="form-control mb-2" id="min" name="min" min="0" value="#url.min#"
+								<input type="number" class="form-control mb-2" id="min" name="min" min="0" step="500" value="#url.min#"
 									oninput="this.value = this.value.replace(/^0+/, '');">
 							</div>
 							<div class="d-flex">
@@ -81,7 +81,7 @@
 							</div>
 							<div>
 								<label for="max">Max</label>
-								<input type="number" class="form-control mb-2" id="max" name="max" max="10000000" value="#url.max#"
+								<input type="number" class="form-control mb-2" id="max" name="max" max="10000000" step="500" value="#url.max#"
 									oninput="this.value = this.value.replace(/^0+/, '');">
 							</div>
 						</div>
