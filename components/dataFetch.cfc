@@ -149,7 +149,7 @@
 					C.fldCategoryName,
 					SC.fldSubCategory_Id,
 					SC.fldSubCategoryName,
-					COUNT(P.fldProduct_Id) OVER() AS totalRows,
+					COUNT(*) OVER() AS totalRows,
 					ROW_NUMBER() OVER (PARTITION BY P.fldSubCategoryId ORDER BY P.fldProduct_Id) AS rn
 				FROM
 					tblProduct P
@@ -428,7 +428,7 @@
 				GROUP_CONCAT(P.fldProductName SEPARATOR ',') AS productNames,
 				GROUP_CONCAT(PI.fldImageFileName SEPARATOR ',') AS productImages,
 				GROUP_CONCAT(B.fldBrandName SEPARATOR ',') AS brandNames,
-				COUNT(O.fldOrder_Id) OVER(ORDER BY O.fldOrderDate) AS totalRows
+				COUNT(*) OVER(ORDER BY O.fldOrderDate) AS totalRows
 			FROM
 				tblOrder O
 				INNER JOIN tblAddress A ON A.fldAddress_Id = O.fldAddressId
