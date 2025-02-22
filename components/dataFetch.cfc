@@ -427,7 +427,8 @@
 				GROUP_CONCAT(OI.fldUnitTax SEPARATOR ',') AS unitTaxes,
 				GROUP_CONCAT(P.fldProductName SEPARATOR ',') AS productNames,
 				GROUP_CONCAT(PI.fldImageFileName SEPARATOR ',') AS productImages,
-				GROUP_CONCAT(B.fldBrandName SEPARATOR ',') AS brandNames
+				GROUP_CONCAT(B.fldBrandName SEPARATOR ',') AS brandNames,
+				COUNT(O.fldOrder_Id) OVER(ORDER BY O.fldOrderDate) AS totalRows
 			FROM
 				tblOrder O
 				INNER JOIN tblAddress A ON A.fldAddress_Id = O.fldAddressId
@@ -469,22 +470,7 @@
 			</cfif>
 		</cfquery>
 
-		<!--- Check whether there are more orders --->
-		<cfquery name="local.qryGetRowCount">
-			SELECT
-				COUNT(fldOrder_Id) AS totalRows
-			FROM
-				tblOrder O
-				INNER JOIN tblAddress A ON A.fldAddress_Id = O.fldAddressId
-				INNER JOIN tblOrderItems OI ON OI.fldOrderId = O.fldOrder_Id
-				INNER JOIN tblProduct P ON P.fldProduct_Id = OI.fldProductId
-				INNER JOIN tblBrands B ON B.fldBrand_Id = P.fldBrandId
-			WHERE
-				O.fldOrder_Id LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
-				OR P.fldProductName LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
-				OR B.fldBrandName LIKE <cfqueryparam value = "%#trim(arguments.searchTerm)#%" cfsqltype = "varchar">
-		</cfquery>
-		<cfset local.response.hasMoreRows = (val(local.qryGetRowCount.totalRows) - val(arguments.pageSize) - (val(arguments.pageNumber - 1) * val(arguments.pageSize))) GT 0>
+		<cfset local.response.hasMoreRows = (val(local.qryGetOrders.totalRows) - val(arguments.pageSize) - (val(arguments.pageNumber - 1) * val(arguments.pageSize))) GT 0>
 
 		<cfloop query="local.qryGetOrders">
 			<cfset arrayAppend(local.response["data"], {
