@@ -38,7 +38,9 @@ function processCategoryForm() {
 					showDenyButton: false,
 					showCancelButton: false,
 					confirmButtonText: "Ok",
-					denyButtonText: ""
+					denyButtonText: "",
+					allowOutsideClick: false,
+					allowEscapeKey: false
 				}).then((result) => {
 					if (result.isConfirmed) {
 						location.reload();
@@ -52,7 +54,9 @@ function processCategoryForm() {
 					showDenyButton: false,
 					showCancelButton: false,
 					confirmButtonText: "Ok",
-					denyButtonText: ""
+					denyButtonText: "",
+					allowOutsideClick: false,
+					allowEscapeKey: false
 				}).then((result) => {
 					if (result.isConfirmed) {
 						location.reload();
