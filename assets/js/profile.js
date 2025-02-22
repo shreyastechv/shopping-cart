@@ -1,5 +1,5 @@
+// Remove error msgs on modal closing
 $("#profileModal").on("hidden.bs.modal", function () {
-  // Remove error msgs
   $(".profileError").empty();
 });
 
