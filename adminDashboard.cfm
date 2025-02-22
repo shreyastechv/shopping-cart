@@ -4,14 +4,14 @@
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
-		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
+		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center py-4">
+			<div class="d-flex justify-content-center align-items-center">
+				<h3 class="fw-semibold text-center mb-0 me-3">CATEGORIES</h3>
+				<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showAddCategoryModal()">
+					Add+
+				</button>
+			</div>
 			<div id="categoryMainContainer" class="bg-white col-md-8 p-4 rounded-4 w-100">
-				<div class="d-flex justify-content-center align-items-center mb-4">
-					<h3 class="fw-semibold text-center mb-0 me-3">CATEGORIES</h3>
-					<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showAddCategoryModal()">
-						Add+
-					</button>
-				</div>
 				<cfloop array="#variables.categories.data#" item="item" index="i">
 					<!--- Encode Category ID since it is passed to URL param --->
 					<cfset variables.encodedCategoryId = urlEncodedFormat(item.categoryId)>
@@ -51,7 +51,7 @@
 			  </div>
 			  <div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-				<button type="submit" id="categoryModalBtn" class="btn btn-primary">Save</button>
+				<button type="submit" id="categoryModalBtn" class="btn btn-primary" disabled>Save</button>
 			  </div>
 		  </form>
 		</div>

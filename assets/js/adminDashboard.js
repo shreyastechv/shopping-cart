@@ -1,24 +1,3 @@
-function createCategoryItem(categoryId, categoryName) {
-	const containerId = "categoryContainer_" + Math.floor(Math.random() * 1e9);;
-	const categoryItem = `
-		<div class="d-flex justify-content-between align-items-center border rounded-2 px-2" id="${containerId}">
-			<div name="categoryName" class="fs-5">${categoryName}</div>
-			<div>
-				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="showEditCategoryModal('${containerId}', '${categoryId}')">
-					<i class="fa-solid fa-pen-to-square pe-none"></i>
-				</button>
-				<button class="btn btn-lg" onclick="deleteCategory('${containerId}', '${categoryId}')">
-					<i class="fa-solid fa-trash pe-none"></i>
-				</button>
-				<a class="btn btn-lg" href="/subCategory.cfm?categoryId=${encodeURIComponent(categoryId)}">
-					<i class="fa-solid fa-chevron-right"></i>
-				</a>
-			</div>
-		</div>
-	`;
-	$("#categoryMainContainer").append(categoryItem);
-}
-
 function clearCategoryModal() {
 	$("#categoryName").removeClass("border-danger");
 	$("#categoryModalMsg").text("");
@@ -27,28 +6,16 @@ function clearCategoryModal() {
 function processCategoryForm() {
 	event.preventDefault();
 	clearCategoryModal();
+
 	let categoryId = $("#categoryId").val().trim();
 	const categoryName = $("#categoryName").val().trim();
-	const prevCategoryName = $("#categoryName").attr("data-sc-prevCategoryName").trim();
 	let valid = true;
 
 	// Validation
-	if (categoryName.length == 0) {
+	if (!/^[A-Za-z'& ]+$/.test(categoryName)) {
 		$("#categoryName").addClass("border-danger");
 		$("#categoryModalMsg").addClass("text-danger");
-		$("#categoryModalMsg").text("Category name should not be empty");
-		valid = false;
-	}
-	else if (!/^[A-Za-z'& ]+$/.test(categoryName)) {
-		$("#categoryName").addClass("border-danger");
-		$("#categoryModalMsg").addClass("text-danger");
-		$("#categoryModalMsg").text("Category name should only contain letters!");
-		valid = false;
-	}
-	else if (prevCategoryName == categoryName) {
-		$("#categoryName").addClass("border-danger");
-		$("#categoryModalMsg").addClass("text-danger");
-		$("#categoryModalMsg").text("Category name unchanged");
+		$("#categoryModalMsg").text("Category name should only contain letters, spaces, single quotes and ampersand symbol.");
 		valid = false;
 	}
 
@@ -64,19 +31,38 @@ function processCategoryForm() {
 		},
 		success: function(response) {
 			const responseJSON = JSON.parse(response);
-			$("#categoryModalMsg").addClass("text-success");
-			$("#categoryModalMsg").removeClass("text-danger");
-			$("#categoryModalMsg").text(responseJSON.message);
 			if (responseJSON.message == "Category Added") {
-				categoryId = responseJSON.categoryId;
-				createCategoryItem(categoryId, categoryName);
+				Swal.fire({
+					icon: "success",
+					title: `Category Created`,
+					showDenyButton: false,
+					showCancelButton: false,
+					confirmButtonText: "Ok",
+					denyButtonText: ""
+				}).then((result) => {
+					if (result.isConfirmed) {
+						location.reload();
+					}
+				});
 			}
 			else if (responseJSON.message == "Category Updated") {
-				location.reload();
+				Swal.fire({
+					icon: "success",
+					title: `Category Updated`,
+					showDenyButton: false,
+					showCancelButton: false,
+					confirmButtonText: "Ok",
+					denyButtonText: ""
+				}).then((result) => {
+					if (result.isConfirmed) {
+						location.reload();
+					}
+				});
 			}
 			else {
 				$("#categoryModalMsg").removeClass("text-success");
 				$("#categoryModalMsg").addClass("text-danger");
+				$("#categoryModalMsg").text(responseJSON.message);
 			}
 		},
 		error: function () {
@@ -93,7 +79,7 @@ function showAddCategoryModal() {
 	$("#categoryModalBtn").text("Save");
 	$("#categoryId").val("");
 	$("#categoryName").val("");
-	$("#categoryName").attr("data-sc-prevCategoryName", "");
+	$("#categoryName").attr("data-prevcategoryname", "");
 }
 
 function showEditCategoryModal(containerId, categoryId) {
@@ -102,7 +88,7 @@ function showEditCategoryModal(containerId, categoryId) {
 	$("#categoryModalLabel").text("EDIT CATEGORY");
 	$("#categoryModalBtn").text("Save Changes");
 	$("#categoryId").val(categoryId);
-	$("#categoryName").attr("data-sc-prevCategoryName", categoryName);
+	$("#categoryName").attr("data-prevcategoryname", categoryName);
 	$("#categoryName").val(categoryName);
 }
 
@@ -132,3 +118,17 @@ function deleteCategory(containerId, categoryId) {
 		}
 	});
 }
+
+$(document).ready(function() {
+	// Disable submit button if category name is empty or it is unchanged
+	$("#categoryName").on("input", function() {
+		const categoryName = $("#categoryName").val();
+		const prevCategoryName = $("#categoryName").attr("data-prevcategoryname");
+		$("#categoryModalMsg").text("");
+		if (categoryName.trim().length == 0 || categoryName == prevCategoryName) {
+			$("#categoryModalBtn").prop("disabled", true);
+		} else {
+			$("#categoryModalBtn").prop("disabled", false);
+		}
+	});
+});
