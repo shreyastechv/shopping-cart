@@ -41,29 +41,36 @@
 
 		<!--- Update the session variable --->
 		<cfif arguments.action EQ "increment">
-			<cfif structKeyExists(session.cart, arguments.productId)>
-				<cfset session.cart[arguments.productId].quantity += 1>
+			<cfif structKeyExists(session.cart.items, arguments.productId)>
+				<cfset session.cart.items[arguments.productId].quantity += 1>
+				<cfset session.cart.totalPrice += session.cart.items[arguments.productId].unitPrice>
+				<cfset session.cart.totalTax += session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
 				<cfset local.response["message"] = "Product Quantity Incremented">
 			<cfelse>
-				<cfset session.cart[arguments.productId] = application.dataFetch.getCart(
+				<cfset session.cart.items[arguments.productId] = application.dataFetch.getCart(
 					productId = local.productId
-				)[arguments.productId]>
+				).items[arguments.productId]>
+				<cfset session.cart.totalPrice += session.cart.items[arguments.productId].unitPrice>
+				<cfset session.cart.totalTax += session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
 				<cfset local.response["message"] = "Product Added">
-
 			</cfif>
-		<cfelseif arguments.action EQ "decrement" AND session.cart[arguments.productId].quantity GT 1>
-			<cfset session.cart[arguments.productId].quantity -= 1>
+		<cfelseif arguments.action EQ "decrement" AND session.cart.items[arguments.productId].quantity GT 1>
+			<cfset session.cart.items[arguments.productId].quantity -= 1>
+			<cfset session.cart.totalPrice -= session.cart.items[arguments.productId].unitPrice>
+			<cfset session.cart.totalTax -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
 			<cfset local.response["message"] = "Product Quantity Decremented">
 		<cfelse>
-			<cfset structDelete(session.cart, arguments.productId)>
+			<cfset session.cart.totalPrice -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].quantity>
+			<cfset session.cart.totalTax -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].quantity * session.cart.items[arguments.productId].unitTax / 100>
+			<cfset structDelete(session.cart.items, arguments.productId)>
 			<cfset local.response["message"] = "Product Deleted">
 		</cfif>
 
 		<!--- Do the math --->
-		<cfif structKeyExists(session.cart, arguments.productId)>
-			<cfset local.unitPrice = session.cart[arguments.productId].unitPrice>
-			<cfset local.unitTax = session.cart[arguments.productId].unitTax>
-			<cfset local.quantity = session.cart[arguments.productId].quantity>
+		<cfif structKeyExists(session.cart.items, arguments.productId)>
+			<cfset local.unitPrice = session.cart.items[arguments.productId].unitPrice>
+			<cfset local.unitTax = session.cart.items[arguments.productId].unitTax>
+			<cfset local.quantity = session.cart.items[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
@@ -71,26 +78,15 @@
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"quantity" = session.cart[arguments.productId].quantity
+				"quantity" = session.cart.items[arguments.productId].quantity
 			}>
 		</cfif>
 
-		<!--- Do the math on total price and tax in cart --->
-		<cfset local.priceDetails = session.cart.reduce(function(result,key,value){
-			result.totalActualPrice += value.unitPrice * value.quantity;
-			result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
-			result.totalTax += value.unitPrice * value.unitTax / 100 * value.quantity;
-			return result;
-		},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
-		<cfset local.totalPrice = local.priceDetails.totalPrice>
-		<cfset local.totalActualPrice = local.priceDetails.totalActualPrice>
-		<cfset local.totalTax = local.priceDetails.totalTax>
-
 		<!--- Append total price and tax to data struct --->
 		<cfset structAppend(local.response["data"], {
-			"totalPrice" = local.totalPrice,
-			"totalActualPrice" = local.totalActualPrice,
-			"totalTax" = local.totalTax
+			"totalActualPrice" = session.cart.totalPrice,
+			"totalTax" = session.cart.totalTax,
+			"totalPrice" = session.cart.totalPrice + session.cart.totalTax
 		})>
 
 		<cfset local.response["success"] = true>
@@ -176,36 +172,28 @@
 
 		<!--- Continue with code execution if validation succeeds --->
 		<cfif arguments.action EQ "increment">
-
-			<!--- Delete productId key from struct in session variable --->
-			<cfset session.checkout[arguments.productId].quantity += 1>
-
-			<!--- Set response message --->
+			<cfset session.checkout.items[arguments.productId].quantity += 1>
+			<cfset session.checkout.totalPrice += session.checkout.items[arguments.productId].unitPrice>
+			<cfset session.checkout.totalTax += session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].unitTax / 100>
 			<cfset local.response["message"] = "Product Quantity Incremented">
-
-		<cfelseif arguments.action EQ "decrement" AND session.checkout[arguments.productId].quantity GT 1>
-
-			<!--- Delete productId key from struct in session variable --->
-			<cfset session.checkout[arguments.productId].quantity -= 1>
-
-			<!--- Set response message --->
+		<cfelseif arguments.action EQ "decrement" AND session.checkout.items[arguments.productId].quantity GT 1>
+			<cfset session.checkout.items[arguments.productId].quantity -= 1>
+			<cfset session.checkout.totalPrice += session.checkout.items[arguments.productId].unitPrice>
+			<cfset session.checkout.totalTax += session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].unitTax / 100>
 			<cfset local.response["message"] = "Product Quantity Decremented">
-
 		<cfelse>
-
-			<!--- Delete productId key from struct in session variable --->
-			<cfset structDelete(session.checkout, arguments.productId)>
-
-			<!--- Set response message --->
+			<cfset session.checkout.totalPrice -= session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].quantity>
+			<cfset session.checkout.totalTax -= session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].quantity * session.checkout.items[arguments.productId].unitTax / 100>
+			<cfset structDelete(session.checkout.items, arguments.productId)>
 			<cfset local.response["message"] = "Product Deleted">
 
 		</cfif>
 
 		<!--- Do the math --->
 		<cfif structKeyExists(session.checkout, arguments.productId)>
-			<cfset local.unitPrice = session.checkout[arguments.productId].unitPrice>
-			<cfset local.unitTax = session.checkout[arguments.productId].unitTax>
-			<cfset local.quantity = session.checkout[arguments.productId].quantity>
+			<cfset local.unitPrice = session.checkout.items[arguments.productId].unitPrice>
+			<cfset local.unitTax = session.checkout.items[arguments.productId].unitTax>
+			<cfset local.quantity = session.checkout.items[arguments.productId].quantity>
 			<cfset local.actualPrice = local.unitPrice * local.quantity>
 			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
 
@@ -213,26 +201,15 @@
 			<cfset local.response["data"] = {
 				"price" = local.price,
 				"actualPrice" = local.actualPrice,
-				"quantity" = session.checkout[arguments.productId].quantity
+				"quantity" = session.checkout.items[arguments.productId].quantity
 			}>
 		</cfif>
 
-		<!--- Do the math on total price and tax --->
-		<cfset local.priceDetails = session.checkout.reduce(function(result,key,value){
-			result.totalActualPrice += value.unitPrice * value.quantity;
-			result.totalPrice += value.unitPrice * ( 1 + (value.unitTax/100)) * value.quantity;
-			result.totalTax += value.unitPrice * value.unitTax / 100 * value.quantity;
-			return result;
-		},{totalActualPrice = 0, totalPrice = 0, totalTax = 0})>
-		<cfset local.totalPrice = local.priceDetails.totalPrice>
-		<cfset local.totalActualPrice = local.priceDetails.totalActualPrice>
-		<cfset local.totalTax = local.priceDetails.totalTax>
-
-		<!--- Append total price and tax data into struct --->
+		<!--- Append total price and tax to data struct --->
 		<cfset structAppend(local.response["data"], {
-			"totalPrice" = local.totalPrice,
-			"totalActualPrice" = local.totalActualPrice,
-			"totalTax" = local.totalTax
+			"totalActualPrice" = session.cart.totalPrice,
+			"totalTax" = session.cart.totalTax,
+			"totalPrice" = session.cart.totalPrice + session.cart.totalTax
 		})>
 
 		<cfset local.response["success"] = true>
@@ -293,18 +270,14 @@
 		</cfloop>
 
 		<!--- Variables to store total price and total tax --->
-		<cfset local.totalPrice = 0>
-		<cfset local.totalTax = 0>
+		<cfset local.totalPrice = session.checkout.totalPrice + session.checkout.totalTax>
+		<cfset local.totalTax = session.checkout.totalTax>
 
 		<!--- json array to pass to stored procedure --->
 		<cfset local.productList = []>
 
 		<!--- Loop through checkout items --->
 		<cfloop collection="#session.checkout#" item="item">
-			<!--- Calculate total price and tax --->
-			<cfset local.totalPrice += session.checkout[item].unitPrice * ( 1 + (session.checkout[item].unitTax / 100)) * session.checkout[item].quantity>
-			<cfset local.totalTax += session.checkout[item].unitPrice * (session.checkout[item].unitTax / 100) * session.checkout[item].quantity>
-
 			<!--- build json array --->
 			<cfset arrayAppend(local.productList, {
 				"productId": application.commonFunctions.decryptText(trim(item)),
@@ -326,8 +299,8 @@
 			</cfstoredproc>
 
 			<!--- Empty cart structure in session --->
-			<cfset structEach(session.checkout, function(key) {
-				structDelete(session.cart, key);
+			<cfset structEach(session.checkout.items, function(key) {
+				structDelete(session.cart.items, key);
 			})>
 
 			<!--- Fetch order details --->

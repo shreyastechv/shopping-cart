@@ -7,11 +7,11 @@
 
 <cfoutput>
 	<div class="container my-5">
-		<cfif structCount(session.cart)>
+		<cfif structCount(session.cart.items)>
 			<div class="row">
 				<!-- Products Section -->
 				<div class="col-md-8">
-					<cf_cartproductlist products="#session.cart#">
+					<cf_cartproductlist products="#session.cart.items#">
 				</div>
 
 				<!--- Calculate Total Tax amount --->

@@ -54,7 +54,7 @@
 							</h2>
 							<div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="##orderSummary">
 								<div class="accordion-body" id="accordionBody">
-									<cf_cartproductlist products="#session.checkout#">
+									<cf_cartproductlist products="#session.checkout.items#">
 								</div>
 								<div class="d-flex justify-content-end p-3">
 									<button type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseThree"

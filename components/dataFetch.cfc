@@ -289,7 +289,11 @@
 	<cffunction name="getCart" access="public" returnType="struct">
 		<cfargument name="productId" type="string" required=false default="">
 
-		<cfset local.cartItems = {}>
+		<cfset local.response = {
+			"items" = {},
+			"totalPrice" = 0,
+			"totalTax" = 0
+		}>
 		<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
 
 		<!--- UserId Validation --->
@@ -316,14 +320,16 @@
 		</cfquery>
 
 		<cfloop query="local.qryGetCart">
-			<cfset local.cartItems[application.commonFunctions.encryptText(local.qryGetCart.fldProductId)] = {
+			<cfset local.response.items[application.commonFunctions.encryptText(local.qryGetCart.fldProductId)] = {
 				"quantity" = local.qryGetCart.fldQuantity,
 				"unitPrice" = local.qryGetCart.fldPrice,
 				"unitTax" = local.qryGetCart.fldTax
 			}>
+			<cfset local.response.totalPrice += local.qryGetCart.fldQuantity * local.qryGetCart.fldPrice>
+			<cfset local.response.totalTax += local.qryGetCart.fldQuantity * local.qryGetCart.fldPrice * local.qryGetCart.fldTax / 100>
 		</cfloop>
 
-		<cfreturn local.cartItems>
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="getAddress" access="public" returnType="struct">
