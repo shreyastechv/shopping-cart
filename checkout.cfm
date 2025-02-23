@@ -141,8 +141,7 @@
 	</div>
 
 	<!-- Order Success Modal -->
-	<div class="modal fade" id="orderSuccess" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-		aria-labelledby="orderSuccessLabel" aria-hidden="true">
+	<div class="modal fade" id="orderResult" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-body d-flex flex-column align-items-center justify-content-center p-4 gap-3">

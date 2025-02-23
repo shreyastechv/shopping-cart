@@ -64,14 +64,10 @@ function processCategoryForm() {
 				});
 			}
 			else {
-				$("#categoryModalMsg").removeClass("text-success");
-				$("#categoryModalMsg").addClass("text-danger");
 				$("#categoryModalMsg").text(responseJSON.message);
 			}
 		},
 		error: function () {
-			$("#categoryModalMsg").removeClass("text-success");
-			$("#categoryModalMsg").addClass("text-danger");
 			$("#categoryModalMsg").text("We encountered an error!");
 		}
 	});
@@ -116,7 +112,9 @@ function deleteCategory(containerId, categoryId) {
 					categoryId: categoryId
 				},
 				success: function() {
-					$(`#${containerId}`).remove();
+					$(`#${containerId}`).fadeOut(500, function() {
+						$(this).remove();
+					});
 				}
 			});
 		}

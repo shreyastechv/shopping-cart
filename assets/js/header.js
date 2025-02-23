@@ -14,8 +14,8 @@ function logOut() {
 				data: {
 					method: "logOut"
 				},
-				success: function() {
-					location.reload();
+				success: function(response) {
+					location.href = "/";
 				}
 			});
 		}

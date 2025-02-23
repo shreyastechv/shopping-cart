@@ -8,20 +8,17 @@ function handleQuantityChange(containerId) {
 	}
 }
 
-function createAlert(containerId, message) {
+function createAlert(containerId, alertName, message) {
 	// Prevent more than one divs from being created
-	if ($(`#${containerId} div[name="maxQuantityAlert"]`).length > 0) return;
+	if ($(`#${containerId} div[name="${alertName}"]`).length > 0) return;
 
-	// Create div
-	const alertDiv = `
-		<div name="maxQuantityAlert" class="alert alert-warning alert-dismissible fade show m-2" role="alert">
+	// Create div and append to parent container
+	$(`
+		<div name="${alertName}" class="alert alert-warning alert-dismissible fade show m-2" role="alert">
 			${message}
 			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
-	`;
-
-	// Append div to parent container
-	$(`#${containerId}`).append(alertDiv);
+	`).appendTo(`#${containerId}`);
 }
 
 function editCartItem(containerId, productId, action) {
@@ -31,7 +28,7 @@ function editCartItem(containerId, productId, action) {
 
 	// Create alert if quantity is maxed out
 	if (action == "increment" && quantity == 5) {
-		createAlert(containerId, "Maximum allowed quantity for this item is reached.");
+		createAlert(containerId, "maxQuantityAlert", "Maximum allowed quantity for this item is reached.");
 		return;
 	}
 
@@ -45,7 +42,7 @@ function editCartItem(containerId, productId, action) {
 			confirmButtonText: "Ok",
 			denyButtonText: "Deny"
 		}).then((result) => {
-			if (result.isDenied) {
+			if (result.isDismissed) {
 				return;
 			}
 		});
@@ -83,8 +80,8 @@ function editCartItem(containerId, productId, action) {
 				$("#totalActualPrice").text(totalActualPrice.toFixed(2));
 				$("#totalTax").text(totalTax.toFixed(2));
 
-				// If total price is 0 (cart empty) then reload
 				if (totalPrice == 0) {
+					// If total price is 0 (checkout is empty) then create alert
 					if (currentPage == "checkout.cfm") {
 						$("#productsNextBtn").prop("disabled", true);
 						$("#paymentSectionAccordionBtn").prop("disabled", true);
@@ -95,11 +92,12 @@ function editCartItem(containerId, productId, action) {
 							</div>
 						`);
 					} else {
+						// If total price is 0 (cart is empty) then reload page
 						location.reload();
 					}
 				}
 			} else {
-				createAlert(containerId, "Sorry. Unable to proceed. Try again.");
+				createAlert(containerId, "errorAlert", "Sorry. Unable to proceed. Try again.");
 			}
 		}
 	}).always(function() {

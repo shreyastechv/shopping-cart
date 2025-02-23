@@ -19,11 +19,9 @@ $(document).ready(function() {
 					const responseJSON = JSON.parse(response);
 					$("#subCategorySelect").empty();
 					responseJSON.data.forEach(function(item) {
-						let optionTag;
+						let optionTag = $(`<option value="${item.subCategoryId}">${item.subCategoryName}</option>`);
 						if (item.subCategoryId == urlSubCategoryId) {
-							optionTag = `<option value="${item.subCategoryId}" selected>${item.subCategoryName}</option>`;
-						} else {
-							optionTag = `<option value="${item.subCategoryId}">${item.subCategoryName}</option>`;
+							optionTag.attr("selected", true);
 						}
 						$("#subCategorySelect").append(optionTag);
 					});
@@ -158,15 +156,25 @@ function processproductForm() {
 		processData: false,
 		contentType: false,
 		success: function(response) {
-
-			const responseJSON = JSON.parse(response);
-			if(responseJSON.message == "Product Updated") {
-				location.reload();
+			const { message, success } = JSON.parse(response);
+			if(success) {
+				Swal.fire({
+					icon: "warning",
+					title: message,
+					showDenyButton: false,
+					showCancelButton: false,
+					confirmButtonText: "Ok",
+					denyButtonText: "Deny",
+					allowOutsideClick: false,
+					allowEscapeKey: false
+				}).then((result) => {
+					if (result.isConfirmed) {
+						location.reload();
+					}
+				});
+			} else {
+				$("#productEditModalMsg").text(message);
 			}
-			else if (responseJSON.message == "Product Added") {
-				createProductItem(responseJSON.productId, productName, brandName, productPrice, responseJSON.defaultImageFile)
-			}
-			$("#productEditModalMsg").text(responseJSON.message);
 		}
 	});
 }
@@ -251,29 +259,6 @@ function deleteProduct (containerId, productId) {
 			})
 		}
 	});
-}
-
-function createProductItem(prodId, prodName, brand, price, imageFile) {
-	const containerId = "productContainer_" + Math.floor(Math.random() * 1e9);;
-	const productItem = `
-		<div id="${containerId}" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-			<div class="d-flex flex-column fs-5">
-				<div name="productName" class="fw-bold">${prodName}</div>
-				<div name="brandName" class="fw-semibold">${brand}</div>
-				<div name="price" class="text-success">Rs.${price}</div>
-			</div>
-			<div class="d-flex gap-4">
-				<img src="${productImageDirectory}${imageFile}" alt="Product Image" width="50">
-				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#productEditModal" onclick="showEditProductModal('${containerId}', '${prodId}')">
-					<i class="fa-solid fa-pen-to-square pe-none"></i>
-				</button>
-				<button class="btn btn-lg" onclick="deleteProduct('${containerId}', '${prodId}')">
-					<i class="fa-solid fa-trash pe-none"></i>
-				</button>
-			</div>
-		</div>
-	`;
-	$("#productMainContainer").append(productItem);
 }
 
 function deleteImage(containerId, imageId) {

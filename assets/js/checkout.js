@@ -60,7 +60,7 @@ function handleCheckout() {
 
 function createOrder(addressId) {
 	// Open modal
-	$("#orderSuccess").modal("show");
+	$("#orderResult").modal("show");
 
 	$.ajax({
 		type: "POST",
@@ -74,24 +74,24 @@ function createOrder(addressId) {
 
 			if (responseJSON.success == true) {
 				setTimeout(() => {
-					$("#orderSuccess div[name='loading']").addClass("d-none");
-					$("#orderSuccess div[name='error']").addClass("d-none");
-					$("#orderSuccess div[name='success']").removeClass("d-none")
-				}, 1000);
+					$("#orderResult div[name='loading']").addClass("d-none");
+					$("#orderResult div[name='error']").addClass("d-none");
+					$("#orderResult div[name='success']").removeClass("d-none")
+				}, 800);
 			} else {
 				setTimeout(() => {
-					$("#orderSuccess div[name='loading']").addClass("d-none");
-					$("#orderSuccess div[name='success']").addClass("d-none");
-					$("#orderSuccess div[name='error']").removeClass("d-none")
-				}, 1000);
+					$("#orderResult div[name='loading']").addClass("d-none");
+					$("#orderResult div[name='success']").addClass("d-none");
+					$("#orderResult div[name='error']").removeClass("d-none")
+				}, 800);
 			}
 		},
 		error: function() {
 			setTimeout(() => {
-				$("#orderSuccess div[name='loading']").addClass("d-none");
-				$("#orderSuccess div[name='success']").addClass("d-none");
-				$("#orderSuccess div[name='error']").removeClass("d-none")
-			}, 1000);
+				$("#orderResult div[name='loading']").addClass("d-none");
+				$("#orderResult div[name='success']").addClass("d-none");
+				$("#orderResult div[name='error']").removeClass("d-none")
+			}, 800);
 		}
 	})
 }

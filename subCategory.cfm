@@ -67,11 +67,11 @@
 				</select>
 				<div id="categorySelectError" class="mt-2 text-danger"></div>
 				<input type="text" id="subCategoryName" name="subCategoryName" maxlength="64" placeholder="Sub Category name" class="form-control mt-3">
-				<div id="subCategoryModalMsg" class="mt-2"></div>
+				<div id="subCategoryModalMsg" class="text-danger mt-2"></div>
 			  </div>
 			  <div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-				<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Save</button>
+				<button type="submit" id="subCategoryModalBtn" class="btn btn-primary" disabled>Save</button>
 			  </div>
 		  </form>
 		</div>

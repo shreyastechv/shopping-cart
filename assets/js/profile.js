@@ -1,6 +1,17 @@
-// Remove error msgs on modal closing
-$("#profileModal").on("hidden.bs.modal", function () {
-  $(".profileError").empty();
+$(document).ready(function () {
+	// Handle enabling or disabling submit btn when input fields are updated
+	$(".profileInput").each((index, element) => {
+		$(element).keyup(handleProfileChange);
+	});
+
+  // Remove error msgs and re-fill data on modal closing
+  $("#profileModal").on("hidden.bs.modal", function () {
+    $(".profileError").empty();
+    $(".profileInput").removeClass("border-danger");
+    $(".profileInput").each((index, element) => {
+      element.value = element.defaultValue;
+    });
+  });
 });
 
 function handleProfileChange() {
@@ -15,13 +26,6 @@ function handleProfileChange() {
 		$("#profileSubmitBtn").prop("disabled", false);
 	}
 }
-
-$(document).ready(function () {
-	// Handle enabling or disabling submit btn when input fields are updated
-	$(".profileInput").each((index, element) => {
-		$(element).keyup(handleProfileChange);
-	});
-});
 
 function deleteAddress(containerId, addressId) {
 	$.ajax({
@@ -123,11 +127,3 @@ function processProfileForm() {
 		}
 	});
 }
-
-// Handle profile modal close event to re-fill data
-$("#profileModal").on("hidden.bs.modal", function () {
-	// Reset value of all input fields to their originale value
-	$(".profileInput").each((index, element) => {
-		element.value = element.defaultValue;
-	});
-});
