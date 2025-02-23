@@ -30,8 +30,8 @@ function processCategoryForm() {
 			categoryName: categoryName
 		},
 		success: function(response) {
-			const responseJSON = JSON.parse(response);
-			if (responseJSON.message == "Category Added") {
+			const result = JSON.parse(response);
+			if (result.message == "Category Added") {
 				Swal.fire({
 					icon: "success",
 					title: `Category Created`,
@@ -47,7 +47,7 @@ function processCategoryForm() {
 					}
 				});
 			}
-			else if (responseJSON.message == "Category Updated") {
+			else if (result.message == "Category Updated") {
 				Swal.fire({
 					icon: "success",
 					title: `Category Updated`,
@@ -64,7 +64,7 @@ function processCategoryForm() {
 				});
 			}
 			else {
-				$("#categoryModalMsg").text(responseJSON.message);
+				$("#categoryModalMsg").text(result.message);
 			}
 		},
 		error: function () {

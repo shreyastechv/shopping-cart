@@ -61,10 +61,10 @@ function editCartItem(containerId, productId, action) {
 			action: action
 		},
 		success: function(response) {
-			const responseJSON = JSON.parse(response);
-			const { price, actualPrice, quantity, totalPrice, totalActualPrice, totalTax } = responseJSON.data;
+			const result = JSON.parse(response);
+			const { price, actualPrice, quantity, totalPrice, totalActualPrice, totalTax } = result.data;
 
-			if (responseJSON.success) {
+			if (result.success) {
 				if (["increment", "decrement"].includes(action)) {
 					$(`#${containerId} span[name="price"]`).text(price.toFixed(2));
 					$(`#${containerId} span[name="actualPrice"]`).text(actualPrice.toFixed(2));

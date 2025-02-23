@@ -16,9 +16,9 @@ $(document).ready(function() {
 					categoryId: categoryId
 				},
 				success: function(response) {
-					const responseJSON = JSON.parse(response);
+					const result = JSON.parse(response);
 					$("#subCategorySelect").empty();
-					responseJSON.data.forEach(function(item) {
+					result.data.forEach(function(item) {
 						let optionTag = $(`<option value="${item.subCategoryId}">${item.subCategoryName}</option>`);
 						if (item.subCategoryId == urlSubCategoryId) {
 							optionTag.attr("selected", true);
@@ -200,8 +200,8 @@ function showEditProductModal(categoryId, productId) {
 			productId: productId
 		},
 		success: function(response) {
-			const responseJSON = JSON.parse(response);
-			const objProductData = responseJSON.data[0];
+			const result = JSON.parse(response);
+			const objProductData = result.data[0];
 			const productImages = objProductData.productImages.split(",");
 			const productImageIds = objProductData.productImageIds.split(",");
 

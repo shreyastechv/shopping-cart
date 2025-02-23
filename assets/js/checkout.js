@@ -70,9 +70,9 @@ function createOrder(addressId) {
 			addressId: addressId
 		},
 		success: function (response) {
-			const responseJSON = JSON.parse(response);
+			const result = JSON.parse(response);
 
-			if (responseJSON.success == true) {
+			if (result.success == true) {
 				setTimeout(() => {
 					$("#orderResult div[name='loading']").addClass("d-none");
 					$("#orderResult div[name='error']").addClass("d-none");

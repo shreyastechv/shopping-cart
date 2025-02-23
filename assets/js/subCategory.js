@@ -69,7 +69,7 @@ function processSubCategoryForm() {
 					}
 				});
 			} else {
-				$("#subCategoryModalMsg").text(responseJSON.message);
+				$("#subCategoryModalMsg").text(result.message);
 			}
 		},
 		error: function () {

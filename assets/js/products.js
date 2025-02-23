@@ -43,16 +43,16 @@ function viewMore() {
 			sort: urlSort || ""
 		},
 		success: function(response) {
-			const responseJSON = JSON.parse(response);
+			const result = JSON.parse(response);
 
 			// Loop over product data to get info we need
-			for (let item of responseJSON.data) {
+			for (let item of result.data) {
 				// Create product div
 				createProduct(item.productId, item.productImages.split(",")[0], item.productName, item.description, item.price);
 			}
 
 			// Remove view more btn if there are no products to be fetched
-			if (!responseJSON.hasMoreRows) {
+			if (!result.hasMoreRows) {
 				$("#viewMoreBtn").hide();
 				return;
 			}

@@ -118,11 +118,11 @@ function processProfileForm() {
 			phone: phone.val().trim()
 		},
 		success: function (response) {
-			const responseJSON = JSON.parse(response);
-			if (responseJSON.message == "Profile Updated successfully") {
+			const result = JSON.parse(response);
+			if (result.message == "Profile Updated successfully") {
 				location.reload()
 			} else {
-				$("#profileError").text(responseJSON.message);
+				$("#profileError").text(result.message);
 			}
 		}
 	});
