@@ -69,10 +69,13 @@
 			</cfif>
 		</cfif>
 
+		<!--- Remove cached categories data so that it is updated on next request --->
+		<cfset structDelete(application, "categories")>
+
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="deleteCategory" access="remote" returnType="void">
+	<cffunction name="deleteCategory" access="remote" returnType="struct">
 		<cfargument name="categoryId" type="string" required=true default="">
 
 		<cfset local.response = {
@@ -106,6 +109,11 @@
 			<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.categoryId)#">
 			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
 		</cfstoredproc>
+
+		<!--- Remove cached categories data so that it is updated on next request --->
+		<cfset structDelete(application, "categories")>
+
+		<cfreturn local.response>
 	</cffunction>
 
 	<cffunction name="modifySubCategory" access="remote" returnType="struct" returnFormat="json">
