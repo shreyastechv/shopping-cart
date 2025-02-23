@@ -21,7 +21,8 @@
 					<div class="col-md-4">
 						<h5>Contact Us</h5>
 						<a class="mb-0 text-light text-decoration-none" href="mailto:support@shopcart.com">Email: support@shopcart.com</a>
-						<p class="mb-0">Phone: +91 9876543210</p>
+						<br>
+						<a class="mb-0 text-light text-decoration-none" href="tel:9876543210">Phone: +91 9876543210</a>
 						<div>
 							<a href="##" class="text-light me-2"><i class="fab fa-facebook"></i></a>
 							<a href="##" class="text-light me-2"><i class="fab fa-twitter"></i></a>
