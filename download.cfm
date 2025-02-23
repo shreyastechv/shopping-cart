@@ -10,9 +10,23 @@
 </cfif>
 
 <!--- Get order details --->
-<cfset variables.order = application.dataFetch.getOrders(
+<cfset variables.orders = application.dataFetch.getOrders(
 	orderId = url.orderId
-).data[1]>
+).data>
+
+<!--- Get order details only if the returned array is not empty --->
+<cfif arrayLen(variables.orders)>
+	<cfset variables.order = variables.orders[1]>
+<cfelse>
+	<cfoutput>
+		<div class="d-flex flex-column align-items-center justify-content-center gap-4 fs-4 p-5">
+			<img src="#application.imageDirectory#not-found.svg" width="340" alt="Order Not Found Image">
+			Order with that order id is not found
+			<a href="/orders.cfm" class="btn btn-primary">Go to Order History</a>
+		</div>
+	</cfoutput>
+	<cfabort>
+</cfif>
 
 <!--- Set header and content-type so that pdf gets downloaded correctly --->
 <cfheader name="Content-Disposition" value="inline;filename=invoice.pdf">

@@ -19,6 +19,7 @@
 	<div class="container py-4">
 		<h2 class="text-center m-4">Your Orders</h2>
 		<div class="row my-2">
+			<!--- Order search bar --->
 			<div class="col-md-8 ">
 				<form method="get" class="d-flex gap-2">
 					<input type="text" name="s" class="form-control shadow" value="#url.s#"
@@ -31,12 +32,13 @@
 				</form>
 			</div>
 
+			<!--- Pagination --->
 			<nav aria-label="Order Page Navigation" class="col-md-4">
 				<ul class="pagination justify-content-end">
 					<li class="page-item #(url.pageNumber EQ 1 ? "disabled" : "")#">
 						<a href="javascript:void(0)" onclick="goToPage(#url.pageNumber - 1#)" class="page-link">Previous</a>
 					</li>
-					<cfset variables.start = url.pageNumber GTE 2 ? url.pageNumber - 1 : url.pageNumber>
+					<cfset variables.start = url.pageNumber GT 1 ? url.pageNumber - 1 : url.pageNumber>
 					<cfset variables.end = variables.orders.hasMoreRows ? url.pageNumber + 1 : url.pageNumber>
 					<cfloop index="i" from="#variables.start#" to="#variables.end#">
 						<li class="page-item #(url.pageNumber EQ i ? "active" : "")#"><a class="page-link" href="javascript:void(0)" onclick="goToPage(#i#)">#i#</a></li>

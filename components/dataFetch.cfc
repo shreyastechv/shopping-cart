@@ -168,6 +168,9 @@
 						AND P.fldProduct_Id = <cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">
 					<cfelseif len(trim(arguments.productIdList))>
 						AND P.fldProduct_Id IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
+					<cfelseif NOT val(arguments.limit)>
+						<!--- This is to prevent retrieving all product data if limit is not specified --->
+						1 = 0
 					</cfif>
 
 

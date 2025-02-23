@@ -9,18 +9,10 @@
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>
 
-<cfif len(trim(url.productId))>
-	<!--- Product details when this page was opened by clicking buy now from product page --->
-	<cfset session.checkout = application.dataFetch.getCart(
-		productId = url.productId
-	)>
-
-	<!--- Set quantity of product to 1 (similar to flipkart) --->
-	<cfset session.checkout[url.productId].quantity = 1>
-<cfelse>
-	<!--- Product details when this page was opened by clicking clicking checkout from cart page --->
-	<cfset session.checkout = application.dataFetch.getCart()>
-</cfif>
+<!--- Get product details into a session variable for easy quantity modifications --->
+<cfset session.checkout = application.dataFetch.getCart(
+	productId = url.productId
+)>
 
 <cfoutput>
 	<!--- Main Content --->
@@ -140,7 +132,7 @@
 		</div>
 	</div>
 
-	<!-- Order Success Modal -->
+	<!-- Order Result Modal -->
 	<div class="modal fade" id="orderResult" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
