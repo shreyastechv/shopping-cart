@@ -17,16 +17,36 @@
 
 <cfoutput>
 	<div class="container py-4">
-		<h2 class="text-center mb-4">Your Orders</h2>
-		<form method="get" class="d-flex gap-2 mb-5">
-			<input type="text" name="s" class="form-control shadow" value="#url.s#"
-				placeholder="Search orders using order id, product name, brand ..."
-				oninput="this.value = this.value.trim();"
-			>
-			<button class="btn btn-primary shadow" type="submit">
-				<i class="pe-none fa-solid fa-magnifying-glass"></i>
-			</button>
-		</form>
+		<h2 class="text-center m-4">Your Orders</h2>
+		<div class="row my-2">
+			<div class="col-md-8 ">
+				<form method="get" class="d-flex gap-2">
+					<input type="text" name="s" class="form-control shadow" value="#url.s#"
+						placeholder="Search orders using order id, product name, brand ..."
+						oninput="this.value = this.value.trim();"
+					>
+					<button class="btn btn-primary shadow" type="submit">
+						<i class="pe-none fa-solid fa-magnifying-glass"></i>
+					</button>
+				</form>
+			</div>
+
+			<nav aria-label="Order Page Navigation" class="col-md-4">
+				<ul class="pagination justify-content-end">
+					<li class="page-item #(url.pageNumber EQ 1 ? "disabled" : "")#">
+						<a href="javascript:void(0)" onclick="goToPage(#url.pageNumber - 1#)" class="page-link">Previous</a>
+					</li>
+					<cfset variables.start = url.pageNumber GTE 2 ? url.pageNumber - 1 : url.pageNumber>
+					<cfset variables.end = variables.orders.hasMoreRows ? url.pageNumber + 1 : url.pageNumber>
+					<cfloop index="i" from="#variables.start#" to="#variables.end#">
+						<li class="page-item #(url.pageNumber EQ i ? "active" : "")#"><a class="page-link" href="javascript:void(0)" onclick="goToPage(#i#)">#i#</a></li>
+					</cfloop>
+					<li class="page-item">
+						<a class="page-link #(variables.orders.hasMoreRows ? "" : "disabled")#" href="javascript:void(0)" onclick="goToPage(#url.pageNumber + 1#)">Next</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
 
 		<div id="ordersContainer">
 			<!--- Show message if order list in empty --->
@@ -95,21 +115,5 @@
 				</div>
 			</cfloop>
 		</div>
-
-		<nav aria-label="Order Page Navigation" class="pt-3">
-			<ul class="pagination justify-content-center">
-				<li class="page-item #(url.pageNumber EQ 1 ? "disabled" : "")#">
-					<a href="javascript:void(0)" onclick="goToPage(#url.pageNumber - 1#)" class="page-link">Previous</a>
-				</li>
-				<cfset variables.start = url.pageNumber GTE 2 ? url.pageNumber - 1 : url.pageNumber>
-				<cfset variables.end = variables.orders.hasMoreRows ? url.pageNumber + 1 : url.pageNumber>
-				<cfloop index="i" from="#variables.start#" to="#variables.end#">
-					<li class="page-item #(url.pageNumber EQ i ? "active" : "")#"><a class="page-link" href="javascript:void(0)" onclick="goToPage(#i#)">#i#</a></li>
-				</cfloop>
-				<li class="page-item">
-					<a class="page-link #(variables.orders.hasMoreRows ? "" : "disabled")#" href="javascript:void(0)" onclick="goToPage(#url.pageNumber + 1#)">Next</a>
-				</li>
-			</ul>
-		</nav>
 	</div>
 </cfoutput>
