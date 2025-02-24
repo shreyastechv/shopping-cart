@@ -45,14 +45,14 @@ function handleCheckout() {
 			cvv: cvv.val().trim()
 		},
 		success: function (response) {
-			const resposeJSON = JSON.parse(response);
+			const result = JSON.parse(response);
 
-			if (resposeJSON.success) {
+			if (result.success) {
 				createOrder(addressId);
 			} else {
 				cardNumber.addClass("border-danger");
 				cvv.addClass("border-danger");
-				cardNumberError.text(resposeJSON.message);
+				cardNumberError.text(result.message);
 			}
 		}
 	})
