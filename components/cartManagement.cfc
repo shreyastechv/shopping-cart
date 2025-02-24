@@ -178,8 +178,8 @@
 			<cfset local.response["message"] = "Product Quantity Incremented">
 		<cfelseif arguments.action EQ "decrement" AND session.checkout.items[arguments.productId].quantity GT 1>
 			<cfset session.checkout.items[arguments.productId].quantity -= 1>
-			<cfset session.checkout.totalPrice += session.checkout.items[arguments.productId].unitPrice>
-			<cfset session.checkout.totalTax += session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].unitTax / 100>
+			<cfset session.checkout.totalPrice -= session.checkout.items[arguments.productId].unitPrice>
+			<cfset session.checkout.totalTax -= session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].unitTax / 100>
 			<cfset local.response["message"] = "Product Quantity Decremented">
 		<cfelse>
 			<cfset session.checkout.totalPrice -= session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].quantity>
@@ -207,9 +207,9 @@
 
 		<!--- Append total price and tax to data struct --->
 		<cfset structAppend(local.response["data"], {
-			"totalActualPrice" = session.cart.totalPrice,
-			"totalTax" = session.cart.totalTax,
-			"totalPrice" = session.cart.totalPrice + session.cart.totalTax
+			"totalActualPrice" = session.checkout.totalPrice,
+			"totalTax" = session.checkout.totalTax,
+			"totalPrice" = session.checkout.totalPrice + session.checkout.totalTax
 		})>
 
 		<cfset local.response["success"] = true>
