@@ -49,12 +49,13 @@ function editCartItem(containerId, productId, action) {
 			const { price, actualPrice, quantity, totalPrice, totalActualPrice, totalTax } = result.data;
 
 			if (result.success) {
-				if (["increment", "decrement"].includes(action)) {
+				if (quantity) {
+					// Quantity is present means product is still in cart
 					$(`#${containerId} span[name="price"]`).text(price.toFixed(2));
 					$(`#${containerId} span[name="actualPrice"]`).text(actualPrice.toFixed(2));
 					$(`#${containerId} input[name="quantity"]`).val(quantity).change();
-				}
-				else if (action == "delete") {
+				} else {
+					// Quantity is not present means product is deleted
 					$(`#${containerId}`).remove();
 					if (currentPage == "cart.cfm") {
 						$("#cartCount").text(Number($("#cartCount").text())-1);
