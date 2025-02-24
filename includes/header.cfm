@@ -54,7 +54,7 @@
 					<input class="form-control me-2" type="search" name="search" value="#url.search#" placeholder="Search for products, categories, sub categories, brands ..." onblur="this.value = this.value.trim()">
 					<button class="btn btn-outline-light" type="submit">Search</button>
 				</form>
-				<nav class="d-flex align-items-center justify-content-between gap-4">
+				<nav class="d-flex align-items-center justify-content-between gap-4 px-2">
 					<!--- Profile Button --->
 					<button type="button" class="btn btn-outline-light" onclick="location.href='/profile.cfm'">
 						<i class="fa-regular fa-circle-user"></i>

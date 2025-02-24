@@ -41,7 +41,7 @@
 
 <cfoutput>
 	<!--- Main Content --->
-	<div class="d-flex flex-column m-3">
+	<div class="d-flex flex-column mx-2 mt-4 mb-5">
 		<cfif len(trim(url.categoryId))>
 			<div class="h4 fw-normal text-muted">#variables.categoryName#</div>
 			<hr class="text-muted m-0 p-0 opacity-25">
