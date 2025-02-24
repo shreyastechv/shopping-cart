@@ -56,7 +56,9 @@ function editCartItem(containerId, productId, action) {
 				}
 				else if (action == "delete") {
 					$(`#${containerId}`).remove();
-					$("#cartCount").text(Number($("#cartCount").text())-1);
+					if (currentPage == "cart.cfm") {
+						$("#cartCount").text(Number($("#cartCount").text())-1);
+					}
 				}
 
 				// Update total price and tax
