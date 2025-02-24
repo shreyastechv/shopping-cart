@@ -101,7 +101,12 @@ function editCartItem(containerId, productId, action) {
 			}
 		}
 	}).always(function() {
-		// Enable button back
-		clickedBtn.prop("disabled", false);
+		if (action == "decrement" && quantity == 2) {
+			// If button clicked was delete btn and quantity = 0 then disable btn
+			clickedBtn.prop("disabled", true);
+		} else {
+			// Else Enable button back
+			clickedBtn.prop("disabled", false);
+		}
 	});
 }
