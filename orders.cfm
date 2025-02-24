@@ -17,7 +17,9 @@
 
 <cfoutput>
 	<div class="container py-4">
-		<h2 class="text-center m-4">Your Orders</h2>
+		<div class="d-flex justify-content-center">
+			<a class="h2 text-decoration-none m-4" href="/orders.cfm">Your Orders</a>
+		</div>
 		<div class="row my-2">
 			<!--- Order search bar --->
 			<div class="col-md-8 ">
