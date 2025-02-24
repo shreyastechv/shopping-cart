@@ -190,7 +190,7 @@
 		</cfif>
 
 		<!--- Do the math --->
-		<cfif structKeyExists(session.checkout, arguments.productId)>
+		<cfif structKeyExists(session.checkout.items, arguments.productId)>
 			<cfset local.unitPrice = session.checkout.items[arguments.productId].unitPrice>
 			<cfset local.unitTax = session.checkout.items[arguments.productId].unitTax>
 			<cfset local.quantity = session.checkout.items[arguments.productId].quantity>
@@ -253,7 +253,7 @@
 
 		<!--- Create Order Id --->
 		<cfset local.orderId = createUUID()>
-		<cfloop condition=true>
+		<cfloop condition="true">
 			<cfquery name="local.qryCheckOrderId">
 				SELECT
 					fldOrder_Id
@@ -277,11 +277,11 @@
 		<cfset local.productList = []>
 
 		<!--- Loop through checkout items --->
-		<cfloop collection="#session.checkout#" item="item">
+		<cfloop collection="#session.checkout.items#" item="item">
 			<!--- build json array --->
 			<cfset arrayAppend(local.productList, {
 				"productId": application.commonFunctions.decryptText(trim(item)),
-				"quantity": trim(session.checkout[item].quantity)
+				"quantity": val(session.checkout.items[item].quantity)
 			})>
 		</cfloop>
 
