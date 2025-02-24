@@ -32,22 +32,6 @@ function editCartItem(containerId, productId, action) {
 		return;
 	}
 
-	// Confirm before deleting product
-	if (action == "delete") {
-		Swal.fire({
-			icon: "warning",
-			title: "Delete Product ?",
-			showDenyButton: false,
-			showCancelButton: true,
-			confirmButtonText: "Ok",
-			denyButtonText: "Deny"
-		}).then((result) => {
-			if (result.isDismissed) {
-				return;
-			}
-		});
-	}
-
 	// Disable button
 	clickedBtn.prop("disabled", true);
 
