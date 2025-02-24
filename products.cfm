@@ -24,7 +24,13 @@
 		limit = variables.limit
 	)>
 
-	<cfset variables.categoryName = arrayLen(variables.products.data) ? variables.products.data[1].categoryName : "">
+	<cfif arrayLen(variables.products.data)>
+		<cfset variables.categoryName = variables.products.data[1].categoryName>
+	<cfelse>
+		<cfset variables.categoryName = application.dataFetch.getCategories(
+			categoryId = url.categoryId
+		).data[1].categoryName>
+	</cfif>
 <cfelseif len(trim(url.subCategoryId)) OR len(trim(url.search))>
 	<!--- Sub Category or Search Product Listing --->
 	<cfset variables.products = application.dataFetch.getProducts(

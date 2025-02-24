@@ -1,9 +1,14 @@
 <cfcomponent displayname="Data Fetching" hint="Includes functions that help in fetching data from db">
 	<cffunction name="getCategories" access="public" returnType="struct">
+		<cfargument name="categoryId" type="string" required=false default="">
+
 		<!--- Create response struct --->
 		<cfset local.response = {
 			"data" = []
 		}>
+
+		<!--- Decrypt ids--->
+		<cfset local.categoryId = application.commonFunctions.decryptText(arguments.categoryId)>
 
 		<cfquery name="local.qryGetCategories">
 			SELECT
@@ -13,6 +18,9 @@
 				tblCategory
 			WHERE
 				fldActive = 1
+				<cfif val(local.categoryId) NEQ -1>
+					AND fldCategory_Id = <cfqueryparam value = "#val(local.categoryId)#" cfsqltype = "integer">
+				</cfif>
 		</cfquery>
 
 		<!--- Fill up the array with category information --->
@@ -170,7 +178,7 @@
 						AND P.fldProduct_Id IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
 					<cfelseif NOT val(arguments.limit)>
 						<!--- This is to prevent retrieving all product data if limit is not specified --->
-						1 = 0
+						AND 1 = 0
 					</cfif>
 
 
