@@ -23,7 +23,7 @@ function handleCheckout() {
 		url: "./components/cartManagement.cfc",
 		data: {
 			method: "validateCard",
-			cardNumber: formattedCardNumber,
+			cardNumber: cardNumber.val().trim().replaceAll("-", ""),
 			cvv: cvv.val().trim()
 		},
 		success: function (response) {

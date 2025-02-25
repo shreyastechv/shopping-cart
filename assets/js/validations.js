@@ -79,11 +79,13 @@ function validateSubCategoryName(field, errorContainer) {
 }
 
 function validateCardNumber(field, errorContainer) {
-  if (field.val().trim().length == 0) {
+  const cardNumber = field.val().trim().replaceAll("-", "");
+
+  if (cardNumber.length == 0) {
     field.addClass("border-danger");
     errorContainer.text("Card number is required!");
     return false;
-} else if (field.val().trim().replaceAll("-", "").length != 16) {
+} else if (cardNumber.length != 16) {
     field.addClass("border-danger");
     errorContainer.text("Not a valid card number!");
     return false;
