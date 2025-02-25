@@ -60,13 +60,13 @@
 			<h1 class="modal-title fs-5" id="subCategoryModalLabel">Edit Product</h1>
 			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		  </div>
-		  <form id="productForm" method="post" class="form-group" enctype="multipart/form-data" onsubmit="processproductForm()">
+		  <form id="productForm" method="post" class="form-group" enctype="multipart/form-data" onsubmit="processProductForm()">
 			  <div class="modal-body">
 				<input type="hidden" id="productId" name="productId" value="">
 
 				<!--- Category Select --->
 				<label for="categorySelect" class="fw-semibold">Category Name</label>
-				<select id="categorySelect" class="form-select" aria-label="Category Select">
+				<select id="categorySelect" class="form-select productInput" aria-label="Category Select">
 					<option value="0">Category Select</option>
 					<cfloop array="#variables.categories.data#" item="item">
 						<option value="#item.categoryId#" #(variables.categoryId EQ item.categoryId ? "selected" : "")#>
@@ -74,11 +74,11 @@
 						</option>
 					</cfloop>
 				</select>
-				<div id="categorySelectError" class="text-danger error ps-2"></div>
+				<div id="categorySelectError" class="text-danger productError ps-2"></div>
 
 				<!--- SubCategory Select --->
 				<label for="subCategorySelect" class="fw-semibold mt-2">SubCategory Name</label>
-				<select id="subCategorySelect" class="form-select" aria-label="SubCategory Select">
+				<select id="subCategorySelect" class="form-select productInput" aria-label="SubCategory Select">
 					<option value="0">SubCategory Select</option>
 					<cfloop array="#variables.subCategories.data#" item="item">
 						<option value="#item.subCategoryId#" #(url.subCategoryId EQ item.subCategoryId ? "selected" : "")#>
@@ -86,12 +86,12 @@
 						</option>
 					</cfloop>
 				</select>
-				<div id="subCategorySelectError" class="mt-2 text-danger error ps-2"></div>
+				<div id="subCategorySelectError" class="text-danger productError ps-2"></div>
 
 				<!--- Product Name --->
 				<label for="productName" class="fw-semibold mt-2">Product Name</label>
-				<input type="text" id="productName" name="productName" maxlength="100" class="form-control">
-				<div id="productNameError" class="text-danger error ps-2"></div>
+				<input type="text" id="productName" name="productName" maxlength="100" class="form-control productInput">
+				<div id="productNameError" class="text-danger productError ps-2"></div>
 
 				<!--- Product Brand --->
 				<label for="brandSelect" class="fw-semibold mt-2">Product Brand</label>
@@ -101,31 +101,31 @@
 						<option value="#item.brandId#">#item.brandName#</option>
 					</cfloop>
 				</select>
-				<div id="brandSelectError" class="text-danger error ps-2"></div>
+				<div id="brandSelectError" class="text-danger productError ps-2"></div>
 
 				<!--- Product Description --->
 				<label for="productDesc" class="fw-semibold mt-2">Product Description</label>
-				<textarea class="form-control" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400"></textarea>
-				<div id="productDescError" class="text-danger error ps-2"></div>
+				<textarea class="form-control productInput" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400"></textarea>
+				<div id="productDescError" class="text-danger productError ps-2"></div>
 
 				<!--- Product Price --->
 				<label for="productPrice" class="fw-semibold mt-2">Product Price</label>
-				<input type="number" step="0.01" min="0" id="productPrice" max="99999999" name="productPrice" class="form-control">
-				<div id="productPriceError" class="text-danger error ps-2"></div>
+				<input type="number" step="0.01" min="0" id="productPrice" max="99999999" name="productPrice" class="form-control productInput">
+				<div id="productPriceError" class="text-danger productError ps-2"></div>
 
 				<!--- Product Tax --->
 				<label for="productTax" class="fw-semibold mt-2">Product Tax (%)</label>
-				<input type="number" step="0.01" min="0" max="100" id="productTax" name="productTax" class="form-control">
-				<div id="productTaxError" class="text-danger error ps-2"></div>
+				<input type="number" step="0.01" min="0" max="100" id="productTax" name="productTax" class="form-control productInput">
+				<div id="productTaxError" class="text-danger productError ps-2"></div>
 
 				<!--- Product Image --->
 				<label for="productImage" class="fw-semibold mt-2">Product Image</label>
-				<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control" multiple>
+				<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control productInput" multiple>
 				<div id="uploadedProductImages" class="row p-3 gap-3 mt-1"></div>
-				<div id="productImageError" class="text-danger error mt-1 ps-2"></div>
+				<div id="productImageError" class="text-danger productError mt-1 ps-2"></div>
 			  </div>
 			  <div class="modal-footer">
-				<div id="productEditModalMsg" class="mt-2 error"></div>
+				<div id="productEditModalMsg" class="mt-2 productError"></div>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 				<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Save</button>
 			  </div>

@@ -75,65 +75,54 @@ function removeSelectedFile(containerId, inputId, fileName) {
 	$(`#${containerId}`).remove();
 }
 
-function processproductForm() {
+function processProductForm() {
 	event.preventDefault();
 
-	const productId= $("#productId").val();
-	const categorySelect = $("#categorySelect").val();
-	const subCategorySelect = $("#subCategorySelect").val();
-	const brandSelect = $("#brandSelect").val();
-	const productName = $("#productName").val().trim();
-	const productDesc = $("#productDesc").val().trim();
-	const brandName = $(`#brandSelect option[value='${brandSelect}']`).text();
-	const productTax = $("#productTax").val().trim();
-	const productPrice = $("#productPrice").val().trim();
+	const productId= $("#productId").val().trim();
+	const categorySelect = $("#categorySelect");
+	const subCategorySelect = $("#subCategorySelect");
+	const brandSelect = $("#brandSelect");
+	const productName = $("#productName");
+	const productNameError = $("#productNameError");
+	const productDesc = $("#productDesc");
+	const productDescError = $("#productDescError");
+	const productTax = $("#productTax");
+	const productTaxError = $("#productTaxError");
+	const productPrice = $("#productPrice");
+	const productPriceError = $("#productPriceError");
 	const productImage = $("#productImage")[0].files;
 	let valid = true;
 
 	// Reset Errors
-	$(".error").text("");
+	$(".productInput").removeClass("border-danger");
+	$(".productError").text("");
 
 	// Category Validation
-	if (categorySelect == 0) {
+	if (categorySelect.val() == 0) {
+		categorySelect.addClass("border-danger");
 		$("#categorySelectError").text("Select a category");
 		valid = false;
 	}
 
 	// SubCategory Validation
-	if (subCategorySelect == 0) {
+	if (subCategorySelect.val() == 0) {
+		subCategorySelect.addClass("border-danger");
 		$("#subCategorySelectError").text("Select a subcategory");
 		valid = false;
 	}
 
-	// Product Name Validation
-	if (productName.length == 0) {
-		$("#productNameError").text("Input a product name");
-		valid = false;
-	}
-
-	// Brand Name Validation
-	if (brandSelect == 0) {
+	// Brand Id Validation
+	if (brandSelect.val() == 0) {
+		brandSelect.addClass("border-danger");
 		$("#brandSelectError").text("Select a brand");
 		valid = false;
 	}
 
-	// Product Description Validation
-	if (productDesc.length == 0) {
-		$("#productDescError").text("Input a description");
-		valid = false;
-	}
-
-	// Product Price Validation
-	if (productPrice.length == 0) {
-		$("#productPriceError").text("Input a price");
-		valid = false;
-	}
-
-	// Product Tax Validation
-	if (productTax.length == 0) {
-		$("#productTaxError").text("Input tax");
-		valid = false;
-	}
+	// Product name, description, price, tax Validation
+	valid &= validateProductName(productName, productNameError);
+	valid &= validateDescription(productDesc, productDescError);
+	valid &= validatePrice(productPrice, productPriceError);
+	valid &= validateTax(productTax, productTaxError);
 
 	// Product Image Validation
 	if (productId.length == 0 && (productImage.length == 0 || $('input[name="defaultImageId"]:checked').is(":checked") == false)) { // Validate product image only when adding products not when editing
@@ -144,8 +133,8 @@ function processproductForm() {
 	if (!valid) return false;
 
 	const formData = new FormData($("#productForm")[0]);
-	formData.append("subCategorySelect", subCategorySelect);
-	formData.append("brandSelect", brandSelect);
+	formData.append("subCategorySelect", subCategorySelect.val());
+	formData.append("brandSelect", brandSelect.val());
 	formData.append("method", "modifyProduct");
 
 	$.ajax({
@@ -181,7 +170,8 @@ function processproductForm() {
 
 function showAddProductModal(categoryId) {
 	$("#productForm")[0].reset();
-	$(".error").text("");
+	$(".productInput").removeClass("border-danger");
+	$(".productError").text("");
 	$("#productId").val("");
 	 $("#categorySelect").val(categoryId).change();
 	$("#subCategoryModalLabel").text("ADD PRODUCT");
@@ -190,7 +180,8 @@ function showAddProductModal(categoryId) {
 }
 
 function showEditProductModal(categoryId, productId) {
-	$(".error").text("");
+	$(".productInput").removeClass("border-danger");
+	$(".productError").text("");
 	$("#productId").val(productId);
 	$.ajax({
 		type: "POST",

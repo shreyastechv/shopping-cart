@@ -8,16 +8,9 @@ function processCategoryForm() {
 	clearCategoryModal();
 
 	let categoryId = $("#categoryId").val().trim();
-	const categoryName = $("#categoryName").val().trim();
-	let valid = true;
-
-	// Validation
-	if (!/^[A-Za-z'& ]+$/.test(categoryName)) {
-		$("#categoryName").addClass("border-danger");
-		$("#categoryModalMsg").addClass("text-danger");
-		$("#categoryModalMsg").text("Category name should only contain letters, spaces, single quotes and ampersand symbol.");
-		valid = false;
-	}
+	const categoryName = $("#categoryName");
+	const categoryModalMsg = $("#categoryModalMsg");
+	const valid = validateCategoryName(categoryName, categoryModalMsg);
 
 	if(!valid) return false;
 
@@ -27,7 +20,7 @@ function processCategoryForm() {
 		data: {
 			method: "modifyCategory",
 			categoryId: categoryId,
-			categoryName: categoryName
+			categoryName: categoryName.val().trim()
 		},
 		success: function(response) {
 			const result = JSON.parse(response);
@@ -64,11 +57,11 @@ function processCategoryForm() {
 				});
 			}
 			else {
-				$("#categoryModalMsg").text(result.message);
+				categoryModalMsg.text(result.message);
 			}
 		},
 		error: function () {
-			$("#categoryModalMsg").text("We encountered an error!");
+			categoryModalMsg.text("We encountered an error!");
 		}
 	});
 }

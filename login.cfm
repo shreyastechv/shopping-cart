@@ -42,11 +42,11 @@
 				<form id="loginForm" name="loginForm" method="post" onsubmit="validateForm()">
 					<div class="mb-3">
 						<input type="text" class="form-control" id="userInput" name="userInput" maxlength="100" placeholder="Email or Phone Number" autocomplete="username">
-						<div id="userInputError" class="error text-danger"></div>
+						<div id="userInputError" class="error text-start text-danger ps-1"></div>
 					</div>
 					<div class="mb-3">
 						<input type="password" class="form-control" id="password" name="password" placeholder="Password">
-						<div id="passwordError" class="error text-danger"></div>
+						<div id="passwordError" class="error text-start text-danger ps-1"></div>
 					</div>
 					<button type="submit" id="loginBtn" name="loginBtn" class="btn btn-success w-100 rounded-pill">LOGIN</button>
 				</form>

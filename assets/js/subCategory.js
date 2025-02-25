@@ -28,17 +28,10 @@ function processSubCategoryForm() {
 	event.preventDefault();
 	clearSubCategoryModal();
 	let subCategoryId = $("#subCategoryId").val().trim();
-	const subCategoryName = $("#subCategoryName").val().trim();
-	const prevSubCategoryName = $("#subCategoryName").attr("data-subcategoryname").trim();
+	const subCategoryName = $("#subCategoryName");
 	const categoryId = $("#categorySelect").val().trim();
-	let valid = true;
-
-	// Subcategory Name Validation
-	if (!/^[A-Za-z'& ]+$/.test(subCategoryName)) {
-		$("#subCategoryName").addClass("border-danger");
-		$("#subCategoryModalMsg").text("SubCategory name should only contain letters!");
-		valid = false;
-	}
+	const subCategoryModalMsg = $("#subCategoryModalMsg");
+	const valid = validateSubCategoryName(subCategoryName, subCategoryModalMsg);
 
 	if (!valid) return false;
 
@@ -48,7 +41,7 @@ function processSubCategoryForm() {
 		data: {
 			method: "modifySubCategory",
 			subCategoryId: subCategoryId,
-			subCategoryName: subCategoryName,
+			subCategoryName: subCategoryName.val().trim(),
 			categoryId: categoryId
 		},
 		success: function(response) {
@@ -69,11 +62,11 @@ function processSubCategoryForm() {
 					}
 				});
 			} else {
-				$("#subCategoryModalMsg").text(result.message);
+				subCategoryModalMsg.text(message);
 			}
 		},
 		error: function () {
-			$("#subCategoryModalMsg").text("We encountered an error!");
+			subCategoryModalMsg.text("We encountered an error!");
 		}
 	});
 }

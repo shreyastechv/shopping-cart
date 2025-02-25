@@ -48,6 +48,7 @@
 			<script src="#application.scriptDirectory#fontawesome.js"></script>
 			<script src="#application.scriptDirectory#bootstrap.bundle.min.js"></script>
 			<script src="#application.scriptDirectory#footer.js"></script>
+			<script src="#application.scriptDirectory#validations.js"></script>
 
 			<!--- Set js variables --->
 			<script>

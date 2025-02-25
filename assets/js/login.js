@@ -1,37 +1,26 @@
 function validateForm() {
-	const userInput = $("#userInput").val().trim();
-	const password = $("#password").val().trim();
+	const userInput = $("#userInput");
+	const password = $("#password");
+	const passwordError = $("#passwordError");
+	const userInputError = $("#userInputError");
 	let valid = true;
 
 	$(".error").text("");
 	$("#userInput").removeClass("border-danger bg-danger-subtle");
 	$("#password").removeClass("border-danger bg-danger-subtle");
 
-	if (userInput.length == 0) {
-		$("#userInputError").text("Field is required");
-		$("#userInput").addClass("border-danger bg-danger-subtle");
-		valid = false;
-	}
-	else if (isNaN(userInput)) {
-		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userInput)) {
-			$("#userInputError").text("Invalid email");
-			$("#userInput").addClass("border-danger bg-danger-subtle");
-			valid = false;
+	valid &= validateRequiredField(userInput, "Email or phone number", userInputError);
+	if (valid) {
+		if (isNaN(userInput.val().trim())) {
+			// NaN means input must be an email
+			valid &= validateEmail(userInput, userInputError);
+		}
+		else {
+			// Not NaN means it must be phone number
+			valid &= validatePhoneNumber(userInput, userInputError);
 		}
 	}
-	else {
-		if (userInput.length != 10) {
-			$("#userInputError").text("Phone number length should be 10");
-			$("#userInput").addClass("border-danger bg-danger-subtle");
-			valid = false;
-		}
-	}
-
-	if (password.length == 0) {
-		$("#passwordError").text("Field is required");
-		$("#password").addClass("border-danger bg-danger-subtle");
-		valid = false;
-	}
+	valid &= validateRequiredField(password, "Password", passwordError);
 
 	if (!valid) event.preventDefault();
 }

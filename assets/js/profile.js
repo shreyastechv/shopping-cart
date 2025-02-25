@@ -64,46 +64,10 @@ function processProfileForm() {
 	const phone = $("#userPhone");
 	const phoneError = $("#userPhoneError");
 
-	if (firstName.val().trim().length == 0) {
-		firstName.addClass("border-danger");
-		firstNameError.text("First name is required.")
-		valid = false;
-	} else if (/\d/.test(firstName.val().trim())) {
-		firstName.addClass("border-danger");
-		firstNameError.text("First name should not contain any digits")
-		valid = false;
-	}
-
-	if (lastName.val().trim().length == 0) {
-		lastName.addClass("border-danger");
-		lastNameError.text("Last name is required.")
-		valid = false;
-	} else if (/\d/.test(lastName.val().trim())) {
-		lastName.addClass("border-danger");
-		lastNameError.text("Last name is required.")
-		valid = false;
-	}
-
-	if (email.val().trim().length == 0) {
-		email.addClass("border-danger");
-		emailError.text("Email is required");
-		valid = false;
-	}
-	else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.val().trim())) {
-		email.addClass("border-danger");
-		emailError.text("Invalid email");
-		valid = false;
-	}
-
-	if (phone.val().trim().length == 0) {
-		phone.addClass("border-danger");
-		phoneError.text("Phone number is required.")
-		valid = false;
-	} else if (!/^\d{10}$/.test(phone.val().trim())) {
-		phone.addClass("border-danger");
-		phoneError.text("Phone number should be 10 digits")
-		valid = false;
-	}
+	valid &= validateName(firstName, "First name", firstNameError);
+	valid &= validateName(lastName, "Last name", lastNameError);
+	valid &= validateEmail(email, emailError);
+	valid &= validatePhoneNumber(phone, phoneError);
 
 	if (!valid) return;
 
