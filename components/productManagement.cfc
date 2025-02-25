@@ -116,7 +116,8 @@
 		<cfargument name="categoryId" type="string" required=true default="">
 
 		<cfset local.response = {
-			"message" = ""
+			"message" = "",
+			"success" = false
 		}>
 
 		<!--- Decrypt ids--->
@@ -193,6 +194,8 @@
 				<cfset local.response["subCategoryId"] = application.commonFunctions.encryptText(local.resultAddSubCategory.GENERATED_KEY)>
 				<cfset local.response["message"] = "SubCategory Added">
 			</cfif>
+
+			<cfset local.response.success = true>
 		</cfif>
 
 		<cfreturn local.response>
