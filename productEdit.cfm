@@ -8,9 +8,13 @@
 	<cfset variables.categories = application.dataFetch.getCategories()>
 	<cfset variables.products = application.dataFetch.getProducts(subCategoryId = url.subCategoryId)>
 	<cfset variables.brands = application.dataFetch.getBrands()>
-	<cfset variables.categoryId = arrayLen(variables.products.data) ? variables.products.data[1].categoryId : 0>
+	<cfset variables.categoryId = arrayLen(variables.products.data)
+		? variables.products.data[1].categoryId
+		: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].categoryId>
 	<cfset variables.subCategories = application.dataFetch.getSubCategories(categoryId = variables.categoryId)>
-	<cfset variables.subCategoryName = arrayLen(variables.products.data) ? variables.products.data[1].subCategoryName : "Products">
+	<cfset variables.subCategoryName = arrayLen(variables.products.data)
+		? variables.products.data[1].subCategoryName
+		: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].subCategoryName>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">

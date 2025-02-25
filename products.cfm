@@ -24,13 +24,11 @@
 		limit = variables.limit
 	)>
 
-	<cfif arrayLen(variables.products.data)>
-		<cfset variables.categoryName = variables.products.data[1].categoryName>
-	<cfelse>
-		<cfset variables.categoryName = application.dataFetch.getCategories(
-			categoryId = url.categoryId
-		).data[1].categoryName>
-	</cfif>
+	<cfset variables.categoryName = arrayLen(variables.products.data)
+		? variables.products.data[1].categoryName
+		<!--- Below code is to fetch the category name when there are no products in it --->
+		: application.dataFetch.getCategories(categoryId = url.categoryId).data[1].categoryName>
+
 <cfelseif len(trim(url.subCategoryId)) OR len(trim(url.search))>
 	<!--- Sub Category or Search Product Listing --->
 	<cfset variables.products = application.dataFetch.getProducts(

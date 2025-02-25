@@ -5,7 +5,10 @@
 	<!--- Get Data --->
 	<cfset variables.categories = application.dataFetch.getCategories()>
 	<cfset variables.subCategories = application.dataFetch.getSubCategories(categoryId = url.categoryId)>
-	<cfset variables.categoryName = arrayLen(variables.subCategories.data) ? variables.subCategories.data[1].categoryName : "Sub Categories">
+	<cfset variables.categoryName = arrayLen(variables.subCategories.data)
+		? variables.subCategories.data[1].categoryName
+		<!--- Below code is to fetch the category name when there are no products in it --->
+		: application.dataFetch.getCategories(categoryId = url.categoryId).data[1].categoryName>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">

@@ -40,6 +40,7 @@
 
 	<cffunction name="getSubCategories" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="categoryId" type="string" required=false default="">
+		<cfargument name="subCategoryId" type="string" required=false default="">
 
 		<cfset local.response = {
 			"message" = "",
@@ -48,11 +49,18 @@
 
 		<!--- Decrypt ids--->
 		<cfset local.categoryId = application.commonFunctions.decryptText(arguments.categoryId)>
+		<cfset local.subCategoryId = application.commonFunctions.decryptText(arguments.subCategoryId)>
 
 		<!--- Category Id Validation --->
 		<cfif len(trim(arguments.categoryId)) AND (local.categoryId EQ -1)>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] &= "Category Id is invalid. ">
+		</cfif>
+
+		<!--- Sub Category Id Validation --->
+		<cfif len(trim(arguments.subCategoryId)) AND (local.subCategoryId EQ -1)>
+			<!--- Value equals -1 means decryption failed --->
+			<cfset local.response["message"] &= "Sub category Id is invalid. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -76,6 +84,8 @@
 				SC.fldActive = 1
 				<cfif local.categoryId NEQ -1>
 					AND SC.fldCategoryId = <cfqueryparam value = "#val(local.categoryId)#" cfsqltype = "integer">
+				<cfelseif local.subCategoryId NEQ -1>
+					AND SC.fldSubCategory_Id = <cfqueryparam value = "#val(local.subCategoryId)#" cfsqltype = "integer">
 				</cfif>
 		</cfquery>
 
