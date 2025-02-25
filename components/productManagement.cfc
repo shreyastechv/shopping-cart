@@ -329,10 +329,9 @@
 				action="uploadall"
 				destination="#expandPath(application.productImageDirectory)#"
 				nameconflict="MakeUnique"
-				accept="image/png,image/jpeg,.png,.jpg,.jpeg"
+				accept="image/*"
 				strict="true"
 				result="local.uploadedImages"
-				allowedextensions=".png,.jpg,.jpeg"
 			>
 
 			<!--- Sub category id has length means we used edit button --->
