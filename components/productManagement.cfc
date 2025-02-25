@@ -241,7 +241,8 @@
 		<cfargument name="defaultImageId" type="string" required=true>
 
 		<cfset local.response = {
-			"message" = ""
+			"message" = "",
+			"success" = false
 		}>
 
 		<!--- Decrypt ids--->
@@ -404,6 +405,8 @@
 						</cfloop>
 				</cfquery>
 			</cfif>
+
+			<cfset local.response.success = true>
 		</cfif>
 
 		<cfreturn local.response>
