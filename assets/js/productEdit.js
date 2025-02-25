@@ -52,7 +52,7 @@ $(document).ready(function() {
 							</button>
 						</div>
 					</div>
-                `);
+				`);
 				$("#uploadedProductImages").append(imgDiv);
 			}
 		});

@@ -190,7 +190,7 @@ function validateTax(field, errorContainer) {
 function validateDescription(field, errorContainer) {
   const description = field.val().trim();
 
-  if (description.length === 0) {
+  if (description.length == 0) {
     field.addClass("border-danger");
     errorContainer.text("Description is required!");
     return false;
@@ -204,13 +204,23 @@ function validateDescription(field, errorContainer) {
 }
 
 function validateProductName(field, errorContainer) {
-  if (field.val().trim().length === 0) {
+  if (field.val().trim().length == 0) {
     field.addClass("border-danger");
     errorContainer.text("Product name is required!");
     return false;
   } else if (field.val().trim().length > 100) {
     field.addClass("border-danger");
     errorContainer.text("Product name must be less than 100 characters.");
+    return false;
+  }
+
+  return true;
+}
+
+function validateSelectTag(field, fieldName, errorContainer) {
+  if (field.val().trim() == 0) {
+    field.addClass("border-danger");
+    errorContainer.text(`${fieldName} is required!`);
     return false;
   }
 
