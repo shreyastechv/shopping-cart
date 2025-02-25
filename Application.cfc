@@ -113,11 +113,6 @@
 			<cfset onApplicationStart()>
 		</cfif>
 
-		<!--- Category caching --->
-		<cfif NOT structKeyExists(application, "categories")>
-			<cfset application.categories = application.dataFetch.getCategories()>
-		</cfif>
-
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
 		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm", "/orders.cfm"]>

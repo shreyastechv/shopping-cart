@@ -24,6 +24,7 @@
 		</head>
 
 		<!--- Variables --->
+		<cfset variables.categories = application.dataFetch.getCategories()>
 		<cfset variables.subCategories = application.dataFetch.getSubCategories()>
 		<cfset variables.catToSubcatMapping = {}>
 
@@ -100,7 +101,7 @@
 					<div class="container-fluid">
 						<div class="collapse navbar-collapse" id="navbarContent">
 							<ul class="navbar-nav w-100 d-flex justify-content-evenly flex-wrap">
-								<cfloop array="#application.categories.data#" item="categoryItem" index="i">
+								<cfloop array="#variables.categories.data#" item="categoryItem" index="i">
 									<cfset variables.encodedCategoryId = urlEncodedFormat(categoryItem.categoryId)>
 									<cfif i LT 8>
 										<li class="nav-item dropdown categoryDropdown">
@@ -138,7 +139,7 @@
 														</ul>
 													</cfif>
 												</li>
-										<cfif i EQ arrayLen(application.categories.data)>
+										<cfif i EQ arrayLen(variables.categories.data)>
 												</ul>
 											</li>
 										</cfif>

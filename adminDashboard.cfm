@@ -1,4 +1,7 @@
 <cfoutput>
+	<!--- Get Data --->
+	<cfset variables.categories = application.dataFetch.getCategories()>
+
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center py-4">
@@ -9,7 +12,7 @@
 				</button>
 			</div>
 			<div id="categoryMainContainer" class="bg-white col-md-8 p-4 rounded-4 w-100">
-				<cfloop array="#application.categories.data#" item="item" index="i">
+				<cfloop array="#variables.categories.data#" item="item" index="i">
 					<!--- Encode Category ID since it is passed to URL param --->
 					<cfset variables.encodedCategoryId = urlEncodedFormat(item.categoryId)>
 

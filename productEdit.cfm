@@ -5,6 +5,7 @@
 
 <cfoutput>
 	<!--- Get Data --->
+	<cfset variables.categories = application.dataFetch.getCategories()>
 	<cfset variables.products = application.dataFetch.getProducts(subCategoryId = url.subCategoryId)>
 	<cfset variables.brands = application.dataFetch.getBrands()>
 	<cfset variables.categoryId = arrayLen(variables.products.data) ? variables.products.data[1].categoryId : 0>
@@ -67,7 +68,7 @@
 				<label for="categorySelect" class="fw-semibold">Category Name</label>
 				<select id="categorySelect" class="form-select" aria-label="Category Select">
 					<option value="0">Category Select</option>
-					<cfloop array="#application.categories.data#" item="item">
+					<cfloop array="#variables.categories.data#" item="item">
 						<option value="#item.categoryId#" #(variables.categoryId EQ item.categoryId ? "selected" : "")#>
 							#item.categoryName#
 						</option>
