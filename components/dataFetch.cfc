@@ -10,7 +10,9 @@
 		<!--- Decrypt ids--->
 		<cfset local.categoryId = application.commonFunctions.decryptText(arguments.categoryId)>
 
-		<cfquery name="local.qryGetCategories">
+		<cfquery name="local.qryGetCategories"
+			cachedWithin = "#(structKeyExists(session, "roleId") && session.roleId == 1 ? createTimespan(0, 0, 0, 0) : createTimespan(0, 1, 0, 0))#"
+		>
 			SELECT
 				fldCategory_Id,
 				fldCategoryName
@@ -59,7 +61,9 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="local.qryGetSubCategories">
+		<cfquery name="local.qryGetSubCategories"
+			cachedWithin = "#(structKeyExists(session, "roleId") && session.roleId == 1 ? createTimespan(0, 0, 0, 0) : createTimespan(0, 1, 0, 0))#"
+		>
 			SELECT
 				SC.fldSubCategory_Id,
 				SC.fldSubCategoryName,
