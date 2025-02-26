@@ -200,40 +200,52 @@
 		</cfif>
 
 		<!--- Firstname Validation --->
-		<cfif len(arguments.firstName) EQ 0>
+		<cfif len(trim(arguments.firstName)) EQ 0>
 			<cfset local.response["message"] &= "Enter first name. ">
-		<cfelseif isValid("regex", arguments.firstName, "/\d/")>
-			<cfset local.response["message"] &= "First name should not contain any digits. ">
+		<cfelseif len(trim(arguments.firstName)) GT 32>
+			<cfset local.response["message"] &= "First name should not be more than 32 characters. ">
+		<cfelseif NOT isValid("regex", trim(arguments.firstName), "/^[A-Za-z ]+$/")>
+			<cfset local.response["message"] &= "First name should only contain letters and spaces">
 		</cfif>
 
 		<!--- Lastname Validation --->
-		<cfif len(arguments.lastname) EQ 0>
+		<cfif len(trim(arguments.lastname)) EQ 0>
 			<cfset local.response["message"] &= "Enter last name. ">
-		<cfelseif isValid("regex", arguments.lastName, "/\d/")>
-			<cfset local.response["message"] &= "Last name should not contain any digits. ">
+		<cfelseif len(trim(arguments.lastName)) GT 32>
+			<cfset local.response["message"] &= "Last name should not be more than 32 characters. ">
+		<cfelseif NOT isValid("regex", trim(arguments.lastName), "/^[A-Za-z ]+$/")>
+			<cfset local.response["message"] &= "Last name should only contain letters and spaces">
 		</cfif>
 
 		<!--- Address Line 1 Validation --->
-		<cfif len(arguments.addressLine1) EQ 0>
+		<cfif len(trim(arguments.addressLine1)) EQ 0>
 			<cfset local.response["message"] &= "Enter address line 1. ">
+		<cfelseif len(trim(arguments.addressLine1)) GT 64>
+			<cfset local.response["message"] &= "Address line 1 should not be more than 64 characters. ">
 		</cfif>
 
 		<!--- Address Line 2 Validation --->
 		<cfif len(arguments.addressLine2) EQ 0>
 			<cfset local.response["message"] &= "Enter address line 2. ">
+		<cfelseif len(trim(arguments.addressLine2)) GT 64>
+			<cfset local.response["message"] &= "Address line 2 should not be more than 64 characters. ">
 		</cfif>
 
 		<!--- City Validation --->
 		<cfif len(arguments.city) EQ 0>
 			<cfset local.response["message"] &= "Enter city. ">
+		<cfelseif len(trim(arguments.city)) GT 64>
+			<cfset local.response["message"] &= "City should not be more than 64 characters. ">
 		<cfelseif isValid("regex", arguments.city, "/\d/")>
 			<cfset local.response["message"] &= "City should not contain any digits. ">
 		</cfif>
 
 		<!--- State Validation --->
-		<cfif len(arguments.state) EQ 0>
+		<cfif len(trim(arguments.state)) EQ 0>
 			<cfset local.response["message"] &= "Enter state. ">
-		<cfelseif isValid("regex", arguments.state, "/\d/")>
+		<cfelseif len(trim(arguments.state)) GT 64>
+			<cfset local.response["message"] &= "State should not be more than 64 characters. ">
+		<cfelseif isValid("regex", trim(arguments.state), "/\d/")>
 			<cfset local.response["message"] &= "State should not contain any digits. ">
 		</cfif>
 
@@ -336,6 +348,38 @@
 
 		<cfif NOT structKeyExists(session, "userId")>
 			<cfset local.response["message"] &= "Cannot proceed without loggin in">
+		</cfif>
+
+		<!--- Firstname Validation --->
+		<cfif len(trim(arguments.firstName)) EQ 0>
+			<cfset local.response["message"] &= "Enter first name. ">
+		<cfelseif len(trim(arguments.firstName)) GT 32>
+			<cfset local.response["message"] &= "First name should not be more than 32 characters. ">
+		<cfelseif NOT isValid("regex", trim(arguments.firstName), "/^[A-Za-z ]+$/")>
+			<cfset local.response["message"] &= "First name should only contain letters and spaces">
+		</cfif>
+
+		<!--- Lastname Validation --->
+		<cfif len(trim(arguments.lastname)) EQ 0>
+			<cfset local.response["message"] &= "Enter last name. ">
+		<cfelseif len(trim(arguments.lastName)) GT 32>
+			<cfset local.response["message"] &= "Last name should not be more than 32 characters. ">
+		<cfelseif NOT isValid("regex", trim(arguments.lastName), "/^[A-Za-z ]+$/")>
+			<cfset local.response["message"] &= "Last name should only contain letters and spaces">
+		</cfif>
+
+		<!--- Email Validation --->
+		<cfif len(trim(arguments.email)) EQ 0>
+			<cfset local.response["message"] &= "Enter an email address. ">
+		<cfelseif NOT isValid("email", trim(arguments.email))>
+			<cfset local.response["message"] &= "Invalid email. ">
+		</cfif>
+
+		<!--- Phone Number Validation --->
+		<cfif len(arguments.phone) EQ 0>
+			<cfset local.response["message"] &= "Enter an phone number. ">
+		<cfelseif NOT isValid("regex", trim(arguments.phone), "^\d{10}$")>
+			<cfset local.response["message"] &= "Phone number should be 10 digits long. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->

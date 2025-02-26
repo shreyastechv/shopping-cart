@@ -27,7 +27,7 @@ function editCartItem(containerId, productId, action) {
 	let quantity = parseInt($(`#${containerId} input[name="quantity"]`).val());
 
 	// Create alert if quantity is maxed out
-	if (action == "increment" && quantity == 5) {
+	if (action == "increment" && quantity >= 5) {
 		createAlert(containerId, "maxQuantityAlert", "Maximum allowed quantity for this item is reached.");
 		return;
 	}
@@ -89,7 +89,7 @@ function editCartItem(containerId, productId, action) {
 		}
 	}).always(function() {
 		if (action == "decrement" && quantity == 2) {
-			// If button clicked was delete btn and quantity = 0 then disable btn
+			// If button clicked was delete btn and old quantity = 2 (means current quantity is 1) then disable btn
 			clickedBtn.prop("disabled", true);
 		} else {
 			// Else Enable button back

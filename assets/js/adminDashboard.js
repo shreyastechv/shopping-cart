@@ -10,7 +10,7 @@ function processCategoryForm() {
 	let categoryId = $("#categoryId").val().trim();
 	const categoryName = $("#categoryName");
 	const categoryModalMsg = $("#categoryModalMsg");
-	const valid = validateCategoryName(categoryName, categoryModalMsg);
+	const valid = validateCategoryName(categoryName, "Category", categoryModalMsg);
 
 	if(!valid) return false;
 

@@ -31,7 +31,7 @@ function processSubCategoryForm() {
 	const subCategoryName = $("#subCategoryName");
 	const categoryId = $("#categorySelect").val().trim();
 	const subCategoryModalMsg = $("#subCategoryModalMsg");
-	const valid = validateSubCategoryName(subCategoryName, subCategoryModalMsg);
+	const valid = validateCategoryName(subCategoryName, "Sub category", subCategoryModalMsg);
 
 	if (!valid) return false;
 
