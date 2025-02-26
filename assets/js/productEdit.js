@@ -80,8 +80,11 @@ function processProductForm() {
 
 	const productId= $("#productId").val().trim();
 	const categorySelect = $("#categorySelect");
+	const categorySelectError = $("#categorySelectError");
 	const subCategorySelect = $("#subCategorySelect");
+	const subCategorySelectError = $("#subCategorySelectError");
 	const brandSelect = $("#brandSelect");
+	const brandSelectError = $("#brandSelectError");
 	const productName = $("#productName");
 	const productNameError = $("#productNameError");
 	const productDesc = $("#productDesc");
@@ -97,28 +100,9 @@ function processProductForm() {
 	$(".productInput").removeClass("border-danger");
 	$(".productError").text("");
 
-	// Category Validation
-	if (categorySelect.val() == 0) {
-		categorySelect.addClass("border-danger");
-		$("#categorySelectError").text("Select a category");
-		valid = false;
-	}
-
-	// SubCategory Validation
-	if (subCategorySelect.val() == 0) {
-		subCategorySelect.addClass("border-danger");
-		$("#subCategorySelectError").text("Select a subcategory");
-		valid = false;
-	}
-
-	// Brand Id Validation
-	if (brandSelect.val() == 0) {
-		brandSelect.addClass("border-danger");
-		$("#brandSelectError").text("Select a brand");
-		valid = false;
-	}
-
-	// Product name, description, price, tax Validation
+	valid &= validateSelectTag(categorySelect, "Category", categorySelectError);
+	valid &= validateSelectTag(subCategorySelect, "Sub category", subCategorySelectError);
+	valid &= validateSelectTag(brandSelect, "Brand", brandSelectError);
 	valid &= validateProductName(productName, productNameError);
 	valid &= validateDescription(productDesc, productDescError);
 	valid &= validatePrice(productPrice, productPriceError);
