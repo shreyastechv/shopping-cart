@@ -6,6 +6,10 @@
 	height: 150px;
 }
 
+.h-80 {
+	height: 80%;
+}
+
 @media (min-width: 992px) {
 	.categoryDropdown:hover .subCategoryDropdown {
 		position: float;

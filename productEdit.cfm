@@ -40,7 +40,7 @@
 							<div name="price" class="text-success">Rs.#item.price#</div>
 						</div>
 						<div class="d-flex gap-4">
-							<img src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" class="img-fluid p-1" width="90">
+							<img src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" class="img-fluid m-1 border rounded" width="90">
 							<div class="d-flex flex-column">
 								<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
 									<i class="fa-solid fa-pen-to-square pe-none"></i>

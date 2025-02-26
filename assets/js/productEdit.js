@@ -41,11 +41,11 @@ $(document).ready(function() {
 				dt.items.add(file);
 
 				let imgDiv = $(`
-					<div id="productImageContainer_${i}" class="newProductImage d-inline-block border p-2 rounded text-center pw-100"
+					<div id="productImageContainer_${i}" class="newProductImage d-inline-block border p-1 rounded text-center pw-100"
 						onMouseOver="this.style.cursor='pointer'"
 						onclick="$(this).children().find('input[name=defaultImageId]').prop('checked', true).trigger('change');"
 					>
-						<img src="${URL.createObjectURL(file)}" class="img-fluid h-75">
+						<img src="${URL.createObjectURL(file)}" class="img-fluid h-80 border rounded">
 						<div class="d-flex justify-content-around">
 							<input type="radio" name="defaultImageId" value="${i+1}" checked>
 							<button type="button" class="btn btn-sm" onclick="removeSelectedFile('productImageContainer_${i}', 'productImage', '${file.name}')">
@@ -196,14 +196,14 @@ function showEditProductModal(categoryId, productId) {
 			$("#uploadedProductImages").empty();
 			$.each(productImages, function (i, file) {
 				let imgDiv = $(`
-					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-2 rounded text-center pw-100"
+					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-1 rounded text-center pw-100"
 						onMouseOver="this.style.cursor='pointer'"
 						onclick="$(this).children().find('input[name=defaultImageId]').prop('checked', true).trigger('change');"
 					>
-						<img src="${productImageDirectory}${file}" class="img-fluid h-75">
+						<img src="${productImageDirectory}${file}" class="img-fluid h-80 border rounded">
 						<div class="d-flex justify-content-around">
-							<input type="radio" name="defaultImageId" class="m-2" value="${productImageIds[i]}" ${i == 0 ? "checked" : ""}>
-							<button type="button" class="btn btn-sm ${i == 0 ? 'd-none' : ''}" onclick="deleteImage('uploadedProductImageContainer_${i}', '${productImageIds[i]}')">
+							<input type="radio" name="defaultImageId" value="${productImageIds[i]}" ${i == 0 ? "checked" : ""}>
+							<button type="button" class="btn btn-sm border-0 z-2" onclick="deleteImage('uploadedProductImageContainer_${i}', '${productImageIds[i]}')" ${i == 0 ? 'disabled' : ''}>
 								<i class="fa-solid fa-xmark pe-none"></i>
 							</button>
 						</div>
