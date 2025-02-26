@@ -99,7 +99,7 @@
 
 				<!--- Product Brand --->
 				<label for="brandSelect" class="fw-semibold mt-2">Product Brand</label>
-				<select id="brandSelect" class="form-select" aria-label="SubCategory Select">
+				<select id="brandSelect" class="form-select productInput" aria-label="SubCategory Select">
 					<option value="0">Brand Name</option>
 					<cfloop array="#variables.brands.data#" item="item">
 						<option value="#item.brandId#">#item.brandName#</option>

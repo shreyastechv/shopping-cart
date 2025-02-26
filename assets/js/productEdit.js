@@ -1,4 +1,5 @@
 const urlSubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId');
+let deletedImageIdArray = [];
 
 $(document).ready(function() {
 	$("#categorySelect").change(function() {
@@ -109,7 +110,7 @@ function processProductForm() {
 	valid &= validateTax(productTax, productTaxError);
 
 	// Product Image Validation
-	if (productId.length == 0 && (productImage.length == 0 || $('input[name="defaultImageId"]:checked').is(":checked") == false)) { // Validate product image only when adding products not when editing
+	if ($('input[name="defaultImageId"]:checked').is(":checked") == false) { // Validate product image only when adding products not when editing
 		$("#productImageError").text("Select atleast one image");
 		valid = false;
 	}
@@ -119,6 +120,7 @@ function processProductForm() {
 	const formData = new FormData($("#productForm")[0]);
 	formData.append("subCategorySelect", subCategorySelect.val());
 	formData.append("brandSelect", brandSelect.val());
+	formData.append("deletedImageIdArray", JSON.stringify(deletedImageIdArray));
 	formData.append("method", "modifyProduct");
 
 	$.ajax({
@@ -160,6 +162,7 @@ function showAddProductModal(categoryId) {
 	 $("#categorySelect").val(categoryId).change();
 	$("#subCategoryModalLabel").text("ADD PRODUCT");
 	$("#subCategoryModalBtn").text("Save");
+	deletedImageIdArray = [];
 	$("#uploadedProductImages").empty();
 }
 
@@ -189,6 +192,7 @@ function showEditProductModal(categoryId, productId) {
 			$("#productImage").val("");
 			$("#subCategoryModalLabel").text("EDIT PRODUCT");
 			$("#subCategoryModalBtn").text("Save Changes");
+			deletedImageIdArray = [];
 			$("#uploadedProductImages").empty();
 			$.each(productImages, function (i, file) {
 				let imgDiv = $(`
@@ -238,15 +242,6 @@ function deleteProduct (containerId, productId) {
 
 function deleteImage(containerId, imageId) {
 	event.stopPropagation(); // This is to prevent the image from getting selected as default
-	$.ajax({
-		type: "POST",
-		url: "./components/productManagement.cfc",
-		data: {
-			method: "deleteImage",
-			imageId: imageId
-		},
-		success: function() {
-			$(`#${containerId}`).remove();
-		}
-	});
+	deletedImageIdArray.push(imageId);
+	$(`#${containerId}`).remove();
 }

@@ -242,6 +242,7 @@
 		<cfargument name="productTax" type="float" required=true>
 		<cfargument name="productImage" type="string" required=true>
 		<cfargument name="defaultImageId" type="string" required=true>
+		<cfargument name="deletedImageIdArray" type="array" required=false default=#arrayNew(1)#>
 
 		<cfset local.response = {
 			"message" = "",
@@ -407,6 +408,19 @@
 						</cfloop>
 				</cfquery>
 			</cfif>
+
+			<!--- Remove deleted imaged from db --->
+			<cfloop array="#arguments.deletedImageIdArray#" item="item">
+				<cfset local.imageId = application.commonFunctions.decryptText(item)>
+
+				<cfif val(local.imageId) NEQ -1>
+					<cfstoredproc procedure="spDeleteItem">
+						<cfprocparam cfsqltype="varchar" variable="item" value="productimage">
+						<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.imageId)#">
+						<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
+					</cfstoredproc>
+				</cfif>
+			</cfloop>
 
 			<cfset local.response.success = true>
 		</cfif>
