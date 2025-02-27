@@ -93,7 +93,7 @@
 		<cflocation url="/404.cfm" addToken="false">
 	</cffunction>
 
-	<!---<cffunction name="onError" returnType="void">
+	<cffunction name="onError" returnType="void">
 		<cfargument name="exception" required=true>
 		<cfargument name="eventName" type="string" required=true>
 
@@ -103,7 +103,7 @@
 
 			<cflocation url="/error.cfm?eventName=#arguments.eventName#" addToken="false">
 		</cfif>
-	</cffunction>--->
+	</cffunction>
 
 	<cffunction name="onRequestStart" returnType="boolean">
 		<cfargument name="targetPage" type="string" required=true>

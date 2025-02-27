@@ -48,7 +48,7 @@ function processSubCategoryForm() {
 			const { message, success } = JSON.parse(response);
 			if(success) {
 				Swal.fire({
-					icon: "warning",
+					icon: "success",
 					title: message,
 					showDenyButton: false,
 					showCancelButton: false,

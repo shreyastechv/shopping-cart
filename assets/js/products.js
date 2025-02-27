@@ -7,7 +7,7 @@ const limit = 6;
 let offset = 0;
 
 function createProduct(id, image, name, desc, price) {
-	const newDiv = `
+	$(`
 		<div class="col-sm-2 mb-4">
 			<div class="card rounded-3 h-100 shadow"
 				onclick="location.href='/productPage.cfm?productId=${encodeURIComponent(id)}'" role="button">
@@ -20,9 +20,7 @@ function createProduct(id, image, name, desc, price) {
 				</div>
 			</div>
 		</div>
-	`
-
-	$("#products").append(newDiv);
+	`).hide().appendTo("#products").fadeIn();
 }
 
 function viewMore() {
@@ -53,10 +51,9 @@ function viewMore() {
 
 			// Remove view more btn if there are no products to be fetched
 			if (!result.hasMoreRows) {
-				$("#viewMoreBtn").hide();
-				return;
+				$("<div class='text-center text-secondary'>------  No more products  ------</div>").appendTo($("#viewMoreBtn").parent());
+				$("#viewMoreBtn").remove();
 			}
-
 		}
 	});
 }

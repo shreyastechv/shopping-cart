@@ -41,7 +41,7 @@ $(document).ready(function() {
 				dt.items.add(file);
 
 				let imgDiv = $(`
-					<div id="productImageContainer_${i}" class="newProductImage d-inline-block border p-1 rounded text-center pw-100"
+					<div id="productImageContainer_${i}" class="newProductImage d-inline-block border p-1 mt-2 rounded text-center pw-100"
 						onMouseOver="this.style.cursor='pointer'"
 						onclick="$(this).children().find('input[name=defaultImageId]').prop('checked', true).trigger('change');"
 					>
@@ -111,11 +111,15 @@ function processProductForm() {
 
 	// Product Image Validation
 	if ($('input[name="defaultImageId"]:checked').is(":checked") == false) { // Validate product image only when adding products not when editing
+		$("#productImage").addClass("border-danger");
 		$("#productImageError").text("Select atleast one image");
 		valid = false;
 	}
 
 	if (!valid) return false;
+
+	// Disable submit btn
+	$("#subCategoryModalBtn").prop("disabled", true);
 
 	const formData = new FormData($("#productForm")[0]);
 	formData.append("subCategorySelect", subCategorySelect.val());
@@ -134,7 +138,7 @@ function processProductForm() {
 			const { message, success } = JSON.parse(response);
 			if(success) {
 				Swal.fire({
-					icon: "warning",
+					icon: "success",
 					title: message,
 					showDenyButton: false,
 					showCancelButton: false,
@@ -151,6 +155,10 @@ function processProductForm() {
 				$("#productEditModalMsg").text(message);
 			}
 		}
+	})
+	.always(function() {
+		// Enable submit btn back
+		$("#subCategoryModalBtn").prop("disabled", false);
 	});
 }
 
@@ -196,7 +204,7 @@ function showEditProductModal(categoryId, productId) {
 			$("#uploadedProductImages").empty();
 			$.each(productImages, function (i, file) {
 				let imgDiv = $(`
-					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-1 rounded text-center pw-100"
+					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-1 mt-2 rounded text-center pw-100"
 						onMouseOver="this.style.cursor='pointer'"
 						onclick="$(this).children().find('input[name=defaultImageId]').prop('checked', true).trigger('change');"
 					>

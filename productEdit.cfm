@@ -33,15 +33,15 @@
 					<div></div>
 				</div>
 				<cfloop array="#variables.products.data#" item="item" index="i">
-					<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-3 py-2 mb-3 shadow-sm">
-						<div class="d-flex flex-column fs-5">
-							<div name="productName" class="fw-bold">#item.productName#</div>
+					<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-3 py-1 mb-2 shadow-sm">
+						<div class="d-flex flex-column gap-1">
+							<div name="productName" class="fw-semibold fs-6">#item.productName#</div>
 							<div name="brandName">#item.brandName#</div>
 							<div name="price" class="text-success">Rs.#item.price#</div>
 						</div>
 						<div class="d-flex gap-4">
-							<img src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" class="img-fluid m-1 border rounded" width="90">
-							<div class="d-flex flex-column">
+							<img src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" class="img-fluid m-1 border rounded" width="60">
+							<div class="d-flex flex-column justify-content-around">
 								<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
 									<i class="fa-solid fa-pen-to-square pe-none"></i>
 								</button>
@@ -58,7 +58,7 @@
 
 	<!--- Product Edit Modal --->
 	<div class="modal fade" id="productEditModal">
-	  <div class="modal-dialog">
+	  <div class="modal-dialog modal-lg">
 		<div class="modal-content">
 		  <div class="modal-header">
 			<h1 class="modal-title fs-5" id="subCategoryModalLabel">Edit Product</h1>
@@ -68,64 +68,82 @@
 			  <div class="modal-body">
 				<input type="hidden" id="productId" name="productId" value="">
 
-				<!--- Category Select --->
-				<label for="categorySelect" class="fw-semibold">Category Name</label>
-				<select id="categorySelect" class="form-select productInput" aria-label="Category Select">
-					<option value="0">Category Select</option>
-					<cfloop array="#variables.categories.data#" item="item">
-						<option value="#item.categoryId#" #(variables.categoryId EQ item.categoryId ? "selected" : "")#>
-							#item.categoryName#
-						</option>
-					</cfloop>
-				</select>
-				<div id="categorySelectError" class="text-danger productError ps-2"></div>
+				<div class="row">
+					<!--- Category Select --->
+					<div class="col-md-6">
+						<label for="categorySelect" class="fw-semibold">Category Name</label>
+						<select id="categorySelect" class="form-select productInput" aria-label="Category Select">
+							<option value="0">Category Select</option>
+							<cfloop array="#variables.categories.data#" item="item">
+								<option value="#item.categoryId#" #(variables.categoryId EQ item.categoryId ? "selected" : "")#>
+									#item.categoryName#
+								</option>
+							</cfloop>
+						</select>
+						<div id="categorySelectError" class="text-danger productError ps-2"></div>
+					</div>
 
-				<!--- SubCategory Select --->
-				<label for="subCategorySelect" class="fw-semibold mt-2">SubCategory Name</label>
-				<select id="subCategorySelect" class="form-select productInput" aria-label="SubCategory Select">
-					<option value="0">SubCategory Select</option>
-					<cfloop array="#variables.subCategories.data#" item="item">
-						<option value="#item.subCategoryId#" #(url.subCategoryId EQ item.subCategoryId ? "selected" : "")#>
-							#item.subCategoryName#
-						</option>
-					</cfloop>
-				</select>
-				<div id="subCategorySelectError" class="text-danger productError ps-2"></div>
+					<div class="col-md-6">
+						<!--- SubCategory Select --->
+						<label for="subCategorySelect" class="fw-semibold">SubCategory Name</label>
+						<select id="subCategorySelect" class="form-select productInput" aria-label="SubCategory Select">
+							<option value="0">SubCategory Select</option>
+							<cfloop array="#variables.subCategories.data#" item="item">
+								<option value="#item.subCategoryId#" #(url.subCategoryId EQ item.subCategoryId ? "selected" : "")#>
+									#item.subCategoryName#
+								</option>
+							</cfloop>
+						</select>
+						<div id="subCategorySelectError" class="text-danger productError ps-2"></div>
+					</div>
+				</div>
 
-				<!--- Product Name --->
-				<label for="productName" class="fw-semibold mt-2">Product Name</label>
-				<input type="text" id="productName" name="productName" maxlength="100" class="form-control productInput">
-				<div id="productNameError" class="text-danger productError ps-2"></div>
+				<div class="row mt-1">
+					<div class="col-md-6">
+						<!--- Product Name --->
+						<label for="productName" class="fw-semibold mt-2">Product Name</label>
+						<input type="text" id="productName" name="productName" maxlength="100" class="form-control productInput">
+						<div id="productNameError" class="text-danger productError ps-2"></div>
+					</div>
 
-				<!--- Product Brand --->
-				<label for="brandSelect" class="fw-semibold mt-2">Product Brand</label>
-				<select id="brandSelect" class="form-select productInput" aria-label="SubCategory Select">
-					<option value="0">Brand Name</option>
-					<cfloop array="#variables.brands.data#" item="item">
-						<option value="#item.brandId#">#item.brandName#</option>
-					</cfloop>
-				</select>
-				<div id="brandSelectError" class="text-danger productError ps-2"></div>
+					<div class="col-md-6">
+						<!--- Product Brand --->
+						<label for="brandSelect" class="fw-semibold mt-2">Product Brand</label>
+						<select id="brandSelect" class="form-select productInput" aria-label="SubCategory Select">
+							<option value="0">Brand Name</option>
+							<cfloop array="#variables.brands.data#" item="item">
+								<option value="#item.brandId#">#item.brandName#</option>
+							</cfloop>
+						</select>
+						<div id="brandSelectError" class="text-danger productError ps-2"></div>
+					</div>
+				</div>
 
 				<!--- Product Description --->
 				<label for="productDesc" class="fw-semibold mt-2">Product Description</label>
 				<textarea class="form-control productInput" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400"></textarea>
 				<div id="productDescError" class="text-danger productError ps-2"></div>
 
-				<!--- Product Price --->
-				<label for="productPrice" class="fw-semibold mt-2">Product Price</label>
-				<input type="number" step="0.01" min="0" id="productPrice" max="99999999" name="productPrice" class="form-control productInput">
-				<div id="productPriceError" class="text-danger productError ps-2"></div>
+				<div class="row mt-2">
+					<div class="col-md-6">
+						<!--- Product Price --->
+						<label for="productPrice" class="fw-semibold mt-2">Product Price</label>
+						<input type="number" step="0.01" min="0" id="productPrice" max="99999999" name="productPrice" class="form-control productInput">
+						<div id="productPriceError" class="text-danger productError ps-2"></div>
+					</div>
 
-				<!--- Product Tax --->
-				<label for="productTax" class="fw-semibold mt-2">Product Tax (%)</label>
-				<input type="number" step="0.01" min="0" max="100" id="productTax" name="productTax" class="form-control productInput">
-				<div id="productTaxError" class="text-danger productError ps-2"></div>
+					<div class="col-md-6">
+						<!--- Product Tax --->
+						<label for="productTax" class="fw-semibold mt-2">Product Tax (%)</label>
+						<input type="number" step="0.01" min="0" max="100" id="productTax" name="productTax" class="form-control productInput">
+						<div id="productTaxError" class="text-danger productError ps-2"></div>
+					</div>
+				</div>
 
 				<!--- Product Image --->
 				<label for="productImage" class="fw-semibold mt-2">Product Image</label>
 				<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control productInput" multiple>
-				<div id="uploadedProductImages" class="row p-3 gap-3 mt-1"></div>
+				<div id="uploadedProductImages" class="row px-3 gap-3 mt-1"></div>
 				<div id="productImageError" class="text-danger productError mt-1 ps-2"></div>
 			  </div>
 			  <div class="modal-footer">

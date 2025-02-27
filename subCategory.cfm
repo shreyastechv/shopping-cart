@@ -30,16 +30,16 @@
 					<!--- Encode SubCategory ID since it is passed to URL param --->
 					<cfset variables.encodedSubCategoryId  = urlEncodedFormat(item.subCategoryId)>
 
-					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2 mb-3 shadow-sm" id="subCategoryContainer_#i#">
+					<div class="d-flex justify-content-between align-items-center border rounded-2 px-2 mb-2 shadow-sm" id="subCategoryContainer_#i#">
 						<div name="subCategoryName" class="fs-5">#item.subCategoryName#</div>
 						<div>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showEditSubCategoryModal('subCategoryContainer_#i#', '#item.subCategoryId#')">
+							<button class="btn btn" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showEditSubCategoryModal('subCategoryContainer_#i#', '#item.subCategoryId#')">
 								<i class="fa-solid fa-pen-to-square pe-none"></i>
 							</button>
-							<button class="btn btn-lg" onclick="deleteSubCategory('subCategoryContainer_#i#', '#item.subCategoryId#', '#item.subCategoryName#')">
+							<button class="btn btn" onclick="deleteSubCategory('subCategoryContainer_#i#', '#item.subCategoryId#', '#item.subCategoryName#')">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
-							<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=#variables.encodedSubCategoryId#">
+							<a class="btn btn" href="/productEdit.cfm?subCategoryId=#variables.encodedSubCategoryId#">
 								<i class="fa-solid fa-chevron-right"></i>
 							</a>
 						</div>
