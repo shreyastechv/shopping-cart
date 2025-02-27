@@ -10,6 +10,7 @@
 
 <!--- Other variables --->
 <cfparam name="variables.categoryName" default="">
+<cfparam name="variables.subCategoryName" default="">
 <cfset variables.limit = 6>
 <cfset variables.products = {
 	data = []
@@ -37,19 +38,41 @@
 		limit = variables.limit,
 		min = val(url.min),
 		max = val(url.max),
-		sort = (arrayContainsNoCase(["","asc","desc"], url.sort) ? url.sort : "")
+		sort = (arrayContainsNoCase(["asc","desc"], url.sort) ? url.sort : "")
 	)>
+
+	<!--- Try catch used since getSubCategories might return empty array --->
+	<!--- if url.subCategoryId is invalid --->
+	<cftry>
+		<cfset variables.subCategoryName = arrayLen(variables.products.data)
+			? variables.products.data[1].subCategoryName
+			<!--- Below code is to fetch the sub category name when there are no products in it --->
+			: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].subCategoryName>
+
+		<cfcatch>
+			<cfset variables.subCategoryName = "">
+		</cfcatch>
+	</cftry>
 <cfelse>
 	<cflocation url="/" addToken="false">
 </cfif>
 
 <cfoutput>
 	<!--- Main Content --->
-	<div class="d-flex flex-column mx-2 mt-4 mb-5">
+	<div class="d-flex flex-column mx-2 mt-3 mb-5">
 		<cfif len(trim(url.categoryId))>
 			<div class="h4 fw-normal text-muted">#variables.categoryName#</div>
 			<hr class="text-muted m-0 p-0 opacity-25">
 		<cfelse>
+			<cfif len(trim(url.search))>
+				<div class="fs-5 fw-semibold px-3 mb-2">
+					Showing results for '#url.search#'
+				</div>
+			<cfelseif len(trim(url.subCategoryId))>
+				<div class="fs-5 fw-semibold px-3 mb-2">
+					#variables.subCategoryName#
+				</div>
+			</cfif>
 			<!--- Don't show sorting and filtering for category product listing --->
 			<div class="d-flex justify-content-start p-1">
 				<!--- Sorting --->

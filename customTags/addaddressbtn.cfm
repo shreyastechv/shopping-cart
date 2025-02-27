@@ -1,5 +1,6 @@
 <div>
-	<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addressFormModal">
+	<button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addressFormModal">
+		<i class="fa-solid fa-plus"></i>
 		Add New Address
 	</button>
 </div>

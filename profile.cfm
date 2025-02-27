@@ -20,10 +20,17 @@
 					<div>
 						<!--- Show admin dashboard button --->
 						<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-							<a href="/adminDashboard.cfm" class="btn btn-info m-2">Admin</a>
+							<a href="/adminDashboard.cfm" class="btn btn-info m-2">
+								<i class="fa-solid fa-lock"></i>
+								Admin
+							</a>
 						</cfif>
-						<a href="/orders.cfm" class="btn btn-outline-secondary m-2">View Previous Orders</a>
+						<a href="/orders.cfm" class="btn btn-outline-secondary m-2">
+							<i class="fa-solid fa-rectangle-list"></i>
+							View Previous Orders
+						</a>
 						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="##profileModal">
+							<i class="fa-solid fa-user-pen"></i>
 							Edit Profile
 						</button>
 					</div>

@@ -51,12 +51,12 @@
 			<div class="row d-flex justify-content-center">
 				<!-- Product Image -->
 				<div class="col-md-4" data-bs-theme="dark">
-					<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 h-100 shadow">
+					<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 shadow">
 						<div class="carousel-inner">
 							<cfloop list="#variables.productInfo.data[1].productImages#" item="item" index="i">
 								<div class="carousel-item #(i EQ 1 ? "active" : "")#">
 									<div class="d-flex justify-content-center">
-										<img src="#application.productImageDirectory&item#" class="img-fluid" alt="Product Image">
+										<img src="#application.productImageDirectory&item#" class="img-fluid rounded-2" alt="Product Image">
 									</div>
 								</div>
 							</cfloop>
@@ -87,7 +87,7 @@
 							</li>
 						</ol>
 					</nav>
-					<h1 class="display-4">#variables.productInfo.data[1].productName#</h1>
+					<h1 class="display-6">#variables.productInfo.data[1].productName#</h1>
 					<p class="lead">#variables.productInfo.data[1].brandName#</p>
 					<p class="h4 text-success">Rs. #variables.productInfo.data[1].price#</p>
 					<p class="h6 text-secondary">Tax: #variables.productInfo.data[1].tax#%</p>
@@ -97,10 +97,16 @@
 					<div class="mt-4">
 						<form method="post">
 							<!--- Add to cart button --->
-							<button type="submit" name="addToCart" class="btn btn-primary btn-lg mr-3">Add to Cart</button>
+							<button type="submit" name="addToCart" class="btn btn-primary btn mr-3">
+								<i class="fa-solid fa-cart-plus"></i>
+								Add to Cart
+							</button>
 
 							<!---Buy now button --->
-							<button type="submit" name="buyNow" class="btn btn-danger btn-lg">Buy Now</button>
+							<button type="submit" name="buyNow" class="btn btn-danger btn">
+								<i class="fa-solid fa-bolt-lightning"></i>
+								Buy Now
+							</button>
 						</form>
 					</div>
 				</div>
