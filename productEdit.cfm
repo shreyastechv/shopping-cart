@@ -8,13 +8,25 @@
 	<cfset variables.categories = application.dataFetch.getCategories()>
 	<cfset variables.products = application.dataFetch.getProducts(subCategoryId = url.subCategoryId)>
 	<cfset variables.brands = application.dataFetch.getBrands()>
-	<cfset variables.categoryId = arrayLen(variables.products.data)
-		? variables.products.data[1].categoryId
-		: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].categoryId>
+	<cftry>
+		<cfset variables.categoryId = arrayLen(variables.products.data)
+			? variables.products.data[1].categoryId
+			: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].categoryId>
+
+		<cfcatch>
+			<cfset variables.categoryId = 0>
+		</cfcatch>
+	</cftry>
 	<cfset variables.subCategories = application.dataFetch.getSubCategories(categoryId = variables.categoryId)>
-	<cfset variables.subCategoryName = arrayLen(variables.products.data)
-		? variables.products.data[1].subCategoryName
-		: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].subCategoryName>
+	<cftry>
+		<cfset variables.subCategoryName = arrayLen(variables.products.data)
+			? variables.products.data[1].subCategoryName
+			: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].subCategoryName>
+
+		<cfcatch>
+			<cfset variables.subCategoryName = "Products">
+		</cfcatch>
+	</cftry>
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
