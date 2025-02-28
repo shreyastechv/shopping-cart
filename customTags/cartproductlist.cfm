@@ -19,11 +19,18 @@
 			<cfset caller.totalPrice += variables.price>
 			<cfset caller.totalActualPrice += variables.actualPrice>
 
+			<!--- Set image if there is no product image --->
+			<cfif listLen(item.productImages)>
+				<cfset variables.productImage = application.productImageDirectory & listGetAt(item.productImages, 1)>
+			<cfelse>
+				<cfset variables.productImage = application.imageDirectory & "no-image.png">
+			</cfif>
+
 			<div class="card mb-3 shadow" id="productContainer_#i#">
 				<div class="row g-0">
 					<div class="col-md-4 p-3">
 						<a href="/productPage.cfm?productId=#variables.encodedProductId#">
-							<img src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" class="img-fluid rounded-start" alt="Product">
+							<img src="#variables.productImage#" class="img-fluid rounded-start" alt="Product Image #i#">
 						</a>
 					</div>
 					<div class="col-md-8">

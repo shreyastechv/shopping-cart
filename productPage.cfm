@@ -53,13 +53,24 @@
 				<div class="col-md-4" data-bs-theme="dark">
 					<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 shadow">
 						<div class="carousel-inner">
-							<cfloop list="#variables.productInfo.data[1].productImages#" item="item" index="i">
-								<div class="carousel-item #(i EQ 1 ? "active" : "")#">
+							<!--- Loop images when there are images in db --->
+							<cfif listLen(variables.productInfo.data[1].productImages)>
+								<cfloop list="#variables.productInfo.data[1].productImages#" item="item" index="i">
+									<div class="carousel-item #(i EQ 1 ? "active" : "")#">
+										<div class="d-flex justify-content-center">
+											<img src="#application.productImageDirectory&item#" class="img-fluid rounded-2" alt="Product Image">
+										</div>
+									</div>
+								</cfloop>
+							<cfelse>
+								<!--- Handle case where there are no images to the product in db --->
+								<div class="carousel-item active">
 									<div class="d-flex justify-content-center">
-										<img src="#application.productImageDirectory&item#" class="img-fluid rounded-2" alt="Product Image">
+										<img src="#application.imageDirectory#no-image.png" class="img-fluid rounded-2" alt="Product Image">
 									</div>
 								</div>
-							</cfloop>
+							</cfif>
+
 						</div>
 						<button class="carousel-control-prev" type="button" data-bs-target="##productImages" data-bs-slide="prev">
 							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
