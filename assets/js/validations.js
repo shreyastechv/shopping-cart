@@ -188,3 +188,13 @@ function validateSelectTag(field, fieldName, errorContainer) {
 
 	return true;
 }
+
+function validateFileInput(field, fieldName, errorContainer, minCount) {
+	if (field[0].files.length < minCount) {
+		field.addClass("border-danger");
+		errorContainer.text(`Select at least ${minCount} ${fieldName}!`);
+		return false;
+	}
+
+	return true;
+}

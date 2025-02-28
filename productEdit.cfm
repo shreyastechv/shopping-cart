@@ -156,7 +156,7 @@
 				<label for="productImage" class="fw-semibold mt-2">Product Image</label>
 				<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control productInput" multiple>
 				<div id="uploadedProductImages" class="row px-3 gap-3 mt-1"></div>
-				<div id="productImageError" class="text-danger productError mt-1 ps-2"></div>
+				<div id="productImageError" class="text-danger productError mt-2 ps-2"></div>
 			  </div>
 			  <div class="modal-footer">
 				<div id="productEditModalMsg" class="mt-2 productError"></div>

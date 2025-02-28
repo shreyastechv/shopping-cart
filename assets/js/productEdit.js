@@ -41,7 +41,7 @@ $(document).ready(function() {
 				dt.items.add(file);
 
 				let imgDiv = $(`
-					<div id="productImageContainer_${i}" class="newProductImage d-inline-block border p-1 mt-2 rounded text-center pw-100"
+					<div id="productImageContainer_${i}" class="newProductImage productImageContainer d-inline-block border p-1 mt-2 rounded text-center pw-100"
 						onMouseOver="this.style.cursor='pointer'"
 						onclick="$(this).children().find('input[name=defaultImageId]').prop('checked', true).trigger('change');"
 					>
@@ -94,11 +94,13 @@ function processProductForm() {
 	const productTaxError = $("#productTaxError");
 	const productPrice = $("#productPrice");
 	const productPriceError = $("#productPriceError");
-	const productImage = $("#productImage")[0].files;
+	const productImage = $("#productImage");
+	const productImageError = $("#productImageError");
 	let valid = true;
 
 	// Reset Errors
 	$(".productInput").removeClass("border-danger");
+	$(".productImageContainer").removeClass("border-danger");
 	$(".productError").text("");
 
 	valid &= validateSelectTag(categorySelect, "Category", categorySelectError);
@@ -110,9 +112,14 @@ function processProductForm() {
 	valid &= validateTax(productTax, productTaxError);
 
 	// Product Image Validation
-	if ($('input[name="defaultImageId"]:checked').is(":checked") == false) { // Validate product image only when adding products not when editing
-		$("#productImage").addClass("border-danger");
-		$("#productImageError").text("Select atleast one image");
+	if(productId.trim().length == 0) {
+		validateFileInput(productImage, "image", productImageError, 1)
+	}
+
+	// Default Image validation
+	if ($("input[name='defaultImageId']").length && $("input[name='defaultImageId']:checked").is(":checked") == false) {
+		$("#uploadedProductImages > div").addClass("border-danger");
+		productImageError.text("Choose one image as default for the product!");
 		valid = false;
 	}
 
@@ -204,14 +211,14 @@ function showEditProductModal(categoryId, productId) {
 			$("#uploadedProductImages").empty();
 			$.each(productImages, function (i, file) {
 				let imgDiv = $(`
-					<div id="uploadedProductImageContainer_${i}" class="d-inline-block border p-1 mt-2 rounded text-center pw-100"
+					<div id="uploadedProductImageContainer_${i}" class="productImageContainer d-inline-block border p-1 mt-2 rounded text-center pw-100"
 						onMouseOver="this.style.cursor='pointer'"
 						onclick="$(this).children().find('input[name=defaultImageId]').prop('checked', true).trigger('change');"
 					>
 						<img src="${productImageDirectory}${file}" class="img-fluid h-80 border rounded">
 						<div class="d-flex justify-content-around">
 							<input type="radio" name="defaultImageId" value="${productImageIds[i]}" ${i == 0 ? "checked" : ""}>
-							<button type="button" class="btn btn-sm border-0 z-2" onclick="deleteImage('uploadedProductImageContainer_${i}', '${productImageIds[i]}')" ${i == 0 ? 'disabled' : ''}>
+							<button type="button" class="btn btn-sm border-0" onclick="deleteImage('uploadedProductImageContainer_${i}', '${productImageIds[i]}')">
 								<i class="fa-solid fa-xmark pe-none"></i>
 							</button>
 						</div>
