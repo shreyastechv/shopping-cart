@@ -1,7 +1,7 @@
 DELIMITER $$
 
 CREATE PROCEDURE IF NOT EXISTS spDeleteItem(
-	IN item VARCHAR(20), -- An item can be category, subcategory, product, or productimage
+	IN item VARCHAR(20), -- An item can be category, subcategory, product, productimage, or address
 	IN itemId INT,
 	IN userId INT
 )
@@ -74,6 +74,16 @@ BEGIN
 			fldDeactivatedDate = NOW()
 		WHERE
 			fldProductImage_Id = itemId;
+
+	-- Delete address
+	ELSEIF item = 'address' THEN
+		UPDATE
+			tblAddress
+		SET
+			fldActive = 0,
+			fldDeactivatedDate = NOW()
+		WHERE
+			fldAddress_Id = itemId;
 
 	-- Handle invalid item type
 	ELSE

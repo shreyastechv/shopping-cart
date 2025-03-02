@@ -302,15 +302,14 @@
 		<cfargument name="addressId" type="string" required=true default="">
 
 		<cfset local.response = {
-			"message" = "",
-			"data" = []
+			"message" = ""
 		}>
 
 		<!--- Decrypt ids--->
 		<cfset local.addressId = application.commonFunctions.decryptText(arguments.addressId)>
 
 		<!--- Address Id Validation --->
-		<cfif len(arguments.addressId) AND (local.addressId EQ -1)>
+		<cfif val(local.addressId) EQ -1>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] = "Address Id is invalid.">
 		</cfif>
@@ -321,15 +320,11 @@
 		</cfif>
 
 		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="local.qryDeleteAddress">
-			UPDATE
-				tblAddress
-			SET
-				fldActive = 0,
-				fldDeactivatedDate = <cfqueryparam value = "#DateTimeFormat(now(), "yyyy-MM-dd HH:mm:ss")#" cfsqltype = "timestamp">
-			WHERE
-				fldAddress_Id = <cfqueryparam value = "#val(local.addressId)#" cfsqltype = "integer">
-		</cfquery>
+		<cfstoredproc procedure="spDeleteItem">
+			<cfprocparam cfsqltype="varchar" variable="item" value="address">
+			<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.itemId)#">
+			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
+		</cfstoredproc>
 
 		<cfset local.response["message"] = "Address deleted succcessfully.">
 
