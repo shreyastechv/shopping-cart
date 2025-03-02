@@ -387,11 +387,6 @@
 			<cfset local.response["message"] &= "Item Id is invalid. ">
 		</cfif>
 
-		<!--- User Validation --->
-		<cfif NOT structKeyExists(session, "roleId") OR session.roleId EQ 2>
-			<cfset local.response["message"] &= "Not authorized to delete items. ">
-		</cfif>
-
 		<!--- Return message if validation fails --->
 		<cfif len(trim(local.response.message))>
 			<cfreturn local.response>

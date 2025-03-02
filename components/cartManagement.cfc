@@ -228,11 +228,6 @@
 		<!--- Decrypt ids--->
 		<cfset local.addressId = application.commonFunctions.decryptText(arguments.addressId)>
 
-		<!--- Check whether user is logged in --->
-		<cfif NOT structKeyExists(session, "userId")>
-			<cfset local.response["message"] &= "User not logged in. ">
-		</cfif>
-
 		<!--- Check whether session variable is empty or not --->
 		<cfif (NOT structKeyExists(session, "checkout")) OR (structCount(session.checkout) EQ 0)>
 			<cfset local.response["message"] &= "Checkout section is empty. ">
