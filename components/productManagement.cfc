@@ -285,7 +285,20 @@
 
 				<!--- Not equal to -1 means we selected an already uploaded image --->
 				<cfif val(local.defaultImageId) NEQ -1>
-					<cfset setDefaultImage(imageId = arguments.defaultImageId)>
+					<cfquery name="qrySetDefautImage">
+						UPDATE
+							tblProductImages PI1
+						JOIN
+							tblProductImages PI2 ON PI1.fldProductId = PI2.fldProductId
+						SET
+							PI1.fldDefaultImage =
+								CASE
+									WHEN PI1.fldProductImage_Id = <cfqueryparam value = "#val(local.defaultImageId)#" cfsqltype = "integer"> THEN 1
+									ELSE 0
+								END
+						WHERE
+							PI2.fldProductImage_Id = <cfqueryparam value = "#val(local.defaultImageId)#" cfsqltype = "integer">
+					</cfquery>
 				</cfif>
 
 				<cfset local.response["message"] = "Product Updated">
@@ -357,46 +370,6 @@
 		</cfif>
 
 		<cfreturn local.response>
-	</cffunction>
-
-	<cffunction name="setDefaultImage" access="remote" returnType="void">
-		<cfargument name="imageId" type="string" required=true default="">
-
-		<cfset local.response = {
-			"message" = ""
-		}>
-
-		<!--- Decrypt ids--->
-		<cfset local.imageId = application.commonFunctions.decryptText(arguments.imageId)>
-
-		<!--- Image Id Validation --->
-		<cfif len(arguments.imageId) EQ 0>
-			<cfset local.response["message"] &= "Image Id should not be empty. ">
-		<cfelseif local.imageId EQ -1>
-			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] &= "Image Id is invalid. ">
-		</cfif>
-
-		<!--- Return message if validation fails --->
-		<cfif len(trim(local.response.message))>
-			<cfreturn local.response>
-		</cfif>
-
-		<!--- Continue with code execution if validation succeeds --->
-		<cfquery name="qrySetDefautImage">
-			UPDATE
-				tblProductImages PI1
-			JOIN
-				tblProductImages PI2 ON PI1.fldProductId = PI2.fldProductId
-			SET
-				PI1.fldDefaultImage =
-					CASE
-						WHEN PI1.fldProductImage_Id = <cfqueryparam value = "#val(local.imageId)#" cfsqltype = "integer"> THEN 1
-						ELSE 0
-					END
-			WHERE
-				PI2.fldProductImage_Id = <cfqueryparam value = "#val(local.imageId)#" cfsqltype = "integer">
-		</cfquery>
 	</cffunction>
 
 	<cffunction name="deleteItem" access="remote" returnType="struct">
