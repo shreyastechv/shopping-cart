@@ -185,6 +185,9 @@
 		<cfset local.subCategorySelect = application.commonFunctions.decryptText(arguments.subCategorySelect)>
 		<cfset local.brandSelect = application.commonFunctions.decryptText(arguments.brandSelect)>
 		<cfset local.defaultImageId = application.commonFunctions.decryptText(arguments.defaultImageId)>
+		<cfset local.deletedImageIdArray = arrayMap(arguments.deletedImageIdArray, function(item) {
+			return application.commonFunctions.decryptText(item);
+		})>
 
 		<!--- Product Id Validation --->
 		<cfif len(trim(arguments.productId)) AND (local.productId EQ -1)>
@@ -354,17 +357,12 @@
 			</cfif>
 
 			<!--- Remove deleted imaged from db --->
-			<cfloop array="#arguments.deletedImageIdArray#" item="item">
-				<cfset local.imageId = application.commonFunctions.decryptText(item)>
-
-				<cfif val(local.imageId) NEQ -1>
-					<cfstoredproc procedure="spDeleteItem">
-						<cfprocparam cfsqltype="varchar" variable="item" value="productimage">
-						<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.imageId)#">
-						<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
-					</cfstoredproc>
-				</cfif>
-			</cfloop>
+			<cfquery name="local.qryDeleteImages">
+				DELETE FROM
+					tblProductImages
+				WHERE
+					fldProductImage_Id IN (<cfqueryparam value = "#arrayToList(local.deletedImageIdArray)#" cfsqltype = "varchar" list = "yes">)
+			</cfquery>
 
 			<cfset local.response.success = true>
 		</cfif>
