@@ -105,8 +105,9 @@ function deleteSubCategory(containerId, subCategoryId, subCategoryName) {
 				type: "POST",
 				url: "./components/productManagement.cfc",
 				data: {
-					method: "deleteSubCategory",
-					subCategoryId: subCategoryId
+					method: "deleteItem",
+					itemName: "subcategory",
+					itemId: subCategoryId
 				},
 				success: function() {
 					$(`#${containerId}`).remove();

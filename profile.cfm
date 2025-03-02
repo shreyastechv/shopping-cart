@@ -25,7 +25,7 @@
 								Admin
 							</a>
 						</cfif>
-						<a href="/orders.cfm" class="btn btn-outline-secondary m-2">
+						<a href="/orders.cfm" class="btn btn-secondary m-2">
 							<i class="fa-solid fa-rectangle-list"></i>
 							View Previous Orders
 						</a>

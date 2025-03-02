@@ -72,44 +72,6 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="deleteCategory" access="remote" returnType="struct">
-		<cfargument name="categoryId" type="string" required=true default="">
-
-		<cfset local.response = {
-			"message" = ""
-		}>
-
-		<!--- Decrypt ids--->
-		<cfset local.categoryId = application.commonFunctions.decryptText(arguments.categoryId)>
-
-		<!--- Login Check --->
-		<cfif NOT structKeyExists(session, "userId")>
-			<cfset local.response["message"] &= "User not logged in">
-		</cfif>
-
-		<!--- Category Id Validation --->
-		<cfif NOT len(trim(arguments.categoryId))>
-			<cfset local.response["message"] &= "Category Id is required. ">
-		<cfelseif local.categoryId EQ -1>
-			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] &= "Category Id is invalid. ">
-		</cfif>
-
-		<!--- Return message if validation fails --->
-		<cfif len(trim(local.response.message))>
-			<cfreturn local.response>
-		</cfif>
-
-		<!--- Continue with code execution if validation succeeds --->
-		<cfstoredproc procedure="spDeleteItem">
-			<cfprocparam cfsqltype="varchar" variable="item" value="category">
-			<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.categoryId)#">
-			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
-		</cfstoredproc>
-
-		<cfreturn local.response>
-	</cffunction>
-
 	<cffunction name="modifySubCategory" access="remote" returnType="struct" returnFormat="json">
 		<cfargument name="subCategoryId" type="string" required=true default="">
 		<cfargument name="subCategoryName" type="string" required=true>
@@ -199,37 +161,6 @@
 		</cfif>
 
 		<cfreturn local.response>
-	</cffunction>
-
-	<cffunction name="deleteSubCategory" access="remote" returnType="void">
-		<cfargument name="subCategoryId" type="string" required=true default="">
-
-		<cfset local.response = {
-			"message" = ""
-		}>
-
-		<!--- Decrypt ids--->
-		<cfset local.subCategoryId = application.commonFunctions.decryptText(arguments.subCategoryId)>
-
-		<!--- Sub Category Id Validation --->
-		<cfif NOT len(trim(arguments.subCategoryId))>
-			<cfset local.response["message"] &= "Sub Category Id is required. ">
-		<cfelseif local.subCategoryId EQ -1>
-			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] &= "Sub Category Id is invalid. ">
-		</cfif>
-
-		<!--- Return message if validation fails --->
-		<cfif len(trim(local.response.message))>
-			<cfreturn local.response>
-		</cfif>
-
-		<!--- Continue with code execution if validation succeeds --->
-		<cfstoredproc procedure="spDeleteItem">
-			<cfprocparam cfsqltype="varchar" variable="item" value="subcategory">
-			<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.subCategoryId)#">
-			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
-		</cfstoredproc>
 	</cffunction>
 
 	<cffunction name="modifyProduct" access="remote" returnType="struct" returnFormat="json">
@@ -428,37 +359,6 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="deleteProduct" access="remote" returnType="void">
-		<cfargument name="productId" type="string" required=true default="">
-
-		<cfset local.response = {
-			"message" = ""
-		}>
-
-		<!--- Decrypt ids--->
-		<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
-
-		<!--- Product Id Validation --->
-		<cfif len(arguments.productId) EQ 0>
-			<cfset local.response["message"] &= "Product Id should not be empty. ">
-		<cfelseif local.productId EQ -1>
-			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] &= "Product Id is invalid. ">
-		</cfif>
-
-		<!--- Return message if validation fails --->
-		<cfif len(trim(local.response.message))>
-			<cfreturn local.response>
-		</cfif>
-
-		<!--- Continue with code execution if validation succeeds --->
-		<cfstoredproc procedure="spDeleteItem">
-			<cfprocparam cfsqltype="varchar" variable="item" value="product">
-			<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.productId)#">
-			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
-		</cfstoredproc>
-	</cffunction>
-
 	<cffunction name="setDefaultImage" access="remote" returnType="void">
 		<cfargument name="imageId" type="string" required=true default="">
 
@@ -499,22 +399,26 @@
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="deleteImage" access="remote" returnType="struct">
-		<cfargument name="imageId" type="string" required=true defaul="">
+	<cffunction name="deleteItem" access="remote" returnType="struct">
+		<cfargument name="itemName" type="string" required=true defaul="">
+		<cfargument name="itemId" type="string" required=true defaul="">
 
 		<cfset local.response = {
 			"message" = ""
 		}>
 
-		<!--- Decrypt ids--->
-		<cfset local.imageId = application.commonFunctions.decryptText(arguments.imageId)>
+		<!--- Decrypt item id --->
+		<cfset local.itemId = application.commonFunctions.decryptText(arguments.itemId)>
 
-		<!--- Image Id Validation --->
-		<cfif len(arguments.imageId) EQ 0>
-			<cfset local.response["message"] &= "Image Id should not be empty. ">
-		<cfelseif local.imageId EQ -1>
+		<!--- Item Id Validation --->
+		<cfif local.itemId EQ -1>
 			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] &= "Image Id is invalid. ">
+			<cfset local.response["message"] &= "Item Id is invalid. ">
+		</cfif>
+
+		<!--- User Validation --->
+		<cfif NOT structKeyExists(session, "roleId") OR session.roleId EQ 2>
+			<cfset local.response["message"] &= "Not authorized to delete items. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -522,15 +426,22 @@
 			<cfreturn local.response>
 		</cfif>
 
-		<!--- Continue with code execution if validation succeeds --->
-		<cfstoredproc procedure="spDeleteItem">
-			<cfprocparam cfsqltype="varchar" variable="item" value="productimage">
-			<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.imageId)#">
-			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
-		</cfstoredproc>
+		<cftry>
+			<!--- Continue with code execution if validation succeeds --->
+			<cfstoredproc procedure="spDeleteItem">
+				<cfprocparam cfsqltype="varchar" variable="item" value="#trim(arguments.itemName)#">
+				<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.itemId)#">
+				<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
+			</cfstoredproc>
 
-		<!--- Set success message --->
-		<cfset local.response["message"] = "Product Image deleted">
+			<!--- Set success message --->
+			<cfset local.response["message"] = "#arguments.itemName# deleted">
+
+			<cfcatch type="any">
+				<cfset local.response["message"] = "Deletion failed!">
+				<cfreturn local.response>
+			</cfcatch>
+		</cftry>
 
 		<cfreturn local.response>
 	</cffunction>

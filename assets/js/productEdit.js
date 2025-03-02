@@ -244,8 +244,9 @@ function deleteProduct (containerId, productId) {
 				type: "POST",
 				url: "./components/productManagement.cfc",
 				data: {
-					method: "deleteProduct",
-					productId: productId
+					method: "deleteItem",
+					itemName: "product",
+					itemId: productId
 				},
 				success: function() {
 					$(`#${containerId}`).remove();

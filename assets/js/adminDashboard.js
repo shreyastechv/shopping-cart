@@ -101,8 +101,9 @@ function deleteCategory(containerId, categoryId) {
 				type: "POST",
 				url: "./components/productManagement.cfc",
 				data: {
-					method: "deleteCategory",
-					categoryId: categoryId
+					method: "deleteItem",
+					itemName: "category",
+					itemId: categoryId
 				},
 				success: function() {
 					$(`#${containerId}`).fadeOut(500, function() {

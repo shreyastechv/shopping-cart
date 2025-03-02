@@ -365,7 +365,6 @@
 			<cfset local.response["success"] = true>
 
 			<cfcatch type="any">
-				<cfset local.response["success"] = false>
 				<cfreturn local.response>
 			</cfcatch>
 		</cftry>
