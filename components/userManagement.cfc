@@ -301,32 +301,10 @@
 	<cffunction name="deleteAddress" access="remote" returnType="struct">
 		<cfargument name="addressId" type="string" required=true default="">
 
-		<cfset local.response = {
-			"message" = ""
-		}>
-
-		<!--- Decrypt ids--->
-		<cfset local.addressId = application.commonFunctions.decryptText(arguments.addressId)>
-
-		<!--- Address Id Validation --->
-		<cfif val(local.addressId) EQ -1>
-			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] = "Address Id is invalid.">
-		</cfif>
-
-		<!--- Return message if validation fails --->
-		<cfif len(trim(local.response.message))>
-			<cfreturn local.response>
-		</cfif>
-
-		<!--- Continue with code execution if validation succeeds --->
-		<cfstoredproc procedure="spDeleteItem">
-			<cfprocparam cfsqltype="varchar" variable="item" value="address">
-			<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.itemId)#">
-			<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
-		</cfstoredproc>
-
-		<cfset local.response["message"] = "Address deleted succcessfully.">
+		<cfset local.response = application.productManagement.deleteItem(
+			itemName = "address",
+			itemId = arguments.addressId
+		)>
 
 		<cfreturn local.response>
 	</cffunction>

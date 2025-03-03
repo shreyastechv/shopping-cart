@@ -254,22 +254,7 @@
 		<cfif local.qryCheckProduct.recordCount>
 			<cfset local.response["message"] = "Product already exists!">
 		<cfelse>
-			<!--- Create images dir if not exists --->
-			<cfif NOT directoryExists(expandPath(application.productImageDirectory))>
-				<cfdirectory action="create" directory="#expandPath(application.productImageDirectory)#">
-			</cfif>
-
-			<!--- Upload images --->
-			<cffile
-				action="uploadall"
-				destination="#expandPath(application.productImageDirectory)#"
-				nameconflict="MakeUnique"
-				accept="image/*"
-				strict="true"
-				result="local.uploadedImages"
-			>
-
-			<!--- Sub category id has length means we used edit button --->
+			<!--- Product id has length means we used edit button --->
 			<cfif len(trim(arguments.productId))>
 				<cfquery name="qryEditProduct">
 					UPDATE
@@ -333,6 +318,21 @@
 				<cfset local.response["message"] = "Product Added">
 			</cfif>
 
+			<!--- Create images dir if not exists --->
+			<cfif NOT directoryExists(expandPath(application.productImageDirectory))>
+				<cfdirectory action="create" directory="#expandPath(application.productImageDirectory)#">
+			</cfif>
+
+			<!--- Upload images --->
+			<cffile
+				action="uploadall"
+				destination="#expandPath(application.productImageDirectory)#"
+				nameconflict="MakeUnique"
+				accept="image/*"
+				strict="true"
+				result="local.uploadedImages"
+			>
+
 			<!--- Store images in DB --->
 			<cfif arrayLen(local.uploadedImages)>
 				<cfquery name="qryAddImages">
@@ -375,6 +375,7 @@
 		<cfargument name="itemId" type="string" required=true defaul="">
 
 		<cfset local.response = {
+			"success" = true,
 			"message" = ""
 		}>
 
@@ -401,10 +402,11 @@
 			</cfstoredproc>
 
 			<!--- Set success message --->
-			<cfset local.response["message"] = "#arguments.itemName# deleted">
+			<cfset local.response.success = true>
+			<cfset local.response.message = "#arguments.itemName# deleted successfully.">
 
 			<cfcatch type="any">
-				<cfset local.response["message"] = "Deletion failed!">
+				<cfset local.response["message"] = "#arguments.itemName# deletion failed!">
 				<cfreturn local.response>
 			</cfcatch>
 		</cftry>
