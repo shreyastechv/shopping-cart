@@ -48,34 +48,34 @@
 					<i class="fa-solid fa-bars"></i>
 				</button>
 				<a class="d-flex align-items-center text-decoration-none" href="/">
-					<img class="p-2 me-2" src="#application.imageDirectory#shopping-cart-logo.png" height="45" alt="Logo Image">
+					<img class="p-1 me-2" src="#application.imageDirectory#shopping-cart-logo.png" height="35" alt="Logo Image">
 					<div class="text-white fw-semibold">SHOPPING CART</div>
 				</a>
-				<form class="d-flex p-1 w-50" method="get" action="/products.cfm">
-					<input class="form-control me-2" type="search" id="search" name="search" value="#url.search#" placeholder="Search for products, categories, sub categories, brands ..." onblur="this.value = this.value.trim()">
-					<button class="btn btn-outline-light" type="submit">Search</button>
+				<form class="d-flex p-0 w-50" method="get" action="/products.cfm">
+					<input class="form-control form-control-sm me-2" type="search" id="search" name="search" value="#url.search#" placeholder="Search for products, categories, sub categories, brands ..." onblur="this.value = this.value.trim()">
+					<button class="btn btn-sm btn-outline-light" type="submit">Search</button>
 				</form>
 				<nav class="d-flex align-items-center justify-content-between gap-4 px-2">
 					<!--- Profile Button --->
-					<button type="button" class="btn btn-outline-light" onclick="location.href='/profile.cfm'">
+					<button type="button" class="btn btn-sm btn-outline-light" onclick="location.href='/profile.cfm'">
 						<i class="fa-regular fa-circle-user"></i>
 						Profile
 					</button>
 
 					<!--- Cart Button --->
-					<button type="button" class="btn btn-outline-light position-relative" onclick="location.href='/cart.cfm'">
+					<button type="button" class="btn btn-sm btn-outline-light position-relative px-2" onclick="location.href='/cart.cfm'">
 						<i class="fa-solid fa-cart-shopping"></i>
 						Cart
 						<!--- Hide cart count for non-logged in users --->
 						<cfif structKeyExists(session, "cart")>
-							<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light">
+							<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light mt-1">
 								<span id="cartCount">#structCount(session.cart.items)#</span>
 							</span>
 						</cfif>
 					</button>
 
 					<cfif structKeyExists(session, "userId")>
-						<button class="btn text-white text-decoration-none" onclick="logOut()">
+						<button class="btn btn-sm text-white text-decoration-none" onclick="logOut()">
 							<i class="fa-solid fa-right-from-bracket"></i>
 							Logout
 						</button>
@@ -97,7 +97,7 @@
 
 			<!--- Category - SubCategory Dropdown --->
 			<div class="border-bottom border-success-subtle shadow-sm">
-				<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<nav class="navbar navbar-expand-lg navbar-light bg-light py-0">
 					<div class="container-fluid">
 						<div class="collapse navbar-collapse" id="navbarContent">
 							<ul class="navbar-nav w-100 d-flex justify-content-evenly flex-wrap">

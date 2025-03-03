@@ -68,7 +68,7 @@
 				<div class="fs-5 fw-semibold px-3 mb-2">
 					Showing results for '#url.search#'
 				</div>
-			<cfelseif len(trim(url.subCategoryId))>
+			<cfelseif len(trim(variables.subCategoryName))>
 				<div class="fs-5 fw-semibold px-3 mb-2">
 					#variables.subCategoryName#
 				</div>
