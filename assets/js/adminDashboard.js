@@ -106,7 +106,7 @@ function deleteCategory(containerId, categoryId) {
 					itemId: categoryId
 				},
 				success: function() {
-					$(`#${containerId}`).fadeOut(500, function() {
+					$(`#${containerId}`).fadeOut(200, function() {
 						$(this).remove();
 					});
 				}

@@ -29,7 +29,7 @@
 	</cftry>
 
 	<!--- Main Content --->
-	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
+	<div class="container d-flex flex-column justify-content-center align-items-center mt-5">
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
 			<div id="productMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
 				<div class="d-flex justify-content-between align-items-center mb-4">
@@ -38,7 +38,7 @@
 					</a>
 					<div class="d-flex">
 						<h3 class="fw-semibold text-center mb-0 me-3">#variables.subCategoryName#</h3>
-						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal('#variables.categoryId#', '#url.subCategoryId#')">
+						<button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal('#variables.categoryId#', '#url.subCategoryId#')">
 							Add+
 						</button>
 					</div>

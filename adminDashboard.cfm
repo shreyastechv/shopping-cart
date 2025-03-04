@@ -3,11 +3,11 @@
 	<cfset variables.categories = application.dataFetch.getCategories()>
 
 	<!--- Main Content --->
-	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
+	<div class="container d-flex flex-column justify-content-center align-items-center mt-5">
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center py-4">
 			<div class="d-flex justify-content-center align-items-center">
 				<h3 class="fw-semibold text-center mb-0 me-3">CATEGORIES</h3>
-				<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showAddCategoryModal()">
+				<button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="##categoryModal" onclick="showAddCategoryModal()">
 					Add+
 				</button>
 			</div>
