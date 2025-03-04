@@ -321,20 +321,15 @@
 						</tr>
 					</thead>
 					<tbody>
-						<cfloop list="#local.order.productIds#" item="item" index="i">
-							<cfset local.unitPrice = listGetAt(local.order.unitPrices, i)>
-							<cfset local.unitTax = listGetAt(local.order.unitTaxes, i)>
-							<cfset local.quantity = listGetAt(local.order.quantities, i)>
-							<cfset local.price = (local.unitPrice + local.unitTax) * local.quantity>
-							<cfset local.productName = listGetAt(local.order.productNames, i)>
-							<cfset local.brandName = listGetAt(local.order.brandNames, i)>
+						<cfloop array="#local.order.products#" item="item">
+							<cfset local.price = (item.unitPrice + item.unitTax) * item.quantity>
 
 							<tr>
-								<td>#local.productName#</td>
-								<td>#local.brandName#</td>
-								<td>#local.unitPrice#</td>
-								<td>#local.unitTax#</td>
-								<td>#local.quantity#</td>
+								<td>#item.productName#</td>
+								<td>#item.brandName#</td>
+								<td>#item.unitPrice#</td>
+								<td>#item.unitTax#</td>
+								<td>#item.quantity#</td>
 								<td>#local.price#</td>
 							</tr>
 						</cfloop>
@@ -342,11 +337,11 @@
 				</table>
 
 				Delivery Address:
-				#local.order.firstName# #local.order.lastName#,
-				#local.order.addressLine1#,
-				#local.order.addressLine2#,
-				#local.order.city#, #local.order.state# - #local.order.pincode#,
-				#local.order.phone#
+				#local.order.address.firstName# #local.order.address.lastName#,
+				#local.order.address.addressLine1#,
+				#local.order.address.addressLine2#,
+				#local.order.address.city#, #local.order.address.state# - #local.order.address.pincode#,
+				#local.order.address.phone#
 
 				Order Id: #local.order.orderId#
 				Order Date: #local.order.orderDate#

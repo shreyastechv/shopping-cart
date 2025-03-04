@@ -514,24 +514,30 @@
 				"orderDate" = local.qryGetOrders.fldOrderDate,
 				"totalPrice" = local.qryGetOrders.fldTotalPrice,
 				"totalTax" = local.qryGetOrders.fldTotalTax,
-				"addressLine1" = local.qryGetOrders.fldAddressLine1,
-				"addressLine2" = local.qryGetOrders.fldAddressLine2,
-				"city" = local.qryGetOrders.fldCity,
-				"state" = local.qryGetOrders.fldState,
-				"pincode" = local.qryGetOrders.fldPincode,
-				"firstName" = local.qryGetOrders.fldFirstName,
-				"lastName" = local.qryGetOrders.fldLastName,
-				"phone" = local.qryGetOrders.fldPhone,
-				"productIds" = listMap(local.qryGetOrders.productIds, function(item) {
-					return application.commonFunctions.encryptText(item);
-				}),
-				"quantities" = local.qryGetOrders.quantities,
-				"unitPrices" = local.qryGetOrders.unitPrices,
-				"unitTaxes" = local.qryGetOrders.unitTaxes,
-				"productNames" = local.qryGetOrders.productNames,
-				"productImages" = local.qryGetOrders.productImages,
-				"brandNames" = local.qryGetOrders.brandNames
+				"address" = {
+					"addressLine1" = local.qryGetOrders.fldAddressLine1,
+					"addressLine2" = local.qryGetOrders.fldAddressLine2,
+					"city" = local.qryGetOrders.fldCity,
+					"state" = local.qryGetOrders.fldState,
+					"pincode" = local.qryGetOrders.fldPincode,
+					"firstName" = local.qryGetOrders.fldFirstName,
+					"lastName" = local.qryGetOrders.fldLastName,
+					"phone" = local.qryGetOrders.fldPhone
+				},
+				"products" = []
 			})>
+
+			<cfloop list="#local.qryGetOrders.productNames#" item="item" index="i">
+				<cfset arrayAppend(local.response.data[arrayLen(local.response.data)].products, {
+					"productName" = listGetAt(local.qryGetOrders.productNames, i),
+					"productId" = application.commonFunctions.encryptText(listGetAt(local.qryGetOrders.productIds, i)),
+					"unitPrice" = listGetAt(local.qryGetOrders.unitPrices, i),
+					"unitTax" = listGetAt(local.qryGetOrders.unitTaxes, i),
+					"quantity" = listGetAt(local.qryGetOrders.quantities, i),
+					"brandName" = listGetAt(local.qryGetOrders.brandNames, i),
+					"productImage" = listGetAt(local.qryGetOrders.productImages, i)
+				})>
+			</cfloop>
 		</cfloop>
 
 		<cfreturn local.response>
