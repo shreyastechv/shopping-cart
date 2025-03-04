@@ -5,7 +5,7 @@
 <cfparam name="url.productId" default="">
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
 	<cfoutput>
 		<head>
 			<meta charset="UTF-8">
@@ -42,7 +42,7 @@
 			})>
 		</cfloop>
 
-		<body class="overflow-x-hidden overflow-y-scroll">
+		<body class="overflow-x-hidden overflow-y-scroll d-flex flex-column h-100">
 			<header class="header d-flex align-items-center justify-content-between sticky-top bg-success shadow px-2 py-1">
 				<button class="navbar-toggler d-flex fs-5 p-2 d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="##navbarContent">
 					<i class="fa-solid fa-bars"></i>
