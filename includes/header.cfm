@@ -53,7 +53,9 @@
 				</a>
 				<form class="d-flex p-0 w-50" method="get" action="/products.cfm">
 					<input class="form-control form-control-sm me-2" type="search" id="search" name="search" value="#url.search#" placeholder="Search for products, categories, sub categories, brands ..." onblur="this.value = this.value.trim()">
-					<button class="btn btn-sm btn-outline-light" type="submit">Search</button>
+					<button class="btn btn-sm btn-outline-light" type="submit">
+						<i class="fa-solid fa-magnifying-glass"></i>
+					</button>
 				</form>
 				<nav class="d-flex align-items-center justify-content-between gap-4 px-2">
 					<!--- Profile Button --->
