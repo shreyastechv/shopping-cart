@@ -198,3 +198,13 @@ function validateFileInput(field, fieldName, errorContainer, minCount) {
 
 	return true;
 }
+
+function validateRadioBtn(field, fieldName, errorContainer) {
+	if (!field.val()) {
+		field.addClass("border-danger");
+		errorContainer.text(`${fieldName} is required!`);
+		return false;
+	}
+
+	return true;
+}

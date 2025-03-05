@@ -2,15 +2,23 @@ function handleCheckout() {
 	event.preventDefault();
 
 	// Remove error msgs and red borders from inputs
+	$("#addressAccordionError").text("");
 	$(".cardInput").removeClass("border-danger");
-	$(".cardError").empty();
+	$(".checkoutError").empty();
 
 	let valid = true;
 	const cardNumber = $("#cardNumber");
 	const cardNumberError = $("#cardNumberError");
 	const cvv = $("#cvv");
 	const cvvError = $("#cvvError");
-	const addressId = $('input[name="addressId"]:checked').val();
+	const addressId = $('input[name="addressId"]:checked');
+	const checkoutError = $("#checkoutError");
+
+	valid &= validateRadioBtn(addressId, "Address", cardNumberError);
+	if (!valid) {
+		$("#flush-collapseOne").collapse('show');
+		$("#addressAccordionError").text("Select at least one address!");
+	}
 
 	valid &= validateCardNumber(cardNumber, cardNumberError);
 	valid &= validateCVV(cvv, cvvError);
@@ -30,11 +38,11 @@ function handleCheckout() {
 			const result = JSON.parse(response);
 
 			if (result.success) {
-				createOrder(addressId);
+				createOrder(addressId.val());
 			} else {
 				cardNumber.addClass("border-danger");
 				cvv.addClass("border-danger");
-				cardNumberError.text(result.message);
+				checkoutError.text(result.message);
 			}
 		}
 	})
@@ -65,6 +73,10 @@ function createOrder(addressId) {
 					$("#orderResult div[name='loading']").addClass("d-none");
 					$("#orderResult div[name='success']").addClass("d-none");
 					$("#orderResult div[name='error']").removeClass("d-none")
+					$("#orderResultError").text(result.message);
+					if (result.message == "No product in checkout!") {
+						$("#orderResultErrorBtn").text("Shop More");
+					}
 				}, 800);
 			}
 		},

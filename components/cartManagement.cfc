@@ -229,13 +229,14 @@
 		<cfset local.addressId = application.commonFunctions.decryptText(arguments.addressId)>
 
 		<!--- Check whether session variable is empty or not --->
-		<cfif (NOT structKeyExists(session, "checkout")) OR (structCount(session.checkout) EQ 0)>
-			<cfset local.response["message"] &= "Checkout section is empty. ">
+		<cfif (NOT structKeyExists(session, "checkout")) OR (structCount(session.checkout.items) EQ 0)>
+			<cfset local.response["message"] = "No product in checkout!">
+			<cfreturn local.response>
 		</cfif>
 
 		<!--- Address Id Validation --->
 		<cfif NOT len(trim(arguments.addressId))>
-			<cfset local.response["message"] &= "Address Id is required. ">
+			<cfset local.response["message"] = "Address Id is required.">
 		<cfelseif local.addressId EQ -1>
 			<!--- Value equals -1 means decryption failed --->
 			<cfset local.response["message"] = "Address Id is invalid.">
