@@ -88,7 +88,7 @@ BEGIN
 	-- Handle invalid item type
 	ELSE
 		SIGNAL SQLSTATE '45000'
-		SET MESSAGE_TEXT = 'Invalid item type. Allowed: category, subcategory, product, productimage';
+		SET MESSAGE_TEXT = 'Invalid item type. Allowed: category, subcategory, product, productimage, address';
 
 	END IF;
 
