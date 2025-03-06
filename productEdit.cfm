@@ -3,6 +3,11 @@
 <cfparam name="variables.categoryId" default="">
 <cfparam name="variables.subCategoryName" default="Products">
 
+<!--- Go to admin dashboard if subcategory id is empty --->
+<cfif NOT len(trim(url.subCategoryId))>
+	<cflocation url="/adminDashboard.cfm" addToken="false">
+</cfif>
+
 <cfoutput>
 	<!--- Get Data --->
 	<cfset variables.categories = application.dataFetch.getCategories()>
@@ -159,7 +164,7 @@
 				<div id="productImageError" class="text-danger productError mt-2 ps-2"></div>
 			  </div>
 			  <div class="modal-footer">
-				<div id="productEditModalMsg" class="mt-2 productError"></div>
+				<div id="productEditModalMsg" class="mt-2 text-danger productError"></div>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 				<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Save</button>
 			  </div>

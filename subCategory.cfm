@@ -1,6 +1,11 @@
 <cfparam name="url.categoryId" default="">
 <cfparam name="variables.categoryName" default="Sub Categories">
 
+<!--- Go to admin dashboard if category id is empty --->
+<cfif NOT len(trim(url.categoryId))>
+	<cflocation url="/adminDashboard.cfm" addToken="false">
+</cfif>
+
 <cfoutput>
 	<!--- Get Data --->
 	<cfset variables.categories = application.dataFetch.getCategories()>

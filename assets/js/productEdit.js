@@ -74,6 +74,7 @@ function removeSelectedFile(containerId, inputId, fileName) {
 
 	$(`#${inputId}`)[0].files = dt.files;
 	$(`#${containerId}`).remove();
+	$("#productImage").change();
 }
 
 function processProductForm() {
@@ -117,7 +118,7 @@ function processProductForm() {
 	}
 
 	// Default Image validation
-	if ($("input[name='defaultImageId']").length && $("input[name='defaultImageId']:checked").is(":checked") == false) {
+	if ($("input[name='defaultImageId']:checked").is(":checked") == false) {
 		$("#uploadedProductImages > div").addClass("border-danger");
 		productImageError.text("Choose one image as default for the product!");
 		valid = false;
@@ -142,6 +143,8 @@ function processProductForm() {
 		processData: false,
 		contentType: false,
 		success: function(response) {
+			console.log(response);
+
 			const { message, success } = JSON.parse(response);
 			if(success) {
 				Swal.fire({

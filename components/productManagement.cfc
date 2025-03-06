@@ -172,7 +172,7 @@
 		<cfargument name="productPrice" type="float" required=true>
 		<cfargument name="productTax" type="float" required=true>
 		<cfargument name="productImage" type="string" required=true>
-		<cfargument name="defaultImageId" type="string" required=true>
+		<cfargument name="defaultImageId" type="string" required=false default="">
 		<cfargument name="deletedImageIdArray" type="array" required=false default=#arrayNew(1)#>
 
 		<cfset local.response = {
@@ -223,14 +223,19 @@
 		<cfif len(arguments.productPrice) EQ 0>
 			<cfset local.response["message"] &= "Price should not be empty. ">
 		<cfelseif NOT isValid("float", arguments.productPrice)>
-			<cfset local.response["message"] &= "Price should be an number">
+			<cfset local.response["message"] &= "Price should be an number. ">
 		</cfif>
 
 		<!--- Tax Validation --->
 		<cfif len(arguments.productTax) EQ 0>
 			<cfset local.response["message"] &= "Tax should not be empty. ">
 		<cfelseif NOT isValid("float", arguments.productTax)>
-			<cfset local.response["message"] &= "Tax should be an number">
+			<cfset local.response["message"] &= "Tax should be an number. ">
+		</cfif>
+
+		<!--- Product Image Validation (only when adding new products, not when editing) --->
+		<cfif (len(arguments.productId) EQ 0) AND (len(trim(arguments.productImage)) EQ 0)>
+			<cfset local.response["message"] &= "Select at least one product image. ">
 		</cfif>
 
 		<!--- Return message if validation fails --->
@@ -314,7 +319,6 @@
 				</cfquery>
 				<cfset local.productId = local.resultAddProduct.GENERATED_KEY>
 				<cfset local.response["productId"] = application.commonFunctions.encryptText(local.resultAddProduct.GENERATED_KEY)>
-				<cfset local.response["defaultImageFile"] = local.uploadedImages[val(arguments.defaultImageId)].serverFile>
 				<cfset local.response["message"] = "Product Added">
 			</cfif>
 
