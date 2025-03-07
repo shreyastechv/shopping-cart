@@ -8,7 +8,7 @@
 <cfset variables.addresses = application.dataFetch.getAddress()>
 
 <cfoutput>
-	<div class="container mt-5">
+	<div class="container my-5">
 		<div class="card shadow-sm">
 			<div class="card-body">
 				<div class="d-flex justify-content-between align-items-center mb-3">
