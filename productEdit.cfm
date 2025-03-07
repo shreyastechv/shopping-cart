@@ -35,40 +35,44 @@
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center mt-5">
-		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
-			<div id="productMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
+		<div class="shadow-lg border-0 justify-content-center rounded-3 mb-3">
+			<div id="productMainContainer" class="bg-white rounded-3 p-4 w-100">
 				<div class="d-flex justify-content-between align-items-center mb-4">
 					<a href="/subCategory.cfm?categoryId=#urlEncodedFormat(variables.categoryId)#" class="btn">
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">
-						<h3 class="fw-semibold text-center mb-0 me-3">#variables.subCategoryName#</h3>
+						<h3 class="h5 fw-semibold text-center mb-0 me-3">#variables.subCategoryName#</h3>
 						<button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal('#variables.categoryId#', '#url.subCategoryId#')">
 							Add+
 						</button>
 					</div>
 					<div></div>
 				</div>
-				<cfloop array="#variables.products.data#" item="item" index="i">
-					<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-3 py-1 mb-2 shadow-sm">
-						<div class="d-flex flex-column gap-1">
-							<div name="productName" class="fw-semibold fs-6">#item.productName#</div>
-							<div name="brandName">#item.brandName#</div>
-							<div name="price" class="text-success fw-semibold">Rs. #item.price#</div>
-						</div>
-						<div class="d-flex gap-4">
-							<img src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" class="img-thumbnail m-1 border rounded" width="80">
-							<div class="d-flex flex-column justify-content-around">
-								<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
-									<i class="fa-solid fa-pen-to-square pe-none"></i>
-								</button>
-								<button class="btn btn-lg" onclick="deleteProduct('productContainer_#i#', '#item.productId#')">
-									<i class="fa-solid fa-trash pe-none"></i>
-								</button>
+				<div class="row px-2">
+					<cfloop array="#variables.products.data#" item="item" index="i">
+						<div class="col-md-6 px-1">
+							<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-3 py-1 mb-2 shadow-sm">
+								<div class="d-flex flex-column gap-1">
+									<div name="productName" class="fw-semibold fs-6">#item.productName#</div>
+									<div name="brandName">#item.brandName#</div>
+									<div name="price" class="text-success fw-semibold">Rs. #item.price#</div>
+								</div>
+								<div class="d-flex gap-4">
+									<img src="#application.productImageDirectory&listGetAt(item.productImages, 1)#" alt="Product Image" class="img-thumbnail m-1 border rounded" width="80">
+									<div class="d-flex flex-column justify-content-around">
+										<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
+											<i class="fa-solid fa-pen-to-square pe-none"></i>
+										</button>
+										<button class="btn btn-lg" onclick="deleteProduct('productContainer_#i#', '#item.productId#')">
+											<i class="fa-solid fa-trash pe-none"></i>
+										</button>
+									</div>
+								</div>
 							</div>
 						</div>
-					</div>
-				</cfloop>
+					</cfloop>
+				</div>
 			</div>
 		</div>
 	</div>

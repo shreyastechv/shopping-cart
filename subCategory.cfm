@@ -24,7 +24,7 @@
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">
-						<h3 class="fw-semibold text-center mb-0 me-3">#variables.categoryName#</h3>
+						<h3 class="h5 text-uppercase fw-semibold text-center mb-0 me-3">#variables.categoryName#</h3>
 						<button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="##subCategoryModal" onclick="showAddSubCategoryModal()">
 							Add+
 						</button>
