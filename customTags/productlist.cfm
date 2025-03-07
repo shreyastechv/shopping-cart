@@ -8,8 +8,8 @@
 			<cfset variables.encodedProductId = urlEncodedFormat(item.productId)>
 
 			<!--- Set image if there is no product image --->
-			<cfif listLen(item.productImages)>
-				<cfset variables.productImage = application.productImageDirectory & listGetAt(item.productImages, 1)>
+			<cfif arrayLen(item.productImages)>
+				<cfset variables.productImage = application.productImageDirectory & item.productImages[1]>
 			<cfelse>
 				<cfset variables.productImage = application.imageDirectory & "no-image.png">
 			</cfif>

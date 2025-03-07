@@ -54,8 +54,8 @@
 					<div id="productImages" class="carousel slide border border-secondary d-flex align-items-center rounded-2 p-5 shadow">
 						<div class="carousel-inner">
 							<!--- Loop images when there are images in db --->
-							<cfif listLen(variables.productInfo.data[1].productImages)>
-								<cfloop list="#variables.productInfo.data[1].productImages#" item="item" index="i">
+							<cfif arrayLen(variables.productInfo.data[1].productImages)>
+								<cfloop array="#variables.productInfo.data[1].productImages#" item="item" index="i">
 									<div class="carousel-item #(i EQ 1 ? "active" : "")#">
 										<div class="d-flex justify-content-center">
 											<img src="#application.productImageDirectory&item#" class="img-fluid rounded-2" alt="Product Image">
