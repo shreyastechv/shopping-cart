@@ -35,7 +35,7 @@
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center mt-5">
-		<div class="shadow-lg border-0 justify-content-center rounded-3 mb-3">
+		<div class="shadow-lg border-0 justify-content-center rounded-3 mb-3 w-75">
 			<div id="productMainContainer" class="bg-white rounded-3 p-4 w-100">
 				<div class="d-flex justify-content-between align-items-center mb-4">
 					<a href="/subCategory.cfm?categoryId=#urlEncodedFormat(variables.categoryId)#" class="btn">
@@ -51,7 +51,7 @@
 				</div>
 				<div class="row px-2">
 					<cfloop array="#variables.products.data#" item="item" index="i">
-						<div class="col-md-6 px-1">
+						<div class="col-lg-6 px-1">
 							<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-3 py-1 mb-2 shadow-sm">
 								<div class="d-flex flex-column gap-1">
 									<div name="productName" class="fw-semibold fs-6">#item.productName#</div>
