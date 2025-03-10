@@ -43,6 +43,7 @@ function processAddressForm() {
   $.ajax({
     type: "POST",
     url: "./components/userManagement.cfc",
+    dataType: "json",
     data: {
       method: "addAddress",
       firstName: firstName.val().trim(),
@@ -54,8 +55,12 @@ function processAddressForm() {
       pincode: pincode.val().trim(),
       phone: phone.val().trim()
     },
-    success: function() {
-      location.reload();
+    success: function(response) {
+      if(response.success) {
+        location.reload();
+      } else {
+        $("#addAddressError").text(response.message);
+      }
     }
   });
 }

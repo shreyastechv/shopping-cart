@@ -31,6 +31,7 @@ function deleteAddress(containerId, addressId) {
 	$.ajax({
 		type: "POST",
 		url: "./components/userManagement.cfc",
+		dataType: "json",
 		data: {
 			method: "deleteAddress",
 			addressId: addressId
@@ -74,6 +75,7 @@ function processProfileForm() {
 	$.ajax({
 		type: "POST",
 		url: "./components/userManagement.cfc",
+		dataType: "json",
 		data: {
 			method: "editProfile",
 			firstName: firstName.val().trim(),
@@ -82,11 +84,10 @@ function processProfileForm() {
 			phone: phone.val().trim()
 		},
 		success: function (response) {
-			const result = JSON.parse(response);
-			if (result.message == "Profile Updated successfully") {
+			if (response.message == "Profile Updated successfully") {
 				location.reload()
 			} else {
-				$("#profileError").text(result.message);
+				$("#profileError").text(response.message);
 			}
 		}
 	});

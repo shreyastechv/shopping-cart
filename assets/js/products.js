@@ -30,6 +30,7 @@ function viewMore() {
 	$.ajax({
 		type: "POST",
 		url: "./components/dataFetch.cfc",
+		dataType: "json",
 		data: {
 			method: "getProducts",
 			subCategoryId: urlSubCategoryId || "",
@@ -41,16 +42,14 @@ function viewMore() {
 			sort: urlSort || ""
 		},
 		success: function(response) {
-			const result = JSON.parse(response);
-
 			// Loop over product data to get info we need
-			for (let item of result.data) {
+			for (let item of response.data) {
 				// Create product div
 				createProduct(item.productId, item.productImages.split(",")[0], item.productName, item.description, item.price);
 			}
 
 			// Remove view more btn if there are no products to be fetched
-			if (!result.hasMoreRows) {
+			if (!response.hasMoreRows) {
 				$("<div class='text-center text-secondary'>------  No more products  ------</div>").appendTo($("#viewMoreBtn").parent());
 				$("#viewMoreBtn").remove();
 			}

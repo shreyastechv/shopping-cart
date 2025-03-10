@@ -38,6 +38,7 @@ function processSubCategoryForm() {
 	$.ajax({
 		type: "POST",
 		url: "./components/productManagement.cfc",
+		dataType: "json",
 		data: {
 			method: "modifySubCategory",
 			subCategoryId: subCategoryId,
@@ -45,7 +46,7 @@ function processSubCategoryForm() {
 			categoryId: categoryId
 		},
 		success: function(response) {
-			const { message, success } = JSON.parse(response);
+			const { message, success } = response;
 			if(success) {
 				Swal.fire({
 					icon: "success",
@@ -104,6 +105,7 @@ function deleteSubCategory(containerId, subCategoryId, subCategoryName) {
 			$.ajax({
 				type: "POST",
 				url: "./components/productManagement.cfc",
+				dataType: "json",
 				data: {
 					method: "deleteItem",
 					itemName: "subcategory",

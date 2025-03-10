@@ -12,14 +12,14 @@ $(document).ready(function() {
 			$.ajax({
 				type: "POST",
 				url: "./components/dataFetch.cfc",
+				dataType: "json",
 				data: {
 					method: "getSubCategories",
 					categoryId: categoryId
 				},
 				success: function(response) {
-					const result = JSON.parse(response);
 					$("#subCategorySelect").empty();
-					result.data.forEach(function(item) {
+					response.data.forEach(function(item) {
 						let optionTag = $(`<option value="${item.subCategoryId}">${item.subCategoryName}</option>`);
 						if (item.subCategoryId == urlSubCategoryId) {
 							optionTag.attr("selected", true);
@@ -138,14 +138,13 @@ function processProductForm() {
 	$.ajax({
 		type: "POST",
 		url: "./components/productManagement.cfc",
+		dataType: "json",
 		data: formData,
 		enctype: 'multipart/form-data',
 		processData: false,
 		contentType: false,
 		success: function(response) {
-			console.log(response);
-
-			const { message, success } = JSON.parse(response);
+			const { message, success } = response;
 			if(success) {
 				Swal.fire({
 					icon: "success",
@@ -191,13 +190,13 @@ function showEditProductModal(categoryId, productId) {
 	$.ajax({
 		type: "POST",
 		url: "./components/dataFetch.cfc",
+		dataType: "json",
 		data: {
 			method: "getProducts",
 			productId: productId
 		},
 		success: function(response) {
-			const result = JSON.parse(response);
-			const objProductData = result.data[0];
+			const objProductData = response.data[0];
 			const productImages = objProductData.productImages;
 			const productImageIds = objProductData.productImageIds;
 
@@ -246,6 +245,7 @@ function deleteProduct (containerId, productId) {
 			$.ajax({
 				type: "POST",
 				url: "./components/productManagement.cfc",
+				dataType: "json",
 				data: {
 					method: "deleteItem",
 					itemName: "product",

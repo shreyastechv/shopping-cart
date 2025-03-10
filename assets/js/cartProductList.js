@@ -39,16 +39,16 @@ function editCartItem(containerId, productId, action) {
 	$.ajax({
 		type: "POST",
 		url: "./components/cartManagement.cfc",
+		dataType: "json",
 		data: {
 			method: currentPage == "checkout.cfm" ? "modifyCheckout" : "modifyCart",
 			productId: productId,
 			action: action
 		},
 		success: function(response) {
-			const result = JSON.parse(response);
-			const { price, actualPrice, quantity, totalPrice, totalActualPrice, totalTax } = result.data;
+			const { price, actualPrice, quantity, totalPrice, totalActualPrice, totalTax } = response.data;
 
-			if (result.success) {
+			if (response.success) {
 				if (quantity) {
 					// Quantity is present means product is still in cart
 					$(`#${containerId} span[name="price"]`).text(price.toFixed(2));

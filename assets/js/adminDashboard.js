@@ -17,14 +17,14 @@ function processCategoryForm() {
 	$.ajax({
 		type: "POST",
 		url: "./components/productManagement.cfc",
+		dataType: "json",
 		data: {
 			method: "modifyCategory",
 			categoryId: categoryId,
 			categoryName: categoryName.val().trim()
 		},
 		success: function(response) {
-			const result = JSON.parse(response);
-			if (result.message == "Category Added") {
+			if (response.message == "Category Added") {
 				Swal.fire({
 					icon: "success",
 					title: `Category Created`,
@@ -40,7 +40,7 @@ function processCategoryForm() {
 					}
 				});
 			}
-			else if (result.message == "Category Updated") {
+			else if (response.message == "Category Updated") {
 				Swal.fire({
 					icon: "success",
 					title: `Category Updated`,
@@ -57,7 +57,7 @@ function processCategoryForm() {
 				});
 			}
 			else {
-				categoryModalMsg.text(result.message);
+				categoryModalMsg.text(response.message);
 			}
 		},
 		error: function () {
@@ -100,6 +100,7 @@ function deleteCategory(containerId, categoryId) {
 			$.ajax({
 				type: "POST",
 				url: "./components/productManagement.cfc",
+				dataType: "json",
 				data: {
 					method: "deleteItem",
 					itemName: "category",

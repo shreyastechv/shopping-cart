@@ -11,10 +11,11 @@ function logOut() {
 			$.ajax({
 				type: "POST",
 				url: "./components/userManagement.cfc",
+				dataType: "json",
 				data: {
 					method: "logOut"
 				},
-				success: function(response) {
+				success: function() {
 					location.href = "/";
 				}
 			});

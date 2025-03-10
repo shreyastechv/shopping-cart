@@ -74,6 +74,7 @@
 					</div>
 				</div>
 				<div class="modal-footer d-flex gap-2">
+					<div id="addAddressError" class="addressError text-danger"></div>
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 					<button type="button" name="addressFormSubmit" class="btn btn-primary" onclick="processAddressForm()">Save</button>
 				</div>
