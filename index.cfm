@@ -1,12 +1,15 @@
-<cfset variables.randomProducts = application.dataFetch.getProducts(
-	random = 1,
-	limit = 12
-)>
-
-<cfset variables.sliderImages =  application.dataFetch.getSliderImages(pageName = "home")>
-
 <cfoutput>
-	<!--- Carousel Images --->
+	<!--- Define variables --->
+	<cfparam name="variables.sliderImages.data" default="#arrayNew(1)#">
+	<cfparam name="variables.randomProducts.data" default="#arrayNew(1)#">
+
+	<!--- Get Data --->
+	<cfset variables.sliderImages =  application.dataFetch.getSliderImages(pageName = "home")>
+	<cfset variables.randomProducts = application.dataFetch.getProducts(
+		random = 1,
+		limit = 12
+	)>
+
 	<cfif arrayLen(variables.sliderImages.data)>
 		<div id="homePageCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="1700">
 			<!--- Carousel indicators --->
@@ -41,6 +44,8 @@
 	</cfif>
 
 	<!--- Random Products --->
-	<div class="h5 px-3 pt-3 pb-1">Exciting New Products</div>
-	<cf_productlist products="#variables.randomProducts.data#">
+	<cfif arrayLen(variables.randomProducts.data)>
+		<div class="h5 px-3 pt-3 pb-1">Exciting New Products</div>
+		<cf_productlist products="#variables.randomProducts.data#">
+	</cfif>
 </cfoutput>
