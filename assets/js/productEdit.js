@@ -199,7 +199,7 @@ function showEditProductModal(categoryId, productId) {
 			const result = JSON.parse(response);
 			const objProductData = result.data[0];
 			const productImages = objProductData.productImages;
-			const productImageIds = objProductData.productImageIds.split(",");
+			const productImageIds = objProductData.productImageIds;
 
 			 $("#categorySelect").val(categoryId).change();
 			$("#productName").val(objProductData.productName);

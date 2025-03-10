@@ -262,9 +262,11 @@
 				"price": local.qryGetProducts.fldPrice,
 				"tax": local.qryGetProducts.fldTax,
 				"productImages": listToArray(local.qryGetProducts.fldProductImages),
-				"productImageIds": listMap(local.qryGetProducts.fldProductImageIds, function(item) {
-					return application.commonFunctions.encryptText(item);
-				}),
+				"productImageIds": listToArray(
+					listMap(local.qryGetProducts.fldProductImageIds, function(item) {
+						return application.commonFunctions.encryptText(item);
+					})
+				),
 				"categoryId": application.commonFunctions.encryptText(local.qryGetProducts.fldCategory_Id),
 				"categoryName": local.qryGetProducts.fldCategoryName,
 				"subCategoryId": application.commonFunctions.encryptText(local.qryGetProducts.fldSubCategory_Id),
