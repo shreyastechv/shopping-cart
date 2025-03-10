@@ -3,93 +3,100 @@
 		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
-		<cfset local.response = {
-			"message" = "",
-			"success" = false,
-			"data" = {}
-		}>
-
-		<!--- Decrypt ids--->
-		<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
-
-		<!--- Product Id Validation --->
-		<cfif len(arguments.productId) EQ 0>
-			<cfset local.response["message"] &= "Product Id should not be empty. ">
-		<cfelseif local.productId EQ -1>
-			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] &= "Product Id is invalid. ">
-		</cfif>
-
-		<!--- Validate Action --->
-		<cfif NOT len(trim(arguments.action))>
-			<cfset local.response["message"] &= "Action should not be empty. ">
-		<cfelseif NOT arrayContainsNoCase(["increment", "decrement", "delete"], arguments.action)>
-			<cfset local.response["message"] &= "Specified action is not valid. ">
-		</cfif>
-
-		<!--- Return message if validation fails --->
-		<cfif len(trim(local.response.message))>
-			<cfreturn local.response>
-		</cfif>
-
-		<!--- Continue with code execution if validation succeeds --->
-		<cfstoredproc procedure="spModifyCart">
-			<cfprocparam type="in" cfsqltype="integer" variable="productId" value="#val(local.productId)#">
-			<cfprocparam type="in" cfsqltype="varchar" variable="action" value="#arguments.action#">
-			<cfprocparam type="in" cfsqltype="integer" variable="userId" value="#session.userId#">
-		</cfstoredproc>
-
-		<!--- Update the session variable --->
-		<cfif arguments.action EQ "increment">
-			<cfif structKeyExists(session.cart.items, arguments.productId)>
-				<cfset session.cart.items[arguments.productId].quantity += 1>
-				<cfset session.cart.totalPrice += session.cart.items[arguments.productId].unitPrice>
-				<cfset session.cart.totalTax += session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
-				<cfset local.response["message"] = "Product Quantity Incremented">
-			<cfelse>
-				<cfset session.cart.items[arguments.productId] = application.dataFetch.getCart(
-					productId = local.productId
-				).items[arguments.productId]>
-				<cfset session.cart.totalPrice += session.cart.items[arguments.productId].unitPrice>
-				<cfset session.cart.totalTax += session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
-				<cfset local.response["message"] = "Product Added">
-			</cfif>
-		<cfelseif arguments.action EQ "decrement" AND session.cart.items[arguments.productId].quantity GT 1>
-			<cfset session.cart.items[arguments.productId].quantity -= 1>
-			<cfset session.cart.totalPrice -= session.cart.items[arguments.productId].unitPrice>
-			<cfset session.cart.totalTax -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
-			<cfset local.response["message"] = "Product Quantity Decremented">
-		<cfelse>
-			<cfset session.cart.totalPrice -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].quantity>
-			<cfset session.cart.totalTax -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].quantity * session.cart.items[arguments.productId].unitTax / 100>
-			<cfset structDelete(session.cart.items, arguments.productId)>
-			<cfset local.response["message"] = "Product Deleted">
-		</cfif>
-
-		<!--- Do the math --->
-		<cfif structKeyExists(session.cart.items, arguments.productId)>
-			<cfset local.unitPrice = session.cart.items[arguments.productId].unitPrice>
-			<cfset local.unitTax = session.cart.items[arguments.productId].unitTax>
-			<cfset local.quantity = session.cart.items[arguments.productId].quantity>
-			<cfset local.actualPrice = local.unitPrice * local.quantity>
-			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
-
-			<!--- Package data into struct --->
-			<cfset local.response["data"] = {
-				"price" = local.price,
-				"actualPrice" = local.actualPrice,
-				"quantity" = session.cart.items[arguments.productId].quantity
+		<cftry>
+			<cfset local.response = {
+				"message" = "",
+				"success" = false,
+				"data" = {}
 			}>
-		</cfif>
 
-		<!--- Append total price and tax to data struct --->
-		<cfset structAppend(local.response["data"], {
-			"totalActualPrice" = session.cart.totalPrice,
-			"totalTax" = session.cart.totalTax,
-			"totalPrice" = session.cart.totalPrice + session.cart.totalTax
-		})>
+			<!--- Decrypt ids--->
+			<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
 
-		<cfset local.response["success"] = true>
+			<!--- Product Id Validation --->
+			<cfif len(arguments.productId) EQ 0>
+				<cfset local.response["message"] &= "Product Id should not be empty. ">
+			<cfelseif local.productId EQ -1>
+				<!--- Value equals -1 means decryption failed --->
+				<cfset local.response["message"] &= "Product Id is invalid. ">
+			</cfif>
+
+			<!--- Validate Action --->
+			<cfif NOT len(trim(arguments.action))>
+				<cfset local.response["message"] &= "Action should not be empty. ">
+			<cfelseif NOT arrayContainsNoCase(["increment", "decrement", "delete"], arguments.action)>
+				<cfset local.response["message"] &= "Specified action is not valid. ">
+			</cfif>
+
+			<!--- Return message if validation fails --->
+			<cfif len(trim(local.response.message))>
+				<cfreturn local.response>
+			</cfif>
+
+			<!--- Continue with code execution if validation succeeds --->
+			<cfstoredproc procedure="spModifyCart">
+				<cfprocparam type="in" cfsqltype="integer" variable="productId" value="#val(local.productId)#">
+				<cfprocparam type="in" cfsqltype="varchar" variable="action" value="#arguments.action#">
+				<cfprocparam type="in" cfsqltype="integer" variable="userId" value="#session.userId#">
+			</cfstoredproc>
+
+			<!--- Update the session variable --->
+			<cfif arguments.action EQ "increment">
+				<cfif structKeyExists(session.cart.items, arguments.productId)>
+					<cfset session.cart.items[arguments.productId].quantity += 1>
+					<cfset session.cart.totalPrice += session.cart.items[arguments.productId].unitPrice>
+					<cfset session.cart.totalTax += session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
+					<cfset local.response["message"] = "Product Quantity Incremented">
+				<cfelse>
+					<cfset session.cart.items[arguments.productId] = application.dataFetch.getCart(
+						productId = local.productId
+					).items[arguments.productId]>
+					<cfset session.cart.totalPrice += session.cart.items[arguments.productId].unitPrice>
+					<cfset session.cart.totalTax += session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
+					<cfset local.response["message"] = "Product Added">
+				</cfif>
+			<cfelseif arguments.action EQ "decrement" AND session.cart.items[arguments.productId].quantity GT 1>
+				<cfset session.cart.items[arguments.productId].quantity -= 1>
+				<cfset session.cart.totalPrice -= session.cart.items[arguments.productId].unitPrice>
+				<cfset session.cart.totalTax -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
+				<cfset local.response["message"] = "Product Quantity Decremented">
+			<cfelse>
+				<cfset session.cart.totalPrice -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].quantity>
+				<cfset session.cart.totalTax -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].quantity * session.cart.items[arguments.productId].unitTax / 100>
+				<cfset structDelete(session.cart.items, arguments.productId)>
+				<cfset local.response["message"] = "Product Deleted">
+			</cfif>
+
+			<!--- Do the math --->
+			<cfif structKeyExists(session.cart.items, arguments.productId)>
+				<cfset local.unitPrice = session.cart.items[arguments.productId].unitPrice>
+				<cfset local.unitTax = session.cart.items[arguments.productId].unitTax>
+				<cfset local.quantity = session.cart.items[arguments.productId].quantity>
+				<cfset local.actualPrice = local.unitPrice * local.quantity>
+				<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
+
+				<!--- Package data into struct --->
+				<cfset local.response["data"] = {
+					"price" = local.price,
+					"actualPrice" = local.actualPrice,
+					"quantity" = session.cart.items[arguments.productId].quantity
+				}>
+			</cfif>
+
+			<!--- Append total price and tax to data struct --->
+			<cfset structAppend(local.response["data"], {
+				"totalActualPrice" = session.cart.totalPrice,
+				"totalTax" = session.cart.totalTax,
+				"totalPrice" = session.cart.totalPrice + session.cart.totalTax
+			})>
+
+			<cfset local.response["success"] = true>
+
+			<cfcatch type="any">
+				<cfset local.response.message = "Error while modifying cart!">
+				<cfreturn local.response>
+			</cfcatch>
+		</cftry>
 
 		<cfreturn local.response>
 	</cffunction>
@@ -98,41 +105,48 @@
 		<cfargument name="cardNumber" type="string" required=true>
 		<cfargument name="cvv" type="string" required=true>
 
-		<cfset local.response = {
-			"success" = false,
-			"message" = ""
-		}>
-		<cfset local.validCardNumber = "1111111111111111">
-		<cfset local.validCvv = "111">
+		<cftry>
+			<cfset local.response = {
+				"success" = false,
+				"message" = ""
+			}>
+			<cfset local.validCardNumber = "1111111111111111">
+			<cfset local.validCvv = "111">
 
-		<!--- Trim and remove dashes from card number --->
-		<cfset arguments.cardNumber = replace(trim(arguments.cardNumber), "-", "", "all")>
+			<!--- Trim and remove dashes from card number --->
+			<cfset arguments.cardNumber = replace(trim(arguments.cardNumber), "-", "", "all")>
 
-		<!--- Validate card number --->
-		<cfif NOT len(arguments.cardNumber)>
-			<cfset local.response["message"] &= "Card number is required. ">
-		<cfelseif (len(arguments.cardNumber) NEQ 16) OR (NOT isValid("numeric", arguments.cardNumber))>
-			<cfset local.response["message"] &= "Not a valid card number. ">
-		</cfif>
+			<!--- Validate card number --->
+			<cfif NOT len(arguments.cardNumber)>
+				<cfset local.response["message"] &= "Card number is required. ">
+			<cfelseif (len(arguments.cardNumber) NEQ 16) OR (NOT isValid("numeric", arguments.cardNumber))>
+				<cfset local.response["message"] &= "Not a valid card number. ">
+			</cfif>
 
-		<!--- Validate CVV --->
-		<cfif NOT len(trim(arguments.cvv))>
-			<cfset local.response["message"] &= "CVV number is required. ">
-		<cfelseif (len(trim(arguments.cvv)) NEQ 3) OR (NOT isValid("numeric", arguments.cvv))>
-			<cfset local.response["message"] &= "CVV is not valid. ">
-		</cfif>
+			<!--- Validate CVV --->
+			<cfif NOT len(trim(arguments.cvv))>
+				<cfset local.response["message"] &= "CVV number is required. ">
+			<cfelseif (len(trim(arguments.cvv)) NEQ 3) OR (NOT isValid("numeric", arguments.cvv))>
+				<cfset local.response["message"] &= "CVV is not valid. ">
+			</cfif>
 
-		<!--- Return message if validation fails --->
-		<cfif len(trim(local.response.message))>
-			<cfreturn local.response>
-		</cfif>
+			<!--- Return message if validation fails --->
+			<cfif len(trim(local.response.message))>
+				<cfreturn local.response>
+			</cfif>
 
-		<cfif (arguments.cardNumber EQ local.validCardNumber) AND (arguments.cvv EQ local.validcvv)>
-			<cfset local.response["message"] = "Validation successful">
-			<cfset local.response["success"] = true>
-		<cfelse>
-			<cfset local.response["message"] = "Wrong Card number or CVV">
-		</cfif>
+			<cfif (arguments.cardNumber EQ local.validCardNumber) AND (arguments.cvv EQ local.validcvv)>
+				<cfset local.response["message"] = "Validation successful">
+				<cfset local.response["success"] = true>
+			<cfelse>
+				<cfset local.response["message"] = "Wrong Card number or CVV">
+			</cfif>
+
+			<cfcatch type="any">
+				<cfset local.response.message = "Error while validating card!">
+				<cfreturn local.response>
+			</cfcatch>
+		</cftry>
 
 		<cfreturn local.response>
 	</cffunction>
@@ -141,78 +155,85 @@
 		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
-		<cfset local.response = {
-			"success" = false,
-			"message" = "",
-			"data" = {}
-		}>
-
-		<!--- Decrypt ids--->
-		<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
-
-		<!--- Product Id Validation --->
-		<cfif len(arguments.productId) EQ 0>
-			<cfset local.response["message"] &= "Product Id should not be empty. ">
-		<cfelseif local.productId EQ -1>
-			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] &= "Product Id is invalid. ">
-		</cfif>
-
-		<!--- Validate Action --->
-		<cfif NOT len(trim(arguments.action))>
-			<cfset local.response["message"] &= "Action should not be empty. ">
-		<cfelseif NOT arrayContainsNoCase(["increment", "decrement", "delete"], arguments.action)>
-			<cfset local.response["message"] &= "Specified action is not valid. ">
-		</cfif>
-
-		<!--- Return message if validation fails --->
-		<cfif len(trim(local.response.message))>
-			<cfreturn local.response>
-		</cfif>
-
-		<!--- Continue with code execution if validation succeeds --->
-		<cfif arguments.action EQ "increment">
-			<cfset session.checkout.items[arguments.productId].quantity += 1>
-			<cfset session.checkout.totalPrice += session.checkout.items[arguments.productId].unitPrice>
-			<cfset session.checkout.totalTax += session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].unitTax / 100>
-			<cfset local.response["message"] = "Product Quantity Incremented">
-		<cfelseif arguments.action EQ "decrement" AND session.checkout.items[arguments.productId].quantity GT 1>
-			<cfset session.checkout.items[arguments.productId].quantity -= 1>
-			<cfset session.checkout.totalPrice -= session.checkout.items[arguments.productId].unitPrice>
-			<cfset session.checkout.totalTax -= session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].unitTax / 100>
-			<cfset local.response["message"] = "Product Quantity Decremented">
-		<cfelse>
-			<cfset session.checkout.totalPrice -= session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].quantity>
-			<cfset session.checkout.totalTax -= session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].quantity * session.checkout.items[arguments.productId].unitTax / 100>
-			<cfset structDelete(session.checkout.items, arguments.productId)>
-			<cfset local.response["message"] = "Product Deleted">
-
-		</cfif>
-
-		<!--- Do the math --->
-		<cfif structKeyExists(session.checkout.items, arguments.productId)>
-			<cfset local.unitPrice = session.checkout.items[arguments.productId].unitPrice>
-			<cfset local.unitTax = session.checkout.items[arguments.productId].unitTax>
-			<cfset local.quantity = session.checkout.items[arguments.productId].quantity>
-			<cfset local.actualPrice = local.unitPrice * local.quantity>
-			<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
-
-			<!--- Package data into struct --->
-			<cfset local.response["data"] = {
-				"price" = local.price,
-				"actualPrice" = local.actualPrice,
-				"quantity" = session.checkout.items[arguments.productId].quantity
+		<cftry>
+			<cfset local.response = {
+				"success" = false,
+				"message" = "",
+				"data" = {}
 			}>
-		</cfif>
 
-		<!--- Append total price and tax to data struct --->
-		<cfset structAppend(local.response["data"], {
-			"totalActualPrice" = session.checkout.totalPrice,
-			"totalTax" = session.checkout.totalTax,
-			"totalPrice" = session.checkout.totalPrice + session.checkout.totalTax
-		})>
+			<!--- Decrypt ids--->
+			<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
 
-		<cfset local.response["success"] = true>
+			<!--- Product Id Validation --->
+			<cfif len(arguments.productId) EQ 0>
+				<cfset local.response["message"] &= "Product Id should not be empty. ">
+			<cfelseif local.productId EQ -1>
+				<!--- Value equals -1 means decryption failed --->
+				<cfset local.response["message"] &= "Product Id is invalid. ">
+			</cfif>
+
+			<!--- Validate Action --->
+			<cfif NOT len(trim(arguments.action))>
+				<cfset local.response["message"] &= "Action should not be empty. ">
+			<cfelseif NOT arrayContainsNoCase(["increment", "decrement", "delete"], arguments.action)>
+				<cfset local.response["message"] &= "Specified action is not valid. ">
+			</cfif>
+
+			<!--- Return message if validation fails --->
+			<cfif len(trim(local.response.message))>
+				<cfreturn local.response>
+			</cfif>
+
+			<!--- Continue with code execution if validation succeeds --->
+			<cfif arguments.action EQ "increment">
+				<cfset session.checkout.items[arguments.productId].quantity += 1>
+				<cfset session.checkout.totalPrice += session.checkout.items[arguments.productId].unitPrice>
+				<cfset session.checkout.totalTax += session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].unitTax / 100>
+				<cfset local.response["message"] = "Product Quantity Incremented">
+			<cfelseif arguments.action EQ "decrement" AND session.checkout.items[arguments.productId].quantity GT 1>
+				<cfset session.checkout.items[arguments.productId].quantity -= 1>
+				<cfset session.checkout.totalPrice -= session.checkout.items[arguments.productId].unitPrice>
+				<cfset session.checkout.totalTax -= session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].unitTax / 100>
+				<cfset local.response["message"] = "Product Quantity Decremented">
+			<cfelse>
+				<cfset session.checkout.totalPrice -= session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].quantity>
+				<cfset session.checkout.totalTax -= session.checkout.items[arguments.productId].unitPrice * session.checkout.items[arguments.productId].quantity * session.checkout.items[arguments.productId].unitTax / 100>
+				<cfset structDelete(session.checkout.items, arguments.productId)>
+				<cfset local.response["message"] = "Product Deleted">
+
+			</cfif>
+
+			<!--- Do the math --->
+			<cfif structKeyExists(session.checkout.items, arguments.productId)>
+				<cfset local.unitPrice = session.checkout.items[arguments.productId].unitPrice>
+				<cfset local.unitTax = session.checkout.items[arguments.productId].unitTax>
+				<cfset local.quantity = session.checkout.items[arguments.productId].quantity>
+				<cfset local.actualPrice = local.unitPrice * local.quantity>
+				<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
+
+				<!--- Package data into struct --->
+				<cfset local.response["data"] = {
+					"price" = local.price,
+					"actualPrice" = local.actualPrice,
+					"quantity" = session.checkout.items[arguments.productId].quantity
+				}>
+			</cfif>
+
+			<!--- Append total price and tax to data struct --->
+			<cfset structAppend(local.response["data"], {
+				"totalActualPrice" = session.checkout.totalPrice,
+				"totalTax" = session.checkout.totalTax,
+				"totalPrice" = session.checkout.totalPrice + session.checkout.totalTax
+			})>
+
+			<cfset local.response["success"] = true>
+
+			<cfcatch type="any">
+				<cfset local.response.message = "Error while modifying checkout!">
+				<cfreturn local.response>
+			</cfcatch>
+		</cftry>
 
 		<cfreturn local.response>
 	</cffunction>
