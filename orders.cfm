@@ -53,6 +53,12 @@
 		</div>
 
 		<div id="ordersContainer">
+			<cfif len(trim(url.orderSearch))>
+				<div class="fs-5 mb-2">
+					Showing results for <span class="fw-semibold">'#url.orderSearch#'</span>
+				</div>
+			</cfif>
+
 			<!--- Show message if order list in empty --->
 			<cfif NOT arrayLen(variables.orders.data)>
 				<div class="d-flex flex-column align-items-center justify-content-center">

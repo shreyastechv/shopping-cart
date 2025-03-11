@@ -65,8 +65,8 @@
 			<hr class="text-muted m-0 p-0 opacity-25">
 		<cfelse>
 			<cfif len(trim(url.search))>
-				<div class="fs-5 fw-semibold px-3 mb-2">
-					Showing results for '#url.search#'
+				<div class="fs-5 px-3 mb-2">
+					Showing results for <span class="fw-semibold">'#url.search#'</span>
 				</div>
 			<cfelseif len(trim(variables.subCategoryName))>
 				<div class="fs-5 fw-semibold px-3 mb-2">
