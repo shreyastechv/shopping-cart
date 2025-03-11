@@ -48,14 +48,22 @@
 		</cfquery>
 
 		<!--- Show success message --->
-		<div>Cleanup Successful.</div>
+		<div class="d-flex flex-column align-items-center p-5 gap-2 my-auto">
+			<i class="fa-solid fa-circle-check fs-2 text-success"></i>
+			<div class="text-success h4 text-center">Cleanup Successful.</div>
+		</div>
 
 		<cfcatch type="any">
 			<!--- Show error message --->
-			<div>Cleanup Unsuccessful.</div>
-			<div>Error message: </div>
-			<br>
-			<cfoutput>#cfcatch.message#</cfoutput>
+			<cfoutput>
+				<div class="text-center p-5 my-auto">
+					<i class="fa-solid fa-circle-xmark fs-2 text-danger"></i>
+					<div class="text-danger h4">Cleanup Unsuccessful.</div>
+					<div class="fs-6">Error message: #cfcatch.message#</div>
+					<div class="fs-6">Error code: #cfcatch.errorCode#</div>
+					<div class="fs-6">Native Error code: #cfcatch.nativeErrorCode#</div>
+				</div>
+			</cfoutput>
 		</cfcatch>
 	</cftry>
 <cfelse>
