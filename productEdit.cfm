@@ -35,7 +35,7 @@
 
 	<!--- Main Content --->
 	<div class="container d-flex flex-column justify-content-center align-items-center mt-5">
-		<div class="shadow-lg border-0 justify-content-center rounded-3 mb-3 w-75">
+		<div class="shadow-lg border-0 justify-content-center rounded-3 mb-3 w-100">
 			<div id="productMainContainer" class="bg-white rounded-3 p-4 w-100">
 				<div class="d-flex justify-content-between align-items-center mb-4">
 					<a href="/subCategory.cfm?categoryId=#urlEncodedFormat(variables.categoryId)#" class="btn">
