@@ -93,8 +93,11 @@
 			<cfset local.response["success"] = true>
 
 			<cfcatch type="any">
-				<cfset local.response.message = "Error while modifying cart!">
-				<cfreturn local.response>
+				<cfreturn {
+					"message" = "Error while modifying cart!",
+					"success" = false,
+					"data" = {}
+				}>
 			</cfcatch>
 		</cftry>
 
@@ -230,8 +233,11 @@
 			<cfset local.response["success"] = true>
 
 			<cfcatch type="any">
-				<cfset local.response.message = "Error while modifying checkout!">
-				<cfreturn local.response>
+				<cfreturn {
+					"success" = false,
+					"message" = "Error while modifying checkout!",
+					"data" = {}
+				}>
 			</cfcatch>
 		</cftry>
 

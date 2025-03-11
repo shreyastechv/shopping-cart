@@ -111,8 +111,10 @@
 			<cfset local.response.success = true>
 
 			<cfcatch type="any">
-				<cfset local.response["message"] = "Error while creating account!">
-				<cfreturn local.response>
+				<cfreturn {
+					"success" = false,
+					"message" = "Error while creating account!"
+				}>
 			</cfcatch>
 		</cftry>
 
@@ -125,6 +127,7 @@
 
 		<cftry>
 			<cfset local.response = {
+				"success" = false,
 				"message" = ""
 			}>
 
@@ -179,7 +182,8 @@
 					<cfset session.userId = local.qryCheckUser.fldUser_Id>
 					<cfset session.roleId = local.qryCheckUser.fldRoleId>
 					<cfset session.cart = application.dataFetch.getCart()>
-					<cfset local.response["message"] = "Login successful">
+					<cfset local.response.success = true>
+					<cfset local.response.message = "Login successful">
 				<cfelse>
 					<cfset local.response["message"] = "Wrong username or password">
 				</cfif>
@@ -188,7 +192,10 @@
 			</cfif>
 
 			<cfcatch type="any">
-				<cfset local.response["message"] = "Error while login!">
+				<cfreturn {
+					"success" = false,
+					"message" =  "Error while login!"
+				}>
 			</cfcatch>
 		</cftry>
 
@@ -316,8 +323,10 @@
 			<cfset local.response.message = "Address Created successfully!">
 
 			<cfcatch type="any">
-				<cfset local.response.message = "Error while adding address!">
-				<cfreturn local.response>
+				<cfreturn {
+					"success" = false,
+					"message" =  "Error while adding address!"
+				}>
 			</cfcatch>
 		</cftry>
 
@@ -429,8 +438,10 @@
 			</cfif>
 
 			<cfcatch type="any">
-				<cfset local.response["message"] = "Error while editing profile!">
-				<cfreturn local.response>
+				<cfreturn {
+					"success" = false,
+					"message" = "Error while editing profile!"
+				}>
 			</cfcatch>
 		</cftry>
 

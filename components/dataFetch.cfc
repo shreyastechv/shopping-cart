@@ -579,7 +579,9 @@
 			</cfloop>
 
 			<cfcatch type="any">
-				<cfreturn local.response>
+				<cfreturn {
+					"data" = []
+				}>
 			</cfcatch>
 		</cftry>
 

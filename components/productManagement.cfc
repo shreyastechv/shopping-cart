@@ -73,8 +73,10 @@
 			</cfif>
 
 			<cfcatch type="any">
-				<cfset local.response.message = "Error while modifying category!">
-				<cfreturn local.response>
+				<cfreturn {
+					"success" = false,
+					"message" = "Error while modifying category!"
+				}>
 			</cfcatch>
 		</cftry>
 
@@ -171,8 +173,10 @@
 			</cfif>
 
 			<cfcatch type="any">
-				<cfset local.response.message = "Error while modifying subcategory!">
-				<cfreturn local.response>
+				<cfreturn {
+					"message" = "Error while modifying subcategory!",
+					"success" = false
+				}>
 			</cfcatch>
 		</cftry>
 
@@ -389,8 +393,10 @@
 			</cfif>
 
 			<cfcatch type="any">
-				<cfset local.response.message = "Error while modifying product!">
-				<cfreturn local.response>
+				<cfreturn {
+					"message" = "Error while modifying product!",
+					"success" = false
+				}>
 			</cfcatch>
 		</cftry>
 
@@ -398,8 +404,8 @@
 	</cffunction>
 
 	<cffunction name="deleteItem" access="remote" returnType="struct">
-		<cfargument name="itemName" type="string" required=true defaul="">
-		<cfargument name="itemId" type="string" required=true defaul="">
+		<cfargument name="itemName" type="string" required=true default="">
+		<cfargument name="itemId" type="string" required=true default="">
 
 		<cftry>
 			<cfset local.response = {
@@ -433,8 +439,10 @@
 			<cfset local.response.message = "#arguments.itemName# deleted successfully.">
 
 			<cfcatch type="any">
-				<cfset local.response["message"] = "#arguments.itemName# deletion failed!">
-				<cfreturn local.response>
+				<cfreturn {
+					"success" = true,
+					"message" = "#arguments.itemName# deletion failed!"
+				}>
 			</cfcatch>
 		</cftry>
 
