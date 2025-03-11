@@ -36,6 +36,17 @@
 				AND fldDefaultImage = 0
 		</cfquery>
 
+		<!--- Delete inactive products from cart --->
+		<cfquery name="variables.qryCleanupCart">
+			DELETE
+				C
+			FROM
+				tblCart C
+				INNER JOIN tblProduct P ON C.fldProductId = P.fldProduct_Id
+			WHERE
+				P.fldActive = 0
+		</cfquery>
+
 		<!--- Show success message --->
 		<div>Cleanup Successful.</div>
 
