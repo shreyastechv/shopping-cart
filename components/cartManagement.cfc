@@ -3,13 +3,13 @@
 		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
-		<cftry>
-			<cfset local.response = {
-				"message" = "",
-				"success" = false,
-				"data" = {}
-			}>
+		<cfset local.response = {
+			"message" = "",
+			"success" = false,
+			"data" = {}
+		}>
 
+		<cftry>
 			<!--- Decrypt ids--->
 			<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
 
@@ -90,7 +90,7 @@
 				"totalPrice" = session.cart.totalPrice + session.cart.totalTax
 			})>
 
-			<cfset local.response["success"] = true>
+			<cfset local.response.success = true>
 
 			<cfcatch type="any">
 				<cfset local.response.message = "Error while modifying cart!">
@@ -105,14 +105,14 @@
 		<cfargument name="cardNumber" type="string" required=true>
 		<cfargument name="cvv" type="string" required=true>
 
-		<cftry>
-			<cfset local.response = {
-				"success" = false,
-				"message" = ""
-			}>
-			<cfset local.validCardNumber = "1111111111111111">
-			<cfset local.validCvv = "111">
+		<cfset local.response = {
+			"success" = false,
+			"message" = ""
+		}>
+		<cfset local.validCardNumber = "1111111111111111">
+		<cfset local.validCvv = "111">
 
+		<cftry>
 			<!--- Trim and remove dashes from card number --->
 			<cfset arguments.cardNumber = replace(trim(arguments.cardNumber), "-", "", "all")>
 
@@ -155,13 +155,13 @@
 		<cfargument name="productId" type="string" required=true default="">
 		<cfargument name="action" type="string" required=true default="">
 
-		<cftry>
-			<cfset local.response = {
-				"success" = false,
-				"message" = "",
-				"data" = {}
-			}>
+		<cfset local.response = {
+			"success" = false,
+			"message" = "",
+			"data" = {}
+		}>
 
+		<cftry>
 			<!--- Decrypt ids--->
 			<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
 
@@ -246,66 +246,66 @@
 			"message" = ""
 		}>
 
-		<!--- Decrypt ids--->
-		<cfset local.addressId = application.commonFunctions.decryptText(arguments.addressId)>
-
-		<!--- Check whether session variable is empty or not --->
-		<cfif (NOT structKeyExists(session, "checkout")) OR (structCount(session.checkout.items) EQ 0)>
-			<cfset local.response["message"] = "No product in checkout!">
-			<cfreturn local.response>
-		</cfif>
-
-		<!--- Address Id Validation --->
-		<cfif NOT len(trim(arguments.addressId))>
-			<cfset local.response["message"] = "Address Id is required.">
-		<cfelseif local.addressId EQ -1>
-			<!--- Value equals -1 means decryption failed --->
-			<cfset local.response["message"] = "Address Id is invalid.">
-		</cfif>
-
-		<!--- Return message if validation fails --->
-		<cfif len(trim(local.response.message))>
-			<cfreturn local.response>
-		</cfif>
-
-		<!--- Create Order Id --->
-		<cfset local.orderId = createUUID()>
-		<cfloop condition="true">
-			<cfquery name="local.qryCheckOrderId">
-				SELECT
-					fldOrder_Id
-				FROM
-					tblOrder
-				WHERE
-					fldOrder_Id  = <cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">
-			</cfquery>
-			<cfif local.qryCheckOrderId.recordCount>
-				<cfset local.orderId = createUUID()>
-			<cfelse>
-				<cfbreak>
-			</cfif>
-		</cfloop>
-
-		<!--- Variables to store total price and total tax --->
-		<cfset local.totalPrice = session.checkout.totalPrice + session.checkout.totalTax>
-		<cfset local.totalTax = session.checkout.totalTax>
-
-		<!--- json array to pass to stored procedure --->
-		<cfset local.productList = []>
-
-		<!--- Loop through checkout items --->
-		<cfloop collection="#session.checkout.items#" item="item">
-			<!--- build json array --->
-			<cfset arrayAppend(local.productList, {
-				"productId": application.commonFunctions.decryptText(trim(item)),
-				"quantity": val(session.checkout.items[item].quantity)
-			})>
-		</cfloop>
-
-		<!--- Convert array to JSON --->
-		<cfset local.productJSON = serializeJSON(local.productList)>
-
 		<cftry>
+			<!--- Decrypt ids--->
+			<cfset local.addressId = application.commonFunctions.decryptText(arguments.addressId)>
+
+			<!--- Check whether session variable is empty or not --->
+			<cfif (NOT structKeyExists(session, "checkout")) OR (structCount(session.checkout.items) EQ 0)>
+				<cfset local.response["message"] = "No product in checkout!">
+				<cfreturn local.response>
+			</cfif>
+
+			<!--- Address Id Validation --->
+			<cfif NOT len(trim(arguments.addressId))>
+				<cfset local.response["message"] = "Address Id is required.">
+			<cfelseif local.addressId EQ -1>
+				<!--- Value equals -1 means decryption failed --->
+				<cfset local.response["message"] = "Address Id is invalid.">
+			</cfif>
+
+			<!--- Return message if validation fails --->
+			<cfif len(trim(local.response.message))>
+				<cfreturn local.response>
+			</cfif>
+
+			<!--- Create Order Id --->
+			<cfset local.orderId = createUUID()>
+			<cfloop condition="true">
+				<cfquery name="local.qryCheckOrderId">
+					SELECT
+						fldOrder_Id
+					FROM
+						tblOrder
+					WHERE
+						fldOrder_Id  = <cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">
+				</cfquery>
+				<cfif local.qryCheckOrderId.recordCount>
+					<cfset local.orderId = createUUID()>
+				<cfelse>
+					<cfbreak>
+				</cfif>
+			</cfloop>
+
+			<!--- Variables to store total price and total tax --->
+			<cfset local.totalPrice = session.checkout.totalPrice + session.checkout.totalTax>
+			<cfset local.totalTax = session.checkout.totalTax>
+
+			<!--- json array to pass to stored procedure --->
+			<cfset local.productList = []>
+
+			<!--- Loop through checkout items --->
+			<cfloop collection="#session.checkout.items#" item="item">
+				<!--- build json array --->
+				<cfset arrayAppend(local.productList, {
+					"productId": application.commonFunctions.decryptText(trim(item)),
+					"quantity": val(session.checkout.items[item].quantity)
+				})>
+			</cfloop>
+
+			<!--- Convert array to JSON --->
+			<cfset local.productJSON = serializeJSON(local.productList)>
+
 			<cfstoredproc procedure="spCreateOrderItems">
 				<cfprocparam type="in" cfsqltype="varchar" variable="p_orderId" value="#local.orderId#">
 				<cfprocparam type="in" cfsqltype="integer" variable="p_userId" value="#session.userId#">

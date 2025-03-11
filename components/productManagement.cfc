@@ -3,12 +3,12 @@
 		<cfargument name="categoryId" type="string" required=true default="">
 		<cfargument name="categoryName" type="string" required=true>
 
-		<cftry>
-			<cfset local.response = {
-				"success" = false,
-				"message" = ""
-			}>
+		<cfset local.response = {
+			"success" = false,
+			"message" = ""
+		}>
 
+		<cftry>
 			<!--- Decrypt ids--->
 			<cfset local.categoryId = application.commonFunctions.decryptText(arguments.categoryId)>
 
@@ -86,12 +86,12 @@
 		<cfargument name="subCategoryName" type="string" required=true>
 		<cfargument name="categoryId" type="string" required=true default="">
 
-		<cftry>
-			<cfset local.response = {
-				"message" = "",
-				"success" = false
-			}>
+		<cfset local.response = {
+			"message" = "",
+			"success" = false
+		}>
 
+		<cftry>
 			<!--- Decrypt ids--->
 			<cfset local.subCategoryId = application.commonFunctions.decryptText(arguments.subCategoryId)>
 			<cfset local.categoryId = application.commonFunctions.decryptText(arguments.categoryId)>
@@ -191,12 +191,12 @@
 		<cfargument name="defaultImageId" type="string" required=false default="">
 		<cfargument name="deletedImageIdArray" type="array" required=false default=#arrayNew(1)#>
 
-		<cftry>
-			<cfset local.response = {
-				"message" = "",
-				"success" = false
-			}>
+		<cfset local.response = {
+			"message" = "",
+			"success" = false
+		}>
 
+		<cftry>
 			<!--- Decrypt ids--->
 			<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
 			<cfset local.subCategorySelect = application.commonFunctions.decryptText(arguments.subCategorySelect)>
@@ -401,12 +401,12 @@
 		<cfargument name="itemName" type="string" required=true defaul="">
 		<cfargument name="itemId" type="string" required=true defaul="">
 
-		<cftry>
-			<cfset local.response = {
-				"success" = true,
-				"message" = ""
-			}>
+		<cfset local.response = {
+			"success" = true,
+			"message" = ""
+		}>
 
+		<cftry>
 			<!--- Decrypt item id --->
 			<cfset local.itemId = application.commonFunctions.decryptText(arguments.itemId)>
 

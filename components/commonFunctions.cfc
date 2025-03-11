@@ -13,7 +13,6 @@
 		<!--- Handle exception in case decryption failes --->
 		<cftry>
 			<cfset local.decryptedText = decrypt(arguments.encryptedText, application.secretKey, "AES", "Base64")>
-
 			<cfreturn local.decryptedText>
 
 			<cfcatch type="any">

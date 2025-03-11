@@ -7,12 +7,12 @@
 		<cfargument name="password" type="string" required=true>
 		<cfargument name="confirmPassword" type="string" required=true>
 
-		<cftry>
-			<cfset local.response = {
-				"success" = false,
-				"message" = ""
-			}>
+		<cfset local.response = {
+			"success" = false,
+			"message" = ""
+		}>
 
+		<cftry>
 			<!--- Firstname Validation --->
 			<cfif len(trim(arguments.firstName)) EQ 0>
 				<cfset local.response["message"] &= "Enter first name. ">
@@ -123,11 +123,11 @@
 		<cfargument name="userInput" type="string" required=true>
 		<cfargument name="password" type="string" required=true>
 
-		<cftry>
-			<cfset local.response = {
-				"message" = ""
-			}>
+		<cfset local.response = {
+			"message" = ""
+		}>
 
+		<cftry>
 			<!--- UserInput Validation --->
 			<cfif len(trim(arguments.userInput)) EQ 0>
 				<cfset local.response["message"] &= "Enter an Email or Phone Number. ">
@@ -205,12 +205,12 @@
 		<cfargument name="pincode" type="string" required=true>
 		<cfargument name="phone" type="string" required=true>
 
-		<cftry>
-			<cfset local.response = {
-				"success" = false,
-				"message" = ""
-			}>
+		<cfset local.response = {
+			"success" = false,
+			"message" = ""
+		}>
 
+		<cftry>
 			<cfif NOT structKeyExists(session, "userId")>
 				<cfset local.response["message"] &= "Cannot proceed without loggin in">
 			</cfif>
@@ -341,12 +341,12 @@
 		<cfargument name="email" type="string" required=true>
 		<cfargument name="phone" type="string" required=true>
 
-		<cftry>
-			<cfset local.response = {
-				"success" = false,
-				"message" = ""
-			}>
+		<cfset local.response = {
+			"success" = false,
+			"message" = ""
+		}>
 
+		<cftry>
 			<cfif NOT structKeyExists(session, "userId")>
 				<cfset local.response["message"] &= "Cannot proceed without loggin in">
 			</cfif>
