@@ -546,36 +546,42 @@
 	<cffunction name="getSliderImages" access="public" returnType="struct">
 		<cfargument name="pageName" type="string" required=false default="">
 
-		<!--- Create response struct --->
-		<cfset local.response = {
-			"data" = []
-		}>
-
-		<!--- Fetch Data --->
-		<cfquery name="local.qryGetSliderImages"
-			cachedWithin = "#(structKeyExists(session, "roleId") && session.roleId == 1 ? createTimespan(0, 0, 0, 0) : createTimespan(0, 1, 0, 0))#"
-		>
-			SELECT
-				fldImageFileName
-			FROM
-				tblSliderImages
-			WHERE
-				fldActive = 1
-				<cfif len(trim(arguments.pageName))>
-					AND fldPageName = <cfqueryparam value = "#trim(arguments.pageName)#" cfsqltype = "varchar">
-				<cfelse>
-					1 = 0
-				</cfif>
-		</cfquery>
-
-		<!--- Fill up the array with information --->
-		<cfloop query="local.qryGetSliderImages">
-			<cfset local.imageStruct = {
-				"imageFile": local.qryGetSliderImages.fldImageFileName
+		<cftry>
+			<!--- Create response struct --->
+			<cfset local.response = {
+				"data" = []
 			}>
 
-			<cfset arrayAppend(local.response.data, local.imageStruct)>
-		</cfloop>
+			<!--- Fetch Data --->
+			<cfquery name="local.qryGetSliderImages"
+				cachedWithin = "#(structKeyExists(session, "roleId") && session.roleId == 1 ? createTimespan(0, 0, 0, 0) : createTimespan(0, 1, 0, 0))#"
+			>
+				SELECT
+					fldImageFileName
+				FROM
+					tblSliderImages
+				WHERE
+					fldActive = 1
+					<cfif len(trim(arguments.pageName))>
+						AND fldPageName = <cfqueryparam value = "#trim(arguments.pageName)#" cfsqltype = "varchar">
+					<cfelse>
+						1 = 0
+					</cfif>
+			</cfquery>
+
+			<!--- Fill up the array with information --->
+			<cfloop query="local.qryGetSliderImages">
+				<cfset local.imageStruct = {
+					"imageFile": local.qryGetSliderImages.fldImageFileName
+				}>
+
+				<cfset arrayAppend(local.response.data, local.imageStruct)>
+			</cfloop>
+
+			<cfcatch type="any">
+				<cfreturn local.response>
+			</cfcatch>
+		</cftry>
 
 		<cfreturn local.response>
 	</cffunction>
