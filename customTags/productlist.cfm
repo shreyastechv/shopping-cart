@@ -18,7 +18,7 @@
 				<div class="card rounded-3 h-100 shadow" onclick="location.href='/productPage.cfm?productId=#variables.encodedProductId#'" role="button">
 					<img src="#variables.productImage#" class="p-3 rounded-3" alt="Product Image #index#">
 					<div class="card-body">
-						<div class="card-text fw-semibold mb-1">#item.productName#</div>
+						<div class="card-text text-truncate fw-semibold mb-1">#item.productName#</div>
 						<div class="card-text text-secondary text-truncate mb-1">#item.description#</div>
 						<div class="card-text fw-bold mb-1">Rs. #item.price#</div>
 					</div>

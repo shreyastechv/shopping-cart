@@ -53,8 +53,8 @@
 					<cfloop array="#variables.products.data#" item="item" index="i">
 						<div class="col-lg-6 px-1">
 							<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-3 py-1 mb-2 shadow-sm">
-								<div class="d-flex flex-column gap-1">
-									<div name="productName" class="fw-semibold fs-6">#item.productName#</div>
+								<div class="d-flex flex-column gap-1 w-50">
+									<div name="productName" class="fw-semibold text-truncate fs-6">#item.productName#</div>
 									<div name="brandName">#item.brandName#</div>
 									<div name="price" class="text-success fw-semibold">Rs. #item.price#</div>
 								</div>
