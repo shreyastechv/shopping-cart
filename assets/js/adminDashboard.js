@@ -100,7 +100,6 @@ function deleteCategory(containerId, categoryId) {
 			$.ajax({
 				type: "POST",
 				url: "./components/productManagement.cfc",
-				dataType: "json",
 				data: {
 					method: "deleteItem",
 					itemName: "category",

@@ -105,7 +105,6 @@ function deleteSubCategory(containerId, subCategoryId, subCategoryName) {
 			$.ajax({
 				type: "POST",
 				url: "./components/productManagement.cfc",
-				dataType: "json",
 				data: {
 					method: "deleteItem",
 					itemName: "subcategory",

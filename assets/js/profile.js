@@ -31,7 +31,6 @@ function deleteAddress(containerId, addressId) {
 	$.ajax({
 		type: "POST",
 		url: "./components/userManagement.cfc",
-		dataType: "json",
 		data: {
 			method: "deleteAddress",
 			addressId: addressId

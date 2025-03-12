@@ -7,11 +7,11 @@ function logOut() {
 		confirmButtonText: "Ok",
 		denyButtonText: "Deny"
 	}).then((result) => {
+
 		if (result.isConfirmed) {
 			$.ajax({
 				type: "POST",
 				url: "./components/userManagement.cfc",
-				dataType: "json",
 				data: {
 					method: "logOut"
 				},
