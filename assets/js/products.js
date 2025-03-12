@@ -45,7 +45,7 @@ function viewMore() {
 			// Loop over product data to get info we need
 			for (let item of response.data) {
 				// Create product div
-				createProduct(item.productId, item.productImages.split(",")[0], item.productName, item.description, item.price);
+				createProduct(item.productId, item.productImages[0], item.productName, item.description, item.price);
 			}
 
 			// Remove view more btn if there are no products to be fetched
