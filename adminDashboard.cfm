@@ -3,7 +3,7 @@
 	<cfset variables.categories = application.dataFetch.getCategories()>
 
 	<!--- Main Content --->
-	<div class="container d-flex flex-column justify-content-center align-items-center mt-5">
+	<div class="container d-flex flex-column justify-content-center align-items-center my-5">
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center py-4">
 			<div class="d-flex justify-content-center align-items-center">
 				<h3 class="h4 fw-semibold text-center mb-0 me-3">CATEGORIES</h3>

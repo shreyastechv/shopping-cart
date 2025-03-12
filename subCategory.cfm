@@ -16,7 +16,7 @@
 		: application.dataFetch.getCategories(categoryId = url.categoryId).data[1].categoryName>
 
 	<!--- Main Content --->
-	<div class="container d-flex flex-column justify-content-center align-items-center mt-5">
+	<div class="container d-flex flex-column justify-content-center align-items-center my-5">
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
 			<div id="subCategoryMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
 				<div class="d-flex justify-content-between align-items-center mb-4">
