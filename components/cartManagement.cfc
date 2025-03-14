@@ -377,6 +377,7 @@
 			<cfset local.response["success"] = true>
 
 			<cfcatch type="any">
+				<cfset local.response.message = "Error while processing order!">
 				<cfreturn local.response>
 			</cfcatch>
 		</cftry>
