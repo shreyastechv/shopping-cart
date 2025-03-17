@@ -13,6 +13,7 @@
 			<title>#request.pageTitle# - Shopping Cart</title>
 			<link rel="icon" href="favicon.ico">
 			<link href="#application.cssDirectory#bootstrap.min.css" rel="stylesheet">
+			<link href="/assets/fontawesome/css/all.min.css" rel="stylesheet">
 			<link href="#application.cssDirectory#sweetalert2.min.css" rel="stylesheet">
 			<link href="#application.cssDirectory#header.css" rel="stylesheet">
 			<cfif len(trim(request.cssPath))>
