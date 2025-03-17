@@ -1,12 +1,12 @@
 DELIMITER $$
 
 CREATE PROCEDURE spCreateOrderItems (
-    IN p_orderId VARCHAR(64),
-    IN p_userId INT,
-    IN p_addressId INT,
-    IN p_totalPrice DECIMAL(10,2),
-    IN p_totalTax DECIMAL(10,2),
-    IN p_jsonProducts JSON
+    IN orderId VARCHAR(64),
+    IN userId INT,
+    IN addressId INT,
+    IN totalPrice DECIMAL(10,2),
+    IN totalTax DECIMAL(10,2),
+    IN jsonProducts JSON
 )
 BEGIN
     -- Insert into order table
@@ -19,11 +19,11 @@ BEGIN
             fldTotalTax
         )
     VALUES (
-        p_orderId,
-        p_userId,
-        p_addressId,
-        p_totalPrice,
-        p_totalTax
+        orderId,
+        userId,
+        addressId,
+        totalPrice,
+        totalTax
     );
 
     -- Insert into order items table
@@ -36,14 +36,14 @@ BEGIN
             fldUnitTax
         )
     SELECT
-        p_orderId,
+        orderId,
         JP.fldProductId,
         JP.fldQuantity,
         P.fldPrice,
         P.fldTax
     FROM
         JSON_TABLE(
-            p_jsonProducts,
+            jsonProducts,
             '$[*]' COLUMNS (
                 fldProductId INT PATH '$.productId',
                 fldQuantity INT PATH '$.quantity'
@@ -56,13 +56,13 @@ BEGIN
     DELETE FROM
         tblCart
     WHERE
-        fldUserId = p_userId
+        fldUserId = userId
         AND fldProductId IN (
             SELECT
                 productId
             FROM
                 JSON_TABLE(
-                    p_jsonProducts,
+                    jsonProducts,
                     '$[*]' COLUMNS (
                         productId INT PATH '$.productId'
                     )
