@@ -67,7 +67,7 @@ function editCartItem(containerId, productId, action) {
 				$("#totalActualPrice").text(totalActualPrice.toFixed(2));
 				$("#totalTax").text(totalTax.toFixed(2));
 
-				if (totalPrice == 0) {
+				if (totalPrice.toFixed(2) == 0) {
 					// If total price is 0 (checkout is empty) then create alert
 					if (currentPage == "checkout.cfm") {
 						$("#productsNextBtn").prop("disabled", true);
