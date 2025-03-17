@@ -3,7 +3,7 @@
 
 <!--- Go to admin dashboard if category id is empty --->
 <cfif NOT len(trim(url.categoryId))>
-	<cflocation url="/admin/index.cfm" addToken="false">
+	<cflocation url="/adminDashboard.cfm" addToken="false">
 </cfif>
 
 <cfoutput>
@@ -20,7 +20,7 @@
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
 			<div id="subCategoryMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
 				<div class="d-flex justify-content-between align-items-center mb-4">
-					<a href="/admin/index.cfm" class="btn">
+					<a href="/adminDashboard.cfm" class="btn">
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">

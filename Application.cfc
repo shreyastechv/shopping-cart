@@ -18,25 +18,9 @@
 		<cfset application.dataFetch = createObject("component", "components.dataFetch")>
 		<cfset application.productManagement = createObject("component", "components.productManagement")>
 		<cfset application.userManagement = createObject("component", "components.userManagement")>
-		<cfset application.admin = createObject("component", "admin.components.admin")>
 
 		<!--- Map pages to title, css and script path --->
 		<cfset application.pageDetailsMapping = {
-			"/admin/index.cfm": {
-				"pageTitle": "Admin Dashboard",
-				"cssPath": "",
-				"scriptPath": ["adminDashboard.js"]
-			},
-			"/admin/subCategories.cfm": {
-				"pageTitle": "Sub Categories",
-				"cssPath": "",
-				"scriptPath": ["subCategory.js"]
-			},
-			"/admin/products.cfm": {
-				"pageTitle": "Edit Products",
-				"cssPath": "",
-				"scriptPath": ["productEdit.js"]
-			},
 			"/index.cfm": {
 				"pageTitle": "Home Page",
 				"cssPath": "index.css",
@@ -81,6 +65,21 @@
 				"pageTitle": "Sign Up",
 				"cssPath": "",
 				"scriptPath": ["signup.js"]
+			},
+			"/adminDashboard.cfm": {
+				"pageTitle": "Admin Dashboard",
+				"cssPath": "",
+				"scriptPath": ["adminDashboard.js"]
+			},
+			"/subCategory.cfm": {
+				"pageTitle": "Sub Category",
+				"cssPath": "",
+				"scriptPath": ["subCategory.js"]
+			},
+			"/productEdit.cfm": {
+				"pageTitle": "Product Edit",
+				"cssPath": "",
+				"scriptPath": ["productEdit.js"]
 			}
 		}>
 
@@ -117,16 +116,18 @@
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
 		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm", "/orders.cfm", "/components/cartManagement.cfc"]>
+		<cfset local.adminPages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm", "/components/productManagement.cfc"]>
+
 		<!--- Handle page restrictions --->
 		<cfif arrayFindNoCase(local.initialPages, arguments.targetPage)>
 			<cfif structKeyExists(session, "roleId")>
 				<cfif session.roleId EQ 1>
-					<cflocation url="/admin/index.cfm" addToken="false">
+					<cflocation url="/adminDashboard.cfm" addToken="false">
 				<cfelse>
 					<cflocation url="/" addToken="false">
 				</cfif>
 			</cfif>
-		<cfelseif FindNoCase("/admin", arguments.targetPage)>
+		<cfelseif arrayFindNoCase(local.adminPages, arguments.targetPage)>
 			<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
 				<cfreturn true>
 			<cfelse>
