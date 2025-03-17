@@ -5,7 +5,7 @@
 
 <!--- Go to admin dashboard if subcategory id is empty --->
 <cfif NOT len(trim(url.subCategoryId))>
-	<cflocation url="/adminDashboard.cfm" addToken="false">
+	<cflocation url="/admin/index.cfm" addToken="false">
 </cfif>
 
 <cfoutput>

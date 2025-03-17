@@ -9,9 +9,19 @@ function logOut() {
 	}).then((result) => {
 
 		if (result.isConfirmed) {
+			const pageUrl = window.location.pathname;
+
+			/* Since admin have different cfc, it needs to be specified
+			in order to clear the session vairables that are admin-specific*/
+			if (pageUrl.startsWith("/admin")) {
+				componentUrl = "/components/userManagement.cfc";
+			} else {
+				componentUrl = "/admin/components/admin.cfc";
+			}
+
 			$.ajax({
 				type: "POST",
-				url: "./components/userManagement.cfc",
+				url: componentUrl,
 				data: {
 					method: "logOut"
 				},

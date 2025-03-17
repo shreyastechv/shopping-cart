@@ -20,7 +20,7 @@
 					<div>
 						<!--- Show admin dashboard button --->
 						<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-							<a href="/adminDashboard.cfm" class="btn btn-info m-2">
+							<a href="/admin/index.cfm" class="btn btn-info m-2">
 								<i class="fa-solid fa-lock"></i>
 								Admin
 							</a>

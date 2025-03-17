@@ -11,7 +11,7 @@
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title>#request.pageTitle# - Shopping Cart</title>
-			<link rel="icon" href="favicon.ico">
+			<link rel="icon" href="/favicon.ico">
 			<link href="#application.cssDirectory#bootstrap.min.css" rel="stylesheet">
 			<link href="/assets/fontawesome/css/all.min.css" rel="stylesheet">
 			<link href="#application.cssDirectory#sweetalert2.min.css" rel="stylesheet">
@@ -59,6 +59,11 @@
 					</button>
 				</form>
 				<nav class="d-flex align-items-center justify-content-between gap-4 px-2">
+					<cfif structKeyExists(session, "firstName")>
+						#session.firstName#
+					<cfelse>
+						No First name
+					</cfif>
 					<!--- Profile Button --->
 					<button type="button" class="btn btn-sm btn-outline-light" onclick="location.href='/profile.cfm'">
 						<i class="fa-regular fa-circle-user"></i>
