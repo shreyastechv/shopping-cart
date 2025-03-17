@@ -4,7 +4,7 @@ CREATE PROCEDURE IF NOT EXISTS spModifyCart(
 	IN productId INT,
 	IN action VARCHAR(20), -- An action can be increment, decrement, or delete
 	IN userId INT,
-	out success BIT(1)
+	OUT success BIT(1)
 )
 BEGIN
 	-- Error Handling

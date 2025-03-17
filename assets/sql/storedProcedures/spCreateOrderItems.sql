@@ -7,7 +7,7 @@ CREATE PROCEDURE spCreateOrderItems (
     IN totalPrice DECIMAL(10,2),
     IN totalTax DECIMAL(10,2),
     IN jsonProducts JSON,
-	out success BIT(1)
+	OUT success BIT(1)
 )
 BEGIN
 	-- Error Handling

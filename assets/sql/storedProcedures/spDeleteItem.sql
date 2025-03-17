@@ -4,7 +4,7 @@ CREATE PROCEDURE IF NOT EXISTS spDeleteItem(
 	IN item VARCHAR(20), -- An item can be category, subcategory, product, productimage, or address
 	IN itemId INT,
 	IN userId INT,
-	out success BIT(1)
+	OUT success BIT(1)
 )
 BEGIN
 	-- Error Handling
