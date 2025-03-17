@@ -35,9 +35,9 @@
 
 			<!--- Continue with code execution if validation succeeds --->
 			<cfstoredproc procedure="spModifyCart">
-				<cfprocparam type="in" cfsqltype="integer" variable="productId" value="#val(local.productId)#">
-				<cfprocparam type="in" cfsqltype="varchar" variable="action" value="#arguments.action#">
-				<cfprocparam type="in" cfsqltype="integer" variable="userId" value="#session.userId#">
+				<cfprocparam type="in" cfsqltype="integer" value="#val(local.productId)#">
+				<cfprocparam type="in" cfsqltype="varchar" value="#arguments.action#">
+				<cfprocparam type="in" cfsqltype="integer" value="#session.userId#">
 			</cfstoredproc>
 
 			<!--- Update the session variable --->
@@ -307,12 +307,12 @@
 			<cfset local.productJSON = serializeJSON(local.productList)>
 
 			<cfstoredproc procedure="spCreateOrderItems">
-				<cfprocparam type="in" cfsqltype="varchar" variable="orderId" value="#local.orderId#">
-				<cfprocparam type="in" cfsqltype="integer" variable="userId" value="#session.userId#">
-				<cfprocparam type="in" cfsqltype="integer" variable="addressId" value="#val(local.addressId)#">
-				<cfprocparam type="in" cfsqltype="decimal" variable="totalPrice" value="#local.totalPrice#">
-				<cfprocparam type="in" cfsqltype="decimal" variable="totalTax" value="#local.totalTax#">
-				<cfprocparam type="in" cfsqltype="longvarchar" variable="jsonProducts" value="#local.productJSON#">
+				<cfprocparam type="in" cfsqltype="varchar" value="#local.orderId#">
+				<cfprocparam type="in" cfsqltype="integer" value="#session.userId#">
+				<cfprocparam type="in" cfsqltype="integer" value="#val(local.addressId)#">
+				<cfprocparam type="in" cfsqltype="decimal" value="#local.totalPrice#">
+				<cfprocparam type="in" cfsqltype="decimal" value="#local.totalTax#">
+				<cfprocparam type="in" cfsqltype="longvarchar" value="#local.productJSON#">
 				<cfprocparam type="out" cfsqltype="bit" variable="local.success">
 			</cfstoredproc>
 

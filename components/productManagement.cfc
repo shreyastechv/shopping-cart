@@ -423,9 +423,9 @@
 
 			<!--- Continue with code execution if validation succeeds --->
 			<cfstoredproc procedure="spDeleteItem">
-				<cfprocparam cfsqltype="varchar" variable="item" value="#trim(arguments.itemName)#">
-				<cfprocparam cfsqltype="integer" variable="itemId" value="#val(local.itemId)#">
-				<cfprocparam cfsqltype="integer" variable="userId" value="#session.userId#">
+				<cfprocparam cfsqltype="varchar" value="#trim(arguments.itemName)#">
+				<cfprocparam cfsqltype="integer" value="#val(local.itemId)#">
+				<cfprocparam cfsqltype="integer" value="#session.userId#">
 			</cfstoredproc>
 
 			<!--- Set success message --->
