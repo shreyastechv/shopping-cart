@@ -38,7 +38,13 @@
 				<cfprocparam type="in" cfsqltype="integer" value="#val(local.productId)#">
 				<cfprocparam type="in" cfsqltype="varchar" value="#arguments.action#">
 				<cfprocparam type="in" cfsqltype="integer" value="#session.userId#">
+				<cfprocparam type="out" cfsqltype="bit" variable="local.success">
 			</cfstoredproc>
+
+			<!--- Throw error if the stored procedure errored out --->
+			<cfif NOT local.success>
+				<cfthrow message = "Error while modifying cart.">
+			</cfif>
 
 			<!--- Update the session variable --->
 			<cfif arguments.action EQ "increment">

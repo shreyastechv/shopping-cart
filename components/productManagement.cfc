@@ -423,10 +423,16 @@
 
 			<!--- Continue with code execution if validation succeeds --->
 			<cfstoredproc procedure="spDeleteItem">
-				<cfprocparam cfsqltype="varchar" value="#trim(arguments.itemName)#">
-				<cfprocparam cfsqltype="integer" value="#val(local.itemId)#">
-				<cfprocparam cfsqltype="integer" value="#session.userId#">
+				<cfprocparam type="in" cfsqltype="varchar" value="#trim(arguments.itemName)#">
+				<cfprocparam type="in"cfsqltype="integer" value="#val(local.itemId)#">
+				<cfprocparam type="in"cfsqltype="integer" value="#session.userId#">
+				<cfprocparam type="out"cfsqltype="bit" variable="local.success">
 			</cfstoredproc>
+
+			<!--- Throw error if the stored procedure errored out --->
+			<cfif NOT local.success>
+				<cfthrow message = "#arguments.itemName# deletion failed!">
+			</cfif>
 
 			<!--- Set success message --->
 			<cfset local.response.success = true>
