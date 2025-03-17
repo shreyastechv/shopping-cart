@@ -313,7 +313,13 @@
 				<cfprocparam type="in" cfsqltype="decimal" variable="totalPrice" value="#local.totalPrice#">
 				<cfprocparam type="in" cfsqltype="decimal" variable="totalTax" value="#local.totalTax#">
 				<cfprocparam type="in" cfsqltype="longvarchar" variable="jsonProducts" value="#local.productJSON#">
+				<cfprocparam type="out" cfsqltype="bit" variable="local.success">
 			</cfstoredproc>
+
+			<!--- Throw error if the stored procedure errored out --->
+			<cfif NOT local.success>
+				<cfthrow message = "Creating order was unsuccessful.">
+			</cfif>
 
 			<!--- Empty cart structure in session --->
 			<cfset structEach(session.checkout.items, function(key) {
@@ -377,7 +383,7 @@
 			<cfset local.response["success"] = true>
 
 			<cfcatch type="any">
-				<cfset local.response.message = "Error while processing order!">
+				<cfset local.response.message = "Error while processing order">
 				<cfreturn local.response>
 			</cfcatch>
 		</cftry>
