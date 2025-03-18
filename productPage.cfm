@@ -26,7 +26,12 @@
 		<cflocation url="/cart.cfm" addToken="no">
 	<cfelse>
 		<!--- Go to login page if user is not logged in --->
-		<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=cart.cfm" addToken="no">
+		<script>
+			$(document).ready(function() {
+				$("#testModal").modal("show");
+			});
+		</script>
+<!--- 		<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=cart.cfm" addToken="no"> --->
 	</cfif>
 </cfif>
 
@@ -40,8 +45,14 @@
 		<!--- Go to checkout page if user is logged in --->
 		<cflocation url="/checkout.cfm?productId=#urlEncodedFormat(url.productId)#" addToken="no">
 	<cfelse>
+		<script>
+			$(document).ready(function() {
+				$("#testModal").modal("show");
+			});
+		</script>
+
 		<!--- Go to login page if user is not logged in --->
-		<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=checkout.cfm" addToken="no">
+<!--- 		<cflocation url="/login.cfm?productId=#urlEncodedFormat(url.productId)#&redirect=checkout.cfm" addToken="no"> --->
 	</cfif>
 </cfif>
 
@@ -124,4 +135,12 @@
 			</div>
 		</div>
 	</cfif>
+
+	<div class="modal fade" id="testModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content bg-transparent border-0">
+				<cfinclude template="/login.cfm">
+			</div>
+		</div>
+	</div>
 </cfoutput>
