@@ -355,6 +355,13 @@
 						result="local.uploadedImages"
 					>
 
+					<!--- If there are no product images uploaded while adding new products --->
+					<cfif len(trim(arguments.productId)) EQ 0 AND arrayLen(local.uploadedImages) EQ 0>
+						<cftransaction action="rollback">
+						<cfset local.response.message = "Select at least one image.">
+						<cfreturn local.response>
+					</cfif>
+
 					<!--- Store images in DB --->
 					<cfif arrayLen(local.uploadedImages)>
 						<cfquery name="qryAddImages">
