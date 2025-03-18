@@ -57,7 +57,20 @@ function processAddressForm() {
     },
     success: function(response) {
       if(response.success) {
-        location.reload();
+        Swal.fire({
+          icon: "success",
+          title: "Address Created",
+          showDenyButton: false,
+          showCancelButton: false,
+          confirmButtonText: "Ok",
+          denyButtonText: "",
+          allowOutsideClick: false,
+          allowEscapeKey: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            location.reload();
+          }
+        });
       } else {
         $("#addAddressError").text(response.message);
       }

@@ -195,7 +195,7 @@
 		<cfreturn local.response>
 	</cffunction>
 
-	<cffunction name="addAddress" access="remote" returnType="struct">
+	<cffunction name="addAddress" access="remote" returnType="struct" returnformat="json">
 		<cfargument name="firstName" type="string" required=true>
 		<cfargument name="lastName" type="string" required=true>
 		<cfargument name="addressLine1" type="string" required=true>
