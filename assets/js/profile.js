@@ -28,21 +28,32 @@ function handleProfileChange() {
 }
 
 function deleteAddress(containerId, addressId) {
-	$.ajax({
-		type: "POST",
-		url: "./components/userManagement.cfc",
-		data: {
-			method: "deleteAddress",
-			addressId: addressId
-		},
-		success: function () {
-			if ($(`#${containerId}`).parent().children().length == 1) {
-				// Reload page in case there is no address left
-				location.reload();
-			} else {
-				// Delete address container if there are other addressess left
-				$(`#${containerId}`).remove();
-			}
+	Swal.fire({
+		icon: "warning",
+		title: "Delete address?",
+		showDenyButton: false,
+		showCancelButton: true,
+		confirmButtonText: "Ok",
+		denyButtonText: "Deny"
+	}).then((result) => {
+		if (result.isConfirmed) {
+			$.ajax({
+				type: "POST",
+				url: "./components/userManagement.cfc",
+				data: {
+					method: "deleteAddress",
+					addressId: addressId
+				},
+				success: function () {
+					if ($(`#${containerId}`).parent().children().length == 1) {
+						// Reload page in case there is no address left
+						location.reload();
+					} else {
+						// Delete address container if there are other addressess left
+						$(`#${containerId}`).remove();
+					}
+				}
+			});
 		}
 	});
 }
