@@ -24,7 +24,7 @@
 			"/index.cfm": {
 				"pageTitle": "Home Page",
 				"cssPath": "index.css",
-				"scriptPath": ["productList.js"]
+				"scriptPath": []
 			},
 			"/profile.cfm": {
 				"pageTitle": "User Profile",
@@ -34,7 +34,7 @@
 			"/products.cfm": {
 				"pageTitle": "Product Listing",
 				"cssPath": "products.css",
-				"scriptPath": ["products.js", "productList.js"]
+				"scriptPath": ["products.js"]
 			},
 			"/productPage.cfm": {
 				"pageTitle": "Product Page",
