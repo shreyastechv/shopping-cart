@@ -267,7 +267,7 @@ function deleteProduct (containerId, productId) {
 					itemId: productId
 				},
 				success: function() {
-					$(`#${containerId}`).remove();
+					$(`#${containerId}`).parent().remove();
 				}
 			})
 		}
