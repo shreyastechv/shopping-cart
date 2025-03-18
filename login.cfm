@@ -35,7 +35,7 @@
 			</cfif>
 		</div>
 		<div class="row shadow-lg border-0 rounded-4 w-50 text-center">
-			<div class="form-control flex-nowrap bg-white col-md-8 p-4 rounded-end-4">
+			<div class="form-control flex-nowrap bg-white col-md-8 p-4 rounded-4">
 				<div class="text-center mb-4">
 					<h3 class="fw-semibold mt-3">LOGIN</h3>
 				</div>
