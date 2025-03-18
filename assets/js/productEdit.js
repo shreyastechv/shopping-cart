@@ -1,5 +1,6 @@
 const urlSubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId');
 let deletedImageIdArray = [];
+let dt = new DataTransfer();
 
 $(document).ready(function() {
 	$("#categorySelect").change(function() {
@@ -32,50 +33,55 @@ $(document).ready(function() {
 	});
 
 	$("#productImage").on("change", function () {
-		let files = this.files;
-		let dt = new DataTransfer();
+		// Remove already existing newly added product images
 		$(".newProductImage").remove();
 
-		$.each(files, function (i, file) {
+		// Add latest images to DataTransfer variable
+		$.each(this.files, function (i, file) {
 			if (file.type.startsWith("image/")) {
 				dt.items.add(file);
-
-				let imgDiv = $(`
-					<div id="productImageContainer_${i}" class="newProductImage productImageContainer d-inline-block border p-1 mt-2 rounded text-center pw-100"
-						onMouseOver="this.style.cursor='pointer'"
-						onclick="$(this).children().find('input[name=defaultImageId]').prop('checked', true).trigger('change');"
-					>
-						<img src="${URL.createObjectURL(file)}" class="img-fluid h-80 border rounded">
-						<div class="d-flex justify-content-around">
-							<input type="radio" name="defaultImageId" value="${i+1}" checked>
-							<button type="button" class="btn btn-sm" onclick="removeSelectedFile('productImageContainer_${i}', 'productImage', '${file.name}')">
-								<i class="fa-solid fa-xmark pe-none"></i>
-							</button>
-						</div>
-					</div>
-				`);
-				$("#uploadedProductImages").append(imgDiv);
 			}
 		});
 
+		// Create image div for each image in DataTransfer variable
+		$.each(dt.files, function(i, file) {
+			let imgDiv = $(`
+				<div id="productImageContainer_${i}" class="newProductImage productImageContainer d-inline-block border p-1 mt-2 rounded text-center pw-100"
+					onMouseOver="this.style.cursor='pointer'"
+					onclick="$(this).children().find('input[name=defaultImageId]').prop('checked', true).trigger('change');"
+				>
+					<img src="${URL.createObjectURL(file)}" class="img-fluid h-80 border rounded">
+					<div class="d-flex justify-content-around">
+						<input type="radio" name="defaultImageId" value="${i+1}" checked>
+						<button type="button" class="btn btn-sm" onclick="removeSelectedFile('productImageContainer_${i}', 'productImage', '${file.name}')">
+							<i class="fa-solid fa-xmark pe-none"></i>
+						</button>
+					</div>
+				</div>
+			`);
+			$("#uploadedProductImages").append(imgDiv);
+		});
+
+		// Replace the contents of file input with that of DataTransfer variable
 		this.files = dt.files;
 	});
 });
 
 function removeSelectedFile(containerId, inputId, fileName) {
-	let files = $(`#${inputId}`)[0].files;
-	let dt = new DataTransfer();
+    let files = $(`#${inputId}`)[0].files;
+    dt = new DataTransfer();
 
-	$.each(files, function (i, file) {
-		if (file.name != fileName) {
-			dt.items.add(file);
-		}
-	});
+    $.each(files, function (i, file) {
+        if (file.name != fileName) {
+            dt.items.add(file);
+        }
+    });
 
-	$(`#${inputId}`)[0].files = dt.files;
-	$(`#${containerId}`).remove();
-	$("#productImage").change();
+    $(`#${inputId}`)[0].files = dt.files;
+	$("productImage").change();
+    $(`#${containerId}`).remove();
 }
+
 
 function processProductForm() {
 	event.preventDefault();
@@ -181,6 +187,7 @@ function showAddProductModal(categoryId) {
 	$("#subCategoryModalBtn").text("Save");
 	deletedImageIdArray = [];
 	$("#uploadedProductImages").empty();
+	dt = new DataTransfer();
 }
 
 function showEditProductModal(categoryId, productId) {
@@ -211,6 +218,7 @@ function showEditProductModal(categoryId, productId) {
 			$("#subCategoryModalBtn").text("Save Changes");
 			deletedImageIdArray = [];
 			$("#uploadedProductImages").empty();
+			dt = new DataTransfer();
 			$.each(productImages, function (i, file) {
 				let imgDiv = $(`
 					<div id="uploadedProductImageContainer_${i}" class="productImageContainer d-inline-block border p-1 mt-2 rounded text-center pw-100"
