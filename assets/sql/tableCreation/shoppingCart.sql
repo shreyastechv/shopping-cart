@@ -303,3 +303,21 @@ INSERT INTO `tblRole` (`fldRole_Id`, `fldRoleName`) VALUES (2, 'User');
 
 -- Set product id + user id combination as unique so that insert query can be simpler
 ALTER TABLE tblCart ADD UNIQUE (fldProductId, fldUserId);
+
+CREATE TABLE `tblsliderimages` (
+  `fldImage_Id` INT NOT NULL AUTO_INCREMENT,
+  `fldPageName` VARCHAR(32) DEFAULT NULL,
+  `fldImageFileName` VARCHAR(300) NOT NULL,
+  `fldCreatedDate` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `fldDeactivatedDate` DATETIME DEFAULT NULL,
+  `fldActive` TINYINT(1) DEFAULT '1',
+  PRIMARY KEY (`fldImage_Id`)
+) ENGINE=INNODB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Data for the table `tblsliderimages`
+INSERT  INTO `tblsliderimages`(`fldImage_Id`,`fldPageName`,`fldImageFileName`,`fldDeactivatedDate`,`fldActive`) VALUES
+(1,'home','homepage-slider-1.jpg',NULL,1),
+(2,'home','homepage-slider-2.jpg',NULL,1),
+(3,'home','homepage-slider-3.jpg',NULL,1),
+(4,'home','homepage-slider-4.jpg',NULL,1),
+(5,'home','homepage-slider-5.jpg',NULL,1);
