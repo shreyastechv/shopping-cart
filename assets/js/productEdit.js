@@ -33,17 +33,25 @@ $(document).ready(function() {
 	});
 
 	$("#productImage").on("change", function () {
-		// Remove already existing newly added product images
 		$(".newProductImage").remove();
 
-		// Add latest images to DataTransfer variable
 		$.each(this.files, function (i, file) {
 			if (file.type.startsWith("image/")) {
-				dt.items.add(file);
+				let isFileExists = false;
+
+				$.each(dt.items, function(j, item) {
+					if (item.getAsFile().name === file.name) {
+						isFileExists = true;
+						return false;
+					}
+				});
+
+				if (!isFileExists) {
+					dt.items.add(file);
+				}
 			}
 		});
 
-		// Create image div for each image in DataTransfer variable
 		$.each(dt.files, function(i, file) {
 			let imgDiv = $(`
 				<div id="productImageContainer_${i}" class="newProductImage productImageContainer d-inline-block border p-1 mt-2 rounded text-center pw-100"
