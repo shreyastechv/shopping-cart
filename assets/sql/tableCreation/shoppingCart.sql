@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `tblAddress` (
   `fldAddress_Id` INT NOT NULL AUTO_INCREMENT,
   `fldUserId` INT NOT NULL,
   `fldFirstName` VARCHAR(32) NOT NULL,
-  `fldlLastName` VARCHAR(32) NULL,
+  `fldLastName` VARCHAR(32) NULL,
   `fldAddressLine1` VARCHAR(64) NULL,
   `fldAddressLine2` VARCHAR(64) NULL,
   `fldCity` VARCHAR(64) NULL,
