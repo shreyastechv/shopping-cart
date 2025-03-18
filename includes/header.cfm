@@ -104,23 +104,25 @@
 					<div class="container-fluid">
 						<div class="collapse navbar-collapse" id="navbarContent">
 							<ul class="navbar-nav w-100 d-flex justify-content-evenly flex-wrap">
-								<cfloop from="1" to="7" index="i">
-									<cfset variables.categoryItem = variables.categories.data[i]>
-									<cfset variables.encodedCategoryId = urlEncodedFormat(variables.categoryItem.categoryId)>
-									<li class="nav-item dropdown categoryDropdown">
-										<a class="nav-link dropdown-toggle" href="/products.cfm?categoryId=#variables.encodedCategoryId#">
-											#variables.categoryItem.categoryName#
-										</a>
-										<cfif structKeyExists(variables.catToSubcatMapping, variables.categoryItem.categoryId)>
-											<ul class="dropdown-menu subCategoryDropdown mt-0">
-												<cfloop array="#variables.catToSubcatMapping[variables.categoryItem.categoryId]#" item="subCategoryItem">
-													<cfset variables.encodedSubCategoryId = urlEncodedFormat(subCategoryItem.subCategoryId)>
-													<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#">#subCategoryItem.subCategoryName#</a></li>
-												</cfloop>
-											</ul>
-										</cfif>
-									</li>
-								</cfloop>
+								<cfif arraylen(variables.categories.data)>
+									<cfloop from="1" to="#(arrayLen(variables.categories.data) GTE 7 ? 7 : arrayLen(variables.categories.data))#" index="i">
+										<cfset variables.categoryItem = variables.categories.data[i]>
+										<cfset variables.encodedCategoryId = urlEncodedFormat(variables.categoryItem.categoryId)>
+										<li class="nav-item dropdown categoryDropdown">
+											<a class="nav-link dropdown-toggle" href="/products.cfm?categoryId=#variables.encodedCategoryId#">
+												#variables.categoryItem.categoryName#
+											</a>
+											<cfif structKeyExists(variables.catToSubcatMapping, variables.categoryItem.categoryId)>
+												<ul class="dropdown-menu subCategoryDropdown mt-0">
+													<cfloop array="#variables.catToSubcatMapping[variables.categoryItem.categoryId]#" item="subCategoryItem">
+														<cfset variables.encodedSubCategoryId = urlEncodedFormat(subCategoryItem.subCategoryId)>
+														<li><a class="dropdown-item" href="/products.cfm?subCategoryId=#variables.encodedSubCategoryId#">#subCategoryItem.subCategoryName#</a></li>
+													</cfloop>
+												</ul>
+											</cfif>
+										</li>
+									</cfloop>
+								</cfif>
 								<cfif arrayLen(variables.categories.data) GTE 8>
 									<li class="nav-item dropdown categoryDropdown">
 										<button class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
