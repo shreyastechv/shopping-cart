@@ -55,5 +55,10 @@
 				</div>
 			</div>
 		</cfloop>
+	<cfelse>
+		<div id="empty-productlist" class="d-flex flex-column align-items-center justify-content-center pt-4">
+			<div class="fs-5 text-secondary mb-3">Product List is Empty</div>
+			<a class="btn btn-primary" href="/">Shop Now</a>
+		</div>
 	</cfif>
 </cfoutput>
