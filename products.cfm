@@ -50,7 +50,7 @@
 			: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].subCategoryName>
 
 		<cfcatch>
-			<cfset variables.subCategoryName = "">
+			<cflocation url="/" addToken="false">
 		</cfcatch>
 	</cftry>
 <cfelse>

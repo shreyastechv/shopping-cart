@@ -20,7 +20,7 @@
 					<!-- Contact Info -->
 					<div class="col-md-4">
 						<h5>Contact Us</h5>
-						<a class="mb-0 text-light text-decoration-none" href="mailto:support@shopcart.com">Email: support@shopcart.com</a>
+						<a class="mb-0 text-light text-decoration-none" href="mailto:support@shoppingcart.com">Email: support@shoppingcart.com</a>
 						<br>
 						<a class="mb-0 text-light text-decoration-none" href="tel:9876543210">Phone: +91 9876543210</a>
 						<div>

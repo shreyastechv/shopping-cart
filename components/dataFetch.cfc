@@ -224,6 +224,7 @@
 							AND P.fldPrice <= <cfqueryparam value = "#arguments.max#" cfsqltype = "decimal">
 						</cfif>
 
+						<!--- Searching --->
 						<cfif len(trim(arguments.searchTerm))>
 							AND (P.fldProductName LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
 								OR P.fldDescription LIKE <cfqueryparam value = "%#arguments.searchTerm#%" cfsqltype = "varchar">
@@ -241,7 +242,7 @@
 								RAND()
 						<cfelseif len(trim(arguments.sort))>
 							ORDER BY
-								P.fldPrice #arguments.sort#
+								P.fldPrice <cfqueryparam value = "#arguments.sort#" cfsqltype = "varchar">
 						</cfif>
 
 						<!--- Limit the number of products returned --->

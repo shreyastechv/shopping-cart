@@ -1,10 +1,10 @@
 use shoppingCart;
-CREATE TABLE IF NOT EXISTS `tblRole` (
+CREATE TABLE IF NOT EXISTS `tblRoles` (
   `fldRole_Id` INT NOT NULL AUTO_INCREMENT,
   `fldRoleName` VARCHAR(64) NOT NULL,
   PRIMARY KEY (`fldRole_Id`));
 
-CREATE UNIQUE INDEX `fld_roleId_UNIQUE` ON `tblRole` (`fldRole_Id` ASC) VISIBLE;
+CREATE UNIQUE INDEX `fld_roleId_UNIQUE` ON `tblRoles` (`fldRole_Id` ASC) VISIBLE;
 
 CREATE TABLE IF NOT EXISTS `tblUser` (
   `fldUser_Id` INT NOT NULL AUTO_INCREMENT,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `tblUser` (
   PRIMARY KEY (`fldUser_Id`),
   CONSTRAINT `fldroleId`
     FOREIGN KEY (`fldRoleId`)
-    REFERENCES `tblRole` (`fldRole_Id`));
+    REFERENCES `tblRoles` (`fldRole_Id`));
 
 CREATE INDEX `fldroleId_idx` ON `tblUser` (`fldRoleId` ASC) VISIBLE;
 
@@ -298,8 +298,8 @@ INSERT INTO `tblbrands` VALUES
 	(39,'Jawdrobe',1),
 	(40,'Mom\'s Home',1);
 
-INSERT INTO `tblRole` (`fldRole_Id`, `fldRoleName`) VALUES (1, 'Admin');
-INSERT INTO `tblRole` (`fldRole_Id`, `fldRoleName`) VALUES (2, 'User');
+INSERT INTO `tblRoles` (`fldRole_Id`, `fldRoleName`) VALUES (1, 'Admin');
+INSERT INTO `tblRoles` (`fldRole_Id`, `fldRoleName`) VALUES (2, 'User');
 
 -- Set product id + user id combination as unique so that insert query can be simpler
 ALTER TABLE tblCart ADD UNIQUE (fldProductId, fldUserId);

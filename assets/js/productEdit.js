@@ -60,7 +60,7 @@ $(document).ready(function() {
 				>
 					<img src="${URL.createObjectURL(file)}" class="img-fluid h-80 border rounded">
 					<div class="d-flex justify-content-around">
-						<input type="radio" name="defaultImageId" value="${i+1}" checked>
+						<input type="radio" name="defaultImageId" value="${i+1}">
 						<button type="button" class="btn btn-sm" onclick="removeSelectedFile('productImageContainer_${i}', 'productImage', '${file.name}')">
 							<i class="fa-solid fa-xmark pe-none"></i>
 						</button>
