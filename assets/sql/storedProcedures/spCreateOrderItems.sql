@@ -27,7 +27,7 @@ BEGIN
 		SELECT
 			userId,
 			addressId,
-			SUM(P.fldPrice * fldQuantity) AS totalPrice,
+			SUM(P.fldPrice * fldQuantity) + SUM(P.fldPrice * fldQuantity * fldTax / 100) AS totalPrice,
 			SUM(P.fldPrice * fldQuantity * fldTax / 100) AS totalTax
 		FROM
 			tblCart C
