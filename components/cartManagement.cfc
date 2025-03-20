@@ -293,10 +293,6 @@
 				</cfif>
 			</cfloop>
 
-			<!--- Variables to store total price and total tax --->
-			<cfset local.totalPrice = session.checkout.totalPrice + session.checkout.totalTax>
-			<cfset local.totalTax = session.checkout.totalTax>
-
 			<!--- json array to pass to stored procedure --->
 			<cfset local.productList = []>
 
@@ -316,8 +312,6 @@
 				<cfprocparam type="in" cfsqltype="varchar" value="#local.orderId#">
 				<cfprocparam type="in" cfsqltype="integer" value="#session.userId#">
 				<cfprocparam type="in" cfsqltype="integer" value="#val(local.addressId)#">
-				<cfprocparam type="in" cfsqltype="decimal" value="#local.totalPrice#">
-				<cfprocparam type="in" cfsqltype="decimal" value="#local.totalTax#">
 				<cfprocparam type="in" cfsqltype="longvarchar" value="#local.productJSON#">
 				<cfprocparam type="out" cfsqltype="bit" variable="local.success">
 			</cfstoredproc>

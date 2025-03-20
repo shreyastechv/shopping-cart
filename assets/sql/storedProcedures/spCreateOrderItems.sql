@@ -4,8 +4,6 @@ CREATE PROCEDURE spCreateOrderItems (
     IN orderId VARCHAR(64),
     IN userId INT,
     IN addressId INT,
-    IN totalPrice DECIMAL(10,2),
-    IN totalTax DECIMAL(10,2),
     IN jsonProducts JSON,
 	OUT success BIT(1)
 )
@@ -27,13 +25,31 @@ BEGIN
 				fldTotalPrice,
 				fldTotalTax
 			)
-		VALUES (
+		SELECT
 			orderId,
 			userId,
 			addressId,
-			totalPrice,
-			totalTax
-		);
+			SUM(P.fldPrice * fldQuantity) AS totalPrice,
+			SUM(P.fldPrice * fldQuantity * fldTax / 100) AS totalTax
+		FROM
+			tblCart C
+				INNER JOIN tblProduct P ON C.fldProductId = P.fldProduct_Id
+					AND P.fldActive = 1
+			WHERE
+				C.fldUserId = userId
+				AND C.fldProductId IN (
+					SELECT
+						JP.productId
+					FROM
+						JSON_TABLE(
+							jsonProducts,
+							'$[*]' COLUMNS (
+								productId INT PATH '$.productId'
+							)
+						) AS JP
+				)
+			GROUP BY
+				C.fldUserId;
 
 		-- Insert into order items table
 		INSERT INTO
