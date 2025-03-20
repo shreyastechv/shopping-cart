@@ -242,7 +242,7 @@
 								RAND()
 						<cfelseif len(trim(arguments.sort))>
 							ORDER BY
-								P.fldPrice <cfqueryparam value = "#arguments.sort#" cfsqltype = "varchar">
+								P.fldPrice #arguments.sort#
 						</cfif>
 
 						<!--- Limit the number of products returned --->
