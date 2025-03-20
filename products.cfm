@@ -16,46 +16,39 @@
 	data = []
 }>
 
-<!--- Check URL Params --->
-<cfif len(trim(url.categoryId))>
-	<!--- Category Product Listing --->
-	<cfset variables.products = application.dataFetch.getProducts(
-		categoryId = url.categoryId,
-		random = 1,
-		limit = variables.limit
-	)>
+<!--- Redirect to home page if there are no required url params --->
+<cfif len(trim(url.categoryId)) EQ 0
+	AND len(trim(url.subCategoryId)) EQ 0
+	AND len(trim(url.search)) EQ 0
+>
+	<cflocation url="/" addToken="false">
+</cfif>
 
+<cfset variables.products = application.dataFetch.getProducts(
+	categoryId = url.categoryId,
+	subCategoryId = url.subCategoryId,
+	searchTerm = trim(url.search),
+	limit = variables.limit,
+	min = val(url.min),
+	max = val(url.max),
+	sort = (arrayContainsNoCase(["asc","desc"], url.sort) ? url.sort : "")
+)>
+
+<cftry>
 	<cfset variables.categoryName = arrayLen(variables.products.data)
 		? variables.products.data[1].categoryName
 		<!--- Below code is to fetch the category name when there are no products in it --->
 		: application.dataFetch.getCategories(categoryId = url.categoryId).data[1].categoryName>
 
-<cfelseif len(trim(url.subCategoryId)) OR len(trim(url.search))>
-	<!--- Sub Category or Search Product Listing --->
-	<cfset variables.products = application.dataFetch.getProducts(
-		subCategoryId = url.subCategoryId,
-		searchTerm = trim(url.search),
-		limit = variables.limit,
-		min = val(url.min),
-		max = val(url.max),
-		sort = (arrayContainsNoCase(["asc","desc"], url.sort) ? url.sort : "")
-	)>
+	<cfset variables.subCategoryName = arrayLen(variables.products.data)
+		? variables.products.data[1].subCategoryName
+		<!--- Below code is to fetch the sub category name when there are no products in it --->
+		: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].subCategoryName>
 
-	<!--- Try catch used since getSubCategories might return empty array --->
-	<!--- if url.subCategoryId is invalid --->
-	<cftry>
-		<cfset variables.subCategoryName = arrayLen(variables.products.data)
-			? variables.products.data[1].subCategoryName
-			<!--- Below code is to fetch the sub category name when there are no products in it --->
-			: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].subCategoryName>
-
-		<cfcatch>
-			<cflocation url="/" addToken="false">
-		</cfcatch>
-	</cftry>
-<cfelse>
-	<cflocation url="/" addToken="false">
-</cfif>
+	<cfcatch>
+		<cflocation url="/" addToken="false">
+	</cfcatch>
+</cftry>
 
 <cfoutput>
 	<!--- Main Content --->
@@ -68,7 +61,7 @@
 				<div class="fs-5 px-3 mb-2 text-truncate">
 					Showing results for <span class="fw-semibold">'#url.search#'</span>
 				</div>
-			<cfelseif len(trim(variables.subCategoryName))>
+			<cfelseif len(trim(url.subCategoryId))>
 				<div class="fs-5 fw-semibold px-3 mb-2">
 					#variables.subCategoryName#
 				</div>
