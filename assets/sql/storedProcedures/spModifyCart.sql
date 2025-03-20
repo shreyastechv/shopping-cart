@@ -30,8 +30,6 @@ BEGIN
 
 		-- Decrement quantity
 		ELSEIF action = 'decrement' THEN
-			START TRANSACTION;
-
 			-- Update quantity
 			UPDATE
 				tblCart
@@ -48,8 +46,6 @@ BEGIN
 				fldQuantity = 0
 				AND fldProductId = productId
 				AND fldUserId = userId;
-
-			COMMIT;
 
 		-- Delete product from cart
 		ELSEIF action = 'delete' THEN
