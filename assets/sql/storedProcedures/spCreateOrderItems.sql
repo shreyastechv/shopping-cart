@@ -1,10 +1,10 @@
 DELIMITER $$
 
 CREATE PROCEDURE spCreateOrderItems (
-    IN orderId VARCHAR(64),
-    IN userId INT,
-    IN addressId INT,
-    IN jsonProducts JSON,
+	IN userId INT,
+	IN addressId INT,
+	IN jsonProducts JSON,
+	OUT orderId VARCHAR(64),
 	OUT success BIT(1)
 )
 BEGIN
@@ -19,14 +19,12 @@ BEGIN
 		-- Insert into order table
 		INSERT INTO
 			tblOrder (
-				fldOrder_Id,
 				fldUserId,
 				fldAddressId,
 				fldTotalPrice,
 				fldTotalTax
 			)
 		SELECT
-			orderId,
 			userId,
 			addressId,
 			SUM(P.fldPrice * fldQuantity) AS totalPrice,
@@ -61,7 +59,7 @@ BEGIN
 				fldUnitTax
 			)
 		SELECT
-			orderId,
+			@lastOrderId, -- There is a trigger in the table that sets this value
 			JP.fldProductId,
 			JP.fldQuantity,
 			P.fldPrice,

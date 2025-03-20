@@ -275,24 +275,6 @@
 				<cfreturn local.response>
 			</cfif>
 
-			<!--- Create Order Id --->
-			<cfset local.orderId = createUUID()>
-			<cfloop condition="true">
-				<cfquery name="local.qryCheckOrderId">
-					SELECT
-						fldOrder_Id
-					FROM
-						tblOrder
-					WHERE
-						fldOrder_Id  = <cfqueryparam value = "#trim(local.orderId)#" cfsqltype = "varchar">
-				</cfquery>
-				<cfif local.qryCheckOrderId.recordCount>
-					<cfset local.orderId = createUUID()>
-				<cfelse>
-					<cfbreak>
-				</cfif>
-			</cfloop>
-
 			<!--- json array to pass to stored procedure --->
 			<cfset local.productList = []>
 
@@ -309,10 +291,10 @@
 			<cfset local.productJSON = serializeJSON(local.productList)>
 
 			<cfstoredproc procedure="spCreateOrderItems">
-				<cfprocparam type="in" cfsqltype="varchar" value="#local.orderId#">
 				<cfprocparam type="in" cfsqltype="integer" value="#session.userId#">
 				<cfprocparam type="in" cfsqltype="integer" value="#val(local.addressId)#">
 				<cfprocparam type="in" cfsqltype="longvarchar" value="#local.productJSON#">
+				<cfprocparam type="out" cfsqltype="varchar" variable="local.orderId">
 				<cfprocparam type="out" cfsqltype="bit" variable="local.success">
 			</cfstoredproc>
 

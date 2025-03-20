@@ -54,7 +54,7 @@ CREATE INDEX `userid_idx` ON `tblAddress` (`fldUserId` ASC) VISIBLE;
 CREATE UNIQUE INDEX `fldAddress_Id_UNIQUE` ON `tblAddress` (`fldAddress_Id` ASC) VISIBLE;
 
 CREATE TABLE IF NOT EXISTS `tblOrder` (
-  `fldOrder_Id` VARCHAR(64) NOT NULL,
+  `fldOrder_Id` VARCHAR(64) NOT NULL DEFAULT (UUID()),
   `fldUserId` INT NOT NULL,
   `fldAddressId` INT NOT NULL,
   `fldTotalPrice` DECIMAL(10,2) NOT NULL,
@@ -75,6 +75,11 @@ CREATE INDEX `userid_idx` ON `tblOrder` (`fldUserId` ASC) VISIBLE;
 CREATE UNIQUE INDEX `fldOrder_Id_UNIQUE` ON `tblOrder` (`fldOrder_Id` ASC) VISIBLE;
 
 CREATE INDEX `addressid_idx` ON `tblOrder` (`fldAddressId` ASC) VISIBLE;
+
+CREATE TRIGGER ai_uuidtable
+AFTER INSERT ON tblOrder
+FOR EACH ROW
+SET @lastOrderId = NEW.fldOrder_Id;
 
 CREATE TABLE IF NOT EXISTS `tblCategory` (
   `fldCategory_Id` INT NOT NULL AUTO_INCREMENT,
