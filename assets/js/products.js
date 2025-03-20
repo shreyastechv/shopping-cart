@@ -1,9 +1,13 @@
 const urlSort = new URLSearchParams(document.URL.split('?')[1]).get('sort');
+const urlSearchTerm = new URLSearchParams(document.URL.split('?')[1]).get('search');
+const urlSubCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('subCategoryId');
+const urlMin = new URLSearchParams(document.URL.split('?')[1]).get('min');
+const urlMax = new URLSearchParams(document.URL.split('?')[1]).get('max');
 const limit = 6;
 let offset = 0;
 
 function createProduct(id, image, name, desc, price) {
-	const newDiv = `
+	$(`
 		<div class="col-sm-2 mb-4">
 			<div class="card rounded-3 h-100 shadow"
 				onclick="location.href='/productPage.cfm?productId=${encodeURIComponent(id)}'" role="button">
@@ -16,41 +20,92 @@ function createProduct(id, image, name, desc, price) {
 				</div>
 			</div>
 		</div>
-	`
-
-	$("#products").append(newDiv);
+	`).hide().appendTo("#products").fadeIn();
 }
 
-function viewMore(subCategoryId, searchTerm) {
+function viewMore() {
 	// Increment offset to fetch next set of products
 	offset += limit;
 
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/dataFetch.cfc",
+		dataType: "json",
 		data: {
 			method: "getProducts",
-			subCategoryId: subCategoryId,
-			searchTerm: searchTerm,
+			subCategoryId: urlSubCategoryId || "",
+			searchTerm: urlSearchTerm || "",
+			min: urlMin || 0,
+			max: urlMax || 0,
 			limit: limit,
 			offset: offset,
-			sort: urlSort !== null ? urlSort : ""
+			sort: urlSort || ""
 		},
 		success: function(response) {
-			const responseJSON = JSON.parse(response);
-
 			// Loop over product data to get info we need
-			for (let item of responseJSON.data) {
+			for (let item of response.data) {
 				// Create product div
-				createProduct(item.productId, item.productImage, item.productName, item.description, item.price);
+				createProduct(item.productId, item.productImages[0], item.productName, item.description, item.price);
 			}
 
 			// Remove view more btn if there are no products to be fetched
-			if (responseJSON.data.length < limit) {
-				$("#viewMoreBtn").hide();
-				return;
+			if (!response.hasMoreRows) {
+				$("<div class='text-center text-secondary'>------  No more products  ------</div>").appendTo($("#viewMoreBtn").parent());
+				$("#viewMoreBtn").remove();
 			}
-
 		}
 	});
 }
+
+function clearFilter() {
+	updateUrlParam({
+		min: 0,
+		max: 0
+	});
+}
+
+function updateUrlParam(paramData) {
+	const urlParams = new URLSearchParams(window.location.search);
+	for (let urlParam in paramData) {
+		if (paramData.hasOwnProperty(urlParam)) {
+			urlParams.set(urlParam, paramData[urlParam]);
+		}
+	}
+	window.location.href = window.location.pathname + '?' + urlParams.toString();
+}
+
+function applyFilter() {
+	const min = $("#min").val();
+	const max = $("#max").val();
+
+	updateUrlParam({
+		min: min,
+		max: max
+	});
+}
+
+function swapFilter() {
+	const min = $("#min").val();
+	const max = $("#max").val();
+
+	$("#min").val(max).change();
+	$("#max").val(min).change();
+}
+
+$(document).ready(function() {
+	$('#sortSelect').on('change', function() {
+		var selectedOption = $('#sortSelect option:selected').val();
+		switch(selectedOption) {
+			case "price-asc":
+				updateUrlParam({ sort: "asc" });
+				break;
+
+			case "price-desc":
+				updateUrlParam({ sort: "desc" });
+				break;
+
+			default:
+				updateUrlParam({ sort: "" });
+		}
+	});
+});

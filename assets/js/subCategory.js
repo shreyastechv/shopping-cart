@@ -1,25 +1,19 @@
 const urlCategoryId = new URLSearchParams(document.URL.split('?')[1]).get('categoryId');
 
-function createSubCategoryItem(subCategoryId, subCategoryName) {
-	const containerId = "subCategoryContainer_" + Math.floor(Math.random() * 1e9);;
-	const subCategoryItem = `
-		<div class="d-flex justify-content-between align-items-center border rounded-2 px-2" id="${containerId}">
-			<div name="subCategoryName" class="fs-5">${subCategoryName}</div>
-			<div>
-				<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#subCategoryModal" onclick="showEditSubCategoryModal('${containerId}', '${subCategoryId}')">
-					<i class="fa-solid fa-pen-to-square pe-none"></i>
-				</button>
-				<button class="btn btn-lg" onclick="deleteSubCategory('${containerId}', '${subCategoryId}', '${subCategoryName}')">
-					<i class="fa-solid fa-trash pe-none"></i>
-				</button>
-				<a class="btn btn-lg" href="/productEdit.cfm?subCategoryId=${encodeURIComponent(subCategoryId)}">
-					<i class="fa-solid fa-chevron-right"></i>
-				</a>
-			</div>
-		</div>
-	`;
-	$("#subCategoryMainContainer").append(subCategoryItem);
-}
+$(document).ready(function () {
+	// Disable submit button if subcategory name and category id is empty or it is unchanged
+	$("#subCategoryName, #categorySelect").on("input", function() {
+		const categoryId = $("#categorySelect").val().trim();
+		const subCategoryName = $("#subCategoryName").val().trim();
+		const prevCategoryId = $("#categorySelect").attr("data-categoryid").trim();
+		const prevSubCategoryName = $("#subCategoryName").attr("data-subcategoryname").trim();
+		if (categoryId == 0 || subCategoryName.length == 0 || (categoryId == prevCategoryId && subCategoryName == prevSubCategoryName)) {
+			$("#subCategoryModalBtn").prop("disabled", true);
+		} else {
+			$("#subCategoryModalBtn").prop("disabled", false);
+		}
+	});
+});
 
 function clearSubCategoryModal() {
 	$("#categorySelect").removeClass("border-danger");
@@ -34,69 +28,46 @@ function processSubCategoryForm() {
 	event.preventDefault();
 	clearSubCategoryModal();
 	let subCategoryId = $("#subCategoryId").val().trim();
-	const subCategoryName = $("#subCategoryName").val().trim();
-	const prevSubCategoryName = $("#subCategoryName").attr("data-sc-prevSubCategoryName").trim();
+	const subCategoryName = $("#subCategoryName");
 	const categoryId = $("#categorySelect").val().trim();
-	let valid = true;
-
-	// Category Select Validation
-	if (categoryId < 1) {
-		$("#categorySelect").addClass("border-danger");
-		$("#categorySelectError").text("Select a category");
-		valid = false;
-	}
-
-	// Subcategory Name Validation
-	if (subCategoryName.length === 0) {
-		$("#subCategoryName").addClass("border-danger");
-		$("#subCategoryModalMsg").text("SubCategory name should not be empty");
-		valid = false;
-	}
-	else if (!/^[A-Za-z'& ]+$/.test(subCategoryName)) {
-		$("#subCategoryName").addClass("border-danger");
-		$("#subCategoryModalMsg").text("SubCategory name should only contain letters!");
-		valid = false;
-	}
-	else if (urlCategoryId === categoryId && prevSubCategoryName === subCategoryName) {
-		$("#subCategoryName").addClass("border-danger");
-		$("#subCategoryModalMsg").text("SubCategory name unchanged");
-		valid = false;
-	}
+	const subCategoryModalMsg = $("#subCategoryModalMsg");
+	const valid = validateCategoryName(subCategoryName, "Sub category", subCategoryModalMsg);
 
 	if (!valid) return false;
 
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/productManagement.cfc",
+		dataType: "json",
 		data: {
 			method: "modifySubCategory",
 			subCategoryId: subCategoryId,
-			subCategoryName: subCategoryName,
+			subCategoryName: subCategoryName.val().trim(),
 			categoryId: categoryId
 		},
 		success: function(response) {
-			const responseJSON = JSON.parse(response);
-			$("#subCategoryModalMsg").addClass("text-success");
-			$("#subCategoryModalMsg").removeClass("text-danger");
-			$("#subCategoryModalMsg").text(responseJSON.message);
-			if (responseJSON.message == "SubCategory Added") {
-				subCategoryId = responseJSON.subCategoryId;
-				if (categoryId === urlCategoryId) {
-					createSubCategoryItem(subCategoryId, subCategoryName);
-				}
-			}
-			else if (responseJSON.message == "SubCategory Updated") {
-				location.reload();
-			}
-			else {
-				$("#subCategoryModalMsg").removeClass("text-success");
-				$("#subCategoryModalMsg").addClass("text-danger");
+			const { message, success } = response;
+			if(success) {
+				Swal.fire({
+					icon: "success",
+					title: message,
+					showDenyButton: false,
+					showCancelButton: false,
+					confirmButtonText: "Ok",
+					denyButtonText: "Deny",
+					allowOutsideClick: false,
+					allowEscapeKey: false
+				}).then((result) => {
+					if (result.isConfirmed) {
+						location.reload();
+					}
+				});
+			} else {
+				subCategoryModalMsg.text(message);
 			}
 		},
 		error: function () {
-			$("#subCategoryModalMsg").removeClass("text-success");
-			$("#subCategoryModalMsg").addClass("text-danger");
-			$("#subCategoryModalMsg").text("We encountered an error!");
+			subCategoryModalMsg.text("We encountered an error!");
 		}
 	});
 }
@@ -104,9 +75,10 @@ function processSubCategoryForm() {
 function showAddSubCategoryModal() {
 	clearSubCategoryModal();
 	$("#subCategoryModalLabel").text("ADD SUBCATEGORY");
-	$("#subCategoryModalBtn").text("Add SubCategory");
+	$("#subCategoryModalBtn").text("Save");
+	$("#categorySelect").val(urlCategoryId).attr("data-categoryid", "").change();
 	$("#subCategoryId").val("");
-	$("#subCategoryName").attr("data-sc-prevSubCategoryName", "");
+	$("#subCategoryName").attr("data-subcategoryname", "");
 	$("#subCategoryForm")[0].reset();
 }
 
@@ -114,24 +86,34 @@ function showEditSubCategoryModal(containerId, subCategoryId) {
 	const subCategoryName = $(`#${containerId} [name='subCategoryName']`).text();
 	clearSubCategoryModal();
 	$("#subCategoryModalLabel").text("EDIT SUBCATEGORY");
-	$("#subCategoryModalBtn").text("Edit SubCategory");
+	$("#subCategoryModalBtn").text("Save Changes");
+	$("#categorySelect").val(urlCategoryId).attr("data-categoryid", urlCategoryId).change();
 	$("#subCategoryId").val(subCategoryId);
-	$("#subCategoryName").attr("data-sc-prevSubCategoryName", subCategoryName);
-	$("#subCategoryName").val(subCategoryName);
+	$("#subCategoryName").val(subCategoryName).attr("data-subcategoryname", subCategoryName);
 }
 
 function deleteSubCategory(containerId, subCategoryId, subCategoryName) {
-	if (confirm(`Delete subCategory - '${subCategoryName}'?`)) {
-		$.ajax({
-			type: "POST",
-			url: "./components/shoppingCart.cfc",
-			data: {
-				method: "deleteSubCategory",
-				subCategoryId: subCategoryId
-			},
-			success: function() {
-				$(`#${containerId}`).remove();
-			}
-		});
-	}
+	Swal.fire({
+		icon: "warning",
+		title: `Delete subCategory - '${subCategoryName}'?`,
+		showDenyButton: false,
+		showCancelButton: true,
+		confirmButtonText: "Ok",
+		denyButtonText: "Deny"
+	}).then((result) => {
+		if (result.isConfirmed) {
+			$.ajax({
+				type: "POST",
+				url: "./components/productManagement.cfc",
+				data: {
+					method: "deleteItem",
+					itemName: "subcategory",
+					itemId: subCategoryId
+				},
+				success: function() {
+					$(`#${containerId}`).remove();
+				}
+			});
+		}
+	});
 }

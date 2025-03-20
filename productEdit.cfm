@@ -3,196 +3,176 @@
 <cfparam name="variables.categoryId" default="">
 <cfparam name="variables.subCategoryName" default="Products">
 
+<!--- Go to admin dashboard if subcategory id is empty --->
+<cfif NOT len(trim(url.subCategoryId))>
+	<cflocation url="/adminDashboard.cfm" addToken="false">
+</cfif>
+
 <cfoutput>
-	<!--- Go to home page if sub category id is empty --->
-	<cfif len(trim(url.subCategoryId)) EQ 0>
-		<cflocation url="/" addToken="no">
-	</cfif>
-
 	<!--- Get Data --->
-	<cfset variables.categories = application.shoppingCart.getCategories()>
-	<cfset variables.subCategories = application.shoppingCart.getSubCategories()>
-	<cfset variables.products = application.shoppingCart.getProducts(subCategoryId = url.subCategoryId)>
-	<cfset variables.brands = application.shoppingCart.getBrands()>
+	<cfset variables.categories = application.dataFetch.getCategories()>
+	<cfset variables.products = application.dataFetch.getProducts(subCategoryId = url.subCategoryId)>
+	<cfset variables.brands = application.dataFetch.getBrands()>
+	<cftry>
+		<cfset variables.categoryId = arrayLen(variables.products.data)
+			? variables.products.data[1].categoryId
+			: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].categoryId>
 
-	<!--- Get sub category name of the current products page --->
-	<cfloop array="#variables.subCategories.data#" item="item">
-		<cfif item.subCategoryId EQ url.subCategoryId>
-			<cfset variables.subCategoryName = item.subCategoryName>
-		</cfif>
-	</cfloop>
+		<cfcatch>
+			<cfset variables.categoryId = 0>
+		</cfcatch>
+	</cftry>
+	<cfset variables.subCategories = application.dataFetch.getSubCategories(categoryId = variables.categoryId)>
+	<cftry>
+		<cfset variables.subCategoryName = arrayLen(variables.products.data)
+			? variables.products.data[1].subCategoryName
+			: application.dataFetch.getSubCategories(subCategoryId = url.subCategoryId).data[1].subCategoryName>
 
-	<!--- Get category id of the current products page --->
-	<cfloop array="#variables.subCategories.data#" item="item">
-		<cfif item.subCategoryId EQ url.subCategoryId>
-			<cfset variables.categoryId = item.categoryId>
-		</cfif>
-	</cfloop>
-
-	<!--- Get category name of the current products page --->
-	<cfloop array="#variables.categories.data#" item="item">
-		<cfif item.categoryId EQ variables.categoryId>
-			<cfset variables.categoryName = item.categoryName>
-		</cfif>
-	</cfloop>
-
-	<!--- Reduce the sub categories query to only ones with current page category id --->
-	<cfset variables.subCategories.data = arrayFilter(variables.subCategories.data, function(item) {
-		return item.categoryId EQ variables.categoryId;
-	})>
+		<cfcatch>
+			<cfset variables.subCategoryName = "Products">
+		</cfcatch>
+	</cftry>
 
 	<!--- Main Content --->
-	<div class="container d-flex flex-column justify-content-center align-items-center py-5 mt-5">
-		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
-			<div id="productMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
+	<div class="container d-flex flex-column justify-content-center align-items-center my-5">
+		<div class="shadow-lg border-0 justify-content-center rounded-3 mb-3 w-100">
+			<div id="productMainContainer" class="bg-white rounded-3 p-4 w-100">
 				<div class="d-flex justify-content-between align-items-center mb-4">
 					<a href="/subCategory.cfm?categoryId=#urlEncodedFormat(variables.categoryId)#" class="btn">
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">
-						<h3 class="fw-semibold text-center mb-0 me-3">#variables.subCategoryName#</h3>
-						<button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal('#variables.categoryId#', '#url.subCategoryId#')">
+						<h3 class="h5 fw-semibold text-center mb-0 me-3">#variables.subCategoryName#</h3>
+						<button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showAddProductModal('#variables.categoryId#', '#url.subCategoryId#')">
 							Add+
 						</button>
 					</div>
 					<div></div>
 				</div>
-				<cfloop array="#variables.products.data#" item="item" index="i">
-					<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-2">
-						<div class="d-flex flex-column fs-5">
-							<div name="productName" class="fw-bold">#item.productName#</div>
-							<div name="brandName" class="fw-semibold">#item.brandName#</div>
-							<div name="price" class="text-success">Rs.#item.price#</div>
+				<div class="row px-2">
+					<cfloop array="#variables.products.data#" item="item" index="i">
+						<div class="col-lg-6 px-1">
+							<div id="productContainer_#i#" class="d-flex justify-content-between align-items-center border rounded-2 px-3 py-1 mb-2 shadow-sm">
+								<div class="d-flex flex-column gap-1 w-50">
+									<div name="productName" class="fw-semibold text-truncate fs-6">#item.productName#</div>
+									<div name="brandName">#item.brandName#</div>
+									<div name="price" class="text-success fw-semibold">Rs. #item.price#</div>
+								</div>
+								<div class="d-flex gap-4">
+									<img src="#application.productImageDirectory&item.productImages[1]#" alt="Product Image" class="img-thumbnail m-1 border rounded" width="80">
+									<div class="d-flex flex-column justify-content-around">
+										<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
+											<i class="fa-solid fa-pen-to-square pe-none"></i>
+										</button>
+										<button class="btn btn-lg" onclick="deleteProduct('productContainer_#i#', '#item.productId#')">
+											<i class="fa-solid fa-trash pe-none"></i>
+										</button>
+									</div>
+								</div>
+							</div>
 						</div>
-						<div>
-							<button class="btn rounded-circle p-0 m-0 me-5" onclick="editDefaultImage('#item.productId#')">
-								<img class="pe-none" src="#application.productImageDirectory&item.productImage#" alt="Product Image" width="50">
-							</button>
-							<button class="btn btn-lg" data-bs-toggle="modal" data-bs-target="##productEditModal" onclick="showEditProductModal('#variables.categoryId#', '#item.productId#')">
-								<i class="fa-solid fa-pen-to-square pe-none"></i>
-							</button>
-							<button class="btn btn-lg" onclick="deleteProduct('productContainer_#i#', '#item.productId#')">
-								<i class="fa-solid fa-trash pe-none"></i>
-							</button>
-						</div>
-					</div>
-				</cfloop>
+					</cfloop>
+				</div>
 			</div>
 		</div>
 	</div>
 
 	<!--- Product Edit Modal --->
 	<div class="modal fade" id="productEditModal">
-	  <div class="modal-dialog">
+	  <div class="modal-dialog modal-lg">
 		<div class="modal-content">
 		  <div class="modal-header">
 			<h1 class="modal-title fs-5" id="subCategoryModalLabel">Edit Product</h1>
 			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		  </div>
-		  <form id="productForm" method="post" class="form-group" enctype="multipart/form-data" onsubmit="processproductForm()">
+		  <form id="productForm" method="post" class="form-group" enctype="multipart/form-data" onsubmit="processProductForm()">
 			  <div class="modal-body">
 				<input type="hidden" id="productId" name="productId" value="">
 
-				<!--- Category Select --->
-				<label for="categorySelect" class="fw-semibold">Category Name</label>
-				<select id="categorySelect" class="form-select" aria-label="Category Select">
-					<option value="0">Category Select</option>
-					<cfloop array="#variables.categories.data#" item="item">
-						<option
-							<cfif variables.categoryId EQ item.categoryId>
-								selected
-							</cfif>
-							value="#item.categoryId#"
-						>
-							#item.categoryName#
-						</option>
-					</cfloop>
-				</select>
-				<div id="categorySelectError" class="mt-2 text-danger error error"></div>
+				<div class="row">
+					<!--- Category Select --->
+					<div class="col-md-6">
+						<label for="categorySelect" class="fw-semibold">Category Name</label>
+						<select id="categorySelect" class="form-select productInput" aria-label="Category Select">
+							<option value="0">Category Select</option>
+							<cfloop array="#variables.categories.data#" item="item">
+								<option value="#item.categoryId#" #(variables.categoryId EQ item.categoryId ? "selected" : "")#>
+									#item.categoryName#
+								</option>
+							</cfloop>
+						</select>
+						<div id="categorySelectError" class="text-danger productError ps-2"></div>
+					</div>
 
-				<!--- SubCategory Select --->
-				<label for="subCategorySelect" class="fw-semibold">SubCategory Name</label>
-				<select id="subCategorySelect" class="form-select" aria-label="SubCategory Select">
-					<option value="0">SubCategory Select</option>
-					<cfloop array="#variables.subCategories.data#" item="item">
-						<option
-							<cfif url.subCategoryId EQ item.subCategoryId>
-								selected
-							</cfif>
-							value="#item.subCategoryId#"
-						>
-							#item.subCategoryName#
-						</option>
-					</cfloop>
-				</select>
-				<div id="subCategorySelectError" class="mt-2 text-danger error"></div>
+					<div class="col-md-6">
+						<!--- SubCategory Select --->
+						<label for="subCategorySelect" class="fw-semibold">SubCategory Name</label>
+						<select id="subCategorySelect" class="form-select productInput" aria-label="SubCategory Select">
+							<option value="0">SubCategory Select</option>
+							<cfloop array="#variables.subCategories.data#" item="item">
+								<option value="#item.subCategoryId#" #(url.subCategoryId EQ item.subCategoryId ? "selected" : "")#>
+									#item.subCategoryName#
+								</option>
+							</cfloop>
+						</select>
+						<div id="subCategorySelectError" class="text-danger productError ps-2"></div>
+					</div>
+				</div>
 
-				<!--- Product Name --->
-				<label for="productName" class="fw-semibold">Product Name</label>
-				<input type="text" id="productName" name="productName" class="form-control mb-1">
-				<div id="productNameError" class="text-danger error"></div>
+				<div class="row mt-1">
+					<div class="col-md-6">
+						<!--- Product Name --->
+						<label for="productName" class="fw-semibold mt-2">Product Name</label>
+						<input type="text" id="productName" name="productName" maxlength="100" class="form-control productInput">
+						<div id="productNameError" class="text-danger productError ps-2"></div>
+					</div>
 
-				<!--- Product Brand --->
-				<label for="brandSelect" class="fw-semibold">Product Brand</label>
-				<select id="brandSelect" class="form-select" aria-label="SubCategory Select">
-					<option value="0">Brand Name</option>
-					<cfloop array="#variables.brands.data#" item="item">
-						<option value="#item.brandId#">#item.brandName#</option>
-					</cfloop>
-				</select>
-				<div id="brandSelectError" class="text-danger error"></div>
+					<div class="col-md-6">
+						<!--- Product Brand --->
+						<label for="brandSelect" class="fw-semibold mt-2">Product Brand</label>
+						<select id="brandSelect" class="form-select productInput" aria-label="SubCategory Select">
+							<option value="0">Brand Name</option>
+							<cfloop array="#variables.brands.data#" item="item">
+								<option value="#item.brandId#">#item.brandName#</option>
+							</cfloop>
+						</select>
+						<div id="brandSelectError" class="text-danger productError ps-2"></div>
+					</div>
+				</div>
 
 				<!--- Product Description --->
-				<label for="productDesc" class="fw-semibold">Product Description</label>
-				<textarea class="form-control mb-1" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400"></textarea>
-				<div id="productDescError" class="text-danger error"></div>
+				<label for="productDesc" class="fw-semibold mt-2">Product Description</label>
+				<textarea class="form-control productInput" id="productDesc" name="productDesc" rows="4" cols="50" maxlength="400"></textarea>
+				<div id="productDescError" class="text-danger productError ps-2"></div>
 
-				<!--- Product Price --->
-				<label for="productPrice" class="fw-semibold">Product Price</label>
-				<input type="number" step="0.01" min="0" id="productPrice" name="productPrice" class="form-control mb-1">
-				<div id="productPriceError" class="text-danger error"></div>
+				<div class="row mt-2">
+					<div class="col-md-6">
+						<!--- Product Price --->
+						<label for="productPrice" class="fw-semibold mt-2">Product Price</label>
+						<input type="number" step="0.01" min="0" id="productPrice" max="99999999" name="productPrice" class="form-control productInput">
+						<div id="productPriceError" class="text-danger productError ps-2"></div>
+					</div>
 
-				<!--- Product Tax --->
-				<label for="productTax" class="fw-semibold">Product Tax</label>
-				<input type="number" step="0.01" min="0" id="productTax" name="productTax" class="form-control mb-1">
-				<div id="productTaxError" class="text-danger error"></div>
+					<div class="col-md-6">
+						<!--- Product Tax --->
+						<label for="productTax" class="fw-semibold mt-2">Product Tax (%)</label>
+						<input type="number" step="0.01" min="0" max="100" id="productTax" name="productTax" class="form-control productInput">
+						<div id="productTaxError" class="text-danger productError ps-2"></div>
+					</div>
+				</div>
 
 				<!--- Product Image --->
-				<label for="productImage" class="fw-semibold">Product Image</label>
-				<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control mb-1" multiple>
-				<div id="productImageError" class="text-danger error"></div>
+				<label for="productImage" class="fw-semibold mt-2">Product Image</label>
+				<input type="file" accept="image/*" id="productImage" name="productImage" placeholder="Product Image" class="form-control productInput" multiple>
+				<div id="uploadedProductImages" class="row px-3 gap-3 mt-1"></div>
+				<div id="productImageError" class="text-danger productError mt-2 ps-2"></div>
 			  </div>
 			  <div class="modal-footer">
-				<div id="productEditModalMsg" class="mt-2 error"></div>
-				<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Add Product</button>
+				<div id="productEditModalMsg" class="mt-2 text-danger productError"></div>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+				<button type="submit" id="subCategoryModalBtn" class="btn btn-primary">Save</button>
 			  </div>
 		  </form>
-		</div>
-	  </div>
-	</div>
-
-	<!--- Product Image Modal --->
-	<div class="modal fade" id="productImageModal">
-	  <div class="modal-dialog w-50">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h1 class="modal-title fs-5" id="imageModalLabel">Product Images</h1>
-			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		  </div>
-		  <div class="modal-body" data-bs-theme="dark">
-			<div id="productImageCarousel" class="carousel slide">
-			  <div id="carouselContainer" class="carousel-inner">
-			  </div>
-			  <button class="carousel-control-prev" type="button" data-bs-target="##productImageCarousel" data-bs-slide="prev">
-				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				<span class="visually-hidden">Previous</span>
-			  </button>
-			  <button class="carousel-control-next" type="button" data-bs-target="##productImageCarousel" data-bs-slide="next">
-				<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				<span class="visually-hidden">Next</span>
-			  </button>
-			</div>
-		  </div>
 		</div>
 	  </div>
 	</div>

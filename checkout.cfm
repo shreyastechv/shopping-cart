@@ -2,25 +2,17 @@
 <cfparam name="url.productId" default="">
 
 <!--- Get Data --->
-<cfset variables.addresses = application.shoppingCart.getAddress()>
+<cfset variables.addresses = application.dataFetch.getAddress()>
 <cfset variables.addressEmpty = arrayLen(variables.addresses.data) EQ 0 ? "disabled" : "">
 
 <!--- Variables to store total price and total actual price --->
 <cfset variables.totalPrice = 0>
 <cfset variables.totalActualPrice = 0>
 
-<cfif len(trim(url.productId)) NEQ 0>
-	<!--- Product details when this page was opened by clicking buy now from product page --->
-	<cfset session.checkout[url.productId] = {
-		"quantity" = 1
-	}>
-<cfelseif structKeyExists(session, "cart") AND structCount(session.cart)>
-	<!--- Product details when this page was opened by clicking clicking checkout from cart page --->
-	<cfset session.checkout = duplicate(session.cart)>
-<cfelse>
-	<!--- If this page was opened by user and cart is empty --->
-	<cflocation  url="/cart.cfm" addToken="no">
-</cfif>
+<!--- Get product details into a session variable for easy quantity modifications --->
+<cfset session.checkout = application.dataFetch.getCart(
+	productId = url.productId
+)>
 
 <cfoutput>
 	<!--- Main Content --->
@@ -39,9 +31,10 @@
 								</button>
 							</h2>
 							<div id="flush-collapseOne" class="accordion-collapse collapse show" data-bs-parent="##orderSummary">
-								<div class="accordion-body">
+								<div class="accordion-body pb-0">
 									<cf_addresslist addresses="#variables.addresses.data#" currentPage="checkout">
 								</div>
+								<div class="d-flex align-items-center text-danger p-3 pt-0 checkoutError" id="addressAccordionError"></div>
 								<div class="d-flex justify-content-between p-3 pt-0">
 									<cf_addaddressbtn>
 									<button type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseTwo"
@@ -62,12 +55,12 @@
 							</h2>
 							<div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="##orderSummary">
 								<div class="accordion-body" id="accordionBody">
-									<cf_cartproductlist products="#session.checkout#">
+									<cf_cartproductlist products="#session.checkout.items#">
 								</div>
 								<div class="d-flex justify-content-end p-3">
 									<button type="button" data-bs-toggle="collapse" data-bs-target="##flush-collapseThree"
 										aria-expanded="false" aria-controls="flush-collapseThree"class="btn btn-success"
-										id="productsNextBtn">
+										id="productsNextBtn" #(structCount(session.checkout.items) ? "" : "disabled")#>
 										Next
 									</button>
 								</div>
@@ -79,7 +72,7 @@
 							<h2 class="accordion-header">
 								<button class="accordion-button collapsed text-uppercase fw-semibold" type="button" data-bs-toggle="collapse"
 									data-bs-target="##flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree"
-									id="paymentSectionAccordionBtn" #variables.addressEmpty#>
+									id="paymentSectionAccordionBtn" #variables.addressEmpty#  #(structCount(session.checkout.items) ? "" : "disabled")#>
 									Payment Options
 								</button>
 							</h2>
@@ -97,7 +90,7 @@
 												maxlength="19"
 												placeholder="XXXX XXXX XXXX XXXX"
 												autocomplete="cc-number">
-											<div id="cardNumberError" class="form-text text-danger cardError"></div>
+											<div id="cardNumberError" class="form-text text-danger checkoutError"></div>
 										</div>
 										<div class="col-sm-4 mb-3">
 											<label for="cvv" class="form-label">CVV</label>
@@ -109,11 +102,12 @@
 												maxlength="3"
 												placeholder="XXX"
 												autocomplete="cc-csc">
-											<div id="cvvError" class="form-text text-danger cardError"></div>
+											<div id="cvvError" class="form-text text-danger checkoutError"></div>
 										</div>
 									</div>
 								</div>
 								<div class="d-flex justify-content-end p-3">
+									<div id="checkoutError" class="d-flex align-items-center justify-content-center text-danger me-4 checkoutError"></div>
 									<button type="submit" class="btn btn-success">
 										Continue
 									</button>
@@ -140,9 +134,8 @@
 		</div>
 	</div>
 
-	<!-- Order Success Modal -->
-	<div class="modal fade" id="orderSuccess" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-		aria-labelledby="orderSuccessLabel" aria-hidden="true">
+	<!-- Order Result Modal -->
+	<div class="modal fade" id="orderResult" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-body d-flex flex-column align-items-center justify-content-center p-4 gap-3">
@@ -164,11 +157,11 @@
 					</div>
 					<div name="error" class="d-none d-flex flex-column align-items-center justify-content-center gap-3 py-3">
 						<img src="#application.imageDirectory#order-failed.jpg" width="200px" alt="Order Failed Image">
-						<div class="text-danger fs-5">
-							Sorry! There was an error.
+						<div class="text-danger fs-5 d-flex align-items-center gap-2">
+							<div id="orderResultError">Sorry! There was an error.</div>
 							<i class="fa-solid fa-circle-exclamation"></i>
 						</div>
-						<a class="btn btn-primary" href="/">Go to Home</a>
+						<a id="orderResultErrorBtn" class="btn btn-primary" href="/">Go to Home</a>
 					</div>
 				</div>
 			</div>

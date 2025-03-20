@@ -8,59 +8,58 @@ function handleQuantityChange(containerId) {
 	}
 }
 
-function createAlert(containerId, message) {
+function createAlert(containerId, alertName, message) {
 	// Prevent more than one divs from being created
-	if ($(`#${containerId} div[name="maxQuantityAlert"]`).length > 0) return;
+	if ($(`#${containerId} div[name="${alertName}"]`).length > 0) return;
 
-	// Create div
-	const alertDiv = `
-		<div name="maxQuantityAlert" class="alert alert-warning alert-dismissible fade show m-2" role="alert">
+	// Create div and append to parent container
+	$(`
+		<div name="${alertName}" class="alert alert-warning alert-dismissible fade show m-2" role="alert">
 			${message}
 			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
-	`;
-
-	// Append div to parent container
-	$(`#${containerId}`).append(alertDiv);
+	`).appendTo(`#${containerId}`);
 }
 
 function editCartItem(containerId, productId, action) {
+	const clickedBtn = $(event.target);
 	const currentPage = new URL(document.URL).pathname.split('/').pop();
 	let quantity = parseInt($(`#${containerId} input[name="quantity"]`).val());
 
 	// Create alert if quantity is maxed out
-	if (action == "increment" && quantity == 5) {
-		createAlert(containerId, "Maximmmmum allowed quantity for this item is reached.");
+	if (action == "increment" && quantity >= 5) {
+		createAlert(containerId, "maxQuantityAlert", "Maximum allowed quantity for this item is reached.");
 		return;
 	}
 
-	// Confirm before deleting product
-	if (action == "delete" && !confirm("Delete Product?")) {
-		return;
-	}
+	// Disable button
+	clickedBtn.prop("disabled", true);
 
 	//Go on with execution if no alert is generated
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/cartManagement.cfc",
+		dataType: "json",
 		data: {
 			method: currentPage == "checkout.cfm" ? "modifyCheckout" : "modifyCart",
 			productId: productId,
 			action: action
 		},
 		success: function(response) {
-			const responseJSON = JSON.parse(response);
-			const { price, actualPrice, quantity, totalPrice, totalActualPrice, totalTax } = responseJSON.data;
+			const { price, actualPrice, quantity, totalPrice, totalActualPrice, totalTax } = response.data;
 
-			if (responseJSON.success) {
-				if (["increment", "decrement"].includes(action)) {
+			if (response.success) {
+				if (quantity) {
+					// Quantity is present means product is still in cart
 					$(`#${containerId} span[name="price"]`).text(price.toFixed(2));
 					$(`#${containerId} span[name="actualPrice"]`).text(actualPrice.toFixed(2));
 					$(`#${containerId} input[name="quantity"]`).val(quantity).change();
-				}
-				else if (action == "delete") {
+				} else {
+					// Quantity is not present means product is deleted
 					$(`#${containerId}`).remove();
-					$("#cartCount").text(Number($("#cartCount").text())-1);
+					if (currentPage == "cart.cfm") {
+						$("#cartCount").text(Number($("#cartCount").text())-1);
+					}
 				}
 
 				// Update total price and tax
@@ -68,8 +67,8 @@ function editCartItem(containerId, productId, action) {
 				$("#totalActualPrice").text(totalActualPrice.toFixed(2));
 				$("#totalTax").text(totalTax.toFixed(2));
 
-				// If total price is 0 (cart empty) then reload
-				if (totalPrice == 0) {
+				if (totalPrice.toFixed(2) == 0) {
+					// If total price is 0 (checkout is empty) then create alert
 					if (currentPage == "checkout.cfm") {
 						$("#productsNextBtn").prop("disabled", true);
 						$("#paymentSectionAccordionBtn").prop("disabled", true);
@@ -80,12 +79,21 @@ function editCartItem(containerId, productId, action) {
 							</div>
 						`);
 					} else {
+						// If total price is 0 (cart is empty) then reload page
 						location.reload();
 					}
 				}
 			} else {
-				createAlert(containerId, "Sorry. Unable to proceed. Try again.");
+				createAlert(containerId, "errorAlert", "Sorry. Unable to proceed. Try again.");
 			}
+		}
+	}).always(function() {
+		if (action == "decrement" && quantity == 2) {
+			// If button clicked was delete btn and old quantity = 2 (means current quantity is 1) then disable btn
+			clickedBtn.prop("disabled", true);
+		} else {
+			// Else Enable button back
+			clickedBtn.prop("disabled", false);
 		}
 	});
 }

@@ -10,7 +10,14 @@
 		<cfset application.scriptDirectory = "/assets/js/">
 		<cfset application.imageDirectory = "/assets/images/">
 		<cfset application.productImageDirectory = "/assets/images/productImages/">
-		<cfset application.shoppingCart = createObject("component", "components.shoppingCart")>
+		<cfset application.secretKey = "xpzpO2awP8KM+/nk1vmmFA==">
+
+		<!--- Create component objects --->
+		<cfset application.cartManagement = createObject("component", "components.cartManagement")>
+		<cfset application.commonFunctions = createObject("component", "components.commonFunctions")>
+		<cfset application.dataFetch = createObject("component", "components.dataFetch")>
+		<cfset application.productManagement = createObject("component", "components.productManagement")>
+		<cfset application.userManagement = createObject("component", "components.userManagement")>
 
 		<!--- Map pages to title, css and script path --->
 		<cfset application.pageDetailsMapping = {
@@ -76,14 +83,6 @@
 			}
 		}>
 
-		<!--- Create images dir if not exists --->
-		<cfif NOT directoryExists(expandPath(application.productImageDirectory))>
-			<cfdirectory action="create" directory="#expandPath(application.productImageDirectory)#">
-		</cfif>
-
-		<!--- Key for encrypting and decrypting URL params --->
-		<cfset application.secretKey = generateSecretKey('AES')>
-
 		<cfreturn true>
 	</cffunction>
 
@@ -116,8 +115,8 @@
 
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
-		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm", "/orders.cfm"]>
-		<cfset local.adminPages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm"]>
+		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm", "/orders.cfm", "/components/cartManagement.cfc"]>
+		<cfset local.adminPages = ["/adminDashboard.cfm", "/subCategory.cfm", "/productEdit.cfm", "/components/productManagement.cfc"]>
 
 		<!--- Handle page restrictions --->
 		<cfif arrayFindNoCase(local.initialPages, arguments.targetPage)>
@@ -165,34 +164,6 @@
 
 		<!--- Common Footer file --->
 		<cfinclude template="/includes/footer.cfm">
-	</cffunction>
-
-	<cffunction name="onRequestEnd" returnType="void">
-		<cfargument name="targetPage" type="string" required=true>
-
-		<!--- Update cart when user leaves cart page --->
-		<!--- This code is placed above 'set flag' code to prevent both running on cart page --->
-		<cfif structKeyExists(session, "cartVisit")
-			<!--- Below code is to prevent ajax calls from being registered as page visit --->
-			AND NOT findNoCase("/components", arguments.targetPage)
-		>
-			<!--- Update cart asynchronously --->
-			<cfthread name="cartUpdateThread">
-				<cfset application.shoppingCart.updateCartBatch(
-					userId = session.userId,
-					cartData = session.cart
-				)>
-			</cfthread>
-
-			<!--- Clear flag --->
-			<cfset structDelete(session, "cartVisit")>
-		</cfif>
-
-		<!--- Set session variable when user enters cart page for first time --->
-		<cfif arguments.targetPage EQ "/cart.cfm">
-			<!--- Set flag --->
-			<cfset session.cartVisit = true>
-		</cfif>
 	</cffunction>
 
 	<cffunction name="onSessionEnd" returnType="void">

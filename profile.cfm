@@ -1,34 +1,47 @@
+<!--- Variables --->
+<cfparam name="session.firstName" default="User">
+<cfparam name="session.lastName" default="Name">
+<cfparam name="session.email" default="User Email Id">
+<cfparam name="session.phone" default="User Phone Number">
+
 <!--- Get Data --->
-<cfset variables.addresses = application.shoppingCart.getAddress()>
+<cfset variables.addresses = application.dataFetch.getAddress()>
 
 <cfoutput>
-    <div class="container mt-5">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="d-flex justify-content-between align-items-center gap-2">
-                        <h4 class="fw-semibold mb-1">#session.firstName & " " & session.lastName#</h4>
-                        <p class="text-muted mb-0">#session.email#</p>
-                    </div>
+	<div class="container my-5">
+		<div class="card shadow-sm">
+			<div class="card-body">
+				<div class="d-flex justify-content-between align-items-center mb-3">
+					<div class="d-flex justify-content-between align-items-center gap-2">
+						<h4 class="fw-semibold mb-1">#session.firstName & " " & session.lastName#</h4>
+						<p class="text-muted mb-0">#session.email#</p>
+					</div>
 
 					<div>
 						<!--- Show admin dashboard button --->
 						<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-							<a href="/adminDashboard.cfm" class="btn btn-info m-2">Admin</a>
+							<a href="/adminDashboard.cfm" class="btn btn-info m-2">
+								<i class="fa-solid fa-lock"></i>
+								Admin
+							</a>
 						</cfif>
-						<a href="/orders.cfm" class="btn btn-outline-secondary m-2">View Previous Orders</a>
+						<a href="/orders.cfm" class="btn btn-secondary m-2">
+							<i class="fa-solid fa-rectangle-list"></i>
+							View Previous Orders
+						</a>
 						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="##profileModal">
+							<i class="fa-solid fa-user-pen"></i>
 							Edit Profile
 						</button>
 					</div>
-                </div>
+				</div>
 
-                <h5 class="mt-4">Saved Addresses</h5>
+				<h5 class="mt-4">Saved Addresses</h5>
 				<cf_addresslist addresses="#variables.addresses.data#" currentPage="profile">
 				<cf_addaddressbtn>
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 
 	<!--- Profile Modal --->
 	<div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
@@ -42,17 +55,17 @@
 					<div class="modal-body px-4">
 						<div class="mb-3">
 							<label for="userFirstName" class="form-label">First Name</label>
-							<input type="text" class="form-control profileInput" id="userFirstName" value="#session.firstName#">
+							<input type="text" class="form-control profileInput" id="userFirstName" maxlength="32" value="#session.firstName#">
 							<div id="userFirstNameError" class="form-text text-danger profileError"></div>
 						</div>
 						<div class="mb-3">
 							<label for="userLastName" class="form-label">Last Name</label>
-							<input type="text" class="form-control profileInput" id="userLastName" value="#session.lastName#">
+							<input type="text" class="form-control profileInput" id="userLastName" maxlength="32" value="#session.lastName#">
 							<div id="userLastNameError" class="form-text text-danger profileError"></div>
 						</div>
 						<div class="mb-3">
 							<label for="userEmail" class="form-label">Email</label>
-							<input type="text" class="form-control profileInput" id="userEmail" name="email" value="#session.email#" autocomplete="on">
+							<input type="text" class="form-control profileInput" id="userEmail" name="email" maxlength="100" value="#session.email#" autocomplete="on">
 							<div id="userEmailError" class="form-text text-danger profileError"></div>
 						</div>
 						<div class="mb-3">
@@ -63,8 +76,8 @@
 					</div>
 					<div class="modal-footer">
 						<div id="profileError" class="profileError text-danger"></div>
-						<div>
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<div class="d-flex gap-2">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 							<button type="submit" class="btn btn-primary" id="profileSubmitBtn" disabled>Save changes</button>
 						</div>
 					</div>
@@ -72,4 +85,4 @@
 			</div>
 		</div>
 	</div>
-	</cfoutput>
+</cfoutput>

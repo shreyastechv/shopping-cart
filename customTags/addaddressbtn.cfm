@@ -1,5 +1,6 @@
 <div>
-	<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addressFormModal">
+	<button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addressFormModal">
+		<i class="fa-solid fa-plus"></i>
 		Add New Address
 	</button>
 </div>
@@ -17,14 +18,14 @@
 						<div class="col-sm-6">
 							<div class="mb-3">
 								<label for="firstName" class="form-label">First Name</label>
-								<input type="text" class="form-control addressInput" id="firstName" name="firstName">
+								<input type="text" class="form-control addressInput" id="firstName" name="firstName" maxlength="32">
 								<div id="firstNameError" class="form-text text-danger addressError"></div>
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="mb-3">
 								<label for="lastName" class="form-label">Last Name</label>
-								<input type="text" class="form-control addressInput" id="lastName" name="lastName">
+								<input type="text" class="form-control addressInput" id="lastName" name="lastName" maxlength="32">
 								<div id="lastNameError" class="form-text text-danger addressError"></div>
 							</div>
 						</div>
@@ -45,14 +46,14 @@
 						<div class="col-sm-6">
 							<div class="mb-3">
 								<label for="city" class="form-label">City</label>
-								<input type="text" class="form-control addressInput" id="city" name="city">
+								<input type="text" class="form-control addressInput" id="city" name="city" maxlength="64">
 								<div id="cityError" class="form-text text-danger addressError"></div>
 							</div>
 						</div>
 						<div class="col-sm-6">
 							<div class="mb-3">
 								<label for="state" class="form-label">State</label>
-								<input type="text" class="form-control addressInput" id="state" name="state">
+								<input type="text" class="form-control addressInput" id="state" name="state" maxlength="64">
 								<div id="stateError" class="form-text text-danger addressError"></div>
 							</div>
 						</div>
@@ -72,9 +73,10 @@
 						</div>
 					</div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<button type="button" name="addressFormSubmit" class="btn btn-primary" onclick="processAddressForm()">Save Address</button>
+				<div class="modal-footer d-flex gap-2">
+					<div id="addAddressError" class="addressError text-danger"></div>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+					<button type="button" name="addressFormSubmit" class="btn btn-primary" onclick="processAddressForm()">Save</button>
 				</div>
 			</form>
 		</div>

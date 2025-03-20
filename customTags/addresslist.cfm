@@ -6,8 +6,10 @@
 	<div class="list-group">
 		<cfif arrayLen(attributes.addresses)>
 			<cfloop array="#attributes.addresses#" item="address" index="i">
-
-				<div class="d-flex justify-content-between list-group-item shadow-sm mb-3" id="addressContainer_#i#">
+				<div class="d-flex justify-content-between list-group-item border shadow-sm mb-3" id="addressContainer_#i#"
+					onMouseOver="this.style.cursor='pointer'"
+					onclick="$(this).children().find('input[name=addressId]').prop('checked', true).trigger('change');"
+				>
 					<div>
 						<p class="fw-semibold mb-1">
 							#address.fullName# -
@@ -24,7 +26,7 @@
 					<div class="d-flex align-items-center px-4">
 						<cfif attributes.currentPage EQ "profile">
 							<!--- Delete button on profile page --->
-							<button class="btn btn-danger" onclick="deleteAddress('addressContainer_#i#', '#address.addressId#')">
+							<button class="btn btn-sm btn-danger" onclick="deleteAddress('addressContainer_#i#', '#address.addressId#')">
 								<i class="fa-solid fa-trash"></i>
 							</button>
 						<cfelseif attributes.currentPage EQ "checkout">

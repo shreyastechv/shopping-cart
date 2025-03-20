@@ -2,57 +2,46 @@ function handleCheckout() {
 	event.preventDefault();
 
 	// Remove error msgs and red borders from inputs
+	$("#addressAccordionError").text("");
 	$(".cardInput").removeClass("border-danger");
-	$(".cardError").empty();
+	$(".checkoutError").empty();
 
 	let valid = true;
 	const cardNumber = $("#cardNumber");
 	const cardNumberError = $("#cardNumberError");
-	const formattedCardNumber = cardNumber.val().trim().replaceAll("-", "");
 	const cvv = $("#cvv");
 	const cvvError = $("#cvvError");
-	const addressId = $('input[name="addressId"]:checked').val();
+	const addressId = $('input[name="addressId"]:checked');
+	const checkoutError = $("#checkoutError");
 
-	if (formattedCardNumber.length == 0) {
-		cardNumber.addClass("border-danger");
-		cardNumberError.text("Card number is required");
-		valid = false;
-	} else if (formattedCardNumber.length != 16) {
-		cardNumber.addClass("border-danger");
-		cardNumberError.text("Not a valid card number");
-		valid = false;
+	valid &= validateRadioBtn(addressId, "Address", cardNumberError);
+	if (!valid) {
+		$("#flush-collapseOne").collapse('show');
+		$("#addressAccordionError").text("Select at least one address!");
 	}
 
-	if (cvv.val().trim().length == 0) {
-		cvv.addClass("border-danger");
-		cvvError.text("CVV number is required");
-		valid = false;
-	} else if (cvv.val().trim().length != 3) {
-		cvv.addClass("border-danger");
-		cvvError.text("CVV is not valid");
-		valid = false;
-	}
+	valid &= validateCardNumber(cardNumber, cardNumberError);
+	valid &= validateCVV(cvv, cvvError);
 
 	if (!valid) return;
 
 	// Validate card nummber and cvv
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/cartManagement.cfc",
+		dataType: "json",
 		data: {
 			method: "validateCard",
-			cardNumber: formattedCardNumber,
+			cardNumber: cardNumber.val().trim().replaceAll("-", ""),
 			cvv: cvv.val().trim()
 		},
 		success: function (response) {
-			const resposeJSON = JSON.parse(response);
-
-			if (resposeJSON.success) {
-				createOrder(addressId);
+			if (response.success) {
+				createOrder(addressId.val());
 			} else {
 				cardNumber.addClass("border-danger");
 				cvv.addClass("border-danger");
-				cardNumberError.text(resposeJSON.message);
+				checkoutError.text(response.message);
 			}
 		}
 	})
@@ -60,38 +49,41 @@ function handleCheckout() {
 
 function createOrder(addressId) {
 	// Open modal
-	$("#orderSuccess").modal("show");
+	$("#orderResult").modal("show");
 
 	$.ajax({
 		type: "POST",
-		url: "./components/shoppingCart.cfc",
+		url: "./components/cartManagement.cfc",
+		dataType: "json",
 		data: {
 			method: "createOrder",
 			addressId: addressId
 		},
 		success: function (response) {
-			const responseJSON = JSON.parse(response);
-
-			if (responseJSON.success === true) {
+			if (response.success == true) {
 				setTimeout(() => {
-					$("#orderSuccess div[name='loading']").addClass("d-none");
-					$("#orderSuccess div[name='error']").addClass("d-none");
-					$("#orderSuccess div[name='success']").removeClass("d-none")
-				}, 1000);
+					$("#orderResult div[name='loading']").addClass("d-none");
+					$("#orderResult div[name='error']").addClass("d-none");
+					$("#orderResult div[name='success']").removeClass("d-none")
+				}, 800);
 			} else {
 				setTimeout(() => {
-					$("#orderSuccess div[name='loading']").addClass("d-none");
-					$("#orderSuccess div[name='success']").addClass("d-none");
-					$("#orderSuccess div[name='error']").removeClass("d-none")
-				}, 1000);
+					$("#orderResult div[name='loading']").addClass("d-none");
+					$("#orderResult div[name='success']").addClass("d-none");
+					$("#orderResult div[name='error']").removeClass("d-none")
+					$("#orderResultError").text(response.message);
+					if (response.message == "No product in checkout!") {
+						$("#orderResultErrorBtn").text("Shop More");
+					}
+				}, 800);
 			}
 		},
 		error: function() {
 			setTimeout(() => {
-				$("#orderSuccess div[name='loading']").addClass("d-none");
-				$("#orderSuccess div[name='success']").addClass("d-none");
-				$("#orderSuccess div[name='error']").removeClass("d-none")
-			}, 1000);
+				$("#orderResult div[name='loading']").addClass("d-none");
+				$("#orderResult div[name='success']").addClass("d-none");
+				$("#orderResult div[name='error']").removeClass("d-none")
+			}, 800);
 		}
 	})
 }

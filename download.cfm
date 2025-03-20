@@ -10,9 +10,23 @@
 </cfif>
 
 <!--- Get order details --->
-<cfset variables.order = application.shoppingCart.getOrders(
+<cfset variables.orders = application.dataFetch.getOrders(
 	orderId = url.orderId
-).data[1]>
+).data>
+
+<!--- Get order details only if the returned array is not empty --->
+<cfif arrayLen(variables.orders)>
+	<cfset variables.order = variables.orders[1]>
+<cfelse>
+	<cfoutput>
+		<div class="d-flex flex-column align-items-center justify-content-center gap-4 fs-4 p-5">
+			<img src="#application.imageDirectory#not-found.svg" width="340" alt="Order Not Found Image">
+			Order with that order id is not found
+			<a href="/orders.cfm" class="btn btn-primary">Go to Order History</a>
+		</div>
+	</cfoutput>
+	<cfabort>
+</cfif>
 
 <!--- Set header and content-type so that pdf gets downloaded correctly --->
 <cfheader name="Content-Disposition" value="inline;filename=invoice.pdf">
@@ -43,20 +57,15 @@
 						</tr>
 					</thead>
 					<tbody>
-						<cfloop list="#variables.order.productNames#" item="variables.item" index="variables.i">
-							<cfset variables.unitPrice = listGetAt(variables.order.unitPrices, variables.i)>
-							<cfset variables.unitTax = listGetAt(variables.order.unitTaxes, variables.i)>
-							<cfset variables.quantity = listGetAt(variables.order.quantities, variables.i)>
-							<cfset variables.price = (variables.unitPrice + variables.unitTax) * variables.quantity>
-							<cfset variables.productName = listGetAt(variables.order.productNames, variables.i)>
-							<cfset variables.brandName = listGetAt(variables.order.brandNames, variables.i)>
+						<cfloop array="#variables.order.products#" item="variables.item">
+							<cfset variables.price = (variables..item.unitPrice + variables.item.unitTax) * variables.item.quantity>
 
 							<tr>
-								<td>#variables.productName#</td>
-								<td>#variables.brandName#</td>
-								<td>#variables.unitPrice#</td>
-								<td>#variables.unitTax#</td>
-								<td>#variables.quantity#</td>
+								<td>#variables.item.productName#</td>
+								<td>#variables.item.brandName#</td>
+								<td>#variables.item.unitPrice#</td>
+								<td>#variables.item.unitTax#</td>
+								<td>#variables.item.quantity#</td>
 								<td>#variables.price#</td>
 							</tr>
 						</cfloop>
@@ -66,11 +75,11 @@
 			<div>
 				<p>
 					<strong>Delivery Address:</strong>
-					#variables.order.addressLine1#,
-					#variables.order.addressLine2#,
-					#variables.order.city#, #variables.order.state# - #variables.order.pincode#
+					#variables.order.address.addressLine1#,
+					#variables.order.address.addressLine2#,
+					#variables.order.address.city#, #variables.order.address.state# - #variables.order.address.pincode#
 				</p>
-				<p><strong>Contact:</strong> #variables.order.firstName# #variables.order.lastName# - #variables.order.phone#</p>
+				<p><strong>Contact:</strong> #variables.order.address.firstName# #variables.order.address.lastName# - #variables.order.address.phone#</p>
 			</div>
 		</div>
 	</cfoutput>
