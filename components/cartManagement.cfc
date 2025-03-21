@@ -63,13 +63,19 @@
 			<!--- Update the session variable --->
 			<cfif arguments.action EQ "increment">
 				<cfif structKeyExists(session.cart.items, arguments.productId)>
+					<cfset session.cart.items[arguments.productId].quantity += 1>
 					<cfset local.response["message"] = "Product Quantity Incremented">
 				<cfelse>
+					<cfset session.cart.items[arguments.productId] = application.dataFetch.getCart(
+						productId = local.productId
+					).items[arguments.productId]>
 					<cfset local.response["message"] = "Product Added">
 				</cfif>
-			<cfelseif arguments.action EQ "decrement">
+			<cfelseif arguments.action EQ "decrement" AND session.cart.items[arguments.productId].quantity GT 1>
+				<cfset session.cart.items[arguments.productId].quantity -= 1>
 				<cfset local.response["message"] = "Product Quantity Decremented">
 			<cfelse>
+				<cfset structDelete(session.cart.items, arguments.productId)>
 				<cfset local.response["message"] = "Product Deleted">
 			</cfif>
 

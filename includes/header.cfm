@@ -70,9 +70,9 @@
 						<i class="fa-solid fa-cart-shopping"></i>
 						Cart
 						<!--- Hide cart count for non-logged in users --->
-						<cfif structKeyExists(session, "cartCount")>
+						<cfif structKeyExists(session, "cart")>
 							<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-light mt-1">
-								<span id="cartCount">#session.cartCount#</span>
+								<span id="cartCount">#structCount(session.cart.items)#</span>
 							</span>
 						</cfif>
 					</button>

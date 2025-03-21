@@ -178,7 +178,7 @@
 					<cfset session.phone = local.qryCheckUser.fldPhone>
 					<cfset session.userId = local.qryCheckUser.fldUser_Id>
 					<cfset session.roleId = local.qryCheckUser.fldRoleId>
-					<cfset session.cartCount = structCount(application.dataFetch.getCart().items)>
+					<cfset session.cart = application.dataFetch.getCart()>
 					<cfset local.response["message"] = "Login successful">
 				<cfelse>
 					<cfset local.response["message"] = "Wrong username or password">
