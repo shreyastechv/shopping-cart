@@ -384,8 +384,6 @@
 					"unitPrice" = local.qryGetCart.fldPrice,
 					"unitTax" = local.qryGetCart.fldTax
 				}>
-				<cfset local.response.totalPrice += local.qryGetCart.fldQuantity * local.qryGetCart.fldPrice>
-				<cfset local.response.totalTax += local.qryGetCart.fldQuantity * local.qryGetCart.fldPrice * local.qryGetCart.fldTax / 100>
 			</cfloop>
 
 			<cfcatch type="any">

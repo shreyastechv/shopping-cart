@@ -4,6 +4,7 @@
 
 <!--- Get cart data into session variable so that price manipulations can be easier --->
 <cfset session.cart = application.dataFetch.getCart()>
+<cfset session.cartCount = structCount(application.dataFetch.getCart().items)>
 
 <cfoutput>
 	<div class="container my-5">
