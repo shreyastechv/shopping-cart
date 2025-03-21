@@ -18,10 +18,11 @@
 <!--- Handle add to cart button --->
 <cfif structKeyExists(form, "addToCart")>
 	<cfif structKeyExists(session, "userId")>
-		<cfset application.cartManagement.modifyCart(
+		<cfset variables.result = application.cartManagement.modifyCart(
 			productId = url.productId,
 			action = "increment"
 		)>
+
 		<!--- Go to cart page if user is logged in --->
 		<cflocation url="/cart.cfm" addToken="no">
 	<cfelse>

@@ -39,6 +39,11 @@
 				<cfprocparam type="in" cfsqltype="varchar" value="#arguments.action#">
 				<cfprocparam type="in" cfsqltype="integer" value="#session.userId#">
 				<cfprocparam type="out" cfsqltype="bit" variable="local.success">
+				<cfprocparam type="out" cfsqltype="integer" variable="local.newQuantity">
+				<cfprocparam type="out" cfsqltype="decimal" variable="local.productActualPrice">
+				<cfprocparam type="out" cfsqltype="decimal" variable="local.productTax">
+				<cfprocparam type="out" cfsqltype="decimal" variable="local.totalActualPrice">
+				<cfprocparam type="out" cfsqltype="decimal" variable="local.totalTax">
 			</cfstoredproc>
 
 			<!--- Throw error if the stored procedure errored out --->
@@ -46,55 +51,33 @@
 				<cfthrow message = "Error while modifying cart.">
 			</cfif>
 
+			<!--- Add data to return struct --->
+			<cfset local.response["data"] = {
+				"quantity" = local.newQuantity,
+				"actualPrice" = local.productActualPrice,
+				"tax" = local.productTax,
+				"totalActualPrice" = local.totalActualPrice,
+				"totalTax" = local.totalTax
+			}>
+
 			<!--- Update the session variable --->
 			<cfif arguments.action EQ "increment">
 				<cfif structKeyExists(session.cart.items, arguments.productId)>
 					<cfset session.cart.items[arguments.productId].quantity += 1>
-					<cfset session.cart.totalPrice += session.cart.items[arguments.productId].unitPrice>
-					<cfset session.cart.totalTax += session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
 					<cfset local.response["message"] = "Product Quantity Incremented">
 				<cfelse>
 					<cfset session.cart.items[arguments.productId] = application.dataFetch.getCart(
 						productId = local.productId
 					).items[arguments.productId]>
-					<cfset session.cart.totalPrice += session.cart.items[arguments.productId].unitPrice>
-					<cfset session.cart.totalTax += session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
 					<cfset local.response["message"] = "Product Added">
 				</cfif>
 			<cfelseif arguments.action EQ "decrement" AND session.cart.items[arguments.productId].quantity GT 1>
 				<cfset session.cart.items[arguments.productId].quantity -= 1>
-				<cfset session.cart.totalPrice -= session.cart.items[arguments.productId].unitPrice>
-				<cfset session.cart.totalTax -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].unitTax / 100>
 				<cfset local.response["message"] = "Product Quantity Decremented">
 			<cfelse>
-				<cfset session.cart.totalPrice -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].quantity>
-				<cfset session.cart.totalTax -= session.cart.items[arguments.productId].unitPrice * session.cart.items[arguments.productId].quantity * session.cart.items[arguments.productId].unitTax / 100>
 				<cfset structDelete(session.cart.items, arguments.productId)>
 				<cfset local.response["message"] = "Product Deleted">
 			</cfif>
-
-			<!--- Do the math --->
-			<cfif structKeyExists(session.cart.items, arguments.productId)>
-				<cfset local.unitPrice = session.cart.items[arguments.productId].unitPrice>
-				<cfset local.unitTax = session.cart.items[arguments.productId].unitTax>
-				<cfset local.quantity = session.cart.items[arguments.productId].quantity>
-				<cfset local.actualPrice = local.unitPrice * local.quantity>
-				<cfset local.price = local.actualPrice + (local.unitPrice * (local.unitTax / 100) * local.quantity)>
-
-				<!--- Package data into struct --->
-				<cfset local.response["data"] = {
-					"price" = local.price,
-					"actualPrice" = local.actualPrice,
-					"quantity" = session.cart.items[arguments.productId].quantity
-				}>
-			</cfif>
-
-			<!--- Append total price and tax to data struct --->
-			<cfset structAppend(local.response["data"], {
-				"totalActualPrice" = session.cart.totalPrice,
-				"totalTax" = session.cart.totalTax,
-				"totalPrice" = session.cart.totalPrice + session.cart.totalTax
-			})>
 
 			<cfset local.response.success = true>
 
