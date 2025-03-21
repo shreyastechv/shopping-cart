@@ -227,7 +227,12 @@ CREATE TABLE IF NOT EXISTS `tblCart` (
     ON UPDATE NO ACTION,
   CONSTRAINT `tblCart_productId`
     FOREIGN KEY (`fldProductId`)
-    REFERENCES `tblProduct` (`fldProduct_Id`));
+    REFERENCES `tblProduct` (`fldProduct_Id`)
+
+  -- Unique constraint to ensure (UserId, ProductId) is unique
+  CONSTRAINT `unique_user_product`
+    UNIQUE (`fldUserId`, `fldProductId`)
+);
 
 CREATE INDEX `userid_idx` ON `tblCart` (`fldUserId` ASC) VISIBLE;
 
