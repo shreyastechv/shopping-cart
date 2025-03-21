@@ -25,7 +25,7 @@
 							<button class="btn btn" onclick="deleteCategory('categoryContainer_#i#', '#item.categoryId#')">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
-							<a class="btn btn" href="/subCategory.cfm?categoryId=#variables.encodedCategoryId#">
+							<a class="btn btn" href="/admin/subCategory.cfm?categoryId=#variables.encodedCategoryId#">
 								<i class="fa-solid fa-chevron-right"></i>
 							</a>
 						</div>

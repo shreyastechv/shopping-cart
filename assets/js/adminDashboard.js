@@ -16,7 +16,7 @@ function processCategoryForm() {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/productManagement.cfc",
+		url: "/admin/components/productManagement.cfc",
 		dataType: "json",
 		data: {
 			method: "modifyCategory",
@@ -99,7 +99,7 @@ function deleteCategory(containerId, categoryId) {
 		if (result.isConfirmed) {
 			$.ajax({
 				type: "POST",
-				url: "./components/productManagement.cfc",
+				url: "/admin/components/productManagement.cfc",
 				data: {
 					method: "deleteItem",
 					itemName: "category",

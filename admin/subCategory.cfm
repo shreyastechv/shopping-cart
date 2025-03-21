@@ -3,7 +3,7 @@
 
 <!--- Go to admin dashboard if category id is empty --->
 <cfif NOT len(trim(url.categoryId))>
-	<cflocation url="/adminDashboard.cfm" addToken="false">
+	<cflocation url="/admin/adminDashboard.cfm" addToken="false">
 </cfif>
 
 <cfoutput>
@@ -20,7 +20,7 @@
 		<div class="row shadow-lg border-0 rounded-4 w-50 justify-content-center">
 			<div id="subCategoryMainContainer" class="bg-white col-md-8 p-4 rounded-end-4 w-100">
 				<div class="d-flex justify-content-between align-items-center mb-4">
-					<a href="/adminDashboard.cfm" class="btn">
+					<a href="/admin/adminDashboard.cfm" class="btn">
 						<i class="fa-solid fa-chevron-left"></i>
 					</a>
 					<div class="d-flex">
@@ -44,7 +44,7 @@
 							<button class="btn btn" onclick="deleteSubCategory('subCategoryContainer_#i#', '#item.subCategoryId#', '#item.subCategoryName#')">
 								<i class="fa-solid fa-trash pe-none"></i>
 							</button>
-							<a class="btn btn" href="/productEdit.cfm?subCategoryId=#variables.encodedSubCategoryId#">
+							<a class="btn btn" href="/admin/productEdit.cfm?subCategoryId=#variables.encodedSubCategoryId#">
 								<i class="fa-solid fa-chevron-right"></i>
 							</a>
 						</div>

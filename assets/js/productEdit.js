@@ -12,7 +12,7 @@ $(document).ready(function() {
 			$("#subCategorySelect").prop("disabled", false);
 			$.ajax({
 				type: "POST",
-				url: "./components/dataFetch.cfc",
+				url: "/admin/components/dataFetch.cfc",
 				dataType: "json",
 				data: {
 					method: "getSubCategories",
@@ -151,7 +151,7 @@ function processProductForm() {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/productManagement.cfc",
+		url: "/admin/components/productManagement.cfc",
 		dataType: "json",
 		data: formData,
 		enctype: 'multipart/form-data',
@@ -204,7 +204,7 @@ function showEditProductModal(categoryId, productId) {
 	$("#productId").val(productId);
 	$.ajax({
 		type: "POST",
-		url: "./components/dataFetch.cfc",
+		url: "/admin/components/dataFetch.cfc",
 		dataType: "json",
 		data: {
 			method: "getProducts",
@@ -260,7 +260,7 @@ function deleteProduct (containerId, productId) {
 		if (result.isConfirmed) {
 			$.ajax({
 				type: "POST",
-				url: "./components/productManagement.cfc",
+				url: "/admin/components/productManagement.cfc",
 				data: {
 					method: "deleteItem",
 					itemName: "product",
