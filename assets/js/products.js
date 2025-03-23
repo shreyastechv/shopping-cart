@@ -104,6 +104,10 @@ $(document).ready(function() {
 				updateUrlParam({ sort: "desc" });
 				break;
 
+			case "newest":
+				updateUrlParam({ sort: "newest" });
+				break;
+
 			default:
 				updateUrlParam({ sort: "" });
 		}

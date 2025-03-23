@@ -31,7 +31,7 @@
 	limit = variables.limit,
 	min = val(url.min),
 	max = val(url.max),
-	sort = (arrayContainsNoCase(["asc","desc"], url.sort) ? url.sort : "")
+	sort = (arrayContainsNoCase(["asc","desc", "newest"], url.sort) ? url.sort : "")
 )>
 
 <cftry>

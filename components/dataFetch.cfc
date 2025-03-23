@@ -162,7 +162,7 @@
 			</cfif>
 
 			<!--- Orderby Validation --->
-			<cfif NOT arrayContainsNoCase(["asc",  "desc", ""], arguments.sort)>
+			<cfif NOT arrayContainsNoCase(["asc",  "desc", "newest", ""], arguments.sort)>
 				<cfset local.response["message"] &= "Sort value should either be asc or desc">
 			</cfif>
 
@@ -236,13 +236,16 @@
 					GROUP BY
 						P.fldProduct_Id
 
+					ORDER BY
 						<!--- Sorting --->
 						<cfif arguments.random EQ 1>
-							ORDER BY
-								RAND()
-						<cfelseif len(trim(arguments.sort))>
-							ORDER BY
-								P.fldPrice #arguments.sort#
+							RAND()
+						<cfelseif arrayContainsNoCase(["asc",  "desc"], trim(arguments.sort))>
+							P.fldPrice #arguments.sort#
+						<cfelseif trim(arguments.sort) EQ "newest">
+							P.fldCreatedDate DESC
+						<cfelse>
+							P.fldProductName ASC
 						</cfif>
 
 						<!--- Limit the number of products returned --->
@@ -302,6 +305,7 @@
 			</cfcatch>
 		</cftry>
 
+		<cfset local.response.test = arguments>
 		<cfreturn local.response>
 	</cffunction>
 
