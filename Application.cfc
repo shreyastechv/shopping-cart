@@ -16,7 +16,6 @@
 		<cfset application.cartManagement = createObject("component", "components.cartManagement")>
 		<cfset application.commonFunctions = createObject("component", "components.commonFunctions")>
 		<cfset application.dataFetch = createObject("component", "components.dataFetch")>
-		<cfset application.productManagement = createObject("component", "components.productManagement")>
 		<cfset application.userManagement = createObject("component", "components.userManagement")>
 
 		<!--- Map pages to title, css and script path --->
@@ -65,21 +64,6 @@
 				"pageTitle": "Sign Up",
 				"cssPath": "",
 				"scriptPath": ["signup.js"]
-			},
-			"/admin/adminDashboard.cfm": {
-				"pageTitle": "Admin Dashboard",
-				"cssPath": "",
-				"scriptPath": ["adminDashboard.js"]
-			},
-			"/admin/subCategory.cfm": {
-				"pageTitle": "Sub Category",
-				"cssPath": "",
-				"scriptPath": ["subCategory.js"]
-			},
-			"/admin/productEdit.cfm": {
-				"pageTitle": "Product Edit",
-				"cssPath": "",
-				"scriptPath": ["productEdit.js"]
 			}
 		}>
 
@@ -109,32 +93,23 @@
 		<cfargument name="targetPage" type="string" required=true>
 
 		<!--- Hot reloading application if required --->
-		<cfif structKeyExists(url, "reload") AND url.reload EQ 1>
+		<cfif structKeyExists(url, "reload") AND url.reload EQ 1
+			AND structKeyExists(session, "roleId") AND session.roleId EQ 1
+		>
 			<cfset onApplicationStart()>
 		</cfif>
 
 		<!--- Define page types --->
 		<cfset local.initialPages = ["/login.cfm", "/signup.cfm"]>
 		<cfset local.loginUserPages = ["/profile.cfm", "/cart.cfm", "/checkout.cfm", "/orders.cfm", "/components/cartManagement.cfc"]>
-		<cfset local.adminPages = ["/admin/adminDashboard.cfm", "/admin/subCategory.cfm", "/admin/productEdit.cfm", "/components/productManagement.cfc"]>
 
 		<!--- Handle page restrictions --->
 		<cfif arrayFindNoCase(local.initialPages, arguments.targetPage)>
-			<cfif structKeyExists(session, "roleId")>
-				<cfif session.roleId EQ 1>
-					<cflocation url="/admin/adminDashboard.cfm" addToken="false">
-				<cfelse>
-					<cflocation url="/" addToken="false">
-				</cfif>
-			</cfif>
-		<cfelseif arrayFindNoCase(local.adminPages, arguments.targetPage)>
-			<cfif structKeyExists(session, "roleId") AND session.roleId EQ 1>
-				<cfreturn true>
-			<cfelse>
-				<cflocation url="/login.cfm?redirect=#arguments.targetPage#" addToken="false">
+			<cfif structKeyExists(session, "userId")>
+				<cflocation url="/" addToken="false">
 			</cfif>
 		<cfelseif arrayFindNoCase(local.loginUserPages, arguments.targetPage)>
-			<cfif NOT structKeyExists(session, "roleId")>
+			<cfif NOT structKeyExists(session, "userId")>
 				<cflocation url="/login.cfm?redirect=#arguments.targetPage#" addToken="false">
 			</cfif>
 		</cfif>

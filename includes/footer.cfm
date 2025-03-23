@@ -13,7 +13,7 @@
 						<ul class="list-unstyled">
 							<li><a href="/" class="text-light text-decoration-none">Home</a></li>
 							<li><a href="##" class="text-light text-decoration-none">Contact Us</a></li>
-							<li><a href="/admin" class="text-light text-decoration-none">Admin Dashboard</a></li>
+							<li><a href="/admin/adminDashboard.cfm" class="text-light text-decoration-none">Admin Dashboard</a></li>
 						</ul>
 					</div>
 
