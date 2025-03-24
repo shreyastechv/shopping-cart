@@ -46,12 +46,12 @@ function editCartItem(containerId, productId, action) {
 			action: action
 		},
 		success: function(response) {
-			const { quantity, actualPrice, tax, totalActualPrice, totalTax } = response.data;
+			const { quantity, price, actualPrice, totalActualPrice, totalPrice, totalTax } = response.data
 
 			if (response.success) {
 				if (quantity) {
 					// Quantity is present means product is still in cart
-					$(`#${containerId} span[name="price"]`).text((actualPrice+tax).toFixed(2));
+					$(`#${containerId} span[name="price"]`).text(price.toFixed(2));
 					$(`#${containerId} span[name="actualPrice"]`).text(actualPrice.toFixed(2));
 					$(`#${containerId} input[name="quantity"]`).val(quantity).change();
 				} else {
@@ -63,7 +63,7 @@ function editCartItem(containerId, productId, action) {
 				}
 
 				// Update total price and tax
-				$("#totalPrice").text((totalActualPrice+totalTax).toFixed(2));
+				$("#totalPrice").text(totalPrice.toFixed(2));
 				$("#totalActualPrice").text(totalActualPrice.toFixed(2));
 				$("#totalTax").text(totalTax.toFixed(2));
 
