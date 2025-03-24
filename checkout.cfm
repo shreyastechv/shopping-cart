@@ -14,6 +14,11 @@
 	productId = url.productId
 )>
 
+<!--- When buy now is clicked, set initial quantity of the product to be 1 --->
+<cfif structKeyExists(session.checkout.items, url.productId)>
+	<cfset session.checkout.items[url.productId].quantity = 1>
+</cfif>
+
 <cfoutput>
 	<!--- Main Content --->
 	<div class="d-flex flex-column align-items-center m-3" id="mainContent">
