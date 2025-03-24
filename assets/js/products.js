@@ -29,7 +29,7 @@ function viewMore() {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/dataFetch.cfc",
+		url: "/controllers/dataFetchController.cfc",
 		dataType: "json",
 		data: {
 			method: "getProducts",

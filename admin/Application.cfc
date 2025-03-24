@@ -15,6 +15,7 @@
 		<!--- Create component objects --->
 		<cfset application.userManagement = createObject("component", "components.userManagement")>
 		<cfset application.dataFetch = createObject("component", "components.dataFetch")>
+		<cfset application.dataFetchController = createObject("component", "controllers.dataFetchController")>
 		<cfset application.productManagement = createObject("component", "admin.components.productManagement")>
 		<cfset application.commonFunctions = createObject("component", "components.commonFunctions")>
 

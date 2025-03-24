@@ -5,7 +5,7 @@
 
 	<!--- Get Data --->
 	<cfset variables.sliderImages =  application.dataFetch.getSliderImages(pageName = "home")>
-	<cfset variables.randomProducts = application.dataFetch.getProducts(
+	<cfset variables.randomProducts = application.dataFetchController.getProducts(
 		random = 1,
 		limit = 12
 	)>

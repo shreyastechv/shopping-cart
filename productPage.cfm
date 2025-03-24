@@ -7,7 +7,7 @@
 </cfif>
 
 <!--- Get Data if productId is given --->
-<cfset variables.productInfo = application.dataFetch.getProducts(productId = url.productId)>
+<cfset variables.productInfo = application.dataFetchController.getProducts(productId = url.productId)>
 
 <!--- Prevent entering the page if product data is empty --->
 <!--- This usually happends if the product id in url is invalid --->

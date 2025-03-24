@@ -11,7 +11,7 @@
 <cfoutput>
 	<!--- Get Data --->
 	<cfset variables.categories = application.dataFetch.getCategories()>
-	<cfset variables.products = application.dataFetch.getProducts(subCategoryId = url.subCategoryId)>
+	<cfset variables.products = application.dataFetchController.getProducts(subCategoryId = url.subCategoryId)>
 	<cfset variables.brands = application.dataFetch.getBrands()>
 	<cftry>
 		<cfset variables.categoryId = arrayLen(variables.products.data)

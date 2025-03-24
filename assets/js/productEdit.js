@@ -204,7 +204,7 @@ function showEditProductModal(categoryId, productId) {
 	$("#productId").val(productId);
 	$.ajax({
 		type: "POST",
-		url: "/admin/components/dataFetch.cfc",
+		url: "/controllers/dataFetchController.cfc",
 		dataType: "json",
 		data: {
 			method: "getProducts",

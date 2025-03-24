@@ -141,36 +141,6 @@
 		}>
 
 		<cftry>
-			<!--- Decrypt ids--->
-			<cfset local.categoryId = application.commonFunctions.decryptText(arguments.categoryId)>
-			<cfset local.subCategoryId = application.commonFunctions.decryptText(arguments.subCategoryId)>
-			<cfset local.productId = application.commonFunctions.decryptText(arguments.productId)>
-			<cfset local.productIdList = listMap(arguments.productIdList, function(item) {
-				return application.commonFunctions.decryptText(item);
-			})>
-
-			<!--- Sub Category Id Validation --->
-			<cfif len(trim(arguments.subCategoryId)) AND (local.subCategoryId EQ -1)>
-				<!--- Value equals -1 means decryption failed --->
-				<cfset local.response["message"] &= "Sub Category Id is invalid. ">
-			</cfif>
-
-			<!--- Product Id Validation --->
-			<cfif len(trim(arguments.productId)) AND (local.productId EQ -1)>
-				<!--- Value equals -1 means decryption failed --->
-				<cfset local.response["message"] &= "Product Id is invalid. ">
-			</cfif>
-
-			<!--- Orderby Validation --->
-			<cfif NOT arrayContainsNoCase(["asc",  "desc", "newest", ""], arguments.sort)>
-				<cfset local.response["message"] &= "Sort value should either be asc or desc">
-			</cfif>
-
-			<!--- Return message if validation fails --->
-			<cfif len(trim(local.response.message))>
-				<cfreturn local.response>
-			</cfif>
-
 			<!--- Continue with code execution if validation succeeds --->
 			<cfquery name="local.qryGetProducts">
 				WITH productQuery AS (
@@ -199,19 +169,18 @@
 							AND PI.fldActive = 1
 					WHERE
 						P.fldActive = 1
-						<cfif local.categoryId NEQ -1>
-							AND C.fldCategory_Id = <cfqueryparam value = "#val(local.categoryId)#" cfsqltype = "integer">
-						<cfelseif local.subCategoryId NEQ -1>
-							AND P.fldSubCategoryId = <cfqueryparam value = "#val(local.subCategoryId)#" cfsqltype = "integer">
-						<cfelseif local.productId NEQ -1>
-							AND P.fldProduct_Id = <cfqueryparam value = "#val(local.productId)#" cfsqltype = "integer">
+						<cfif arguments.categoryId NEQ -1>
+							AND C.fldCategory_Id = <cfqueryparam value = "#val(arguments.categoryId)#" cfsqltype = "integer">
+						<cfelseif arguments.subCategoryId NEQ -1>
+							AND P.fldSubCategoryId = <cfqueryparam value = "#val(arguments.subCategoryId)#" cfsqltype = "integer">
+						<cfelseif arguments.productId NEQ -1>
+							AND P.fldProduct_Id = <cfqueryparam value = "#val(arguments.productId)#" cfsqltype = "integer">
 						<cfelseif len(trim(arguments.productIdList))>
-							AND P.fldProduct_Id IN (<cfqueryparam value = "#local.productIdList#" cfsqltype = "varchar" list = "yes">)
+							AND P.fldProduct_Id IN (<cfqueryparam value = "#arguments.productIdList#" cfsqltype = "varchar" list = "yes">)
 						<cfelseif NOT val(arguments.limit)>
 							<!--- This is to prevent retrieving all product data if limit is not specified --->
 							AND 1 = 0
 						</cfif>
-
 
 						<!--- Minimum price --->
 						<cfif val(arguments.min)>
@@ -251,7 +220,7 @@
 						<!--- Limit the number of products returned --->
 						<!--- Don't use this limiting method if category id is used to fetch products --->
 						<!--- Because another technique is used to limit in that case --->
-						<cfif (val(arguments.limit) NEQ 0) AND (local.categoryId EQ -1)>
+						<cfif (val(arguments.limit) NEQ 0) AND (arguments.categoryId EQ -1)>
 							<!--- Querying one extra product to check whether there are more products --->
 							LIMIT <cfqueryparam value = "#val(arguments.limit)#" cfsqltype = "integer">
 							<cfif val(arguments.offset)>
@@ -264,7 +233,7 @@
 				FROM
 					productQuery
 				<!--- Limit is calculated differently when it comes to category product listing --->
-				<cfif (val(local.categoryId) NEQ -1) AND val(arguments.limit)>
+				<cfif (val(arguments.categoryId) NEQ -1) AND val(arguments.limit)>
 					WHERE
 						rn <= <cfqueryparam value = "#val(arguments.limit)#" cfsqltype = "integer">
 				</cfif>
@@ -305,7 +274,42 @@
 			</cfcatch>
 		</cftry>
 
-		<cfset local.response.test = arguments>
+		<cfreturn local.response>
+	</cffunction>
+
+	<cffunction name="getBrands" access="public" returnType="struct">
+		<cfset local.response = {
+			"success" = true,
+			"data" = []
+		}>
+
+		<cftry>
+			<cfquery name="local.qryGetBrands">
+				SELECT
+					fldBrand_Id,
+					fldBrandName
+				FROM
+					tblBrands
+				ORDER BY
+					fldBrandName
+			</cfquery>
+
+			<!--- Fill up the array with brand information --->
+			<cfloop query="local.qryGetBrands">
+				<cfset local.brandStruct = {
+					"brandId": application.commonFunctions.encryptText(local.qryGetBrands.fldBrand_Id),
+					"brandName": local.qryGetBrands.fldBrandName
+				}>
+
+				<cfset arrayAppend(local.response.data, local.brandStruct)>
+			</cfloop>
+
+			<cfcatch type="any">
+				<cfset local.response.success = false>
+				<cfreturn local.response>
+			</cfcatch>
+		</cftry>
+
 		<cfreturn local.response>
 	</cffunction>
 

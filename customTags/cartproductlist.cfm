@@ -4,7 +4,7 @@
 
 	<!--- Get Product Details --->
 	<cfif structCount(attributes.products)>
-		<cfset variables.productInfo = application.dataFetch.getProducts(productIdList = structKeyList(attributes.products))>
+		<cfset variables.productInfo = application.dataFetchController.getProducts(productIdList = structKeyList(attributes.products))>
 
 		<cfloop array="#variables.productInfo.data#" item="item" index="i">
 			<!--- Encode Product ID since it is passed to URL param --->

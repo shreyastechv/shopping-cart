@@ -16,6 +16,7 @@
 		<cfset application.cartManagement = createObject("component", "components.cartManagement")>
 		<cfset application.commonFunctions = createObject("component", "components.commonFunctions")>
 		<cfset application.dataFetch = createObject("component", "components.dataFetch")>
+		<cfset application.dataFetchController = createObject("component", "controllers.dataFetchController")>
 		<cfset application.userManagement = createObject("component", "components.userManagement")>
 
 		<!--- Map pages to title, css and script path --->

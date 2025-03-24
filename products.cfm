@@ -24,7 +24,7 @@
 	<cflocation url="/" addToken="false">
 </cfif>
 
-<cfset variables.products = application.dataFetch.getProducts(
+<cfset variables.products = application.dataFetchController.getProducts(
 	categoryId = url.categoryId,
 	subCategoryId = url.subCategoryId,
 	searchTerm = trim(url.search),
