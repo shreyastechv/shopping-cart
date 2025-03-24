@@ -121,9 +121,9 @@
 	</cffunction>
 
 	<cffunction name="getProducts" access="remote" returnType="struct" returnFormat="json">
-		<cfargument name="categoryId" type="string" required=false default="">
-		<cfargument name="subCategoryId" type="string" required=false default="">
-		<cfargument name="productId" type="string" required=false default="">
+		<cfargument name="categoryId" type="integer" required=false default=-1>
+		<cfargument name="subCategoryId" type="integer" required=false default=-1>
+		<cfargument name="productId" type="integer" required=false default=-1>
 		<cfargument name="productIdList" type="string" required=false default="">
 		<cfargument name="random" type="integer" required=false default=0>
 		<cfargument name="limit" type="integer" required="false" default=0>
