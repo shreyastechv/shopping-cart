@@ -54,8 +54,9 @@
 			<!--- Add data to return struct --->
 			<cfset local.response["data"] = {
 				"quantity" = local.newQuantity,
+				"price" =  local.productActualPrice + local.productTax,
 				"actualPrice" = local.productActualPrice,
-				"tax" = local.productTax,
+				"totalPrice" = local.totalActualPrice + local.totalTax,
 				"totalActualPrice" = local.totalActualPrice,
 				"totalTax" = local.totalTax
 			}>
