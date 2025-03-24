@@ -6,9 +6,10 @@
 <cfif structKeyExists(form, "loginBtn")>
 	<cfset variables.loginResult = application.userManagement.login(
 		userInput = form.userInput,
-		password = form.password
+		password = form.password,
+		loginType = "user"
 	)>
-	<cfif variables.loginResult.message EQ "Login successful">
+	<cfif variables.loginResult.success>
 		<!--- Add product to cart if user came from product page --->
 		<cfif len(trim(url.productId))>
 			<cfset application.cartManagement.modifyCart(

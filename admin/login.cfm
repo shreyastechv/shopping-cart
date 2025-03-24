@@ -5,7 +5,8 @@
 <cfif structKeyExists(form, "loginBtn")>
 	<cfset variables.loginResult = application.userManagement.login(
 		userInput = form.userInput,
-		password = form.password
+		password = form.password,
+		loginType = "admin"
 	)>
 
 	<cfif variables.loginResult.success>

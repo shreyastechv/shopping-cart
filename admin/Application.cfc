@@ -13,10 +13,10 @@
 		<cfset application.secretKey = "xpzpO2awP8KM+/nk1vmmFA==">
 
 		<!--- Create component objects --->
-		<cfset application.userManagement = createObject("component", "admin.components.userManagement")>
-		<cfset application.dataFetch = createObject("component", "admin.components.dataFetch")>
+		<cfset application.userManagement = createObject("component", "components.userManagement")>
+		<cfset application.dataFetch = createObject("component", "components.dataFetch")>
 		<cfset application.productManagement = createObject("component", "admin.components.productManagement")>
-		<cfset application.commonFunctions = createObject("component", "admin.components.commonFunctions")>
+		<cfset application.commonFunctions = createObject("component", "components.commonFunctions")>
 
 		<cfset application.pageDetailsMapping = {
 			"/admin/login.cfm": {

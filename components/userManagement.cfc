@@ -122,28 +122,30 @@
 	<cffunction name="login" access="public" returnType="struct">
 		<cfargument name="userInput" type="string" required=true>
 		<cfargument name="password" type="string" required=true>
+		<cfargument name="loginType" type="string" required=false default="user">
 
 		<cfset local.response = {
-			"message" = ""
+			"message" = "",
+			"success" = false
 		}>
 
 		<cftry>
 			<!--- UserInput Validation --->
 			<cfif len(trim(arguments.userInput)) EQ 0>
-				<cfset local.response["message"] &= "Enter an Email or Phone Number. ">
+				<cfset local.response.message &= "Enter an Email or Phone Number. ">
 			<cfelseif isValid("integer", trim(arguments.userInput)) AND arguments.userInput GT 0>
 				<cfif len(trim(arguments.userInput)) NEQ 10>
-					<cfset local.response["message"] &= "Phone number should be 10 digits long. ">
+					<cfset local.response.message &= "Phone number should be 10 digits long. ">
 				</cfif>
 			<cfelse>
 				<cfif NOT isValid("email", trim(arguments.userInput))>
-					<cfset local.response["message"] &= "Invalid email. ">
+					<cfset local.response.message &= "Invalid email. ">
 				</cfif>
 			</cfif>
 
 			<!--- Password Validation --->
 			<cfif len(trim(arguments.password)) EQ 0>
-				<cfset local.response["message"] &= "Enter a password. ">
+				<cfset local.response.message &= "Enter a password. ">
 			</cfif>
 
 			<!--- Return message if validation fails --->
@@ -172,23 +174,29 @@
 
 			<cfif local.qryCheckUser.recordCount>
 				<cfif local.qryCheckUser.fldHashedPassword EQ hash(trim(arguments.password) & local.qryCheckUser.fldUserSaltString, "SHA-512", "UTF-8", 50)>
-					<cfset session.firstName = local.qryCheckUser.fldFirstName>
-					<cfset session.lastName = local.qryCheckUser.fldLastName>
-					<cfset session.email = local.qryCheckUser.fldEmail>
-					<cfset session.phone = local.qryCheckUser.fldPhone>
-					<cfset session.userId = local.qryCheckUser.fldUser_Id>
-					<cfset session.roleId = local.qryCheckUser.fldRoleId>
-					<cfset session.cart = application.dataFetch.getCart()>
-					<cfset local.response["message"] = "Login successful">
+					<cfif arguments.loginType NEQ "admin" OR local.qryCheckUser.fldRoleId EQ 1>
+						<cfset session.firstName = local.qryCheckUser.fldFirstName>
+						<cfset session.lastName = local.qryCheckUser.fldLastName>
+						<cfset session.email = local.qryCheckUser.fldEmail>
+						<cfset session.phone = local.qryCheckUser.fldPhone>
+						<cfset session.userId = local.qryCheckUser.fldUser_Id>
+						<cfset session.roleId = local.qryCheckUser.fldRoleId>
+						<cfset session.cart = application.dataFetch.getCart()>
+
+						<cfset local.response.success = true>
+						<cfset local.response.message = "Login successful">
+					<cfelse>
+						<cfset local.response.message = "Unable to login since you do not have admin privileges.">
+					</cfif>
 				<cfelse>
-					<cfset local.response["message"] = "Wrong username or password">
+					<cfset local.response.message = "Wrong username or password">
 				</cfif>
 			<cfelse>
-				<cfset local.response["message"] = "User does not exist">
+				<cfset local.response.message = "User does not exist">
 			</cfif>
 
 			<cfcatch type="any">
-				<cfset local.response["message"] = "Error while login!">
+				<cfset local.response.message = "Error while login!">
 			</cfcatch>
 		</cftry>
 
