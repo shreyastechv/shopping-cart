@@ -3,7 +3,7 @@
 
 <!--- Login Logic --->
 <cfif structKeyExists(form, "loginBtn")>
-	<cfset variables.loginResult = application.userManagement.login(
+	<cfset variables.loginResult = application.usersManagement.login(
 		userInput = form.userInput,
 		password = form.password,
 		loginType = "admin"

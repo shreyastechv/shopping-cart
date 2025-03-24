@@ -13,7 +13,7 @@
 		<cfset application.secretKey = "xpzpO2awP8KM+/nk1vmmFA==">
 
 		<!--- Create component objects --->
-		<cfset application.userManagement = createObject("component", "components.userManagement")>
+		<cfset application.usersManagement = createObject("component", "components.usersManagement")>
 		<cfset application.dataFetch = createObject("component", "components.dataFetch")>
 		<cfset application.dataFetchController = createObject("component", "controllers.dataFetchController")>
 		<cfset application.productManagement = createObject("component", "admin.components.productManagement")>

@@ -17,7 +17,7 @@
 		<cfset application.commonFunctions = createObject("component", "components.commonFunctions")>
 		<cfset application.dataFetch = createObject("component", "components.dataFetch")>
 		<cfset application.dataFetchController = createObject("component", "controllers.dataFetchController")>
-		<cfset application.userManagement = createObject("component", "components.userManagement")>
+		<cfset application.usersManagement = createObject("component", "components.usersManagement")>
 
 		<!--- Map pages to title, css and script path --->
 		<cfset application.pageDetailsMapping = {
@@ -78,7 +78,7 @@
 		<cflocation url="/404.cfm" addToken="false">
 	</cffunction>
 
-	<!---<cffunction name="onError" returnType="void">
+	<cffunction name="onError" returnType="void">
 		<cfargument name="exception" required=true>
 		<cfargument name="eventName" type="string" required=true>
 
@@ -88,7 +88,7 @@
 
 			<cflocation url="/error.cfm?eventName=#arguments.eventName#" addToken="false">
 		</cfif>
-	</cffunction>--->
+	</cffunction>
 
 	<cffunction name="onRequestStart" returnType="boolean">
 		<cfargument name="targetPage" type="string" required=true>

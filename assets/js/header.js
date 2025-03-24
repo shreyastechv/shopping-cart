@@ -11,7 +11,7 @@ function logOut() {
 		if (result.isConfirmed) {
 			$.ajax({
 				type: "POST",
-				url: "./components/userManagement.cfc",
+				url: "./components/usersManagement.cfc",
 				data: {
 					method: "logOut"
 				},

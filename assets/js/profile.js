@@ -39,7 +39,7 @@ function deleteAddress(containerId, addressId) {
 		if (result.isConfirmed) {
 			$.ajax({
 				type: "POST",
-				url: "./components/userManagement.cfc",
+				url: "./components/usersManagement.cfc",
 				data: {
 					method: "deleteAddress",
 					addressId: addressId
@@ -84,7 +84,7 @@ function processProfileForm() {
 
 	$.ajax({
 		type: "POST",
-		url: "./components/userManagement.cfc",
+		url: "./components/usersManagement.cfc",
 		dataType: "json",
 		data: {
 			method: "editProfile",

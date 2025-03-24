@@ -42,7 +42,7 @@ function processAddressForm() {
 
   $.ajax({
     type: "POST",
-    url: "./components/userManagement.cfc",
+    url: "./components/usersManagement.cfc",
     dataType: "json",
     data: {
       method: "addAddress",
