@@ -335,10 +335,10 @@
 	<cffunction name="deleteAddress" access="remote" returnType="struct">
 		<cfargument name="addressId" type="string" required=true default="">
 
-		<cfset local.response = application.productManagement.deleteItem(
-			itemName = "address",
-			itemId = arguments.addressId
-		)>
+		<cfinvoke component="admin.components.productManagement" method="deleteItem" returnVariable="local.response">
+			<cfinvokeargument name="itemName" value="address">
+			<cfinvokeargument name="itemId" value="#arguments.addressId#">
+		</cfinvoke>
 
 		<cfreturn local.response>
 	</cffunction>

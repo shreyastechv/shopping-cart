@@ -8,7 +8,7 @@
 			"message" = ""
 		}>
 
-<!--- 		<cftry> --->
+		<cftry>
 			<!--- Decrypt ids--->
 			<cfset local.categoryId = application.commonFunctions.decryptText(arguments.categoryId)>
 
@@ -72,11 +72,11 @@
 				<cfset local.response.success = true>
 			</cfif>
 
-<!--- 			<cfcatch type="any">
+			<cfcatch type="any">
 				<cfset local.response.message = "Error while modifying category!">
 				<cfreturn local.response>
 			</cfcatch>
-		</cftry> --->
+		</cftry>
 
 		<cfreturn local.response>
 	</cffunction>
